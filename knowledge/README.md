@@ -12,6 +12,7 @@ The working wiki for chats is in [../wiki/index.md](../wiki/index.md). This fold
 
 - [design.md](design.md): design system (Equal Lens minimal register, validated chart palette, voice)
 - [plane.config.md](plane.config.md): Plane workspace, project and state IDs
-- [playbooks/data-pipeline.md](playbooks/data-pipeline.md): how the India dataset is built and refreshed
+- [playbooks/data-pipeline.md](playbooks/data-pipeline.md): how each market's dataset is built and refreshed
+- [reviews/design-audit-2026-10.md](reviews/design-audit-2026-10.md): design audit against Kite, Coin and Groww, with before and after screenshots
 
 Research history (the first tests that led to this app) lives in the Thoth repo under `knowledge/research/`.

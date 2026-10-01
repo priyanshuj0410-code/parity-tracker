@@ -1,4 +1,6 @@
 import logo from './assets/logo.svg'
+import { MarketStrip } from './components/MarketStrip'
+import { Search } from './components/Search'
 import { SOURCE_DATE } from './lib/data'
 import { href, useRoute } from './lib/router'
 import { Companies } from './pages/Companies'
@@ -24,15 +26,17 @@ export default function Root() {
   return (
     <>
       <header className="site-header">
-        <div className="wrap">
+        <div className="wrap header-row">
           <a className="brand" href={href('')}><img src={logo} alt="The Equal Lens" />Parity Tracker</a>
           <nav className="nav" aria-label="Main">
             <a href={href('')} className={at('')}>Indexes</a>
             <a href={href('companies')} className={route[0] === 'company' ? 'on' : at('companies')}>Companies</a>
             <a href={href('method')} className={at('method')}>Method</a>
           </nav>
+          <Search />
         </div>
       </header>
+      <MarketStrip current={route[0] === 'index' ? route[1] : undefined} />
       <main className="wrap">
         <Page route={route} />
       </main>

@@ -1,6 +1,8 @@
 import { DataBadge } from '../components/Badge'
 import { Change } from '../components/Change'
 import { LineChart } from '../components/LineChart'
+import { Monogram } from '../components/Monogram'
+import { Sparkline } from '../components/Sparkline'
 import { ParityTrack } from '../components/ParityTrack'
 import { SectorBars } from '../components/SectorBars'
 import { SortTable, type Column } from '../components/SortTable'
@@ -43,7 +45,8 @@ export function IndexPage({ id }: { id: string }) {
   const noData = rows.filter((r) => !r.co.noDataReason && r.co.years[LATEST]?.w == null)
 
   const columns: Column<Row>[] = [
-    { key: 'name', label: 'Company', render: (r) => <a href={href('company', r.symbol)}>{r.co.name}<span className="sub">{r.co.industry}</span></a>, sort: (r) => r.co.name },
+    { key: 'name', label: 'Company', render: (r) => <span className="name-cell"><Monogram name={r.co.name} seed={r.symbol} /><a href={href('company', r.symbol)}>{r.co.name}<span className="sub">{r.co.industry}</span></a></span>, sort: (r) => r.co.name },
+    ...(xs.length > 1 ? [{ key: 'trend', label: 'Trend', render: (r: Row) => <Sparkline values={xs.map((k) => (r.co.years[k]?.wKind === 'reported' ? r.co.years[k].w : null))} label={`${r.co.name} trend`} /> }] : []),
     ...(uk ? [] : [{ key: 'weight', label: 'Weight', right: true, render: (r: Row) => pct(r.weight), sort: (r: Row) => r.weight }]),
     { key: 'w', label: `${m.wageLabel} ${fy(LATEST)}`, right: true, render: (r) => <>{pct(r.co.years[LATEST]?.w)} <DataBadge year={r.co.years[LATEST]} /></>, sort: (r) => r.co.years[LATEST]?.w ?? null },
     ...(PREV ? [{ key: 'chg', label: `Change since ${fy(PREV)}`, right: true, render: (r: Row) => <Change value={yoyChange(r.co)} />, sort: (r: Row) => yoyChange(r.co) }] : []),
@@ -207,7 +210,7 @@ export function IndexPage({ id }: { id: string }) {
 
       <section>
         <h2>All {ix.name} companies</h2>
-        <SortTable caption={`${ix.name} constituents`} columns={columns} rows={rows} rowKey={(r) => r.symbol} initial={{ key: 'weight', dir: -1 }} />
+        <SortTable caption={`${ix.name} constituents`} columns={columns} rows={rows} rowKey={(r) => r.symbol} initial={{ key: uk ? 'w' : 'weight', dir: -1 }} rowHref={(r) => href('company', r.symbol)} scroll />
         {(ix.missing.length > 0 || noData.length > 0 || noStaff.length > 0) && (
           <p className="small" style={{ marginTop: 12 }}>
             <strong>Gaps:</strong>{' '}
