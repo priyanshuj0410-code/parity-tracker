@@ -18,12 +18,14 @@ export function IndexPage({ id }: { id: string }) {
   const m = indexMarket(ix)
   const uk = ix.country !== 'IN'
   const jp = ix.country === 'JP'
+  const eu = ix.country === 'EU'
   const weightNote = ix.country === 'AU' ? 'weighted by Australian payroll' : ix.country === 'IN' ? 'weighted by free-float market cap' : 'each company counts equally'
   const TREND_NOTE: Record<string, string> = {
     IN: 'Each company keeps a fixed payroll weight across years, so the line moves when women\'s share of wages moves, not when payroll mix shifts.',
     GB: 'Each company counts equally. Like-for-like changes leave out companies whose UK reporting employers or size bands changed between the two years. Fewer reports exist for 2019 because enforcement was suspended during the pandemic.',
     AU: 'Two years so far. The earlier release is not archived, so FY24 values hold each company\'s workforce share at its FY25 level and the change reflects pay gaps only.',
     JP: '',
+    EU: 'Each company counts equally. 2024 was the first CSRD reporting year, so the trend is short. Companies define pay slightly differently (hourly or annual, base or total), so compare a company with itself over time.',
   }
   const LATEST = m.latest
   const PREV = m.prev
@@ -45,8 +47,10 @@ export function IndexPage({ id }: { id: string }) {
     ...(uk ? [] : [{ key: 'weight', label: 'Weight', right: true, render: (r: Row) => pct(r.weight), sort: (r: Row) => r.weight }]),
     { key: 'w', label: `${m.wageLabel} ${fy(LATEST)}`, right: true, render: (r) => <>{pct(r.co.years[LATEST]?.w)} <DataBadge year={r.co.years[LATEST]} /></>, sort: (r) => r.co.years[LATEST]?.w ?? null },
     ...(PREV ? [{ key: 'chg', label: `Change since ${fy(PREV)}`, right: true, render: (r: Row) => <Change value={yoyChange(r.co)} />, sort: (r: Row) => yoyChange(r.co) }] : []),
-    { key: 'f', label: m.workforceLabel, right: true, render: (r) => pct(workforce(r.co, r.co.years[LATEST])), sort: (r) => workforce(r.co, r.co.years[LATEST]) },
-    ...(jp
+    ...(eu ? [] : [{ key: 'f', label: m.workforceLabel, right: true, render: (r: Row) => pct(workforce(r.co, r.co.years[LATEST])), sort: (r: Row) => workforce(r.co, r.co.years[LATEST]) }]),
+    ...(eu
+      ? [{ key: 'gap', label: 'Unadjusted pay gap', right: true, render: (r: Row) => pct(r.co.years[LATEST]?.gapMean), sort: (r: Row) => r.co.years[LATEST]?.gapMean ?? null }]
+      : jp
       ? [
           { key: 'b', label: 'Women on board', right: true, render: (r: Row) => pct(boardShare(r.co.years[LATEST]) ?? r.co.years[LATEST]?.boardShareReported), sort: (r: Row) => boardShare(r.co.years[LATEST]) ?? r.co.years[LATEST]?.boardShareReported ?? null },
           { key: 'reg', label: 'Regular staff pay ratio', right: true, render: (r: Row) => pct(r.co.years[LATEST]?.ratioRegular), sort: (r: Row) => r.co.years[LATEST]?.ratioRegular ?? null },
@@ -77,10 +81,16 @@ export function IndexPage({ id }: { id: string }) {
           </div>
           {uk ? (
             <div className="card">
-              <div className="tile-label">Pay structure · {fy(LATEST)}</div>
+              <div className="tile-label">{eu ? 'Coverage' : 'Pay structure'} · {fy(LATEST)}</div>
               <table>
                 <caption className="sr-only">Pay structure</caption>
-                {jp ? (
+                {eu ? (
+                  <tbody>
+                    <tr><td>Verified from company statements</td><td className="r"><strong>{y.verified} of 50</strong></td></tr>
+                    <tr><td>Excluded: adjusted only, partial scope or not material</td><td className="r"><strong>{y.excluded}</strong></td></tr>
+                    <tr><td>Not yet located or access blocked</td><td className="r"><strong>{y.unresolved}</strong></td></tr>
+                  </tbody>
+                ) : jp ? (
                   <tbody>
                     <tr><td>Women in management</td><td className="r"><strong>{pct(y.managers)}</strong></td></tr>
                     <tr><td>Women on boards</td><td className="r"><strong>{pct(y.boards)}</strong></td></tr>
@@ -95,7 +105,8 @@ export function IndexPage({ id }: { id: string }) {
                 )}
               </table>
               {jp && <p className="small" style={{ marginTop: 12 }}>Women earn about <strong>{m.payPhrase(y.headline)}</strong> and hold <strong>{pct(y.managers, 0)}</strong> of management jobs.</p>}
-              {!jp && y.gapMean != null && <p className="small" style={{ marginTop: 12 }}>Women earn about <strong>{m.payPhrase(1 - y.gapMean)}</strong>, and hold fewer of the best-paid jobs than their share of the workforce.</p>}
+              {eu && <p className="small" style={{ marginTop: 12 }}>At the average company with a verified figure, women earn about <strong>{m.payPhrase(y.headline)}</strong>. Every excluded or missing company is listed below with its reason.</p>}
+              {!jp && !eu && y.gapMean != null && <p className="small" style={{ marginTop: 12 }}>Women earn about <strong>{m.payPhrase(1 - y.gapMean)}</strong>, and hold fewer of the best-paid jobs than their share of the workforce.</p>}
             </div>
           ) : (
           <div className="card">
@@ -137,12 +148,13 @@ export function IndexPage({ id }: { id: string }) {
           ariaLabel={`${ix.name}: women's share of the payroll you own, by year`}
           xs={xs} xLabel={fy} fmt={(v) => pct(v, v === Math.round(v * 10) / 10 ? 0 : 1)}
           reference={{ y: m.parity, label: `Parity ${pct(m.parity, 0)}` }}
+          yMax={m.parity}
           series={[{ id: 'h', label: "Women's share of payroll", short: 'Payroll', color: 'var(--s1)', points: xs.map((k) => ({ x: k, y: ix.years[k].headline })) }]}
         />
         <div className="table-wrap" style={{ marginTop: 16 }}>
           <table>
             <caption className="sr-only">Trend table</caption>
-            <thead><tr><th>Year</th><th className="r">{ix.country === 'GB' ? "Women's share of pay" : "Women's share of payroll"}</th><th className="r">Companies covered</th><th className="r">Like-for-like change</th></tr></thead>
+            <thead><tr><th>Year</th><th className="r">{eu ? "Women's pay as a share of men's" : ix.country === 'GB' ? "Women's share of pay" : "Women's share of payroll"}</th><th className="r">Companies covered</th><th className="r">Like-for-like change</th></tr></thead>
             <tbody>
               {xs.map((k, i) => {
                 const yy = i > 0 ? ix.yoy[`${xs[i - 1]}>${k}`] : undefined
@@ -200,7 +212,9 @@ export function IndexPage({ id }: { id: string }) {
           <p className="small" style={{ marginTop: 12 }}>
             <strong>Gaps:</strong>{' '}
             {ix.missing.length > 0 && <>no market data for {ix.missing.join(', ')}. </>}
-            {noStaff.length > 0 && (jp
+            {noStaff.length > 0 && (eu
+              ? <>No verified figure for {noStaff.map((r) => r.co.name).join(', ')}. Each company's page gives the reason. </>
+              : jp
               ? <>Not in the government database: {noStaff.map((r) => r.co.name).join(', ')}. These companies may publish the figures on their own websites instead. </>
               : <>No {ix.country === 'GB' ? 'UK gender pay gap' : 'WGEA'} report for {noStaff.map((r) => r.co.name).join(', ')} (funds and trusts without staff, or no local employer above the reporting threshold). </>)}
             {noData.length > 0 && <>No usable {fy(LATEST)} data for {noData.map((r) => r.co.name).join(', ')}.</>}

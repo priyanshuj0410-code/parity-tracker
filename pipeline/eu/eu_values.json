@@ -103,6 +103,134 @@
    "gap2024": 14.8,
    "basis": "Unadjusted gender pay-gap ratio",
    "source": "https://filings.xbrl.org/724500TEM53I0U077B74/2025-12-31/ESEF/NL/0/wolt-2025-12-31-0-en/reports/wolt-2025-12-31-0-en.xhtml"
+  },
+  {
+   "ticker": "DB1.DE",
+   "name": "Deutsche Börse",
+   "gap2025": 28.2,
+   "gap2024": 29.1,
+   "basis": "Unadjusted gender pay gap, average total annual remuneration",
+   "source": "https://www.deutsche-boerse.com/resource/blob/4728236/2514e591a3350bd429b2176f4c3fcf1d/data/DBG-Combined-management-report-AR-2025.pdf"
+  },
+  {
+   "ticker": "DHL.DE",
+   "name": "Deutsche Post",
+   "gap2025": -1.5,
+   "gap2024": -2.2,
+   "basis": "Group gender-specific pay gap ratio (women slightly higher)",
+   "source": "https://ir-api.eqs.com/storage/ir/24fb0d/documents/1762934a-2ace-4317-8725-16cb10f9ec6a/DE0005552004-JA-2025-EQ-E-00.pdf"
+  },
+  {
+   "ticker": "DTE.DE",
+   "name": "Deutsche Telekom",
+   "gap2025": 15.7,
+   "gap2024": 14.5,
+   "basis": "Average unadjusted gender pay gap",
+   "source": "https://report.telekom.com/annual-report-2025/_assets/downloads/entire-dtag-ar25.pdf"
+  },
+  {
+   "ticker": "BMW.DE",
+   "name": "BMW",
+   "gap2025": -9.9,
+   "gap2024": -9.2,
+   "basis": "ESRS unadjusted gap on gross hourly pay; women higher because production staff are mostly male; 2024 restated",
+   "source": "https://www.bmwgroup.com/en/report/2025/downloads/BMW-Group-Management-Report-2025-en.pdf"
+  },
+  {
+   "ticker": "MUV2.DE",
+   "name": "Munich Re",
+   "gap2025": 29.6,
+   "gap2024": 28.7,
+   "basis": "Unadjusted gender pay gap",
+   "source": "https://www.munichre.com/content/dam/munichre/mrwebsiteslaunches/2025-annual-report/MunichRe-Group-Annual-Report-2025-en.pdf/_jcr_content/renditions/original./MunichRe-Group-Annual-Report-2025-en.pdf"
+  },
+  {
+   "ticker": "VOW.DE",
+   "name": "Volkswagen Group",
+   "gap2025": 9,
+   "gap2024": 13,
+   "basis": "Unadjusted gap in average gross hourly wages",
+   "source": "https://annualreport2025.volkswagen-group.com/_assets/downloads/esrs-sustainability-report-vw-ar25.pdf"
+  },
+  {
+   "ticker": "SIE.DE",
+   "name": "Siemens",
+   "gap2025": 13.1,
+   "gap2024": null,
+   "basis": "Unadjusted pay gap, fiscal 2025 (to September)",
+   "source": "https://assets.new.siemens.com/siemens/assets/api/uuid:dea0c623-1ae9-4ef0-a69a-31d8eb7b39fb/sustainability-statement.pdf"
+  },
+  {
+   "ticker": "DBK.DE",
+   "name": "Deutsche Bank",
+   "gap2025": 38.0,
+   "gap2024": 38.8,
+   "basis": "Unadjusted mean global gender pay gap (median 20.6%)",
+   "source": "https://investor-relations.db.com/files/documents/annual-reports/2025/Sustainability-Data-Compendium-2025.pdf?language_id=1"
+  },
+  {
+   "ticker": "BAYN.DE",
+   "name": "Bayer",
+   "gap2025": 1.32,
+   "gap2024": 2.14,
+   "basis": "Unadjusted gender pay gap",
+   "source": "https://reports.bayer.com/annual-report-2025/en/sustainability-statement/social-information/own-workforce/metrics-and-targets.html"
+  },
+  {
+   "ticker": "ENR.DE",
+   "name": "Siemens Energy",
+   "gap2025": 2.89,
+   "gap2024": null,
+   "basis": "Unadjusted pay gap, fiscal 2025 (to September)",
+   "source": "https://assets.siemens-energy.com/dam/42dcea27-d5af-4c79-a434-b3d100db4e2b/SE_FY25_ESG-Data-Factsheet-pdf_Original%20file.pdf"
+  },
+  {
+   "ticker": "ITX.MC",
+   "name": "Inditex",
+   "gap2025": 0,
+   "gap2024": -0.7,
+   "basis": "Global gender pay gap on total salary (women 0.7% higher in 2024)",
+   "source": "https://www.inditex.com/itxcomweb/api/media/f8d28973-3e94-45a5-9b0f-9e4d4b1c14b3/SustainabilityReport.pdf?t=1773404719972"
+  },
+  {
+   "ticker": "NDA-FI.HE",
+   "name": "Nordea",
+   "gap2025": 21.48,
+   "gap2024": 22.9,
+   "basis": "Unadjusted gender pay gap",
+   "source": "https://www.nordea.com/en/doc/nordea-annual-report-2025.pdf"
+  },
+  {
+   "ticker": "AI.PA",
+   "name": "Air Liquide",
+   "gap2025": null,
+   "gap2024": 6.7,
+   "basis": "Unadjusted gross hourly pay gap, 2024 (FY2025 filing not yet in the repository)",
+   "source": "https://filings.xbrl.org/969500MMPQVHK671GT54/2024-12-31/ESEF/FR/0/airliquide-2024-12-31-fr/reports/airliquide-2024-12-31-fr.xhtml"
+  },
+  {
+   "ticker": "EL.PA",
+   "name": "EssilorLuxottica",
+   "gap2025": null,
+   "gap2024": 16,
+   "basis": "Global mean pay gap regardless of job classification, 2024 (median 2%)",
+   "source": "https://filings.xbrl.org/549300M3VH1A3ER1TB49/2024-12-31/ESEF/FR/0/el-2024-12-31-0-fr/reports/el-2024-12-31-0-fr.xhtml"
+  },
+  {
+   "ticker": "AD.AS",
+   "name": "Ahold Delhaize",
+   "gap2025": 13.64,
+   "gap2024": 14.13,
+   "basis": "Average pay difference, total company population",
+   "source": "https://filings.xbrl.org/724500C9GNBV20UYRX36/2025-12-28/ESEF/NL/0/aholddelhaize-2025-12-28-en/reports/aholddelhaize-2025-12-28-en.xhtml"
+  },
+  {
+   "ticker": "ISP.MI",
+   "name": "Intesa Sanpaolo",
+   "gap2025": 26.8,
+   "gap2024": 25.8,
+   "basis": "ESRS gap on average gross hourly pay, all Group employees",
+   "source": "https://group.intesasanpaolo.com/content/dam/portalgroup/repository-documenti/investor-relations/bilanci-relazioni-en/2025/2025_Annual_Report.pdf"
   }
  ],
  "excluded": {
@@ -111,39 +239,23 @@
   "SU.PA": "Only adjusted pay-equity KPIs found",
   "TTE.PA": "Only adjusted gap (2.9%) found in ESEF text",
   "AIR.PA": "No figure found in ESEF text",
-  "AI.PA": "7% (2025) reported via search summary; not yet verified in the source document"
+  "BAS.DE": "Assessed the unadjusted gap (S1-16) as not material, so no figure is disclosed",
+  "IFX.DE": "Assessed the unadjusted gap (S1-16) as not material, so no figure is disclosed",
+  "MC.PA": "Assessed the unadjusted gap (S1-16) as not material, so no figure is disclosed",
+  "BN.PA": "Discloses a gap only for manager, director and executive grades (1.1 points), not for all employees",
+  "UCG.MI": "Discloses gaps per country (Italy 20.0%, Germany 29.2%), not a Group figure"
  },
- "todo": [
-  "AD.AS",
-  "ALV.DE",
-  "ABI.BR",
-  "ARGX.BR",
-  "BAS.DE",
-  "BAYN.DE",
-  "BBVA.MC",
-  "SAN.MC",
-  "BMW.DE",
-  "BN.PA",
-  "DB1.DE",
-  "DHL.DE",
-  "DTE.DE",
-  "ENEL.MI",
-  "EL.PA",
-  "IBE.MC",
-  "ITX.MC",
-  "IFX.DE",
-  "ISP.MI",
-  "MC.PA",
-  "MBG.DE",
-  "MUV2.DE",
-  "NDA-FI.HE",
-  "PRX.AS",
-  "SAP.DE",
-  "SIE.DE",
-  "UCG.MI",
-  "VOW.DE",
-  "DBK.DE",
-  "RHM.DE",
-  "ENR.DE"
- ]
+ "unresolved": {
+  "ALV.DE": "Report blocks automated access",
+  "SAP.DE": "Report blocks automated access",
+  "IBE.MC": "Report blocks automated access",
+  "MBG.DE": "Report blocks automated access",
+  "ABI.BR": "FY2025 sustainability statement not located",
+  "ARGX.BR": "FY2025 sustainability statement not located",
+  "BBVA.MC": "FY2025 sustainability statement not located",
+  "SAN.MC": "FY2025 sustainability statement not located",
+  "ENEL.MI": "FY2025 sustainability statement not located",
+  "RHM.DE": "FY2025 annual report not located",
+  "PRX.AS": "Financial year ends in March; FY2026 report not yet in the filings repository"
+ }
 }

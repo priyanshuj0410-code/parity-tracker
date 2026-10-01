@@ -5,7 +5,7 @@ import type { Company, CompanyYear, IndexData } from '../types'
 export const companies = companiesJson as unknown as Record<string, Company>
 export const indexes = indexesJson as unknown as Record<string, IndexData>
 
-export const INDEX_ORDER = ['nifty50', 'sensex', 'niftynext50', 'ftse100', 'asx200', 'nikkei225']
+export const INDEX_ORDER = ['nifty50', 'sensex', 'niftynext50', 'ftse100', 'asx200', 'nikkei225', 'eurostoxx50']
 export const SOURCE_DATE = '1 October 2026'
 
 export interface Market {
@@ -73,6 +73,18 @@ export const MARKET: Record<string, Market> = {
     coverage: (n) => `${n} companies in the government database`,
     parity: 1,
   },
+  EU: {
+    code: 'EU', name: 'European Union',
+    years: ['2024', '2025'], latest: '2025', prev: '2024',
+    label: (y) => y,
+    wageLabel: "Women's average pay as a share of men's (unadjusted)",
+    workforceLabel: 'Women in workforce',
+    headlineLabel: "Women's average pay as a share of men's, average company",
+    intro: 'EU companies report an unadjusted gender pay gap under CSRD (ESRS S1-16), not pay totals, so parity here is 100% and each company counts equally. Figures are read from each company\'s own sustainability statement.',
+    payPhrase: (r) => `€${Math.round(r * 100)} for every €100 men earn`,
+    coverage: (n) => `${n} companies with a verified CSRD figure`,
+    parity: 1,
+  },
 }
 
 export const marketOf = (c: Company): Market => MARKET[c.country] ?? MARKET.IN
@@ -82,6 +94,7 @@ export function workforce(c: Company, y?: CompanyYear): number | null {
   if (!y) return null
   if (c.country === 'IN') return y.fPerm
   if (c.country === 'JP') return y.managerShare ?? null
+  if (c.country === 'EU') return null
   return y.fAll
 }
 
@@ -104,7 +117,7 @@ export function boardShare(y?: CompanyYear): number | null {
 
 export function payRatio(c: Company, y?: CompanyYear): number | null {
   if (!y) return null
-  if (c.country === 'JP') return y.w
+  if (c.country === 'JP' || c.country === 'EU') return y.w
   if (c.country !== 'IN') return y.gapMean == null ? null : 1 - y.gapMean
   if (y.w == null || y.fPerm == null) return null
   if (y.fPerm <= 0 || y.fPerm >= 1 || y.w <= 0 || y.w >= 1) return null
