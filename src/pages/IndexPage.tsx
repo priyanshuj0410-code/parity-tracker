@@ -16,7 +16,13 @@ export function IndexPage({ id }: { id: string }) {
   const ix = indexes[id]
   if (!ix) return <NotFound />
   const m = indexMarket(ix)
-  const uk = ix.country === 'GB'
+  const uk = ix.country !== 'IN'
+  const weightNote = ix.country === 'GB' ? 'each company counts equally' : ix.country === 'AU' ? 'weighted by Australian payroll' : 'weighted by free-float market cap'
+  const TREND_NOTE: Record<string, string> = {
+    IN: 'Each company keeps a fixed payroll weight across years, so the line moves when women\'s share of wages moves, not when payroll mix shifts.',
+    GB: 'Each company counts equally. Like-for-like changes leave out companies whose UK reporting employers or size bands changed between the two years. Fewer reports exist for 2019 because enforcement was suspended during the pandemic.',
+    AU: 'Two years so far. The earlier release is not archived, so FY24 values hold each company\'s workforce share at its FY25 level and the change reflects pay gaps only.',
+  }
   const LATEST = m.latest
   const PREV = m.prev
   const fy = m.label
@@ -29,8 +35,8 @@ export function IndexPage({ id }: { id: string }) {
     .filter((m): m is { r: Row; d: number } => m.d != null)
   const risers = [...movers].sort((a, b) => b.d - a.d).slice(0, 5).filter((m) => m.d > 0)
   const fallers = [...movers].sort((a, b) => a.d - b.d).slice(0, 5).filter((m) => m.d < 0)
-  const noStaff = rows.filter((r) => r.co.ukStatus)
-  const noData = rows.filter((r) => !r.co.ukStatus && r.co.years[LATEST]?.w == null)
+  const noStaff = rows.filter((r) => r.co.noDataReason)
+  const noData = rows.filter((r) => !r.co.noDataReason && r.co.years[LATEST]?.w == null)
 
   const columns: Column<Row>[] = [
     { key: 'name', label: 'Company', render: (r) => <a href={href('company', r.symbol)}>{r.co.name}<span className="sub">{r.co.industry}</span></a>, sort: (r) => r.co.name },
@@ -41,7 +47,7 @@ export function IndexPage({ id }: { id: string }) {
     ...(uk
       ? [
           { key: 'top', label: 'Women in top pay quarter', right: true, render: (r: Row) => pct(r.co.years[LATEST]?.topQuartile), sort: (r: Row) => r.co.years[LATEST]?.topQuartile ?? null },
-          { key: 'gap', label: 'Mean hourly gap', right: true, render: (r: Row) => pct(r.co.years[LATEST]?.gapMean), sort: (r: Row) => r.co.years[LATEST]?.gapMean ?? null },
+          { key: 'gap', label: 'Mean pay gap', right: true, render: (r: Row) => pct(r.co.years[LATEST]?.gapMean), sort: (r: Row) => r.co.years[LATEST]?.gapMean ?? null },
         ]
       : [{ key: 'b', label: 'Women on board', right: true, render: (r: Row) => { const yy = r.co.years[LATEST]; return yy?.board ? `${yy.boardWomen} of ${yy.board}` : 'n/a' }, sort: (r: Row) => boardShare(r.co.years[LATEST]) }]),
   ]
@@ -51,27 +57,27 @@ export function IndexPage({ id }: { id: string }) {
       <section>
         <div className="meta"><a href={href('')}>Indexes</a> / {ix.market}</div>
         <h1>{ix.name}</h1>
-        <p className="meta">{ix.exchange} · {ix.constituents.length + ix.missing.length} companies · {uk ? `members as of ${ix.weightsAsOf}, each company counts equally` : `weights as of ${ix.weightsAsOf}`}</p>
+        <p className="meta">{ix.exchange} · {ix.constituents.length + ix.missing.length} companies · members as of {ix.weightsAsOf}, {weightNote}</p>
         <div className="grid g2" style={{ marginTop: 20 }}>
           <div className="card">
             <div className="tile-label">{m.headlineLabel} · {fy(LATEST)}</div>
             <div className="tile-value hero">{pct(y.headline)}</div>
             <div className="tile-context"><Change value={ch ? ch.change : null} /> <span className="muted">like for like across {ch?.companies ?? 0} companies since {fy(PREV)}</span></div>
             <ParityTrack value={y.headline} />
-            <div className="tile-context muted">{uk ? `${y.companiesCovered} companies with UK gender pay gap reports` : `${y.companiesCovered} companies covered · ${pct(y.reportedPayrollShare, 0)} of payroll from reported values`}</div>
+            <div className="tile-context muted">{uk ? m.coverage(y.companiesCovered) : `${m.coverage(y.companiesCovered)} · ${pct(y.reportedPayrollShare, 0)} of payroll from reported values`}</div>
           </div>
           {uk ? (
             <div className="card">
-              <div className="tile-label">UK pay structure, average company · {fy(LATEST)}</div>
+              <div className="tile-label">Pay structure · {fy(LATEST)}</div>
               <table>
-                <caption className="sr-only">UK pay structure</caption>
+                <caption className="sr-only">Pay structure</caption>
                 <tbody>
-                  <tr><td>Women in the UK workforce</td><td className="r"><strong>{pct(y.workforce)}</strong></td></tr>
+                  <tr><td>{m.workforceLabel}</td><td className="r"><strong>{pct(y.workforce)}</strong></td></tr>
                   <tr><td>Women in the top pay quarter</td><td className="r"><strong>{pct(y.topQuartile)}</strong></td></tr>
-                  <tr><td>Mean hourly pay gap</td><td className="r"><strong>{pct(y.gapMean)}</strong></td></tr>
+                  <tr><td>Mean pay gap</td><td className="r"><strong>{pct(y.gapMean)}</strong></td></tr>
                 </tbody>
               </table>
-              {y.gapMean != null && <p className="small" style={{ marginTop: 12 }}>Women earn about <strong>{Math.round((1 - y.gapMean) * 100)}p for every £1</strong> men earn per hour, and hold fewer of the best-paid jobs than their share of the workforce.</p>}
+              {y.gapMean != null && <p className="small" style={{ marginTop: 12 }}>Women earn about <strong>{m.payPhrase(1 - y.gapMean)}</strong>, and hold fewer of the best-paid jobs than their share of the workforce.</p>}
             </div>
           ) : (
           <div className="card">
@@ -112,7 +118,7 @@ export function IndexPage({ id }: { id: string }) {
         <div className="table-wrap" style={{ marginTop: 16 }}>
           <table>
             <caption className="sr-only">Trend table</caption>
-            <thead><tr><th>Year</th><th className="r">{uk ? "Women's share of pay" : "Women's share of payroll"}</th><th className="r">Companies covered</th><th className="r">Like-for-like change</th></tr></thead>
+            <thead><tr><th>Year</th><th className="r">{ix.country === 'GB' ? "Women's share of pay" : "Women's share of payroll"}</th><th className="r">Companies covered</th><th className="r">Like-for-like change</th></tr></thead>
             <tbody>
               {xs.map((k, i) => {
                 const yy = i > 0 ? ix.yoy[`${xs[i - 1]}>${k}`] : undefined
@@ -128,9 +134,7 @@ export function IndexPage({ id }: { id: string }) {
             </tbody>
           </table>
         </div>
-        <p className="small muted" style={{ marginTop: 10 }}>{uk
-          ? 'Each company counts equally. Like-for-like changes leave out companies whose UK reporting employers or size bands changed between the two years. Fewer reports exist for 2019 because enforcement was suspended during the pandemic.'
-          : 'Each company keeps a fixed payroll weight across years, so the line moves when women\'s share of wages moves, not when payroll mix shifts.'}</p>
+        <p className="small muted" style={{ marginTop: 10 }}>{TREND_NOTE[ix.country]}</p>
       </section>
 
       <section>
@@ -171,7 +175,7 @@ export function IndexPage({ id }: { id: string }) {
           <p className="small" style={{ marginTop: 12 }}>
             <strong>Gaps:</strong>{' '}
             {ix.missing.length > 0 && <>no market data for {ix.missing.join(', ')}. </>}
-            {noStaff.length > 0 && <>No UK gender pay gap report for {noStaff.map((r) => r.co.name).join(', ')} (investment trusts without staff, or no UK employer with 250+ staff). </>}
+            {noStaff.length > 0 && <>No {ix.country === 'GB' ? 'UK gender pay gap' : 'WGEA'} report for {noStaff.map((r) => r.co.name).join(', ')} (funds and trusts without staff, or no local employer above the reporting threshold). </>}
             {noData.length > 0 && <>No usable {fy(LATEST)} data for {noData.map((r) => r.co.name).join(', ')}.</>}
           </p>
         )}

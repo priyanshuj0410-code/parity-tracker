@@ -6,7 +6,7 @@ import { pct } from '../lib/format'
 import { href } from '../lib/router'
 
 const STATUS: Record<MarketStatus, string> = { live: 'Live', planned: 'Planned', limited: 'Limited data' }
-const PACE_INDEX: Record<string, string> = { IN: 'nifty50', GB: 'ftse100' }
+const PACE_INDEX: Record<string, string> = { IN: 'nifty50', GB: 'ftse100', AU: 'asx200' }
 
 function Pace({ m }: { m: Market }) {
   const changes = Object.values(companies)
@@ -44,9 +44,7 @@ export function Home() {
       {Object.values(MARKET).map((m) => (
         <section key={m.code}>
           <h2>{m.name}</h2>
-          <p className="small muted">{m.code === 'GB'
-            ? 'UK gender pay gap reports cover UK staff only and give hourly pay, so each company counts equally and the measure differs from India\'s.'
-            : 'Company BRSR filings give total wages paid to women, so the index figure weights each company by its payroll.'}</p>
+          <p className="small muted">{m.intro}</p>
           <div className="grid g3">
             {INDEX_ORDER.filter((id) => indexes[id].country === m.code).map((id) => {
               const ix = indexes[id]

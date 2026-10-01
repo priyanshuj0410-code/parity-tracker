@@ -10,7 +10,8 @@ export function CompanyPage({ symbol }: { symbol: string }) {
   const c = companies[symbol]
   if (!c) return <NotFound />
   const m = marketOf(c)
-  const uk = c.country === 'GB'
+  const uk = c.country !== 'IN'
+  const gb = c.country === 'GB'
   const YEARS = m.years
   const fy = m.label
   const desc = [...YEARS].reverse()
@@ -44,12 +45,12 @@ export function CompanyPage({ symbol }: { symbol: string }) {
       <section>
         <div className="meta"><a href={href('companies')}>Companies</a> / {c.industry}</div>
         <h1>{c.name}</h1>
-        <p className="meta">{m.name} · {c.exchange}: {c.symbol}{c.marketCapCr != null && <> · market cap {crore(c.marketCapCr)}</>}</p>
+        <p className="meta">{m.name} · {c.exchange}: {c.symbol.replace(/^ASX-/, '')}{c.marketCapCr != null && <> · market cap {crore(c.marketCapCr)}</>}</p>
         <div>{c.indexes.map((id) => <a key={id} className="chip" href={href('index', id)}>{indexName(id)}</a>)}</div>
       </section>
 
       {!hasData ? (
-        <section><p>{c.ukStatus ?? 'No BRSR filing is available for this company yet, so there is nothing to show. Recent listings file their first report after their first full financial year.'}</p></section>
+        <section><p>{c.noDataReason ?? 'No BRSR filing is available for this company yet, so there is nothing to show. Recent listings file their first report after their first full financial year.'}</p></section>
       ) : (
         <>
           <section>
@@ -58,21 +59,21 @@ export function CompanyPage({ symbol }: { symbol: string }) {
               <div className="card">
                 <div className="tile-label">{m.wageLabel}</div>
                 <div className="tile-value">{pct(y?.w)}</div>
-                <div className="tile-context"><DataBadge year={y} /> <Change value={latest ? yoyChange(c, latest, prevKey) : null} /></div>
+                <div className="tile-context"><DataBadge year={y} /> <Change hideMissing value={latest ? yoyChange(c, latest, prevKey) : null} /></div>
               </div>
               <div className="card">
                 <div className="tile-label">{m.workforceLabel}</div>
                 <div className="tile-value">{pct(workforce(c, y))}</div>
-                <div className="tile-context"><Change value={shareChange(workforce(c, p), workforce(c, y))} /></div>
+                <div className="tile-context"><Change hideMissing value={shareChange(workforce(c, p), workforce(c, y))} /></div>
                 {y?.permHeadcount ? <div className="tile-context muted">{y.permHeadcount.toLocaleString('en-IN')} permanent staff</div> : null}
-                {uk && y?.entityCount ? <div className="tile-context muted">across {y.entityCount} UK {y.entityCount === 1 ? 'employer' : 'employers'}</div> : null}
+                {gb && y?.entityCount ? <div className="tile-context muted">across {y.entityCount} UK {y.entityCount === 1 ? 'employer' : 'employers'}</div> : null}
               </div>
               {uk ? (
                 <div className="card">
                   <div className="tile-label">Women in the top pay quarter</div>
                   <div className="tile-value">{pct(y?.topQuartile)}</div>
-                  <div className="tile-context"><Change value={shareChange(p?.topQuartile, y?.topQuartile)} /></div>
-                  <div className="tile-context muted">The best-paid quarter of UK staff.</div>
+                  <div className="tile-context"><Change hideMissing value={shareChange(p?.topQuartile, y?.topQuartile)} /></div>
+                  <div className="tile-context muted">The best-paid quarter of {gb ? 'UK' : 'Australian'} staff.</div>
                 </div>
               ) : (
                 <div className="card">
@@ -85,10 +86,12 @@ export function CompanyPage({ symbol }: { symbol: string }) {
               )}
               <div className="card">
                 <div className="tile-label">Women's average pay</div>
-                <div className="tile-value">{ratio == null ? 'n/a' : uk ? `${Math.round(ratio * 100)}p` : `₹${Math.round(ratio * 100)}`}</div>
-                <div className="tile-context muted">{uk
+                <div className="tile-value">{ratio == null ? 'n/a' : gb ? `${Math.round(ratio * 100)}p` : uk ? `${Math.round(ratio * 100)}c` : `₹${Math.round(ratio * 100)}`}</div>
+                <div className="tile-context muted">{gb
                   ? `for every £1 men earn per hour (mean). Median hourly gap: ${pct(y?.gapMedian)}.`
-                  : 'for every ₹100 paid to men, on average. Approximate: wage share compared with share of permanent staff.'}</div>
+                  : uk
+                    ? `for every $1 men earn, full-time equivalent (mean).${p?.gapMean != null && y?.gapMean != null ? ` The mean gap was ${pct(p.gapMean)} in ${fy(prevKey ?? '')}.` : ''}`
+                    : 'for every ₹100 paid to men, on average. Approximate: wage share compared with share of permanent staff.'}</div>
               </div>
             </div>
           </section>
@@ -98,9 +101,11 @@ export function CompanyPage({ symbol }: { symbol: string }) {
             <LineChart ariaLabel={`${c.name}: ${series.map((s) => s.label.toLowerCase()).join(', ')}, by year`}
               xs={YEARS} xLabel={fy} fmt={(v) => pct(v, v === Math.round(v * 10) / 10 ? 0 : 1)} yMax={yMax}
               reference={{ y: 0.5, label: 'Parity 50%' }} series={series} />
-            <p className="small muted" style={{ marginTop: 8 }}>{uk
+            <p className="small muted" style={{ marginTop: 8 }}>{gb
               ? 'Pay share is derived from each UK employer\'s mean hourly pay gap and the share of women in its workforce, combined across the group\'s UK employers by size band.'
-              : `Hollow points are estimates from median pay, not reported wage totals, and are not joined to the line. Wage data starts in ${fy('2022-23')}, when the field entered the filing format.`}</p>
+              : uk
+                ? `Pay share is derived from the group's mean full-time-equivalent pay gap and its share of women. ${fy(m.prev)} uses the ${fy(m.latest)} workforce share because the earlier release is not archived, so it is shown hollow.`
+                : `Hollow points are estimates from median pay, not reported wage totals, and are not joined to the line. Wage data starts in ${fy('2022-23')}, when the field entered the filing format.`}</p>
             {uk ? (
               <div className="table-wrap" style={{ marginTop: 16 }}>
                 <table>
@@ -155,15 +160,17 @@ export function CompanyPage({ symbol }: { symbol: string }) {
             <section>
               <h2>About this data</h2>
               <ul className="tight">
-                <li><strong>Source:</strong> the UK government's gender pay gap service. Employers with 250 or more UK staff report each year, using a snapshot of pay in April.</li>
+                <li><strong>Source:</strong> {gb
+                  ? 'the UK government\'s gender pay gap service. Employers with 250 or more UK staff report each year, using a snapshot of pay in April.'
+                  : <>the Workplace Gender Equality Agency's employer gender pay gaps, {fy(m.latest)} release. Employers with 100 or more Australian staff report, and corporate groups report combined results. <a href="https://www.wgea.gov.au/data-statistics/data-explorer" target="_blank" rel="noreferrer">WGEA Data Explorer</a></>}</li>
                 {YEARS.filter((k) => c.years[k]?.basisChange).map((k) => <li key={k}><strong>{fy(k)}:</strong> the group's reporting employers or their size bands changed from the year before, so this year is left out of like-for-like comparisons.</li>)}
               </ul>
               {c.entities && c.entities.length > 0 && (
                 <>
-                  <h3 style={{ marginTop: 20 }}>UK employers counted ({c.entitiesYear})</h3>
+                  <h3 style={{ marginTop: 20 }}>{gb ? 'UK employers counted' : 'WGEA reporting entity'} ({gb ? c.entitiesYear : fy(c.entitiesYear ?? m.latest)})</h3>
                   <ul className="tight">
                     {c.entities.map((e) => (
-                      <li key={e.name}>{e.name} ({e.size} staff){e.link && /^https?:\/\//.test(e.link) ? <> · <a href={e.link} target="_blank" rel="noreferrer">employer's report</a></> : null}</li>
+                      <li key={e.name}>{e.name} ({gb ? `${e.size} staff` : e.size}){gb && e.link && /^https?:\/\//.test(e.link) ? <> · <a href={e.link} target="_blank" rel="noreferrer">employer's report</a></> : null}</li>
                     ))}
                   </ul>
                   <p className="small muted">Employers are matched to the listed group by name. If one is missing or wrongly included, tell The Equal Lens team.</p>

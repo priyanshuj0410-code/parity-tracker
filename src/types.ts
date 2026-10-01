@@ -40,7 +40,7 @@ export interface Company {
   exchange: string
   country: string
   indexes: string[]
-  ukStatus?: string | null
+  noDataReason?: string | null
   entities?: Entity[]
   entitiesYear?: string
   marketCapCr: number | null

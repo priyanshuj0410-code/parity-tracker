@@ -10,7 +10,7 @@ import type { Company } from '../types'
 const latest = (c: Company) => c.years[marketOf(c).latest]
 
 const columns: Column<Company>[] = [
-  { key: 'name', label: 'Company', render: (c) => <a href={href('company', c.symbol)}>{c.name}<span className="sub">{c.symbol}</span></a>, sort: (c) => c.name },
+  { key: 'name', label: 'Company', render: (c) => <a href={href('company', c.symbol)}>{c.name}<span className="sub">{c.symbol.replace(/^ASX-/, '')}</span></a>, sort: (c) => c.name },
   { key: 'market', label: 'Market', render: (c) => <>{marketOf(c).name}<span className="sub">{marketOf(c).label(marketOf(c).latest)}</span></>, sort: (c) => marketOf(c).name },
   { key: 'sector', label: 'Sector', render: (c) => c.industry, sort: (c) => c.industry },
   { key: 'w', label: "Women's share of pay", right: true, render: (c) => <>{pct(latest(c)?.w)} <DataBadge year={latest(c)} /></>, sort: (c) => latest(c)?.w ?? null },
@@ -32,7 +32,7 @@ export function Companies() {
     <section>
       <h1>Companies</h1>
       <p className="lead">Every company in the indexes we track, with its own trajectory. Sort by any column.</p>
-      <p className="small muted">India figures are shares of total wages from BRSR filings. UK figures are shares of hourly pay for UK staff from gender pay gap reports. Compare companies within a market, not across them.</p>
+      <p className="small muted">India figures are shares of total wages from BRSR filings. UK figures are shares of hourly pay for UK staff from gender pay gap reports. Australian figures are shares of full-time-equivalent pay for Australian staff from WGEA reports. Compare companies within a market, not across them.</p>
       <div className="controls">
         <input type="search" placeholder="Search by name, symbol or sector" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Search companies" />
         <select value={ix} onChange={(e) => setIx(e.target.value)} aria-label="Filter by index">

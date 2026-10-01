@@ -13,7 +13,7 @@ export function Method() {
   const basis = all.reduce((n, c) => n + IN.years.filter((k) => c.years[k]?.basisChange).length, 0)
   const uk = Object.values(companies).filter((c) => c.country === 'GB')
   const ukCovered = uk.filter((c) => c.years[GB.latest]).length
-  const ukNone = uk.filter((c) => c.ukStatus).length
+  const ukNone = uk.filter((c) => c.noDataReason).length
 
   return (
     <>
@@ -25,7 +25,8 @@ export function Method() {
       <section>
         <h2>Limitations</h2>
         <ul className="tight">
-          <li><strong>Two markets so far, measured differently.</strong> India's figures are shares of total wages; the UK's are shares of hourly pay for UK staff. Compare companies within a market, not across. Japan, Australia and the EU require gender pay disclosure and are next. The US requires none, so US numbers will be limited to board seats.</li>
+          <li><strong>Three markets so far, measured differently.</strong> India's figures are shares of total wages; the UK's are shares of hourly pay for UK staff; Australia's are shares of full-time-equivalent pay for Australian staff. Compare companies within a market, not across. Japan and the EU require gender pay disclosure and are next. The US requires none, so US numbers will be limited to board seats.</li>
+          <li><strong>Australia has one year of workforce data.</strong> The regulator's spreadsheet is replaced each year and earlier versions are not archived, so FY24 values reuse each company's FY25 workforce share and show only the pay gap's movement. ASX 200 membership is as of April 2026, matched to WGEA groups by name; New Zealand, offshore and fund members have no Australian report.</li>
           <li><strong>UK figures cover UK staff only.</strong> A global group like HSBC or Unilever is measured on its UK employers, not its worldwide workforce. {ukNone} FTSE 100 members have no UK report: investment trusts with no staff, or groups with no UK employer of 250 or more people. {ukCovered} have data for {GB.label(GB.latest)}.</li>
           <li><strong>UK groups are matched to their employers by name.</strong> Reports are filed by legal employers, not listed groups, so we match subsidiaries by name and list every match on the company page. Some subsidiaries with unrelated names will be missed.</li>
           <li><strong>UK pay is hourly.</strong> Women do more part-time work, so their share of annual pay is lower than their share of hourly pay. Size bands are coarse, so employers are weighted by band midpoints and the FTSE 100 figure counts each company equally.</li>
@@ -62,6 +63,7 @@ women's share of pay  = f × (1 − mean gap) ÷ (f × (1 − mean gap) + (1 −
           <li><strong>Company data:</strong> Business Responsibility and Sustainability Reports (BRSR), which SEBI requires from India's top 1,000 listed companies. We read the machine-readable XBRL versions published by NSE, {fy(IN.years[0])} to {fy(LATEST)}. Women's share of wages is a BRSR Core field and is assured for the largest companies.</li>
           <li><strong>Market data:</strong> NSE market capitalisation on 30 September 2026 and the latest shareholding patterns.</li>
           <li><strong>UK company data:</strong> the government's gender pay gap service, every reporting year from {GB.years[0]} to {GB.label(GB.latest)}. FTSE 100 membership is as of 1 October 2026.</li>
+          <li><strong>Australian company data:</strong> the Workplace Gender Equality Agency's employer gender pay gaps spreadsheet (2024-25 results, with 2023-24 gaps). Corporate-group results are used where a group reports, with exact headcounts and average remuneration to weight the ASX 200 figure.</li>
           <li><strong>Collected:</strong> {SOURCE_DATE}.</li>
         </ul>
       </section>

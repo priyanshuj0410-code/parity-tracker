@@ -32,7 +32,7 @@ export const MARKETS: Market[] = [
   },
   {
     market: 'Australia',
-    status: 'planned',
+    status: 'live',
     source: 'Workplace Gender Equality Agency',
     required: 'Employer gender pay gaps and pay-quartile composition. Employers with 100+ staff.',
     indexes: 'S&P/ASX 200',
