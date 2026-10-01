@@ -1,0 +1,12 @@
+# module-map — file→module ownership for the pre-edit lock hook (scripts/hooks/guard-edit.sh).
+# Format: <module> <glob> [glob ...]   — whitespace-separated; lines starting with # are ignored.
+# A glob ending in "/" matches by path prefix; any other glob matches an exact repo-relative path.
+# Each module is a lane in the board and a mutex: one chat (employee) owns it at a time.
+# Mirrors the module table in CLAUDE.md > "Working in parallel" — keep both in sync.
+#
+# Add a row per module as the project grows, e.g.:
+#   web        src/components/ src/lib/ src/app/
+#   api        server/ src/api/
+#   database   migrations/
+#   docs       wiki/
+wiki wiki/
