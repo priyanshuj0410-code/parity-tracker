@@ -1,5 +1,6 @@
 import { Change } from '../components/Change'
 import { ParityTrack } from '../components/ParityTrack'
+import { Sparkline } from '../components/Sparkline'
 import { MARKETS, type MarketStatus } from '../data/markets'
 import { INDEX_ORDER, MARKET, companies, indexes, yoyChange, type Market } from '../lib/data'
 import { pct } from '../lib/format'
@@ -53,7 +54,10 @@ export function Home() {
               return (
                 <a key={id} className="card" href={href('index', id)}>
                   <div className="tile-label">{ix.name} · {m.label(m.latest)}</div>
-                  <div className="tile-value">{pct(y.headline)}</div>
+                  <div className="card-top">
+                    <div className="tile-value">{pct(y.headline)}</div>
+                    <Sparkline values={m.years.map((k) => ix.years[k]?.headline ?? null)} width={110} height={34} label={`${ix.name} trend`} />
+                  </div>
                   <div className="tile-context">{m.prev
                     ? <><Change value={ch ? ch.change : null} /> <span className="muted">like for like since {m.label(m.prev)}</span></>
                     : <span className="muted">First snapshot</span>}</div>

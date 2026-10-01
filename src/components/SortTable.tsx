@@ -14,9 +14,11 @@ interface Props<T> {
   rowKey: (row: T) => string
   initial: { key: string; dir: 1 | -1 }
   caption: string
+  rowHref?: (row: T) => string
+  scroll?: boolean
 }
 
-export function SortTable<T>({ columns, rows, rowKey, initial, caption }: Props<T>) {
+export function SortTable<T>({ columns, rows, rowKey, initial, caption, rowHref, scroll }: Props<T>) {
   const [sort, setSort] = useState(initial)
   const sorted = useMemo(() => {
     const col = columns.find((c) => c.key === sort.key)
@@ -33,7 +35,7 @@ export function SortTable<T>({ columns, rows, rowKey, initial, caption }: Props<
   }, [rows, columns, sort])
 
   return (
-    <div className="table-wrap">
+    <div className={scroll ? 'table-wrap scroll' : 'table-wrap'}>
       <table>
         <caption className="sr-only">{caption}</caption>
         <thead>
@@ -55,7 +57,8 @@ export function SortTable<T>({ columns, rows, rowKey, initial, caption }: Props<
         </thead>
         <tbody>
           {sorted.map((r) => (
-            <tr key={rowKey(r)}>
+            <tr key={rowKey(r)} className={rowHref ? 'link' : undefined}
+              onClick={rowHref ? (e) => { if (!(e.target as HTMLElement).closest('a')) window.location.hash = rowHref(r) } : undefined}>
               {columns.map((c) => <td key={c.key} className={c.right ? 'r' : undefined}>{c.render(r)}</td>)}
             </tr>
           ))}

@@ -6,6 +6,7 @@ updated: 2026-10-01
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/4a6b2d55-5d5f-4713-848c-561e3e343184
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/3ddee1dc-99b4-4f03-83c8-55cdf3f78b30
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/5a065a68-b7a5-4d83-a44b-72136f487dad
 ---
 
 # Parity Tracker design system
@@ -43,19 +44,43 @@ Source: The Equal Lens brand package (`equal-lens` skill, `references/brand.md` 
 - **Nunito Sans** (400/600/700): body copy and table cells.
 - Hero numbers use Poppins 600 with proportional figures. Tables use tabular figures.
 - Headings are sentence case. Two-tone headlines use ink for the first half and `.accent` (violet) for the second.
+- Headings use Poppins 600, never 700, with −0.01em tracking: h1 26–36px, h2 20px. This matches the restrained weights of investing apps (audit 2026-10).
 
 ## 4. Layout
 - Max content width 1120px, 16px side gutter on phones, 24px from 720px up.
 - Cards: white, 1px `--line` border, 12px radius, no shadow.
 - Sections are separated by a 1px `--mist` rule and 40px spacing.
+- **Header:** white and sticky. Brand, then main nav (active item gets a 2px violet underline), then global search on the right. Below 720px, search goes full width and the nav takes its own row.
+- **Index strip:** a white bar under the header on every page, scrolling horizontally. Each item shows name, headline value and like-for-like change. The current index is highlighted with a tint.
+- **Card grids** use `auto-fill`, so a market with one index keeps a normal-width card.
 
 ## 5. Components
 - **Stat tile:** label (Poppins 500, 13px, `--soft`), value (Poppins 600, 32–44px, `--ink`), one line of context. Never a gauge or ring.
 - **Change indicator:** arrow glyph plus signed percentage points (pp), in `--good` or `--bad`. Never colour alone. Flat (|change| < 0.05 pp) shows "no change" in `--muted`.
 - **Data badge:** `Reported`, `Rescaled`, `Estimated` (sun-deep text on tint), `Basis changed`, `Missing`. Every number that is not cleanly reported carries one.
 - **Status chip** (coverage map): `Live`, `Planned`, `Limited data`, with text labels, not colour alone.
-- **Tables:** sortable headers (`aria-sort`), tabular figures, `--tint` header row, hairline row rules, a sticky first column on small screens.
-- **Index card:** name, headline value, change since last year, sparkline, coverage line.
+- **Tables:**
+  - sortable headers (`aria-sort`), tabular figures, `--tint` header row, hairline row rules, a sticky first column on small screens
+  - long lists sit in a 72vh scroll area with a sticky header
+  - the whole row opens the company, with the name link kept for keyboard and screen-reader users
+- **Index card:** name, headline value, sparkline (right of the value), change since last year, parity track, coverage line.
+- **Global search:**
+  - combobox over every company and index, at most 8 results, monogram plus title plus "symbol · market"
+  - opens with ⌘K, Ctrl+K or "/"; arrow keys, Enter and Esc work
+- **Monogram:** 30px circle (44px in page titles) with two initials, skipping words like Ltd and Group. Tone is chosen by hashing the symbol across four brand tints:
+  - `--tint` with violet
+  - `#E6F1F9` with sky deep
+  - `#FBE9F0` with rose deep
+  - `#E5F3EE` with teal deep
+
+  Used instead of company logos, which are trademarks.
+- **Sparkline:**
+  - 1.75px line with an end dot, no axes, domain fitted to the data with 15% padding
+  - coloured by direction from first to last point (`--good`, `--bad`, `--muted`)
+  - always paired with an explicit number or table, never on its own
+  - only reported values are plotted
+- **Pill filters:** 999px radius, white with `--line` border; selected is violet fill with white text and `aria-pressed`. Used for index filters instead of selects.
+- **Cross-market rule:** never sort or rank across markets by the headline measure. The directory opens on one index, "All indexes" sorts by name, and the headline column states its unit per row.
 
 ## 6. Charts
 Validated with the dataviz `validate_palette.js` against `#FAF8F4`. All checks pass.

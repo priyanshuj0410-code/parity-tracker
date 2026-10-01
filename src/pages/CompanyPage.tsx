@@ -1,6 +1,7 @@
 import { DataBadge } from '../components/Badge'
 import { Change } from '../components/Change'
 import { EuDetail } from '../components/EuDetail'
+import { Monogram } from '../components/Monogram'
 import { JapanDetail } from '../components/JapanDetail'
 import { LineChart, type Series } from '../components/LineChart'
 import { boardShare, companies, indexName, marketOf, payRatio, shareChange, workforce, yoyChange } from '../lib/data'
@@ -47,7 +48,7 @@ export function CompanyPage({ symbol }: { symbol: string }) {
     <>
       <section>
         <div className="meta"><a href={href('companies')}>Companies</a> / {c.industry}</div>
-        <h1>{c.name}</h1>
+        <div className="title-row"><Monogram name={c.name} seed={c.symbol} /><h1>{c.name}</h1></div>
         <p className="meta">{m.name} · {c.exchange}: {c.symbol.replace(/^(ASX|TSE|EU)-/, '')}{c.marketCapCr != null && <> · market cap {crore(c.marketCapCr)}</>}</p>
         <div>{c.indexes.map((id) => <a key={id} className="chip" href={href('index', id)}>{indexName(id)}</a>)}</div>
       </section>
