@@ -1,13 +1,16 @@
 import { DataBadge } from '../components/Badge'
 import { Change } from '../components/Change'
+import { ChartFrame } from '../components/ChartFrame'
 import { LineChart } from '../components/LineChart'
-import { Monogram } from '../components/Monogram'
+import { Logo } from '../components/Logo'
+import { Meter } from '../components/Meter'
 import { Sparkline } from '../components/Sparkline'
 import { ParityTrack } from '../components/ParityTrack'
 import { SectorBars } from '../components/SectorBars'
 import { SortTable, type Column } from '../components/SortTable'
+import { indexPoints, summarise } from '../lib/compare'
 import { boardShare, companies, indexMarket, indexes, workforce, yoyChange } from '../lib/data'
-import { inr, pct } from '../lib/format'
+import { inr, pct, pctTick } from '../lib/format'
 import { href } from '../lib/router'
 import type { Company } from '../types'
 import { NotFound } from './NotFound'
@@ -45,10 +48,10 @@ export function IndexPage({ id }: { id: string }) {
   const noData = rows.filter((r) => !r.co.noDataReason && r.co.years[LATEST]?.w == null)
 
   const columns: Column<Row>[] = [
-    { key: 'name', label: 'Company', render: (r) => <span className="name-cell"><Monogram name={r.co.name} seed={r.symbol} /><a href={href('company', r.symbol)}>{r.co.name}<span className="sub">{r.co.industry}</span></a></span>, sort: (r) => r.co.name },
+    { key: 'name', label: 'Company', render: (r) => <span className="name-cell"><Logo symbol={r.symbol} name={r.co.name} /><a href={href('company', r.symbol)}>{r.co.name}<span className="sub">{r.co.industry}</span></a></span>, sort: (r) => r.co.name, csv: (r) => r.co.name },
     ...(xs.length > 1 ? [{ key: 'trend', label: 'Trend', render: (r: Row) => <Sparkline values={xs.map((k) => (r.co.years[k]?.wKind === 'reported' ? r.co.years[k].w : null))} label={`${r.co.name} trend`} /> }] : []),
     ...(uk ? [] : [{ key: 'weight', label: 'Weight', right: true, render: (r: Row) => pct(r.weight), sort: (r: Row) => r.weight }]),
-    { key: 'w', label: `${m.wageLabel} ${fy(LATEST)}`, right: true, render: (r) => <>{pct(r.co.years[LATEST]?.w)} <DataBadge year={r.co.years[LATEST]} /></>, sort: (r) => r.co.years[LATEST]?.w ?? null },
+    { key: 'w', label: `${m.wageLabel} ${fy(LATEST)}`, render: (r) => <span className="nowrap"><Meter value={r.co.years[LATEST]?.w} parity={m.parity} max={m.parity === 1 ? 1.4 : 1} /> <DataBadge year={r.co.years[LATEST]} /></span>, sort: (r) => r.co.years[LATEST]?.w ?? null },
     ...(PREV ? [{ key: 'chg', label: `Change since ${fy(PREV)}`, right: true, render: (r: Row) => <Change value={yoyChange(r.co)} />, sort: (r: Row) => yoyChange(r.co) }] : []),
     ...(eu ? [] : [{ key: 'f', label: m.workforceLabel, right: true, render: (r: Row) => pct(workforce(r.co, r.co.years[LATEST])), sort: (r: Row) => workforce(r.co, r.co.years[LATEST]) }]),
     ...(eu
@@ -65,6 +68,31 @@ export function IndexPage({ id }: { id: string }) {
         ]
       : [{ key: 'b', label: 'Women on board', right: true, render: (r: Row) => { const yy = r.co.years[LATEST]; return yy?.board ? `${yy.boardWomen} of ${yy.board}` : 'n/a' }, sort: (r: Row) => boardShare(r.co.years[LATEST]) }]),
   ]
+
+  const trendTable = (
+    <div className="table-wrap">
+      <table className="data">
+        <caption className="sr-only">Trend table</caption>
+        <thead><tr><th>Year</th><th className="r">{eu ? "Women's pay as a share of men's" : ix.country === 'GB' ? "Women's share of pay" : "Women's share of payroll"}</th><th className="r">Companies covered</th><th className="r">Like-for-like change</th></tr></thead>
+        <tbody>
+          {xs.map((k, i) => {
+            const yy = i > 0 ? ix.yoy[`${xs[i - 1]}>${k}`] : undefined
+            return (
+              <tr key={k}>
+                <td>{fy(k)}</td>
+                <td className="r">{pct(ix.years[k].headline)}</td>
+                <td className="r">{ix.years[k].companiesCovered}</td>
+                <td className="r">{yy ? <><Change value={yy.change} /> <span className="sub">{yy.companies} companies</span></> : 'n/a'}</td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+    </div>
+  )
+  const pts = indexPoints(ix.id)
+  const sE = summarise(pts.map((p) => p.e))
+  const sW = summarise(pts.map((p) => p.w))
 
   return (
     <>
@@ -137,6 +165,10 @@ export function IndexPage({ id }: { id: string }) {
           </div>
           )}
         </div>
+        <p className="small" style={{ marginTop: 14 }}>
+          <strong>On the shared scales:</strong> the median company has {sE ? <>women as <strong>{pct(sE.median)}</strong> of staff and </> : null}pays women <strong>{sW ? pct(sW.median) : 'n/a'}</strong> of what it pays men, on average.{' '}
+          <a href={href('compare', 'countries')}>Compare with other markets</a>
+        </p>
       </section>
 
       {xs.length < 2 ? (
@@ -147,39 +179,34 @@ export function IndexPage({ id }: { id: string }) {
       ) : (
       <section>
         <h2>The trend</h2>
+        <ChartFrame title={m.headlineLabel} sub={`${fy(xs[0])} to ${fy(LATEST)} · ${m.coverage(y.companiesCovered)} in ${fy(LATEST)}`} table={trendTable}>
         <LineChart
-          ariaLabel={`${ix.name}: women's share of the payroll you own, by year`}
-          xs={xs} xLabel={fy} fmt={(v) => pct(v, v === Math.round(v * 10) / 10 ? 0 : 1)}
+          ariaLabel={`${ix.name}: ${m.headlineLabel.toLowerCase()}, by year`}
+          xs={xs} xLabel={fy} fmt={pctTick}
           reference={{ y: m.parity, label: `Parity ${pct(m.parity, 0)}` }}
           yMax={m.parity}
-          series={[{ id: 'h', label: "Women's share of payroll", short: 'Payroll', color: 'var(--s1)', points: xs.map((k) => ({ x: k, y: ix.years[k].headline })) }]}
+          series={[{ id: 'h', label: m.headlineLabel, short: 'Index', color: 'var(--s1)', points: xs.map((k) => ({ x: k, y: ix.years[k].headline })) }]}
         />
-        <div className="table-wrap" style={{ marginTop: 16 }}>
-          <table>
-            <caption className="sr-only">Trend table</caption>
-            <thead><tr><th>Year</th><th className="r">{eu ? "Women's pay as a share of men's" : ix.country === 'GB' ? "Women's share of pay" : "Women's share of payroll"}</th><th className="r">Companies covered</th><th className="r">Like-for-like change</th></tr></thead>
-            <tbody>
-              {xs.map((k, i) => {
-                const yy = i > 0 ? ix.yoy[`${xs[i - 1]}>${k}`] : undefined
-                return (
-                  <tr key={k}>
-                    <td>{fy(k)}</td>
-                    <td className="r">{pct(ix.years[k].headline)}</td>
-                    <td className="r">{ix.years[k].companiesCovered}</td>
-                    <td className="r">{yy ? <><Change value={yy.change} /> <span className="sub">{yy.companies} companies</span></> : 'n/a'}</td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </div>
+        </ChartFrame>
         <p className="small muted" style={{ marginTop: 10 }}>{TREND_NOTE[ix.country]}</p>
       </section>
       )}
 
       <section>
         <h2>By sector, {fy(LATEST)}</h2>
-        <SectorBars sectors={y.sectors} parity={m.parity} />
+        <ChartFrame title={m.wageLabel} sub={uk ? 'Average company in each sector, using the exchange\'s own sector labels' : 'Payroll-weighted, using the exchange\'s own sector labels'}
+          table={(
+            <div className="table-wrap">
+              <table className="data">
+                <caption className="sr-only">By sector</caption>
+                <thead><tr><th>Sector</th><th className="r">{m.wageLabel}</th>{!uk && <th className="r">Share of payroll owned</th>}<th className="r">Companies</th></tr></thead>
+                <tbody>{y.sectors.map((s) => <tr key={s.industry}><td>{s.industry}</td><td className="r">{pct(s.w)}</td>{!uk && <td className="r">{pct(s.payrollShare)}</td>}<td className="r">{s.companies}</td></tr>)}</tbody>
+              </table>
+            </div>
+          )}>
+          <SectorBars sectors={y.sectors} parity={m.parity} />
+        </ChartFrame>
+        <p className="small muted" style={{ marginTop: 10 }}><a href={href('compare', 'sectors')}>Compare sectors across markets</a> on a shared 11-sector scheme.</p>
       </section>
 
       {PREV && <section>
@@ -194,7 +221,7 @@ export function IndexPage({ id }: { id: string }) {
                   <tbody>
                     {g.list.map((m) => (
                       <tr key={m.r.symbol}>
-                        <td><a href={href('company', m.r.symbol)}>{m.r.co.name}</a></td>
+                        <td><span className="name-cell"><Logo symbol={m.r.symbol} name={m.r.co.name} size={26} /><a href={href('company', m.r.symbol)}>{m.r.co.name}</a></span></td>
                         <td className="r">{pct(m.r.co.years[LATEST]?.w)}</td>
                         <td className="r"><Change value={m.d} /></td>
                       </tr>
@@ -210,7 +237,8 @@ export function IndexPage({ id }: { id: string }) {
 
       <section>
         <h2>All {ix.name} companies</h2>
-        <SortTable caption={`${ix.name} constituents`} columns={columns} rows={rows} rowKey={(r) => r.symbol} initial={{ key: uk ? 'w' : 'weight', dir: -1 }} rowHref={(r) => href('company', r.symbol)} scroll />
+        <SortTable caption={`${ix.name} constituents`} columns={columns} rows={rows} rowKey={(r) => r.symbol} initial={{ key: uk ? 'w' : 'weight', dir: -1 }} rowHref={(r) => href('company', r.symbol)} scroll
+          rank download={`${ix.id}-companies`} summary={`${rows.length} companies · tap a row for its profile`} />
         {(ix.missing.length > 0 || noData.length > 0 || noStaff.length > 0) && (
           <p className="small" style={{ marginTop: 12 }}>
             <strong>Gaps:</strong>{' '}

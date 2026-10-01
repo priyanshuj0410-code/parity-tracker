@@ -1,20 +1,17 @@
-import { MARKET } from '../lib/data'
+import { MARKET, euYear } from '../lib/data'
 import { pct } from '../lib/format'
 import type { Company } from '../types'
 import { Change } from './Change'
 import { DataBadge } from './Badge'
 import { ParityTrack } from './ParityTrack'
 
-export function EuDetail({ c }: { c: Company }) {
+export function EuGlance({ c }: { c: Company }) {
   const m = MARKET.EU
-  const key = c.years[m.latest] ? m.latest : m.prev
+  const key = euYear(c)
   const y = c.years[key]
   const p = key === m.latest ? c.years[m.prev] : undefined
   const source = c.entities?.[0]
   return (
-    <>
-      <section>
-        <h2>{key} at a glance</h2>
         <div className="grid g3">
           <div className="card">
             <div className="tile-label">Women's average pay as a share of men's</div>
@@ -32,15 +29,16 @@ export function EuDetail({ c }: { c: Company }) {
             <div className="tile-context">{source?.size}</div>
           </div>
         </div>
-      </section>
+  )
+}
 
-      <section>
-        <h2>About this data</h2>
+export function EuSources({ c }: { c: Company }) {
+  const source = c.entities?.[0]
+  return (
         <ul className="tight">
           <li><strong>Source:</strong> the company's own CSRD sustainability statement (ESRS S1-16), read directly from the document. {source?.link && /^https?:\/\//.test(source.link) && <a href={source.link} target="_blank" rel="noreferrer">Source document</a>}</li>
           <li><strong>Positive gap:</strong> men earn more on average. A negative gap means women's average pay is higher, usually because of the mix of jobs.</li>
+          <li><strong>Workforce split:</strong> CSRD statements also give headcount by gender (ESRS S1-6), but we have not collected it yet, so this company is not on the parity map.</li>
         </ul>
-      </section>
-    </>
   )
 }
