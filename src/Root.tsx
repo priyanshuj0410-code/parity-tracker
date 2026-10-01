@@ -1,6 +1,8 @@
+import logoReversed from './assets/logo-reversed.svg'
 import logo from './assets/logo.svg'
 import { MarketStrip } from './components/MarketStrip'
 import { Search } from './components/Search'
+import { ThemeToggle } from './components/ThemeToggle'
 import { SOURCE_DATE } from './lib/data'
 import { href, useRoute } from './lib/router'
 import { Companies } from './pages/Companies'
@@ -27,13 +29,14 @@ export default function Root() {
     <>
       <header className="site-header">
         <div className="wrap header-row">
-          <a className="brand" href={href('')}><img src={logo} alt="The Equal Lens" />Parity Tracker</a>
+          <a className="brand" href={href('')}><img className="logo-light" src={logo} alt="The Equal Lens" /><img className="logo-dark" src={logoReversed} alt="The Equal Lens" />Parity Tracker</a>
           <nav className="nav" aria-label="Main">
             <a href={href('')} className={at('')}>Indexes</a>
             <a href={href('companies')} className={route[0] === 'company' ? 'on' : at('companies')}>Companies</a>
             <a href={href('method')} className={at('method')}>Method</a>
           </nav>
           <Search />
+          <ThemeToggle />
         </div>
       </header>
       <MarketStrip current={route[0] === 'index' ? route[1] : undefined} />
@@ -42,7 +45,7 @@ export default function Root() {
       </main>
       <footer className="site-footer">
         <div className="wrap">
-          <img src={logo} alt="" />
+          <img className="logo-light" src={logo} alt="" /><img className="logo-dark" src={logoReversed} alt="" />
           <span>Built with The Equal Lens. Data from companies' own legally required gender pay disclosures in India, the UK, Australia, Japan and the EU, collected {SOURCE_DATE}. Not investment advice.</span>
         </div>
       </footer>
