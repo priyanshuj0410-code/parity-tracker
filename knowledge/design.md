@@ -4,6 +4,12 @@ title: Nivel design system
 description: Visual and writing rules for Nivel (formerly Parity Tracker), derived from The Equal Lens brand package (minimal register) plus a validated chart palette.
 updated: 2026-10-02
 plane_issues:
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/ccb18646-56ef-40e7-8091-87a1a83f7f23
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/eb5a5943-61a5-4130-991f-afea4703a3b8
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/b274889f-1235-4d52-b68c-2fb212171f8a
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/a6405009-0cea-40da-bea8-762ca3d76dbf
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/53ab2a60-d921-489a-b1f8-cb0bfff94455
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/ef865c0d-b01e-439d-b31e-d234bbcbbe82
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/4a6b2d55-5d5f-4713-848c-561e3e343184
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/3ddee1dc-99b4-4f03-83c8-55cdf3f78b30
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/5a065a68-b7a5-4d83-a44b-72136f487dad
@@ -85,8 +91,9 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
 - Max content width 1120px, 16px side gutter on phones, 24px from 720px up.
 - Cards: white, 1px `--line` border, 12px radius, no shadow.
 - Sections are separated by a 1px `--mist` rule and 40px spacing.
-- **Header:** white and sticky. Brand, then main nav (Indexes, Companies, Compare, Method; the active item gets a 2px violet underline), then global search, the Install button (only when the browser can install), and the theme toggle. Below 720px, search goes full width and the nav moves to a bottom tab bar.
-- **Bottom tab bar (below 720px):** four items with 22px line icons and 11px labels: Indexes (chart), Companies (buildings), Compare (balance scale), Method (info). Fixed, white, hairline top border, padded for the home indicator (`safe-area-inset-bottom`). The active item is violet with `aria-current`.
+- **Header (PARITY-17):** white and sticky, 64px. Left: the eQ mark (30px) and a two-line brand, "Nivel" (Poppins 600, 19px) over "by The Equal Lens" (10.5px, `--soft`). Then the main nav (Indexes, Companies, Compare, Method) as underline tabs. Right: global search (38px field, at most 340px, with a ⌘K hint) and the theme toggle as a borderless 40px icon button. No install button. Below 900px the header is 56px: brand on the left, a search icon and the theme toggle on the right, and the nav moves to the bottom tab bar.
+- **Bottom tab bar (below 900px):** four items with 22px line icons and 11px labels: Indexes (chart), Companies (buildings), Compare (balance scale), Method (info). Fixed, white, hairline top border, padded for the home indicator (`safe-area-inset-bottom`). The active item is violet with `aria-current`.
+- **Search sheet (below 900px):** the search icon opens a full-screen sheet: a 44px field (16px text, so iOS does not zoom) with a Cancel link, then up to 20 results as tall rows with logo or monogram. The page behind stops scrolling while it is open.
 - **Page head:** breadcrumb, title (with a 52px logo tile on company pages), chips, then section tabs. The first section after the page head has no top rule.
 - **Index strip:** a white bar under the header on every page, scrolling horizontally. Each item shows name, headline value and like-for-like change. The current index is highlighted with a tint.
 - **Card grids** use `auto-fill`, so a market with one index keeps a normal-width card.
@@ -102,7 +109,9 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
   - a bar above the table: row count on the left, a quiet "Download CSV" button on the right (exports the visible rows in the current sort)
   - optional rank column (`#`, muted, right-aligned) and a highlighted current row (tint fill plus a 3px violet inner left edge), used for peers
   - company cells: logo tile, name link, then ticker and market or industry as a muted sub-line
-  - long lists sit in a 72vh scroll area with a sticky header; the name column stays sticky on small screens
+  - tables flow with the page: no inner scroll box. The header row stays pinned under the site header (`top: 64px`) while the page scrolls, with rounded outer corners on the first and last cells. Long headers wrap.
+  - columns carry a priority: priority 2 hides below 1100px wide and priority 3 below 1000px (sparklines, sector, board), so a desktop table never scrolls sideways
+  - **below 900px every data table becomes a stacked list** (PARITY-16): one row per item with rank, the title cell, one key value at the top right, and the other columns as small labelled details underneath. A Sort dropdown, a direction button and an icon-only CSV button sit above it. Nothing scrolls sideways.
   - the whole row opens the company, with the name link kept for keyboard and screen-reader users
 - **Meter (inline data bar):** the value, then a 52px by 6px `--line` track with a `--s1` fill and a 2px ink tick at parity. Employment parity and share of pay run 0–100% (tick at 50%); wage parity runs 0–140% (tick at 100%). Replaces bare percentages wherever a value has a parity point.
 - **Tabs:** underline tabs for sections that have their own URL (company pages: Overview, Trend, Peers, Data and sources; Compare: Countries, Sectors, Parity map). 14px Poppins 500, `--soft`, active `--violet` with a 2px underline and `aria-current="page"`. They scroll sideways on phones.
@@ -110,7 +119,9 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
 - **Chart frame:** every chart sits in a card with a title, a one-line subtitle and a Chart / Table segmented control at the top right, so every chart has a table view one click away. Extra controls (market pills) sit beside the toggle.
 - **Scale card (company overview):** label, big value, the basis in one muted line, a parity track with its own scale (0%, parity, maximum), and the market percentile in violet ("Higher than 66% of companies in the UK").
 - **Link card:** a card that is one link, with a title, one sentence and a violet "Open →".
-- **Install button:** violet filled, download icon plus "Install app" (icon only on phones). Shown only after `beforeinstallprompt`, or on iOS Safari, where it opens a note: Share, then Add to Home Screen. Hidden when running installed.
+- **Install popover (PARITY-18):** never a permanent button. Once per device, 8 seconds into the first visit where the browser can install the app (or on iOS Safari), a card appears bottom-right (above the tab bar on phones): the app icon, "Install Nivel", one line, and Install (or Show me how on iOS) plus Not now. It is marked seen as soon as it appears, so it never returns; after that a quiet "Install the app" link in the footer is the only route.
+- **Dropdown (PARITY-19):** replaces native selects. A 32px pill button with an optional muted prefix ("Sort") and a chevron that flips when open; the menu is a card (12px radius, shadow) with 8px-radius options, `--tint` for the active option, violet text and a check for the selected one. Full keyboard support (arrows, Home, End, Enter, Escape) with listbox semantics.
+- **Worked steps (PARITY-21, PARITY-22):** calculations are numbered cards, never monospace blocks: a tinted number badge, a title, one plain sentence, then equation lines in a paper-coloured box with real fractions (numerator over a rule over denominator) and the answer in violet. The result sits at the top right with a small label, and moves under the text on phones. Reported inputs above the steps are small tiles: label, big value, a muted note.
 - **Index card:** name, headline value, sparkline (right of the value), change since last year, parity track, coverage line.
 - **Global search:**
   - combobox over every company and index, at most 8 results, monogram plus title plus "symbol · market"
@@ -129,7 +140,7 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
   - always paired with an explicit number or table, never on its own
   - only reported values are plotted
 - **Pill filters:** 999px radius, white with `--line` border; selected is violet fill with white text and `aria-pressed`. Used for index filters instead of selects.
-- **Cross-market rule:** never sort or rank across markets by a market's own headline. Cross-market views use only the shared scales (employment parity, wage parity, implied share of pay; see [decisions/0001](decisions/0001-comparable-parity-measures.md)), always with the basis stated nearby. Rankings across markets use the market percentile. The directory opens on one index, "All indexes" sorts by name, and the headline column states its unit per row.
+- **Cross-market rule:** every headline is now women's share of pay with parity at 50% (Japan and the EU since PARITY-20), so index headlines can sit side by side. Rankings across markets still use the market percentile, and the basis is always stated nearby.
 
 ## 6. Charts
 Validated with the dataviz `validate_palette.js` using `--pairs all`, because company charts show all three series at once.
@@ -155,7 +166,7 @@ Validated with the dataviz `validate_palette.js` using `--pairs all`, because co
 - **Grid:** solid 1px `--mist`, never dashed.
 - **Parity reference:** the 50% line is a solid 1px `--muted` rule, labelled at its left end so it never collides with the series end labels on the right.
 - **Y axis:** shares run from 0 to 50% so distance to parity is visible. If any value exceeds 50%, the axis or bar scale extends to the next 10%, and the parity mark stays at 50%.
-- **Markets:** each market has its own metric label (India: share of total wages; UK: share of hourly pay, UK staff). Never put two markets' own headlines in one chart. Only the shared scales appear in cross-market charts (Compare pages), with each market's basis stated.
+- **Markets:** each market keeps its own metric label (India: share of total wages; UK: share of hourly pay, UK staff), but all are shares of pay on a 0–50% axis with parity at 50%. Pay ratios (parity 100%) appear only as supporting figures, never as a market's headline.
 - **Legends and labels:** a legend whenever there are two or more series, plus direct end labels. Text always uses text tokens, never series colours.
 - **Hover:** a crosshair and tooltip on lines. Every chart also has a table view with the same numbers.
 

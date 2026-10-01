@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { DataBadge } from '../components/Badge'
 import { Change } from '../components/Change'
+import { Calculations } from '../components/Calculations'
 import { ChartFrame } from '../components/ChartFrame'
 import { EuGlance, EuSources } from '../components/EuDetail'
 import { JapanGlance, JapanSources } from '../components/JapanDetail'
@@ -8,7 +9,7 @@ import { LineChart, type Series } from '../components/LineChart'
 import { Logo } from '../components/Logo'
 import { Meter } from '../components/Meter'
 import { ParityTrack } from '../components/ParityTrack'
-import { SortTable, type Column } from '../components/SortTable'
+import { DataTable, type Column } from '../components/DataTable'
 import { Tabs } from '../components/Tabs'
 import { BASIS, E_PARITY, POINTS, W_PARITY, inMarket, marketName, pointOf, sectorOf, standing, type Point } from '../lib/compare'
 import { boardShare, companies, euYear, indexName, marketOf, payRatio, shareChange, workforce, yoyChange } from '../lib/data'
@@ -17,7 +18,7 @@ import { href } from '../lib/router'
 import type { Company as Co } from '../types'
 import { NotFound } from './NotFound'
 
-const TABS = [['overview', 'Overview'], ['trend', 'Trend'], ['peers', 'Peers'], ['sources', 'Data and sources']] as const
+const TABS = [['overview', 'Overview'], ['trend', 'Trend'], ['peers', 'Peers'], ['calculations', 'How we calculated'], ['sources', 'Data and sources']] as const
 type Tab = (typeof TABS)[number][0]
 
 const ticker = (c: Co) => c.symbol.replace(/^(ASX|TSE|EU)-/, '')
@@ -133,15 +134,20 @@ function Trend({ c }: { c: Co }) {
     const ys = YEARS.filter((k) => c.years[k])
     return (
       <section>
-        <ChartFrame title="Women's average pay as a share of men's" sub="Unadjusted, from each year's CSRD statement"
+        <ChartFrame title="Women's share of pay and of the workforce" sub="From each year's CSRD statement: the unadjusted gap (S1-16) and headcount by gender (S1-6)"
           table={(
             <div className="table-wrap"><table className="data"><caption className="sr-only">Values by year</caption>
-              <thead><tr><th>Year</th><th className="r">Pay as a share of men's</th><th className="r">Unadjusted gap</th><th>Data</th></tr></thead>
-              <tbody>{ys.map((k) => <tr key={k}><td>{k}</td><td className="r">{pct(c.years[k].w)}</td><td className="r">{pct(c.years[k].gapMean)}</td><td><DataBadge year={c.years[k]} /></td></tr>)}</tbody>
+              <thead><tr><th>Year</th><th className="r">Share of pay</th><th className="r">Women in workforce</th><th className="r">Pay per 100 of men's</th><th className="r">Unadjusted gap</th><th>Data</th></tr></thead>
+              <tbody>{ys.map((k) => <tr key={k}><td>{k}</td><td className="r">{pct(c.years[k].w)}</td><td className="r">{pct(c.years[k].fAll)}</td><td className="r">{pct(payRatio(c, c.years[k]), 0)}</td><td className="r">{pct(c.years[k].gapMean)}</td><td><DataBadge year={c.years[k]} /></td></tr>)}</tbody>
             </table></div>
           )}>
-          <LineChart ariaLabel={`${c.name}: women's pay as a share of men's, by year`} xs={YEARS} xLabel={fy} fmt={(v) => pct(v, 0)} yMax={1}
-            reference={{ y: 1, label: 'Parity 100%' }} series={[{ id: 'w', label: m.wageLabel, short: 'Pay', color: 'var(--s1)', points: YEARS.map((k) => ({ x: k, y: c.years[k]?.w ?? null })) }]} />
+          <LineChart ariaLabel={`${c.name}: women's share of pay and of the workforce, by year`} xs={YEARS} xLabel={fy} fmt={pctTick}
+            yMax={Math.max(0.5, Math.ceil(Math.max(0, ...ys.map((k) => Math.max(c.years[k].w ?? 0, c.years[k].fAll ?? 0))) * 10) / 10)}
+            reference={{ y: 0.5, label: 'Parity 50%' }}
+            series={[
+              { id: 'w', label: m.wageLabel, short: 'Pay', color: 'var(--s1)', points: YEARS.map((k) => ({ x: k, y: c.years[k]?.w ?? null })) },
+              { id: 'f', label: m.workforceLabel, short: 'Staff', color: 'var(--s2)', points: YEARS.map((k) => ({ x: k, y: c.years[k]?.fAll ?? null })) },
+            ]} />
         </ChartFrame>
         <p className="small muted" style={{ marginTop: 10 }}>2024 was the first CSRD reporting year, so the trend is short.</p>
       </section>
@@ -199,19 +205,18 @@ function Peers({ c }: { c: Co }) {
     peers = POINTS.filter((p) => p.c.country === c.country)
     scope = `all companies ${inMarket(c.country)}, because fewer than four ${sector.toLowerCase()} companies report`
   }
-  const eu = c.country === 'EU'
   const columns: Column<Point>[] = [
     { key: 'name', label: 'Company', render: (p) => <span className="name-cell"><Logo symbol={p.c.symbol} name={p.c.name} /><a href={href('company', p.c.symbol)}>{p.c.name}<span className="sub">{ticker(p.c)} · {p.c.industry}</span></a></span>, sort: (p) => p.c.name, csv: (p) => p.c.name },
-    ...(eu ? [] : [{ key: 'e', label: 'Employment parity', render: (p: Point) => <Meter value={p.e} parity={E_PARITY} />, sort: (p: Point) => p.e }]),
+    { key: 'e', label: 'Employment parity', render: (p) => <Meter value={p.e} parity={E_PARITY} />, sort: (p) => p.e },
     { key: 'w', label: 'Wage parity', render: (p) => <Meter value={p.w} parity={W_PARITY} max={1.4} approx={p.c.country === 'IN'} />, sort: (p) => p.w },
-    ...(eu ? [] : [{ key: 's', label: 'Implied share of pay', render: (p: Point) => <Meter value={p.s} parity={E_PARITY} />, sort: (p: Point) => p.s }]),
-    { key: 'chg', label: 'Change on last year', right: true, render: (p) => <Change value={yoyChange(p.c)} />, sort: (p) => yoyChange(p.c) },
+    { key: 's', label: 'Share of pay', mobile: 'value', render: (p) => <Meter value={p.s} parity={E_PARITY} />, sort: (p) => p.s },
+    { key: 'chg', label: 'Change on last year', short: '1-year change', right: true, render: (p) => <Change value={yoyChange(p.c)} />, sort: (p) => yoyChange(p.c) },
   ]
   return (
     <section>
       <p className="small">Ranked against {scope}, with this company highlighted.</p>
-      <SortTable caption={`Peers of ${c.name}`} columns={columns} rows={peers} rowKey={(p) => p.c.symbol} initial={{ key: 'w', dir: -1 }}
-        rowHref={(p) => href('company', p.c.symbol)} rank current={c.symbol} scroll download={`peers-${ticker(c)}`} summary={`${peers.length} companies`} />
+      <DataTable caption={`Peers of ${c.name}`} columns={columns} rows={peers} rowKey={(p) => p.c.symbol} initial={{ key: 'w', dir: -1 }}
+        rowHref={(p) => href('company', p.c.symbol)} rank current={c.symbol} download={`peers-${ticker(c)}`} summary={`${peers.length} companies`} />
     </section>
   )
 }
@@ -289,6 +294,7 @@ export function Company({ symbol, tab }: { symbol: string; tab?: string }) {
       ) : current === 'trend' ? <Trend c={c} />
         : current === 'peers' ? <Peers c={c} />
           : current === 'sources' ? <Sources c={c} />
+            : current === 'calculations' ? <Calculations c={c} pt={pt} />
             : <Overview c={c} pt={pt} />}
     </>
   )

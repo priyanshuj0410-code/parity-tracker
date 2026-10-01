@@ -14,3 +14,6 @@ Employment and wage parity put every company and index on the same scales (knowl
 
 ## [2026-10-02] decision | the app is renamed Nivel
 Chosen from the N-name shortlist (knowledge/decisions/0002). Repo, Vercel and Plane identifiers keep parity-tracker / PARITY. Trademark and domain checks still to do.
+
+## [2026-10-02] build | one 50% scale, table and header redesign, calculations tab
+Japan and EU headlines become women's share of pay (EU headcount by gender read from CSRD S1-6). Tables flow with the page and become lists on phones; new header and search sheet; install prompt shown once; design-language dropdowns; worked-step calculations on the Method page and a How we calculated tab on every company. PARITY-16 to 22.

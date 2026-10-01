@@ -1,8 +1,8 @@
 import logoReversed from './assets/logo-reversed.svg'
 import logo from './assets/logo.svg'
-import { InstallButton } from './components/InstallButton'
+import { InstallLink, InstallPrompt } from './components/InstallPrompt'
 import { MarketStrip } from './components/MarketStrip'
-import { Search } from './components/Search'
+import { SiteSearch } from './components/SiteSearch'
 import { TabBar } from './components/TabBar'
 import { ThemeToggle } from './components/ThemeToggle'
 import { SOURCE_DATE } from './lib/data'
@@ -36,16 +36,20 @@ export default function Root() {
     <>
       <header className="site-header">
         <div className="wrap header-row">
-          <a className="brand" href={href('')}><img className="logo-light" src={logo} alt="The Equal Lens" /><img className="logo-dark" src={logoReversed} alt="The Equal Lens" />Nivel</a>
+          <a className="brand" href={href('')} aria-label="Nivel by The Equal Lens, home">
+            <img className="logo-light" src={logo} alt="" /><img className="logo-dark" src={logoReversed} alt="" />
+            <span className="brand-text"><span className="brand-name">Nivel</span><span className="brand-by">by The Equal Lens</span></span>
+          </a>
           <nav className="nav" aria-label="Main">
             <a href={href('')} className={at('')}>Indexes</a>
             <a href={href('companies')} className={at('companies')}>Companies</a>
             <a href={href('compare')} className={at('compare')}>Compare</a>
             <a href={href('method')} className={at('method')}>Method</a>
           </nav>
-          <Search />
-          <InstallButton />
-          <ThemeToggle />
+          <div className="header-actions">
+            <SiteSearch />
+            <ThemeToggle />
+          </div>
         </div>
       </header>
       <MarketStrip current={route[0] === 'index' ? route[1] : undefined} />
@@ -56,9 +60,11 @@ export default function Root() {
         <div className="wrap">
           <img className="logo-light" src={logo} alt="" /><img className="logo-dark" src={logoReversed} alt="" />
           <span>Built with The Equal Lens. Data from companies' own legally required gender pay disclosures in India, the UK, Australia, Japan and the EU, collected {SOURCE_DATE}. Company logos are trademarks of their owners, shown only to identify them. Not investment advice.</span>
+          <InstallLink />
         </div>
       </footer>
       <TabBar section={section} />
+      <InstallPrompt />
     </>
   )
 }

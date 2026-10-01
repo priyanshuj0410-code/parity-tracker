@@ -7,9 +7,9 @@ import { Meter } from '../components/Meter'
 import { Sparkline } from '../components/Sparkline'
 import { ParityTrack } from '../components/ParityTrack'
 import { SectorBars } from '../components/SectorBars'
-import { SortTable, type Column } from '../components/SortTable'
+import { DataTable, type Column } from '../components/DataTable'
 import { indexPoints, summarise } from '../lib/compare'
-import { boardShare, companies, indexMarket, indexes, workforce, yoyChange } from '../lib/data'
+import { boardShare, companies, indexMarket, indexes, payRatio, workforce, yoyChange } from '../lib/data'
 import { inr, pct, pctTick } from '../lib/format'
 import { href } from '../lib/router'
 import type { Company } from '../types'
@@ -30,7 +30,7 @@ export function IndexPage({ id }: { id: string }) {
     GB: 'Each company counts equally. Like-for-like changes leave out companies whose UK reporting employers or size bands changed between the two years. Fewer reports exist for 2019 because enforcement was suspended during the pandemic.',
     AU: 'Two years so far. The earlier release is not archived, so FY24 values hold each company\'s workforce share at its FY25 level and the change reflects pay gaps only.',
     JP: '',
-    EU: 'Each company counts equally. 2024 was the first CSRD reporting year, so the trend is short. Companies define pay slightly differently (hourly or annual, base or total), so compare a company with itself over time.',
+    EU: 'Each company counts equally. Women\'s share of pay combines each company\'s unadjusted pay gap with its headcount by gender. 2024 was the first CSRD reporting year, so the trend is short, and companies define pay slightly differently (hourly or annual, base or total).',
   }
   const LATEST = m.latest
   const PREV = m.prev
@@ -45,28 +45,27 @@ export function IndexPage({ id }: { id: string }) {
   const risers = [...movers].sort((a, b) => b.d - a.d).slice(0, 5).filter((m) => m.d > 0)
   const fallers = [...movers].sort((a, b) => a.d - b.d).slice(0, 5).filter((m) => m.d < 0)
   const noStaff = rows.filter((r) => r.co.noDataReason)
-  const noData = rows.filter((r) => !r.co.noDataReason && r.co.years[LATEST]?.w == null)
+  const noSplit = rows.filter((r) => !r.co.noDataReason && r.co.years[LATEST]?.w == null && r.co.years[LATEST]?.gapMean != null)
+  const noData = rows.filter((r) => !r.co.noDataReason && r.co.years[LATEST]?.w == null && r.co.years[LATEST]?.gapMean == null)
 
   const columns: Column<Row>[] = [
     { key: 'name', label: 'Company', render: (r) => <span className="name-cell"><Logo symbol={r.symbol} name={r.co.name} /><a href={href('company', r.symbol)}>{r.co.name}<span className="sub">{r.co.industry}</span></a></span>, sort: (r) => r.co.name, csv: (r) => r.co.name },
-    ...(xs.length > 1 ? [{ key: 'trend', label: 'Trend', render: (r: Row) => <Sparkline values={xs.map((k) => (r.co.years[k]?.wKind === 'reported' ? r.co.years[k].w : null))} label={`${r.co.name} trend`} /> }] : []),
+    ...(xs.length > 1 ? [{ key: 'trend', label: 'Trend', mobile: 'hide' as const, priority: 2 as const, render: (r: Row) => <Sparkline values={xs.map((k) => (r.co.years[k]?.wKind === 'reported' ? r.co.years[k].w : null))} label={`${r.co.name} trend`} /> }] : []),
     ...(uk ? [] : [{ key: 'weight', label: 'Weight', right: true, render: (r: Row) => pct(r.weight), sort: (r: Row) => r.weight }]),
-    { key: 'w', label: `${m.wageLabel} ${fy(LATEST)}`, render: (r) => <span className="nowrap"><Meter value={r.co.years[LATEST]?.w} parity={m.parity} max={m.parity === 1 ? 1.4 : 1} /> <DataBadge year={r.co.years[LATEST]} /></span>, sort: (r) => r.co.years[LATEST]?.w ?? null },
-    ...(PREV ? [{ key: 'chg', label: `Change since ${fy(PREV)}`, right: true, render: (r: Row) => <Change value={yoyChange(r.co)} />, sort: (r: Row) => yoyChange(r.co) }] : []),
-    ...(eu ? [] : [{ key: 'f', label: m.workforceLabel, right: true, render: (r: Row) => pct(workforce(r.co, r.co.years[LATEST])), sort: (r: Row) => workforce(r.co, r.co.years[LATEST]) }]),
-    ...(eu
-      ? [{ key: 'gap', label: 'Unadjusted pay gap', right: true, render: (r: Row) => pct(r.co.years[LATEST]?.gapMean), sort: (r: Row) => r.co.years[LATEST]?.gapMean ?? null }]
-      : jp
+    { key: 'w', label: `${m.wageLabel} ${fy(LATEST)}`, short: m.wageLabel, mobile: 'value', render: (r) => <span className="nowrap"><Meter value={r.co.years[LATEST]?.w} parity={m.parity} /> <DataBadge year={r.co.years[LATEST]} /></span>, sort: (r) => r.co.years[LATEST]?.w ?? null },
+    ...(PREV ? [{ key: 'chg', label: `Change since ${fy(PREV)}`, short: '1-year change', right: true, render: (r: Row) => <Change value={yoyChange(r.co)} />, sort: (r: Row) => yoyChange(r.co) }] : []),
+    { key: 'f', label: m.workforceLabel, right: true, render: (r: Row) => pct(workforce(r.co, r.co.years[LATEST])), sort: (r: Row) => workforce(r.co, r.co.years[LATEST]) },
+    ...(jp || eu
       ? [
-          { key: 'b', label: 'Women on board', right: true, render: (r: Row) => pct(boardShare(r.co.years[LATEST]) ?? r.co.years[LATEST]?.boardShareReported), sort: (r: Row) => boardShare(r.co.years[LATEST]) ?? r.co.years[LATEST]?.boardShareReported ?? null },
-          { key: 'reg', label: 'Regular staff pay ratio', right: true, render: (r: Row) => pct(r.co.years[LATEST]?.ratioRegular), sort: (r: Row) => r.co.years[LATEST]?.ratioRegular ?? null },
+          { key: 'pay', label: "Women's pay per 100 of men's", right: true, render: (r: Row) => pct(payRatio(r.co, r.co.years[LATEST]), 0), sort: (r: Row) => payRatio(r.co, r.co.years[LATEST]) },
+          ...(jp ? [{ key: 'b', label: 'Women on board', priority: 3 as const, right: true, render: (r: Row) => pct(boardShare(r.co.years[LATEST]) ?? r.co.years[LATEST]?.boardShareReported), sort: (r: Row) => boardShare(r.co.years[LATEST]) ?? r.co.years[LATEST]?.boardShareReported ?? null }] : []),
         ]
       : uk
       ? [
-          { key: 'top', label: 'Women in top pay quarter', right: true, render: (r: Row) => pct(r.co.years[LATEST]?.topQuartile), sort: (r: Row) => r.co.years[LATEST]?.topQuartile ?? null },
+          { key: 'top', label: 'Women in top pay quarter', priority: 3 as const, right: true, render: (r: Row) => pct(r.co.years[LATEST]?.topQuartile), sort: (r: Row) => r.co.years[LATEST]?.topQuartile ?? null },
           { key: 'gap', label: 'Mean pay gap', right: true, render: (r: Row) => pct(r.co.years[LATEST]?.gapMean), sort: (r: Row) => r.co.years[LATEST]?.gapMean ?? null },
         ]
-      : [{ key: 'b', label: 'Women on board', right: true, render: (r: Row) => { const yy = r.co.years[LATEST]; return yy?.board ? `${yy.boardWomen} of ${yy.board}` : 'n/a' }, sort: (r: Row) => boardShare(r.co.years[LATEST]) }]),
+      : [{ key: 'b', label: 'Women on board', priority: 3 as const, right: true, render: (r: Row) => { const yy = r.co.years[LATEST]; return yy?.board ? `${yy.boardWomen} of ${yy.board}` : 'n/a' }, sort: (r: Row) => boardShare(r.co.years[LATEST]) }]),
   ]
 
   const trendTable = (
@@ -117,26 +116,27 @@ export function IndexPage({ id }: { id: string }) {
                 <caption className="sr-only">Pay structure</caption>
                 {eu ? (
                   <tbody>
-                    <tr><td>Verified from company statements</td><td className="r"><strong>{y.verified} of 50</strong></td></tr>
-                    <tr><td>Excluded: adjusted only, partial scope or not material</td><td className="r"><strong>{y.excluded}</strong></td></tr>
-                    <tr><td>Not yet located or access blocked</td><td className="r"><strong>{y.unresolved}</strong></td></tr>
+                    <tr><td>Women in workforce</td><td className="r nowrap"><strong>{pct(y.workforce)}</strong></td></tr>
+                    <tr><td>Pay gap verified from company statements</td><td className="r nowrap"><strong>{y.verified} of 50</strong></td></tr>
+                    <tr><td>Of those, with a workforce split too</td><td className="r nowrap"><strong>{y.companiesCovered}</strong></td></tr>
+                    <tr><td>Excluded (adjusted gap only, partial scope, not material) or not located</td><td className="r nowrap"><strong>{(y.excluded ?? 0) + (y.unresolved ?? 0)}</strong></td></tr>
                   </tbody>
                 ) : jp ? (
                   <tbody>
-                    <tr><td>Women in management</td><td className="r"><strong>{pct(y.managers)}</strong></td></tr>
-                    <tr><td>Women on boards</td><td className="r"><strong>{pct(y.boards)}</strong></td></tr>
-                    <tr><td>Regular staff: women's pay as a share of men's</td><td className="r"><strong>{pct(y.ratioRegular)}</strong></td></tr>
+                    <tr><td>Women in regular staff</td><td className="r nowrap"><strong>{pct(y.workforce)}</strong></td></tr>
+                    <tr><td>Women in management</td><td className="r nowrap"><strong>{pct(y.managers)}</strong></td></tr>
+                    <tr><td>Women on boards</td><td className="r nowrap"><strong>{pct(y.boards)}</strong></td></tr>
                   </tbody>
                 ) : (
                   <tbody>
-                    <tr><td>{m.workforceLabel}</td><td className="r"><strong>{pct(y.workforce)}</strong></td></tr>
-                    <tr><td>Women in the top pay quarter</td><td className="r"><strong>{pct(y.topQuartile)}</strong></td></tr>
-                    <tr><td>Mean pay gap</td><td className="r"><strong>{pct(y.gapMean)}</strong></td></tr>
+                    <tr><td>{m.workforceLabel}</td><td className="r nowrap"><strong>{pct(y.workforce)}</strong></td></tr>
+                    <tr><td>Women in the top pay quarter</td><td className="r nowrap"><strong>{pct(y.topQuartile)}</strong></td></tr>
+                    <tr><td>Mean pay gap</td><td className="r nowrap"><strong>{pct(y.gapMean)}</strong></td></tr>
                   </tbody>
                 )}
               </table>
-              {jp && <p className="small" style={{ marginTop: 12 }}>Women earn about <strong>{m.payPhrase(y.headline)}</strong> and hold <strong>{pct(y.managers, 0)}</strong> of management jobs.</p>}
-              {eu && <p className="small" style={{ marginTop: 12 }}>At the average company with a verified figure, women earn about <strong>{m.payPhrase(y.headline)}</strong>. Every excluded or missing company is listed below with its reason.</p>}
+              {jp && y.payRatio != null && <p className="small" style={{ marginTop: 12 }}>Across {y.payRatioCompanies} companies, women earn about <strong>{m.payPhrase(y.payRatio)}</strong> and hold <strong>{pct(y.managers, 0)}</strong> of management jobs.</p>}
+              {eu && y.payRatio != null && <p className="small" style={{ marginTop: 12 }}>Across {y.payRatioCompanies} companies with a verified gap, women earn about <strong>{m.payPhrase(y.payRatio)}</strong>. Every excluded or missing company is listed below with its reason.</p>}
               {!jp && !eu && y.gapMean != null && <p className="small" style={{ marginTop: 12 }}>Women earn about <strong>{m.payPhrase(1 - y.gapMean)}</strong>, and hold fewer of the best-paid jobs than their share of the workforce.</p>}
             </div>
           ) : (
@@ -145,9 +145,9 @@ export function IndexPage({ id }: { id: string }) {
             <table>
               <caption className="sr-only">Payroll owned per ₹10 lakh</caption>
               <tbody>
-                <tr><td>Payroll you own</td><td className="r"><strong>{inr(y.ownedPayroll ?? 0)}</strong> a year</td></tr>
-                <tr><td>Paid to women</td><td className="r"><strong>{inr(y.womenWages ?? 0)}</strong></td></tr>
-                <tr><td>Gap to parity</td><td className="r"><strong>{inr(y.gap ?? 0)}</strong></td></tr>
+                <tr><td>Payroll you own</td><td className="r nowrap"><strong>{inr(y.ownedPayroll ?? 0)}</strong> a year</td></tr>
+                <tr><td>Paid to women</td><td className="r nowrap"><strong>{inr(y.womenWages ?? 0)}</strong></td></tr>
+                <tr><td>Gap to parity</td><td className="r nowrap"><strong>{inr(y.gap ?? 0)}</strong></td></tr>
               </tbody>
             </table>
             {y.representationShare != null && y.payShare != null && (
@@ -237,9 +237,9 @@ export function IndexPage({ id }: { id: string }) {
 
       <section>
         <h2>All {ix.name} companies</h2>
-        <SortTable caption={`${ix.name} constituents`} columns={columns} rows={rows} rowKey={(r) => r.symbol} initial={{ key: uk ? 'w' : 'weight', dir: -1 }} rowHref={(r) => href('company', r.symbol)} scroll
+        <DataTable caption={`${ix.name} constituents`} columns={columns} rows={rows} rowKey={(r) => r.symbol} initial={{ key: uk ? 'w' : 'weight', dir: -1 }} rowHref={(r) => href('company', r.symbol)}
           rank download={`${ix.id}-companies`} summary={`${rows.length} companies · tap a row for its profile`} />
-        {(ix.missing.length > 0 || noData.length > 0 || noStaff.length > 0) && (
+        {(ix.missing.length > 0 || noData.length > 0 || noStaff.length > 0 || noSplit.length > 0) && (
           <p className="small" style={{ marginTop: 12 }}>
             <strong>Gaps:</strong>{' '}
             {ix.missing.length > 0 && <>no market data for {ix.missing.join(', ')}. </>}
@@ -248,6 +248,7 @@ export function IndexPage({ id }: { id: string }) {
               : jp
               ? <>Not in the government database: {noStaff.map((r) => r.co.name).join(', ')}. These companies may publish the figures on their own websites instead. </>
               : <>No {ix.country === 'GB' ? 'UK gender pay gap' : 'WGEA'} report for {noStaff.map((r) => r.co.name).join(', ')} (funds and trusts without staff, or no local employer above the reporting threshold). </>)}
+            {noSplit.length > 0 && <>Pay reported but no workforce split, so no share of pay and not in the headline: {noSplit.map((r) => r.co.name).join(', ')}. </>}
             {noData.length > 0 && <>No usable {fy(LATEST)} data for {noData.map((r) => r.co.name).join(', ')}.</>}
           </p>
         )}

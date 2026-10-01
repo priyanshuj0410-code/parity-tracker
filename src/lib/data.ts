@@ -65,25 +65,25 @@ export const MARKET: Record<string, Market> = {
     code: 'JP', name: 'Japan',
     years: ['latest'], latest: 'latest', prev: '',
     label: () => 'latest',
-    wageLabel: "Women's average pay as a share of men's",
-    workforceLabel: 'Women in management',
-    headlineLabel: "Women's average pay as a share of men's, average company",
-    intro: 'Japanese employers disclose women\'s average pay as a share of men\'s, not pay totals, so parity here is 100% and each company counts equally. One snapshot so far, mostly FY2025.',
+    wageLabel: "Women's share of pay",
+    workforceLabel: 'Women in regular staff',
+    headlineLabel: "Women's share of pay, average company",
+    intro: 'Japanese employers disclose women\'s average pay as a share of men\'s and women\'s share of regular staff. Together they give women\'s share of pay, on the same 50% scale as other markets. Each company counts equally. One snapshot so far, mostly FY2025.',
     payPhrase: (r) => `¥${Math.round(r * 100)} for every ¥100 men earn`,
-    coverage: (n) => `${n} companies in the government database`,
-    parity: 1,
+    coverage: (n) => `${n} companies with a pay ratio and a workforce split`,
+    parity: 0.5,
   },
   EU: {
     code: 'EU', name: 'European Union',
     years: ['2024', '2025'], latest: '2025', prev: '2024',
     label: (y) => y,
-    wageLabel: "Women's average pay as a share of men's (unadjusted)",
+    wageLabel: "Women's share of pay",
     workforceLabel: 'Women in workforce',
-    headlineLabel: "Women's average pay as a share of men's, average company",
-    intro: 'EU companies report an unadjusted gender pay gap under CSRD (ESRS S1-16), not pay totals, so parity here is 100% and each company counts equally. Figures are read from each company\'s own sustainability statement.',
+    headlineLabel: "Women's share of pay, average company",
+    intro: 'EU companies report an unadjusted gender pay gap (ESRS S1-16) and headcount by gender (S1-6) under CSRD. Together they give women\'s share of pay, on the same 50% scale as other markets. Each company counts equally, read from its own sustainability statement.',
     payPhrase: (r) => `€${Math.round(r * 100)} for every €100 men earn`,
-    coverage: (n) => `${n} companies with a verified CSRD figure`,
-    parity: 1,
+    coverage: (n) => `${n} companies with a pay gap and a workforce split`,
+    parity: 0.5,
   },
 }
 
@@ -93,10 +93,7 @@ export const indexMarket = (ix: IndexData): Market => MARKET[ix.country] ?? MARK
 
 export function workforce(c: Company, y?: CompanyYear): number | null {
   if (!y) return null
-  if (c.country === 'IN') return y.fPerm
-  if (c.country === 'JP') return y.managerShare ?? null
-  if (c.country === 'EU') return null
-  return y.fAll
+  return c.country === 'IN' || c.country === 'JP' ? y.fPerm : y.fAll
 }
 
 export function yoyChange(c: Company, y1?: string, y0?: string): number | null {
@@ -118,7 +115,6 @@ export function boardShare(y?: CompanyYear): number | null {
 
 export function payRatio(c: Company, y?: CompanyYear): number | null {
   if (!y) return null
-  if (c.country === 'JP' || c.country === 'EU') return y.w
   if (c.country !== 'IN') return y.gapMean == null ? null : 1 - y.gapMean
   if (y.w == null || y.fPerm == null) return null
   if (y.fPerm <= 0 || y.fPerm >= 1 || y.w <= 0 || y.w >= 1) return null
@@ -128,6 +124,7 @@ export function payRatio(c: Company, y?: CompanyYear): number | null {
 export type Tone = 'ok' | 'warn' | 'bad'
 
 export function dataLabel(y?: CompanyYear): { label: string; tone: Tone } {
+  if (y && y.w == null && y.gapMean != null) return { label: 'No staff split', tone: 'warn' }
   if (!y || y.w == null) return { label: 'Missing', tone: 'bad' }
   if (y.wKind === 'estimated') return { label: 'Estimated', tone: 'warn' }
   if (y.basisChange) return { label: 'Basis changed', tone: 'warn' }
