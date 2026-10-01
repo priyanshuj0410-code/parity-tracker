@@ -41,17 +41,24 @@ Run these in a scratch folder with the scripts copied in.
 - **Headcount:** the workforce share uses permanent employees and workers only.
 - **Boards:** totals outside 6–20 are discarded as filing errors.
 
-## EU pipeline (Euro Stoxx 50): in progress, not published
-Scripts and verified values are in `pipeline/eu/`.
+## EU pipeline (Euro Stoxx 50): live
+Scripts and verified values are in `pipeline/eu/`. `eu_build.py` turns `eu_values.json` into the app data.
 
-- **Measure:** the CSRD ESRS S1-16 unadjusted gender pay gap, from each company's own sustainability statement. It will show like Japan's, as women's average pay as a share of men's, with parity at 100%.
+- **Measure:** the CSRD ESRS S1-16 unadjusted gender pay gap, from each company's own sustainability statement. It shows like Japan's, as women's average pay as a share of men's, with parity at 100%. The index is an equal-weighted average.
 - **France, Netherlands, Italy:**
   - `esef_find.py` queries the filings.xbrl.org API by entity name for FY2025 ESEF filings.
   - `esef_extract.py` strips the XHTML and prints pay-gap passages, searching English, French and Italian terms.
   - The repository has no German or Spanish FY2025 filings.
 - **Germany, Spain, Belgium, Finland:** find the FY2025 report PDF per company, then `./grab.sh CODE URL`, which downloads, runs pdftotext and prints the pay-gap passages.
 - **Verification:** every value is read from the source passage before it goes into `eu_values.json`, and the source URL is stored. Search-engine summaries are not trusted: they mixed up adjusted gaps (Adidas) and UK-only figures (Airbus).
-- **Status (2026-10-02):** 13 of 50 verified, 6 excluded with reasons (adjusted-only or unverified), 31 to do, mostly German and Spanish. Publish once coverage is broad enough not to skew the average toward French and Dutch filers.
+- **Sites that block downloads:**
+  - `crawl.py` walks HTML report sites.
+  - The WebFetch tool saves PDFs under 10 MB locally, which then go through pdftotext. This worked for BMW.
+  - Allianz, SAP, Iberdrola and Mercedes return 403 to both routes.
+- **Status (2026-10-02):** 29 of 50 verified, 10 excluded with stated reasons, 11 unresolved (access blocked or no FY2025 statement located). Every company page shows its value with source link, or its reason.
+- **Next refresh:**
+  - Air Liquide and EssilorLuxottica: replace the 2024 figures once their FY2025 ESEF filings reach the repository.
+  - Retry the 11 unresolved companies, ideally from a browser session.
 
 ## Japan pipeline (Nikkei 225)
 Scripts are in `pipeline/jp/`.

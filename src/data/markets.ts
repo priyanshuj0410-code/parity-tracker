@@ -39,9 +39,9 @@ export const MARKETS: Market[] = [
   },
   {
     market: 'European Union',
-    status: 'planned',
-    source: 'CSRD sustainability statements (ESRS S1); pay transparency reports from 2027',
-    required: 'Gender pay gap and headcount by gender for companies in scope.',
+    status: 'live',
+    source: 'Company CSRD sustainability statements (ESRS S1-16); pay transparency reports from 2027',
+    required: 'Unadjusted gender pay gap, unless the company assesses it as not material. 29 of 50 verified so far.',
     indexes: 'Euro Stoxx 50',
   },
   {

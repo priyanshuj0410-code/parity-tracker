@@ -39,7 +39,7 @@ export default function Root() {
       <footer className="site-footer">
         <div className="wrap">
           <img src={logo} alt="" />
-          <span>Built with The Equal Lens. Data from companies' own legally required gender pay disclosures in India, the UK, Australia and Japan, collected {SOURCE_DATE}. Not investment advice.</span>
+          <span>Built with The Equal Lens. Data from companies' own legally required gender pay disclosures in India, the UK, Australia, Japan and the EU, collected {SOURCE_DATE}. Not investment advice.</span>
         </div>
       </footer>
     </>

@@ -9,14 +9,14 @@ echo "== $code ($(wc -c < pdf/$code.pdf) bytes)"
 python3 - "$code" <<'PY'
 import re,sys
 code=sys.argv[1]; L=open(f'pdf/{code}.txt',errors='ignore').read().split('\n')
-hits=[i for i,l in enumerate(L) if re.search(r'(unadjusted )?gender pay gap|écart de rémunération|Gender Pay Gap|pay gap',l,re.I) and re.search(r'\d',' '.join(L[i:i+4]))]
+hits=[i for i,l in enumerate(L) if re.search(r'gender pay gap|pay gap|écart de rémunération|brecha salarial|Entgeltlücke|S1-16',l,re.I)]
 seen=set(); out=0
 for i in hits:
     if any(abs(i-s)<6 for s in seen): continue
     seen.add(i)
     block=' '.join(x.strip() for x in L[max(0,i-1):i+4])
     block=re.sub(r'\s+',' ',block)
-    if re.search(r'\d+[.,]\d+ ?%|\d+ ?%',block):
+    if re.search(r'\d+[.,]?\d* ?(%|percent|per cent|Prozent)',block,re.I):
         print('  ',block[:260]); out+=1
     if out>=7: break
 if out==0: print('   (no pay-gap figures found)')

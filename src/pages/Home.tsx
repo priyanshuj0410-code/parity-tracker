@@ -6,7 +6,7 @@ import { pct } from '../lib/format'
 import { href } from '../lib/router'
 
 const STATUS: Record<MarketStatus, string> = { live: 'Live', planned: 'Planned', limited: 'Limited data' }
-const PACE_INDEX: Record<string, string> = { IN: 'nifty50', GB: 'ftse100', AU: 'asx200', JP: 'nikkei225' }
+const PACE_INDEX: Record<string, string> = { IN: 'nifty50', GB: 'ftse100', AU: 'asx200', JP: 'nikkei225', EU: 'eurostoxx50' }
 
 function Pace({ m }: { m: Market }) {
   const changes = Object.values(companies)
@@ -20,12 +20,12 @@ function Pace({ m }: { m: Market }) {
   const down = changes.filter((v) => v <= -0.0005).length
   const ix = indexes[PACE_INDEX[m.code]]
   const level = ix.years[m.latest].headline
-  const years = median > 0 ? Math.round((0.5 - level) / median / 5) * 5 : null
+  const years = median > 0 ? Math.round((m.parity - level) / median / 5) * 5 : null
   return (
     <p>
       <strong>{m.name}:</strong> {changes.length} companies can be compared like for like between {m.label(m.prev)} and {m.label(m.latest)}.
       {' '}{up} raised women's share of pay and {down} lowered it, a median change of <strong>{(median * 100).toFixed(1)} percentage points</strong>.
-      {years != null && <> At that pace, a company at the {ix.name} level ({pct(level)}) would take about <strong>{years} years</strong> to reach 50%.</>}
+      {years != null && <> At that pace, a company at the {ix.name} level ({pct(level)}) would take about <strong>{years} years</strong> to reach {pct(m.parity, 0)}.</>}
     </p>
   )
 }

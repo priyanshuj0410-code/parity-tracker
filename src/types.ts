@@ -82,6 +82,9 @@ export interface IndexYear {
   managers?: number | null
   boards?: number | null
   ratioRegular?: number | null
+  verified?: number
+  excluded?: number
+  unresolved?: number
 }
 
 export interface Yoy {
