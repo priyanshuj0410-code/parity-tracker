@@ -19,6 +19,13 @@ export interface CompanyYear {
   gapMedian?: number | null
   bonusGapMean?: number | null
   entityCount?: number
+  ratioRegular?: number | null
+  ratioNonRegular?: number | null
+  managerShare?: number | null
+  boardShareReported?: number | null
+  period?: string
+  asOf?: string
+  updated?: string
 }
 
 export interface Entity {
@@ -72,6 +79,9 @@ export interface IndexYear {
   workforce?: number | null
   topQuartile?: number | null
   gapMean?: number | null
+  managers?: number | null
+  boards?: number | null
+  ratioRegular?: number | null
 }
 
 export interface Yoy {

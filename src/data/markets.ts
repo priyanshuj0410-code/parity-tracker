@@ -25,9 +25,9 @@ export const MARKETS: Market[] = [
   },
   {
     market: 'Japan',
-    status: 'planned',
-    source: 'Annual securities reports (EDINET)',
-    required: 'Women\'s average pay as a share of men\'s, women in management. Employers with 301+ regular staff.',
+    status: 'live',
+    source: "Ministry of Health, Labour and Welfare women's advancement database (open data)",
+    required: 'Women\'s average pay as a share of men\'s (all, regular and non-regular staff), women in management. Employers with 301+ staff.',
     indexes: 'Nikkei 225',
   },
   {

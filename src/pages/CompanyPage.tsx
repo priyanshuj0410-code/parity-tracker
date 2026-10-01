@@ -1,5 +1,6 @@
 import { DataBadge } from '../components/Badge'
 import { Change } from '../components/Change'
+import { JapanDetail } from '../components/JapanDetail'
 import { LineChart, type Series } from '../components/LineChart'
 import { boardShare, companies, indexName, marketOf, payRatio, shareChange, workforce, yoyChange } from '../lib/data'
 import { crore, pct } from '../lib/format'
@@ -12,6 +13,7 @@ export function CompanyPage({ symbol }: { symbol: string }) {
   const m = marketOf(c)
   const uk = c.country !== 'IN'
   const gb = c.country === 'GB'
+  const jp = c.country === 'JP'
   const YEARS = m.years
   const fy = m.label
   const desc = [...YEARS].reverse()
@@ -45,12 +47,14 @@ export function CompanyPage({ symbol }: { symbol: string }) {
       <section>
         <div className="meta"><a href={href('companies')}>Companies</a> / {c.industry}</div>
         <h1>{c.name}</h1>
-        <p className="meta">{m.name} · {c.exchange}: {c.symbol.replace(/^ASX-/, '')}{c.marketCapCr != null && <> · market cap {crore(c.marketCapCr)}</>}</p>
+        <p className="meta">{m.name} · {c.exchange}: {c.symbol.replace(/^(ASX|TSE)-/, '')}{c.marketCapCr != null && <> · market cap {crore(c.marketCapCr)}</>}</p>
         <div>{c.indexes.map((id) => <a key={id} className="chip" href={href('index', id)}>{indexName(id)}</a>)}</div>
       </section>
 
       {!hasData ? (
         <section><p>{c.noDataReason ?? 'No BRSR filing is available for this company yet, so there is nothing to show. Recent listings file their first report after their first full financial year.'}</p></section>
+      ) : jp ? (
+        <JapanDetail c={c} />
       ) : (
         <>
           <section>

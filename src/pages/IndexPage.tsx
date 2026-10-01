@@ -17,11 +17,13 @@ export function IndexPage({ id }: { id: string }) {
   if (!ix) return <NotFound />
   const m = indexMarket(ix)
   const uk = ix.country !== 'IN'
-  const weightNote = ix.country === 'GB' ? 'each company counts equally' : ix.country === 'AU' ? 'weighted by Australian payroll' : 'weighted by free-float market cap'
+  const jp = ix.country === 'JP'
+  const weightNote = ix.country === 'AU' ? 'weighted by Australian payroll' : ix.country === 'IN' ? 'weighted by free-float market cap' : 'each company counts equally'
   const TREND_NOTE: Record<string, string> = {
     IN: 'Each company keeps a fixed payroll weight across years, so the line moves when women\'s share of wages moves, not when payroll mix shifts.',
     GB: 'Each company counts equally. Like-for-like changes leave out companies whose UK reporting employers or size bands changed between the two years. Fewer reports exist for 2019 because enforcement was suspended during the pandemic.',
     AU: 'Two years so far. The earlier release is not archived, so FY24 values hold each company\'s workforce share at its FY25 level and the change reflects pay gaps only.',
+    JP: '',
   }
   const LATEST = m.latest
   const PREV = m.prev
@@ -42,9 +44,14 @@ export function IndexPage({ id }: { id: string }) {
     { key: 'name', label: 'Company', render: (r) => <a href={href('company', r.symbol)}>{r.co.name}<span className="sub">{r.co.industry}</span></a>, sort: (r) => r.co.name },
     ...(uk ? [] : [{ key: 'weight', label: 'Weight', right: true, render: (r: Row) => pct(r.weight), sort: (r: Row) => r.weight }]),
     { key: 'w', label: `${m.wageLabel} ${fy(LATEST)}`, right: true, render: (r) => <>{pct(r.co.years[LATEST]?.w)} <DataBadge year={r.co.years[LATEST]} /></>, sort: (r) => r.co.years[LATEST]?.w ?? null },
-    { key: 'chg', label: `Change since ${fy(PREV)}`, right: true, render: (r) => <Change value={yoyChange(r.co)} />, sort: (r) => yoyChange(r.co) },
+    ...(PREV ? [{ key: 'chg', label: `Change since ${fy(PREV)}`, right: true, render: (r: Row) => <Change value={yoyChange(r.co)} />, sort: (r: Row) => yoyChange(r.co) }] : []),
     { key: 'f', label: m.workforceLabel, right: true, render: (r) => pct(workforce(r.co, r.co.years[LATEST])), sort: (r) => workforce(r.co, r.co.years[LATEST]) },
-    ...(uk
+    ...(jp
+      ? [
+          { key: 'b', label: 'Women on board', right: true, render: (r: Row) => pct(boardShare(r.co.years[LATEST]) ?? r.co.years[LATEST]?.boardShareReported), sort: (r: Row) => boardShare(r.co.years[LATEST]) ?? r.co.years[LATEST]?.boardShareReported ?? null },
+          { key: 'reg', label: 'Regular staff pay ratio', right: true, render: (r: Row) => pct(r.co.years[LATEST]?.ratioRegular), sort: (r: Row) => r.co.years[LATEST]?.ratioRegular ?? null },
+        ]
+      : uk
       ? [
           { key: 'top', label: 'Women in top pay quarter', right: true, render: (r: Row) => pct(r.co.years[LATEST]?.topQuartile), sort: (r: Row) => r.co.years[LATEST]?.topQuartile ?? null },
           { key: 'gap', label: 'Mean pay gap', right: true, render: (r: Row) => pct(r.co.years[LATEST]?.gapMean), sort: (r: Row) => r.co.years[LATEST]?.gapMean ?? null },
@@ -62,8 +69,10 @@ export function IndexPage({ id }: { id: string }) {
           <div className="card">
             <div className="tile-label">{m.headlineLabel} · {fy(LATEST)}</div>
             <div className="tile-value hero">{pct(y.headline)}</div>
-            <div className="tile-context"><Change value={ch ? ch.change : null} /> <span className="muted">like for like across {ch?.companies ?? 0} companies since {fy(PREV)}</span></div>
-            <ParityTrack value={y.headline} />
+            <div className="tile-context">{PREV
+              ? <><Change value={ch ? ch.change : null} /> <span className="muted">like for like across {ch?.companies ?? 0} companies since {fy(PREV)}</span></>
+              : <span className="muted">First snapshot</span>}</div>
+            <ParityTrack value={y.headline} parity={m.parity} />
             <div className="tile-context muted">{uk ? m.coverage(y.companiesCovered) : `${m.coverage(y.companiesCovered)} · ${pct(y.reportedPayrollShare, 0)} of payroll from reported values`}</div>
           </div>
           {uk ? (
@@ -71,13 +80,22 @@ export function IndexPage({ id }: { id: string }) {
               <div className="tile-label">Pay structure · {fy(LATEST)}</div>
               <table>
                 <caption className="sr-only">Pay structure</caption>
-                <tbody>
-                  <tr><td>{m.workforceLabel}</td><td className="r"><strong>{pct(y.workforce)}</strong></td></tr>
-                  <tr><td>Women in the top pay quarter</td><td className="r"><strong>{pct(y.topQuartile)}</strong></td></tr>
-                  <tr><td>Mean pay gap</td><td className="r"><strong>{pct(y.gapMean)}</strong></td></tr>
-                </tbody>
+                {jp ? (
+                  <tbody>
+                    <tr><td>Women in management</td><td className="r"><strong>{pct(y.managers)}</strong></td></tr>
+                    <tr><td>Women on boards</td><td className="r"><strong>{pct(y.boards)}</strong></td></tr>
+                    <tr><td>Regular staff: women's pay as a share of men's</td><td className="r"><strong>{pct(y.ratioRegular)}</strong></td></tr>
+                  </tbody>
+                ) : (
+                  <tbody>
+                    <tr><td>{m.workforceLabel}</td><td className="r"><strong>{pct(y.workforce)}</strong></td></tr>
+                    <tr><td>Women in the top pay quarter</td><td className="r"><strong>{pct(y.topQuartile)}</strong></td></tr>
+                    <tr><td>Mean pay gap</td><td className="r"><strong>{pct(y.gapMean)}</strong></td></tr>
+                  </tbody>
+                )}
               </table>
-              {y.gapMean != null && <p className="small" style={{ marginTop: 12 }}>Women earn about <strong>{m.payPhrase(1 - y.gapMean)}</strong>, and hold fewer of the best-paid jobs than their share of the workforce.</p>}
+              {jp && <p className="small" style={{ marginTop: 12 }}>Women earn about <strong>{m.payPhrase(y.headline)}</strong> and hold <strong>{pct(y.managers, 0)}</strong> of management jobs.</p>}
+              {!jp && y.gapMean != null && <p className="small" style={{ marginTop: 12 }}>Women earn about <strong>{m.payPhrase(1 - y.gapMean)}</strong>, and hold fewer of the best-paid jobs than their share of the workforce.</p>}
             </div>
           ) : (
           <div className="card">
@@ -107,12 +125,18 @@ export function IndexPage({ id }: { id: string }) {
         </div>
       </section>
 
+      {xs.length < 2 ? (
+        <section>
+          <h2>The trend</h2>
+          <p className="small muted">One snapshot so far, mostly covering FY2025. The trend starts with next year's disclosures.</p>
+        </section>
+      ) : (
       <section>
         <h2>The trend</h2>
         <LineChart
           ariaLabel={`${ix.name}: women's share of the payroll you own, by year`}
           xs={xs} xLabel={fy} fmt={(v) => pct(v, v === Math.round(v * 10) / 10 ? 0 : 1)}
-          reference={{ y: 0.5, label: 'Parity 50%' }}
+          reference={{ y: m.parity, label: `Parity ${pct(m.parity, 0)}` }}
           series={[{ id: 'h', label: "Women's share of payroll", short: 'Payroll', color: 'var(--s1)', points: xs.map((k) => ({ x: k, y: ix.years[k].headline })) }]}
         />
         <div className="table-wrap" style={{ marginTop: 16 }}>
@@ -136,13 +160,14 @@ export function IndexPage({ id }: { id: string }) {
         </div>
         <p className="small muted" style={{ marginTop: 10 }}>{TREND_NOTE[ix.country]}</p>
       </section>
+      )}
 
       <section>
         <h2>By sector, {fy(LATEST)}</h2>
-        <SectorBars sectors={y.sectors} />
+        <SectorBars sectors={y.sectors} parity={m.parity} />
       </section>
 
-      <section>
+      {PREV && <section>
         <h2>Biggest moves since {fy(PREV)}</h2>
         <div className="grid g2">
           {[{ title: 'Rose most', list: risers }, { title: 'Fell most', list: fallers }].map((g) => (
@@ -166,7 +191,7 @@ export function IndexPage({ id }: { id: string }) {
           ))}
         </div>
         <p className="small muted" style={{ marginTop: 10 }}>Companies whose reporting basis changed between the two years are left out of this comparison.</p>
-      </section>
+      </section>}
 
       <section>
         <h2>All {ix.name} companies</h2>
@@ -175,7 +200,9 @@ export function IndexPage({ id }: { id: string }) {
           <p className="small" style={{ marginTop: 12 }}>
             <strong>Gaps:</strong>{' '}
             {ix.missing.length > 0 && <>no market data for {ix.missing.join(', ')}. </>}
-            {noStaff.length > 0 && <>No {ix.country === 'GB' ? 'UK gender pay gap' : 'WGEA'} report for {noStaff.map((r) => r.co.name).join(', ')} (funds and trusts without staff, or no local employer above the reporting threshold). </>}
+            {noStaff.length > 0 && (jp
+              ? <>Not in the government database: {noStaff.map((r) => r.co.name).join(', ')}. These companies may publish the figures on their own websites instead. </>
+              : <>No {ix.country === 'GB' ? 'UK gender pay gap' : 'WGEA'} report for {noStaff.map((r) => r.co.name).join(', ')} (funds and trusts without staff, or no local employer above the reporting threshold). </>)}
             {noData.length > 0 && <>No usable {fy(LATEST)} data for {noData.map((r) => r.co.name).join(', ')}.</>}
           </p>
         )}

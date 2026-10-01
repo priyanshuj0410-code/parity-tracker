@@ -5,7 +5,7 @@ import type { Company, CompanyYear, IndexData } from '../types'
 export const companies = companiesJson as unknown as Record<string, Company>
 export const indexes = indexesJson as unknown as Record<string, IndexData>
 
-export const INDEX_ORDER = ['nifty50', 'sensex', 'niftynext50', 'ftse100', 'asx200']
+export const INDEX_ORDER = ['nifty50', 'sensex', 'niftynext50', 'ftse100', 'asx200', 'nikkei225']
 export const SOURCE_DATE = '1 October 2026'
 
 export interface Market {
@@ -21,6 +21,7 @@ export interface Market {
   intro: string
   payPhrase: (ratio: number) => string
   coverage: (n: number) => string
+  parity: number
 }
 
 export const MARKET: Record<string, Market> = {
@@ -34,6 +35,7 @@ export const MARKET: Record<string, Market> = {
     intro: 'Company BRSR filings give total wages paid to women, so the index figure weights each company by its payroll.',
     payPhrase: (r) => `₹${Math.round(r * 100)} for every ₹100 paid to men`,
     coverage: (n) => `${n} companies covered`,
+    parity: 0.5,
   },
   GB: {
     code: 'GB', name: 'United Kingdom',
@@ -45,6 +47,7 @@ export const MARKET: Record<string, Market> = {
     intro: 'UK gender pay gap reports cover UK staff only and give hourly pay with no payroll totals, so each company counts equally and the measure differs from India\'s.',
     payPhrase: (r) => `${Math.round(r * 100)}p for every £1 men earn per hour`,
     coverage: (n) => `${n} companies with UK gender pay gap reports`,
+    parity: 0.5,
   },
   AU: {
     code: 'AU', name: 'Australia',
@@ -56,6 +59,19 @@ export const MARKET: Record<string, Market> = {
     intro: 'WGEA reports cover Australian staff and give full-time-equivalent pay with exact group headcounts, so the index figure weights each company by its Australian payroll.',
     payPhrase: (r) => `${Math.round(r * 100)}c for every $1 men earn (full-time equivalent)`,
     coverage: (n) => `${n} companies with WGEA reports`,
+    parity: 0.5,
+  },
+  JP: {
+    code: 'JP', name: 'Japan',
+    years: ['latest'], latest: 'latest', prev: '',
+    label: () => 'latest',
+    wageLabel: "Women's average pay as a share of men's",
+    workforceLabel: 'Women in management',
+    headlineLabel: "Women's average pay as a share of men's, average company",
+    intro: 'Japanese employers disclose women\'s average pay as a share of men\'s, not pay totals, so parity here is 100% and each company counts equally. One snapshot so far, mostly FY2025.',
+    payPhrase: (r) => `¥${Math.round(r * 100)} for every ¥100 men earn`,
+    coverage: (n) => `${n} companies in the government database`,
+    parity: 1,
   },
 }
 
@@ -64,7 +80,9 @@ export const indexMarket = (ix: IndexData): Market => MARKET[ix.country] ?? MARK
 
 export function workforce(c: Company, y?: CompanyYear): number | null {
   if (!y) return null
-  return c.country === 'IN' ? y.fPerm : y.fAll
+  if (c.country === 'IN') return y.fPerm
+  if (c.country === 'JP') return y.managerShare ?? null
+  return y.fAll
 }
 
 export function yoyChange(c: Company, y1?: string, y0?: string): number | null {
@@ -86,6 +104,7 @@ export function boardShare(y?: CompanyYear): number | null {
 
 export function payRatio(c: Company, y?: CompanyYear): number | null {
   if (!y) return null
+  if (c.country === 'JP') return y.w
   if (c.country !== 'IN') return y.gapMean == null ? null : 1 - y.gapMean
   if (y.w == null || y.fPerm == null) return null
   if (y.fPerm <= 0 || y.fPerm >= 1 || y.w <= 0 || y.w >= 1) return null

@@ -41,6 +41,20 @@ Run these in a scratch folder with the scripts copied in.
 - **Headcount:** the workforce share uses permanent employees and workers only.
 - **Boards:** totals outside 6–20 are discarded as filing errors.
 
+## Japan pipeline (Nikkei 225)
+Scripts are in `pipeline/jp/`.
+
+1. **Members:** `n225.json` is parsed from the Wikipedia Nikkei 225 components list (as of April 2026, grouped by sector).
+2. **Data:** the MHLW women's advancement database open data. `https://positive-ryouritsu.mhlw.go.jp/positivedb/opendata/download_b.html?w=99` returns a zip, despite the `.html` name, holding `99_{YYYYMMDD}_utf8_bom.csv` (all companies, about 90 MB).
+   - The site rejects bare curl. Send a browser User-Agent, `Accept-Language: ja`, and the open data page as Referer.
+3. **Build:** `python3 jp_build.py`, then `python3 ../merge_markets.py`.
+
+Japan rules:
+- **Join:** on securities code (column 9). Where a code appears more than once, keep the largest employer, then the latest update.
+- **Headline:** women's average pay as a share of men's, all workers (column 205), with parity at 100%. Values outside 20–150% are discarded.
+- **Other fields:** regular and non-regular ratios (206, 207), women in management (159), and board officers (163–165).
+- **Index:** equal-weighted average across covered companies. One snapshot only: the open data holds each company's latest disclosure, so archive each download to build a trend.
+
 ## Australia pipeline (S&P/ASX 200)
 Scripts are in `pipeline/au/`.
 

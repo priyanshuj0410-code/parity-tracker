@@ -1,8 +1,8 @@
 import { pct } from '../lib/format'
 import type { Sector } from '../types'
 
-export function SectorBars({ sectors }: { sectors: Sector[] }) {
-  const top = Math.max(0.5, Math.ceil(Math.max(...sectors.map((s) => s.w)) * 10) / 10)
+export function SectorBars({ sectors, parity = 0.5 }: { sectors: Sector[]; parity?: number }) {
+  const top = Math.max(parity, Math.ceil(Math.max(...sectors.map((s) => s.w)) * 10) / 10)
   const at = (v: number) => `${(v / top) * 100}%`
   return (
     <div className="bars" role="list" aria-label="Women's share of pay by sector">
@@ -12,7 +12,7 @@ export function SectorBars({ sectors }: { sectors: Sector[] }) {
           <div className="name">{s.industry}<small>{s.payrollShare == null ? '' : `${s.payrollShare < 0.01 ? 'under 1%' : pct(s.payrollShare, 0)} of payroll · `}{s.companies} {s.companies === 1 ? 'company' : 'companies'}</small></div>
           <div className="bar-track">
             <div className="bar" style={{ width: at(s.w) }} />
-            <div className="parity-mark" style={{ left: at(0.5) }} />
+            <div className="parity-mark" style={{ left: at(parity) }} />
             <div className="bar-val" style={{ left: at(s.w) }}>{pct(s.w)}</div>
           </div>
         </div>
@@ -21,8 +21,8 @@ export function SectorBars({ sectors }: { sectors: Sector[] }) {
         <span />
         <div>
           <span>0%</span>
-          <span className="parity-label" style={{ left: at(0.5) }}>50% parity</span>
-          {top > 0.5 && <span>{pct(top, 0)}</span>}
+          <span className="parity-label" style={{ left: at(parity) }}>{pct(parity, 0)} parity</span>
+          {top > parity && <span>{pct(top, 0)}</span>}
         </div>
       </div>
     </div>

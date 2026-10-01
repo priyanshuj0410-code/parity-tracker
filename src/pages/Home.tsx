@@ -6,7 +6,7 @@ import { pct } from '../lib/format'
 import { href } from '../lib/router'
 
 const STATUS: Record<MarketStatus, string> = { live: 'Live', planned: 'Planned', limited: 'Limited data' }
-const PACE_INDEX: Record<string, string> = { IN: 'nifty50', GB: 'ftse100', AU: 'asx200' }
+const PACE_INDEX: Record<string, string> = { IN: 'nifty50', GB: 'ftse100', AU: 'asx200', JP: 'nikkei225' }
 
 function Pace({ m }: { m: Market }) {
   const changes = Object.values(companies)
@@ -54,8 +54,10 @@ export function Home() {
                 <a key={id} className="card" href={href('index', id)}>
                   <div className="tile-label">{ix.name} · {m.label(m.latest)}</div>
                   <div className="tile-value">{pct(y.headline)}</div>
-                  <div className="tile-context"><Change value={ch ? ch.change : null} /> <span className="muted">like for like since {m.label(m.prev)}</span></div>
-                  <ParityTrack value={y.headline} />
+                  <div className="tile-context">{m.prev
+                    ? <><Change value={ch ? ch.change : null} /> <span className="muted">like for like since {m.label(m.prev)}</span></>
+                    : <span className="muted">First snapshot</span>}</div>
+                  <ParityTrack value={y.headline} parity={m.parity} />
                   <div className="tile-context muted">{y.companiesCovered} of {ix.constituents.length + ix.missing.length} companies covered</div>
                 </a>
               )
