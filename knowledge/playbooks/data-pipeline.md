@@ -41,8 +41,22 @@ Run these in a scratch folder with the scripts copied in.
 - **Headcount:** the workforce share uses permanent employees and workers only.
 - **Boards:** totals outside 6–20 are discarded as filing errors.
 
+## Australia pipeline (S&P/ASX 200)
+Scripts are in `pipeline/au/`.
+
+1. **Members:** `asx200.json` is parsed from the Wikipedia S&P/ASX 200 table (as of 5 April 2026). Refresh it after each quarterly rebalance.
+2. **Data:** download `https://www.wgea.gov.au/sites/default/files/documents/Employer-Gender-Pay-Gaps-Spreadsheet.xlsx`. WGEA replaces it each March, so archive every release locally: the Wayback Machine only holds the current one.
+3. **Load:** `python3 au_load.py` reads the employer, corporate group and group info sheets into `wgea.json`.
+4. **Match:** `python3 au_match.py` auto-matches names (first-token index, overlap score ≥ 0.75). Manual fixes are the `OVR`, `REJECT` and `FUNDS` sets in `au_build.py`.
+5. **Build:** `python3 au_build.py`, then `python3 ../merge_markets.py`.
+
+Australia rules:
+- **Pay share:** women's share of full-time-equivalent pay is `f(1−g) / (f(1−g) + (1−f))`, using the average total remuneration gap.
+- **Earlier year:** 2023-24 gaps are in the same release, but 2023-24 workforce shares are not, so FY24 reuses the FY25 workforce share and is marked estimated.
+- **Index:** weighted by Australian payroll, from exact group headcount × average total remuneration (size-band midpoints for single employers).
+
 ## UK pipeline (FTSE 100)
-Scripts are in `pipeline/uk/`; `pipeline/merge_markets.py` merges both markets into `src/data/`.
+Scripts are in `pipeline/uk/`; `pipeline/merge_markets.py` merges all markets into `src/data/`.
 
 1. **Members:** `ftse100.json` is parsed from the Wikipedia FTSE 100 constituents table (members after the 1 October 2026 changes). Refresh it after each quarterly review.
 2. **Data:** download `https://gender-pay-gap.service.gov.uk/viewing/download-data/{year}` for every year from 2017, saved as `gpg{year}.csv`. The year is the April snapshot year.
