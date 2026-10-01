@@ -42,3 +42,4 @@ out/
 # logs / OS
 *.log
 .DS_Store
+.vercel

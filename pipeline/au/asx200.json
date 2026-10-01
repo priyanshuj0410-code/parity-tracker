@@ -1,0 +1,1002 @@
+[
+{
+"code": "360",
+"name": "Life360",
+"sector": "Information Technology"
+},
+{
+"code": "4DX",
+"name": "4DMedical",
+"sector": "Healthcare"
+},
+{
+"code": "A2M",
+"name": "a2 Milk Company",
+"sector": "Consumer Staples"
+},
+{
+"code": "AAI",
+"name": "Alcoa",
+"sector": "Materials"
+},
+{
+"code": "AFI",
+"name": "Australian Foundation Investment Company",
+"sector": "Financials"
+},
+{
+"code": "AGL",
+"name": "AGL Energy",
+"sector": "Utilities"
+},
+{
+"code": "AIA",
+"name": "Auckland International Airport Limited",
+"sector": "Industrials"
+},
+{
+"code": "ALD",
+"name": "Ampol",
+"sector": "Energy"
+},
+{
+"code": "ALK",
+"name": "Alkane Resources",
+"sector": "Materials"
+},
+{
+"code": "ALL",
+"name": "Aristocrat Leisure",
+"sector": "Consumer Discretionary"
+},
+{
+"code": "ALQ",
+"name": "ALS",
+"sector": "Industrials"
+},
+{
+"code": "ALX",
+"name": "Atlas Arteria",
+"sector": "Industrials"
+},
+{
+"code": "AMC",
+"name": "Amcor",
+"sector": "Materials"
+},
+{
+"code": "AMP",
+"name": "AMP",
+"sector": "Financials"
+},
+{
+"code": "ANN",
+"name": "Ansell",
+"sector": "Healthcare"
+},
+{
+"code": "ANZ",
+"name": "Australia & New Zealand Banking Group",
+"sector": "Financials"
+},
+{
+"code": "APA",
+"name": "APA Group",
+"sector": "|Utilities"
+},
+{
+"code": "APE",
+"name": "Eagers Automotive",
+"sector": "Consumer Discretionary"
+},
+{
+"code": "ARB",
+"name": "ARB Corporation",
+"sector": "Consumer Discretionary"
+},
+{
+"code": "ARG",
+"name": "Argo Investments",
+"sector": "Financials"
+},
+{
+"code": "ASB",
+"name": "Austal",
+"sector": "Industrials"
+},
+{
+"code": "ASK",
+"name": "Abacus Storage King",
+"sector": "Real Estate"
+},
+{
+"code": "ASX",
+"name": "ASX",
+"sector": "Financials"
+},
+{
+"code": "AUB",
+"name": "AUB Group",
+"sector": "Financials"
+},
+{
+"code": "AZJ",
+"name": "Aurizon",
+"sector": "Industrials"
+},
+{
+"code": "BEN",
+"name": "Bendigo & Adelaide Bank",
+"sector": "Financials"
+},
+{
+"code": "BFL",
+"name": "BSP Financial Group",
+"sector": "Financials"
+},
+{
+"code": "BGA",
+"name": "Bega Cheese",
+"sector": "Consumer Staples"
+},
+{
+"code": "BGL",
+"name": "Bellevue Gold",
+"sector": "Materials"
+},
+{
+"code": "BHP",
+"name": "BHP",
+"sector": "Materials"
+},
+{
+"code": "BOQ",
+"name": "Bank of Queensland",
+"sector": "Financials"
+},
+{
+"code": "BPT",
+"name": "Beach Energy",
+"sector": "Energy"
+},
+{
+"code": "BRG",
+"name": "Breville Group",
+"sector": "Consumer Discretionary"
+},
+{
+"code": "BSL",
+"name": "BlueScope",
+"sector": "Materials"
+},
+{
+"code": "BWP",
+"name": "BWP Trust",
+"sector": "Real Estate"
+},
+{
+"code": "BXB",
+"name": "Brambles",
+"sector": "Industrials"
+},
+{
+"code": "CAR",
+"name": "CAR Group",
+"sector": "Communication Services"
+},
+{
+"code": "CBA",
+"name": "Commonwealth Bank",
+"sector": "Financials"
+},
+{
+"code": "CDA",
+"name": "Codan",
+"sector": "Information Technology"
+},
+{
+"code": "CEN",
+"name": "Contact Energy",
+"sector": "Utilities"
+},
+{
+"code": "CGF",
+"name": "Challenger",
+"sector": "Financials"
+},
+{
+"code": "CHC",
+"name": "Charter Hall",
+"sector": "Real Estate"
+},
+{
+"code": "CIA",
+"name": "Champion Iron",
+"sector": "Materials"
+},
+{
+"code": "CIP",
+"name": "Centuria Industrial REIT",
+"sector": "Real Estate"
+},
+{
+"code": "CLW",
+"name": "Charter Hall Long WALE REIT",
+"sector": "Real Estate"
+},
+{
+"code": "CMM",
+"name": "Capricorn Metals",
+"sector": "Materials"
+},
+{
+"code": "CNU",
+"name": "Chorus",
+"sector": "Communication Services"
+},
+{
+"code": "COH",
+"name": "Cochlear",
+"sector": "Healthcare"
+},
+{
+"code": "COL",
+"name": "Coles Group",
+"sector": "Consumer Staples"
+},
+{
+"code": "CPU",
+"name": "Computershare",
+"sector": "Information Technology"
+},
+{
+"code": "CQR",
+"name": "Charter Hall Retail REIT",
+"sector": "Real Estate"
+},
+{
+"code": "CSC",
+"name": "Capstone Copper",
+"sector": "Materials"
+},
+{
+"code": "CSL",
+"name": "CSL",
+"sector": "Healthcare"
+},
+{
+"code": "CTD",
+"name": "Corporate Travel Management",
+"sector": "Consumer Discretionary"
+},
+{
+"code": "CWY",
+"name": "Cleanaway",
+"sector": "Industrials"
+},
+{
+"code": "CYL",
+"name": "Catalyst Metals",
+"sector": "Materials"
+},
+{
+"code": "DBI",
+"name": "Dalrymple Bay Infrastructure",
+"sector": "Industrials"
+},
+{
+"code": "DNL",
+"name": "Dyno Nobel",
+"sector": "Materials"
+},
+{
+"code": "DOW",
+"name": "Downer Group",
+"sector": "Industrials"
+},
+{
+"code": "DRO",
+"name": "Droneshield",
+"sector": "Industrials"
+},
+{
+"code": "DRR",
+"name": "Deterra Royalties",
+"sector": "Materials"
+},
+{
+"code": "DXS",
+"name": "Dexus",
+"sector": "Real Estate"
+},
+{
+"code": "DYL",
+"name": "Deep Yellow",
+"sector": "Energy"
+},
+{
+"code": "EBO",
+"name": "EBOS Group",
+"sector": "Healthcare"
+},
+{
+"code": "EDV",
+"name": "Endeavour Group",
+"sector": "Consumer Staples"
+},
+{
+"code": "EMR",
+"name": "Emerald Resources",
+"sector": "Materials"
+},
+{
+"code": "EOS",
+"name": "Electro Optic Systems Holdings",
+"sector": "Industrials"
+},
+{
+"code": "EVN",
+"name": "Evolution Mining",
+"sector": "Materials"
+},
+{
+"code": "EVT",
+"name": "EVT",
+"sector": "Communication Services"
+},
+{
+"code": "FBU",
+"name": "Fletcher Building",
+"sector": "Industrials"
+},
+{
+"code": "FLT",
+"name": "Flight Centre Travel Group",
+"sector": "Consumer Discretionary"
+},
+{
+"code": "FMG",
+"name": "Fortescue",
+"sector": "Materials"
+},
+{
+"code": "FPH|FPH",
+"name": "Fisher & Paykel Healthcare",
+"sector": "Healthcare"
+},
+{
+"code": "FRW",
+"name": "Freightways Group",
+"sector": "Industrials"
+},
+{
+"code": "GDG",
+"name": "Generation Development Group",
+"sector": "Financials"
+},
+{
+"code": "GGP",
+"name": "Greatland Resources",
+"sector": "Materials"
+},
+{
+"code": "GMD",
+"name": "Genesis Minerals",
+"sector": "Materials"
+},
+{
+"code": "GMG",
+"name": "Goodman Group",
+"sector": "Real Estate"
+},
+{
+"code": "GNE",
+"name": "Genesis Energy",
+"sector": "Utilities"
+},
+{
+"code": "GPT|GPT",
+"name": "GPT Group",
+"sector": "Real Estate"
+},
+{
+"code": "GQG",
+"name": "GQG Partners",
+"sector": "Financials"
+},
+{
+"code": "HDN",
+"name": "HomeCo Daily Needs REIT",
+"sector": "Real Estate"
+},
+{
+"code": "HUB",
+"name": "HUB24",
+"sector": "Financials"
+},
+{
+"code": "HVN",
+"name": "Harvey Norman",
+"sector": "Consumer Discretionary"
+},
+{
+"code": "IAG",
+"name": "Insurance Australia Group",
+"sector": "Financials"
+},
+{
+"code": "IFL",
+"name": "Insignia Financial",
+"sector": "Financials"
+},
+{
+"code": "IFT",
+"name": "Infratil",
+"sector": "Financials"
+},
+{
+"code": "IGO",
+"name": "IGO",
+"sector": "Materials"
+},
+{
+"code": "ILU",
+"name": "Iluka Resources",
+"sector": "Materials"
+},
+{
+"code": "IMD",
+"name": "IMDEX",
+"sector": "Materials"
+},
+{
+"code": "JBH",
+"name": "JB Hi-Fi",
+"sector": "Consumer Discretionary"
+},
+{
+"code": "JHX",
+"name": "James Hardie",
+"sector": "Materials"
+},
+{
+"code": "L1G",
+"name": "L1 Group",
+"sector": "Financials"
+},
+{
+"code": "LLC",
+"name": "Lendlease",
+"sector": "Real Estate"
+},
+{
+"code": "LNW",
+"name": "Light & Wonder",
+"sector": "Consumer Discretionary"
+},
+{
+"code": "LOV",
+"name": "Lovisa",
+"sector": "Consumer Discretionary"
+},
+{
+"code": "LSF",
+"name": "L1 Long Short Fund",
+"sector": "Financials"
+},
+{
+"code": "LTR",
+"name": "Liontown Resources",
+"sector": "Materials"
+},
+{
+"code": "LYC",
+"name": "Lynas Rare Earths",
+"sector": "Materials"
+},
+{
+"code": "MCY",
+"name": "Mercury NZ",
+"sector": "Utilities"
+},
+{
+"code": "MEZ",
+"name": "Meridian Energy",
+"sector": "Utilities"
+},
+{
+"code": "MFF",
+"name": "MFF Capital Investments",
+"sector": "Financials"
+},
+{
+"code": "MFG",
+"name": "Magellan Financial Group",
+"sector": "Financials"
+},
+{
+"code": "MGR",
+"name": "Mirvac",
+"sector": "Real Estate"
+},
+{
+"code": "MIN",
+"name": "Mineral Resources",
+"sector": "Materials"
+},
+{
+"code": "MND",
+"name": "Monadelphous Group",
+"sector": "Industrials"
+},
+{
+"code": "MPL",
+"name": "Medibank",
+"sector": "Financials"
+},
+{
+"code": "MQG",
+"name": "Macquarie Group",
+"sector": "Financials"
+},
+{
+"code": "MSB",
+"name": "Mesoblast",
+"sector": "Healthcare"
+},
+{
+"code": "MTS",
+"name": "Metcash",
+"sector": "Consumer Staples"
+},
+{
+"code": "MXT",
+"name": "Metrics Master Income Trust",
+"sector": "Financials"
+},
+{
+"code": "NAB",
+"name": "National Australia Bank",
+"sector": "Financials"
+},
+{
+"code": "NEM",
+"name": "Newmont",
+"sector": "Materials"
+},
+{
+"code": "NHC",
+"name": "New Hope",
+"sector": "Energy"
+},
+{
+"code": "NHF",
+"name": "Nib",
+"sector": "Financials"
+},
+{
+"code": "NIC",
+"name": "Nickel Industries",
+"sector": "Materials"
+},
+{
+"code": "NSR",
+"name": "National Storage",
+"sector": "Real Estate"
+},
+{
+"code": "NST",
+"name": "Northern Star Resources",
+"sector": "Materials"
+},
+{
+"code": "NWH",
+"name": "NRW Holdings",
+"sector": "Industrials"
+},
+{
+"code": "NWL",
+"name": "Netwealth Group",
+"sector": "Financials"
+},
+{
+"code": "NWS",
+"name": "News Corp Class B",
+"sector": "Communication Services"
+},
+{
+"code": "NXG",
+"name": "Nexgen Energy",
+"sector": "Energy"
+},
+{
+"code": "NXT",
+"name": "NextDC",
+"sector": "Information Technology"
+},
+{
+"code": "OBM",
+"name": "Ora Banda Mining",
+"sector": "Materials"
+},
+{
+"code": "ORA",
+"name": "Orora",
+"sector": "Materials"
+},
+{
+"code": "ORG",
+"name": "Origin Energy",
+"sector": "Utilities"
+},
+{
+"code": "ORI",
+"name": "Orica",
+"sector": "Materials"
+},
+{
+"code": "PDI",
+"name": "Predictive Discovery",
+"sector": "Materials"
+},
+{
+"code": "PDN",
+"name": "Paladin Energy",
+"sector": "Energy"
+},
+{
+"code": "PLS",
+"name": "PLS Group",
+"sector": "Materials"
+},
+{
+"code": "PME",
+"name": "Pro Medicus",
+"sector": "Healthcare"
+},
+{
+"code": "PMV",
+"name": "Premier Investments",
+"sector": "Consumer Discretionary"
+},
+{
+"code": "PNI",
+"name": "Pinnacle Investment Management",
+"sector": "Financials"
+},
+{
+"code": "PPT",
+"name": "Perpetual",
+"sector": "Financials"
+},
+{
+"code": "PRN",
+"name": "Perenti",
+"sector": "Materials"
+},
+{
+"code": "PRU",
+"name": "Perseus Mining",
+"sector": "Materials"
+},
+{
+"code": "PXA",
+"name": "Pexa Group",
+"sector": "Real Estate"
+},
+{
+"code": "QAN",
+"name": "Qantas",
+"sector": "Industrials"
+},
+{
+"code": "QBE",
+"name": "QBE Insurance",
+"sector": "Financials"
+},
+{
+"code": "QUB",
+"name": "Qube Holdings",
+"sector": "Industrials"
+},
+{
+"code": "RDX",
+"name": "Redox",
+"sector": "Industrials"
+},
+{
+"code": "REA",
+"name": "REA Group",
+"sector": "Communication Services"
+},
+{
+"code": "REG",
+"name": "Regis Healthcare",
+"sector": "Healthcare"
+},
+{
+"code": "REH",
+"name": "Reece Group",
+"sector": "Industrials"
+},
+{
+"code": "RGN",
+"name": "Region Group",
+"sector": "Real Estate"
+},
+{
+"code": "RHC",
+"name": "Ramsay Health Care",
+"sector": "Healthcare"
+},
+{
+"code": "RIO",
+"name": "Rio Tinto",
+"sector": "Materials"
+},
+{
+"code": "RMD",
+"name": "ResMed",
+"sector": "Healthcare"
+},
+{
+"code": "RMS",
+"name": "Ramelius Resources",
+"sector": "Materials"
+},
+{
+"code": "RRL",
+"name": "Regis Resources",
+"sector": "Materials"
+},
+{
+"code": "RSG",
+"name": "Resolute Mining",
+"sector": "Materials"
+},
+{
+"code": "RWC",
+"name": "Reliance Worldwide Corporation",
+"sector": "Industrials"
+},
+{
+"code": "RYM",
+"name": "Ryman Healthcare",
+"sector": "Healthcare"
+},
+{
+"code": "S32",
+"name": "South32",
+"sector": "Materials"
+},
+{
+"code": "SCG",
+"name": "Scentre Group",
+"sector": "Real Estate"
+},
+{
+"code": "SDF",
+"name": "Steadfast Group",
+"sector": "Financials"
+},
+{
+"code": "SEK",
+"name": "Seek",
+"sector": "Communication Services"
+},
+{
+"code": "SFR",
+"name": "Sandfire Resources",
+"sector": "Materials"
+},
+{
+"code": "SGH",
+"name": "SGH",
+"sector": "Industrials"
+},
+{
+"code": "SGM",
+"name": "Sims Metal",
+"sector": "Materials"
+},
+{
+"code": "SGP",
+"name": "Stockland",
+"sector": "|Real Estate"
+},
+{
+"code": "SHL",
+"name": "Sonic Healthcare",
+"sector": "Healthcare"
+},
+{
+"code": "SIG",
+"name": "Sigma Healthcare",
+"sector": "Healthcare"
+},
+{
+"code": "SMR",
+"name": "Stanmore Resources",
+"sector": "Materials"
+},
+{
+"code": "SNZ",
+"name": "Summerset Group Holdings",
+"sector": "Healthcare"
+},
+{
+"code": "SOL",
+"name": "Soul Patts",
+"sector": "Financials"
+},
+{
+"code": "SPK",
+"name": "Spark New Zealand",
+"sector": "Communication Services"
+},
+{
+"code": "STO",
+"name": "Santos",
+"sector": "Energy"
+},
+{
+"code": "SUL",
+"name": "Super Retail Group",
+"sector": "Consumer Discretionary"
+},
+{
+"code": "SUN",
+"name": "Suncorp",
+"sector": "Financials"
+},
+{
+"code": "TAH",
+"name": "Tabcorp",
+"sector": "Consumer Discretionary"
+},
+{
+"code": "TCL",
+"name": "Transurban",
+"sector": "Industrials"
+},
+{
+"code": "TLC",
+"name": "The Lottery Corporation",
+"sector": "Consumer Discretionary"
+},
+{
+"code": "TLS",
+"name": "Telstra",
+"sector": "Communication Services"
+},
+{
+"code": "TLX",
+"name": "Telix Pharmaceuticals",
+"sector": "Healthcare"
+},
+{
+"code": "TNE",
+"name": "TechnologyOne",
+"sector": "Information Technology"
+},
+{
+"code": "TPG",
+"name": "TPG Telecom",
+"sector": "Communication Services"
+},
+{
+"code": "TUA",
+"name": "Tuas",
+"sector": "Communication Services"
+},
+{
+"code": "TWE",
+"name": "Treasury Wine Estates",
+"sector": "Consumer Staples"
+},
+{
+"code": "VAU",
+"name": "Vault Minerals",
+"sector": "Materials"
+},
+{
+"code": "VCX",
+"name": "Vicinity Centres",
+"sector": "Real Estate"
+},
+{
+"code": "VEA",
+"name": "Viva Energy",
+"sector": "Energy"
+},
+{
+"code": "VGN",
+"name": "Virgin Australia Holdings",
+"sector": "Industrials"
+},
+{
+"code": "VNT",
+"name": "Ventia Services Group",
+"sector": "Industrials"
+},
+{
+"code": "WAF",
+"name": "West African Resources",
+"sector": "Materials"
+},
+{
+"code": "WAM",
+"name": "WAM Capital",
+"sector": "Financials"
+},
+{
+"code": "WBC",
+"name": "Westpac",
+"sector": "Financials"
+},
+{
+"code": "WDS",
+"name": "Woodside Energy Group",
+"sector": "Energy"
+},
+{
+"code": "WES",
+"name": "Wesfarmers",
+"sector": "Consumer Discretionary"
+},
+{
+"code": "WGX",
+"name": "Westgold Resources",
+"sector": "Materials"
+},
+{
+"code": "WHC",
+"name": "Whitehaven Coal",
+"sector": "Energy"
+},
+{
+"code": "WLE",
+"name": "WAM Leaders",
+"sector": "Financials"
+},
+{
+"code": "WOR",
+"name": "Worley",
+"sector": "Energy"
+},
+{
+"code": "WOW",
+"name": "Woolworths Group",
+"sector": "Consumer Staples"
+},
+{
+"code": "WTC",
+"name": "Wisetech Global",
+"sector": "Information Technology"
+},
+{
+"code": "XRO",
+"name": "Xero",
+"sector": "Information Technology"
+},
+{
+"code": "XYX",
+"name": "Block, Inc.",
+"sector": "Financials"
+},
+{
+"code": "YAL",
+"name": "Yancoal Australia",
+"sector": "Materials"
+},
+{
+"code": "ZIM",
+"name": "Zimplats Holdings",
+"sector": "Materials"
+},
+{
+"code": "ZIP",
+"name": "Zip",
+"sector": "Financials"
+}
+]
