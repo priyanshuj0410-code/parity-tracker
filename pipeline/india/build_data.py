@@ -1,0 +1,123 @@
+import json, csv, re
+cy=json.load(open('company_years.json')); meta=json.load(open('meta_all.json')); shp=json.load(open('shp.json'))
+mcap={}
+for r in csv.reader(open('mcap30092026.csv')):
+    if len(r)>9 and r[2].strip()=='EQ':
+        try: mcap[r[1].strip()]=float(r[9])
+        except: pass
+info={}
+idx_members={'nifty50':[], 'niftynext50':[], 'sensex':[]}
+for f,k in (('n50.csv','nifty50'),('nn50.csv','niftynext50')):
+    for r in csv.DictReader(open(f)):
+        info[r['Symbol']]={'name':r['Company Name'],'industry':r['Industry'],'isin':r['ISIN Code']}
+        idx_members[k].append(r['Symbol'])
+idx_members['sensex']=[l.strip() for l in open('sensex.txt') if l.strip()]
+YEARS=['2021-22','2022-23','2023-24','2024-25','2025-26']
+def rd(x,n=4): return None if x is None else round(x,n)
+NOTES=[('from next year filing (prior-year column); ','Taken from the prior-year column of the next filing. '),
+ ('reported; wages filed in crore, rescaled','Wages were filed in crore instead of rupees, so we rescaled them'),
+ ('reported; wages filed in lakh, rescaled','Wages were filed in lakh instead of rupees, so we rescaled them'),
+ ('payroll estimated from medians x headcount; w estimated','Wage totals missing: payroll and women\'s share estimated from median pay and headcount'),
+ ('payroll estimated from medians x headcount','Wage totals missing: payroll estimated from median pay and headcount'),
+ ('w as reported; payroll missing','Women\'s share as reported; payroll total missing'),
+ ('no usable payroll','No usable wage data'),('no usable wage data','No usable wage data')]
+def friendly(n):
+    for a,b in NOTES: n=n.replace(a,b)
+    n=n.strip()
+    if n in ('reported','Taken from the prior-year column of the next filing. reported'): return '' if n=='reported' else 'Taken from the prior-year column of the next filing'
+    n=n.replace('. reported','')
+    m=re.search(r'restated next year to ([0-9.]+)',n)
+    if m: n=f"Restated in the next filing to {float(m.group(1))*100:.1f}%"
+    return n
+companies={}
+for s,i in info.items():
+    ys=cy.get(s,{})
+    years={}
+    for y in YEARS:
+        r=ys.get(y)
+        if not r: continue
+        r=dict(r)
+        if r.get('kind')=='estimated':
+            ok=r['W'] and r['N'] and 1.5e5<=r['W']/r['N']<=7.5e6 and r['w'] and 0<r['w']<1
+            if not ok: r.update(w=None,kind=None,W=None,dq=4,note='no usable wage data')
+        years[y]=dict(w=rd(r['w']),wKind=r.get('kind'),fPerm=rd(r['f_perm']),fAll=rd(r['f_all']),
+            permHeadcount=r['Np'],headcount=r['N'],board=r['board'],boardWomen=r['board_f'],
+            payrollCr=None if not r['W'] else round(r['W']/1e7),dq=r['dq'],note=friendly(r['note']),boundary=r['boundary'])
+    fl=meta.get(s,{}).get('filings',{})
+    companies[s]=dict(symbol=s,name=i['name'],industry=i['industry'],isin=i['isin'],country='IN',exchange='NSE',
+        indexes=[k for k,v in idx_members.items() if s in v],
+        marketCapCr=round(mcap[s]/1e7) if s in mcap else None,publicFloatPct=shp.get(s,{}).get('public'),
+        years=years,filings={f"{int(k)-1}-{k[2:]}":v for k,v in sorted(fl.items())})
+def plausible(v):
+    return v and v.get('payrollCr') and v.get('headcount') and 1.5e5 <= v['payrollCr']*1e7/v['headcount'] <= 7.5e6
+for s,c in companies.items():
+    ys=sorted(c['years'].items()); prev=None
+    for y,v in ys:
+        v['basisChange']=False
+        if prev and v.get('wKind')=='reported' and prev.get('wKind')=='reported':
+            pr=(v['payrollCr'] or 0)/(prev['payrollCr'] or 1) if prev.get('payrollCr') else 1
+            hr=(v['headcount'] or 0)/(prev['headcount'] or 1) if (prev.get('headcount') and v.get('headcount')) else 1
+            if not (0.55<=pr<=1.8) or not (0.6<=hr<=1.6) or (v['boundary'] and prev['boundary'] and v['boundary']!=prev['boundary']): v['basisChange']=True
+        if v.get('wKind')=='reported': prev=v
+    rep=sorted(v['payrollCr'] for y,v in c['years'].items() if y>='2022-23' and v.get('wKind')=='reported' and plausible(v))
+    est=sorted(v['payrollCr'] for y,v in c['years'].items() if y>='2022-23' and v.get('payrollCr'))
+    pick=rep or est
+    c['payrollWeightCr']=pick[len(pick)//2] if pick else None
+    c['payrollWeightBasis']='median reported payroll' if rep else ('median estimated payroll' if est else None)
+def index_calc(members):
+    mem=[s for s in members if s in mcap and shp.get(s,{}).get('public')]
+    ffmc={s:mcap[s]*shp[s]['public']/100 for s in mem}; tot=sum(ffmc.values())
+    weights={s:ffmc[s]/tot for s in mem}
+    I=10_00_000; res={}
+    for y in YEARS[1:]:
+        own=wom=rep=pay=0; n=nrep=0; own_rep=0; sec={}
+        for s in mem:
+            c=companies[s]; r=c['years'].get(y)
+            if not r or r['w'] is None or not c['payrollWeightCr']: continue
+            a=I*weights[s]/mcap[s]; oW=a*c['payrollWeightCr']*1e7
+            own+=oW; wom+=oW*r['w']; n+=1
+            if r['wKind']=='reported': nrep+=1; own_rep+=oW
+            if r['fPerm'] is not None: rep+=oW*(0.5-r['fPerm']); pay+=oW*(r['fPerm']-r['w'])
+            k=c['industry']; sec.setdefault(k,[0,0,0]); sec[k][0]+=oW*r['w']; sec[k][1]+=oW; sec[k][2]+=1
+        if not own: continue
+        res[y]=dict(headline=rd(wom/own),ownedPayroll=round(own),womenWages=round(wom),gap=round(0.5*own-wom),
+            representationShare=rd(rep/(rep+pay)) if (rep+pay) else None,payShare=rd(pay/(rep+pay)) if (rep+pay) else None,
+            companiesCovered=n,companiesReported=nrep,reportedPayrollShare=rd(own_rep/own),
+            sectors=sorted([dict(industry=k,w=rd(v[0]/v[1]),payrollShare=rd(v[1]/own),companies=v[2]) for k,v in sec.items()],key=lambda x:-x['w']))
+    yoy={}
+    for y0,y1 in zip(YEARS[1:],YEARS[2:]):
+        both=[s for s in mem if companies[s]['payrollWeightCr'] and all(companies[s]['years'].get(y,{}).get('wKind')=='reported' for y in (y0,y1)) and not companies[s]['years'][y1].get('basisChange')]
+        def h(y):
+            num=den=0
+            for s in both:
+                a=weights[s]/mcap[s]*companies[s]['payrollWeightCr']; num+=a*companies[s]['years'][y]['w']; den+=a
+            return num/den if den else None
+        h0,h1=h(y0),h(y1)
+        if h0 and h1: yoy[f"{y0}>{y1}"]=dict(**{'from':rd(h0),'to':rd(h1)},change=rd(h1-h0),companies=len(both))
+    return weights,res,yoy
+NAMES={'nifty50':('Nifty 50','India','NSE'),'niftynext50':('Nifty Next 50','India','NSE'),'sensex':('BSE Sensex','India','BSE')}
+indexes={}
+for k,mem in idx_members.items():
+    wts,res,yoy=index_calc(mem)
+    indexes[k]=dict(id=k,name=NAMES[k][0],country='IN',market=NAMES[k][1],exchange=NAMES[k][2],
+        weightsAsOf='2026-09-30',weighting='free-float market cap (public shareholding % as free-float proxy)',
+        constituents=[dict(symbol=s,weight=rd(w,5)) for s,w in sorted(wts.items(),key=lambda x:-x[1])],
+        missing=[s for s in mem if s not in wts],years=res,yoy=yoy)
+    print(k,len(wts),{y:(v['headline'],v['companiesCovered'],v['reportedPayrollShare']) for y,v in res.items()}); print('   yoy',yoy)
+json.dump(companies,open('out/companies.json','w'),separators=(',',':'))
+json.dump(indexes,open('out/indexes.json','w'),separators=(',',':'))
+# company YoY
+rows=[]
+for s,c in companies.items():
+    a=c['years'].get('2024-25'); b=c['years'].get('2025-26')
+    if a and b and a['wKind']=='reported' and b['wKind']=='reported' and not b.get('basisChange'):
+        dbs=None
+        if a['board'] and b['board']: dbs=b['boardWomen']/b['board']-a['boardWomen']/a['board']
+        df=(b['fPerm']-a['fPerm']) if (a['fPerm'] is not None and b['fPerm'] is not None) else None
+        rows.append((s,c['name'],a['w'],b['w'],b['w']-a['w'],df,dbs))
+rows.sort(key=lambda r:-r[4])
+print('\nYoY w FY25->FY26 (reported both):',len(rows),' up:',sum(1 for r in rows if r[4]>0.001),' down:',sum(1 for r in rows if r[4]<-0.001))
+print('median change pp',sorted(r[4] for r in rows)[len(rows)//2]*100)
+for r in rows[:8]+[None]+rows[-8:]:
+    print('  ...' if r is None else f"  {r[0]:12} {r[2]:6.1%} -> {r[3]:6.1%}  {r[4]*100:+5.1f}pp  f_perm {'' if r[5] is None else f'{r[5]*100:+.1f}pp'}  board {'' if r[6] is None else f'{r[6]*100:+.1f}pp'}")
+json.dump(rows,open('out/yoy_rows.json','w'))
