@@ -2,8 +2,10 @@
 type: runbook
 title: India data pipeline
 description: How the India dataset (BRSR filings for the Nifty 50, Nifty Next 50 and Sensex) is fetched, cleaned and turned into the app's JSON, and how to refresh it.
-updated: 2026-10-01
+updated: 2026-10-02
 plane_issues:
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/aa1e98d8-d58d-4a3e-8d0b-eccea0459975
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/16062d26-a8a8-4072-9fa6-3be0a36b4e5e
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/4a6b2d55-5d5f-4713-848c-561e3e343184
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/3ddee1dc-99b4-4f03-83c8-55cdf3f78b30
   - https://app.plane.so/claude-pri/projects/18017c30-d8f6-436a-b4ca-a743d5317720/issues/3f4b5bd3-f746-4845-847f-e2e7400b79b4
@@ -81,6 +83,7 @@ Japan rules:
 - **Join:** on securities code (column 9). Where a code appears more than once, keep the largest employer, then the latest update.
 - **Headline:** women's average pay as a share of men's, all workers (column 205), with parity at 100%. Values outside 20–150% are discarded.
 - **Other fields:** regular and non-regular ratios (206, 207), women in management (159), and board officers (163–165).
+- **Women in regular staff (`fPerm`):** from item 3, women's share of workers by employment category (columns 58–67). Taken only when a category is regular or all staff (正社員, 正規…, 社員, 従業員, 全従業員, 全労働者, 職員, 対象とする労働者すべて); other category mixes are not combined. 105 of 152 covered companies qualify (median 21.4%). This is Japan's employment parity on the shared scales (PARITY-11).
 - **Index:** equal-weighted average across covered companies. One snapshot only: the open data holds each company's latest disclosure, so archive each download to build a trend.
 
 ## Australia pipeline (S&P/ASX 200)
@@ -110,6 +113,21 @@ UK rules:
 - **Combining a group's employers:** weighted by size-band midpoints (250–499 → 375 … 20,000+ → 30,000).
 - **Index:** each company counts equally.
 - **Basis change:** if fewer than 70% of the weighted (employer, size band) pairs carry over between two years, in either direction, the pair is left out of like-for-like YoY.
+
+## Shared sectors
+`python3 pipeline/sectors.py` (run from the repo root after any merge) writes `src/data/sectors.json`, mapping every company to one of 11 GICS-style sectors.
+- Each exchange's own labels are matched by rule (NSE industries, UK report sectors, GICS for ASX and Euro Stoxx, Nikkei's 36 groups). The script fails if any label is unmatched.
+- Nikkei groups that mix sectors are split by company in `OVERRIDES` (for example Sony and Panasonic to Consumer Discretionary, Hitachi and FANUC to Industrials, Nintendo to Communication Services).
+- See [../decisions/0001-comparable-parity-measures.md](../decisions/0001-comparable-parity-measures.md) for how sectors and the shared scales are used.
+
+## Logos (PARITY-14)
+Scripts are in `pipeline/logos/`. Output is `public/logos/{safe}.png` (64×64, safe = symbol with characters outside `A-Za-z0-9_-` replaced by `_`) and `src/data/logos.json` (symbol → file). The app falls back to initials when a symbol has no file.
+1. **Websites:** `targets.py` and `resolve.py` resolve each company's Wikipedia article to its Wikidata item and official website (P856). `india.py` fills Indian companies from the Nifty 50 and Next 50 Wikipedia tables. `jobs.txt` holds `safe, symbol, domain` per company (note the column order).
+2. **First pass:** Google's favicon service, the site's `apple-touch-icon`, then DuckDuckGo icons; placeholders are dropped by image hash.
+3. **Fill pass:** `fill.py` asks Google's faviconV2 endpoint (size 128) and icon.horse; `fill2.py` adds icons listed in each homepage's `<link rel=icon>` tags (`html_icons.py`) and keeps the largest square image. icon.horse returns grey letter placeholders for unknown sites: probe nonexistent domains to collect their hashes, and check a contact sheet by eye.
+4. **Small icons:** anything under 32px is drawn at 32px in the centre of the 64px tile rather than stretched.
+5. **Coverage on 2 October 2026:** 595 of 675 companies (Euro Stoxx 50 50/50, FTSE 100 97/100, Nikkei 225 217/225, Nifty 50 44/50, Sensex 27/30, Nifty Next 50 36/50, ASX 200 128/200). Many large Indian and UK sites only publish 16px favicons; a logo API key (logo.dev or Brandfetch) would lift quality, and needs the team to sign up.
+6. **Rights:** logos are trademarks of their owners, shown only to identify each company. The footer and method page say so.
 
 ## Known data issues (FY2025-26 refresh)
 - **Unparseable files:** Torrent Pharma's FY2021-22 XBRL is malformed, and M&M's FY2023-24 file on NSE is near empty.

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { INDEX_ORDER, companies, indexes, marketOf } from '../lib/data'
 import { href } from '../lib/router'
+import { Logo } from './Logo'
 import { Monogram } from './Monogram'
 
 interface Hit { key: string; title: string; sub: string; to: string; seed: string }
@@ -68,7 +69,7 @@ export function Search() {
           {hits.map((h, i) => (
             <li key={h.key} id={`sr-${h.key}`} role="option" aria-selected={i === active} className={i === active ? 'on' : undefined}
               onMouseDown={(e) => { e.preventDefault(); go(h) }} onMouseEnter={() => setActive(i)}>
-              <Monogram name={h.title} seed={h.seed} />
+              {h.key.startsWith('i-') ? <Monogram name={h.title} seed={h.seed} /> : <Logo symbol={h.seed} name={h.title} />}
               <span><span className="sr-title">{h.title}</span><span className="sr-sub">{h.sub}</span></span>
             </li>
           ))}

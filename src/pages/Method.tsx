@@ -83,6 +83,25 @@ women's share of pay  = f × (1 − mean gap) ÷ (f × (1 − mean gap) + (1 −
         </ul>
       </section>
 
+      <section id="compare">
+        <h2>How we compare across markets</h2>
+        <p>Each market's law asks for different numbers, so a headline from one market cannot be read against another's. We convert what every company reports into two shared measures.</p>
+        <ul className="tight">
+          <li><strong>Employment parity (E):</strong> women's share of staff. Parity is 50%. India: permanent staff. UK and Australia: all staff in that country. Japan: regular staff, from the same government database. EU: not collected yet (CSRD reports give it under ESRS S1-6).</li>
+          <li><strong>Wage parity (W):</strong> women's average pay as a share of men's. Parity is 100%. UK: mean hourly pay. Australia: mean full-time-equivalent pay. Japan: mean annual pay of all workers. EU: the unadjusted gap as each company defines it. India: derived from the wage share and the share of permanent staff, so it is approximate.</li>
+          <li><strong>Women's share of pay:</strong> implied by the two, E×W ÷ (E×W + 1 − E). For India it equals the headline share, for the UK and Australia it closely matches it, and for Japan it is new.</li>
+          <li><strong>Market percentile:</strong> where a company's wage parity sits among companies in its own market. Percentiles compare fairly across markets because each company is measured on its own market's basis.</li>
+          <li><strong>Sectors:</strong> each exchange's own labels are mapped to 11 shared, GICS-style sectors. Nikkei groups that mix sectors (electric machinery, precision instruments, services) are split company by company.</li>
+          <li><strong>Medians, not averages:</strong> country and sector comparisons use the median company and show the middle half of companies, so a few extreme filings do not move them.</li>
+        </ul>
+        <p className="small muted">Bases still differ: hourly against annual pay, part-time staff in or out. Treat differences of a few points between markets as noise, and use the parity map and percentiles rather than raw cross-market rankings.</p>
+      </section>
+
+      <section>
+        <h2>Logos</h2>
+        <p className="small">Company logos are trademarks of their owners and are shown only to identify each company. They come from each company's own website icon. Where no clear icon exists, we show the company's initials instead.</p>
+      </section>
+
       <section>
         <h2>What this is not</h2>
         <p>This is not an ESG rating and not investment advice. It is arithmetic on figures that companies publish themselves, with every number linked to its source filing.</p>

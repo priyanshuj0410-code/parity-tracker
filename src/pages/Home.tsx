@@ -38,7 +38,7 @@ export function Home() {
         <h1>How much of the payroll you own <span className="accent">goes to women</span></h1>
         <p className="lead">
           Buy an index fund and you own a small slice of every company in it, including a slice of its wage bill.
-          Parity Tracker shows how much of that wage bill is paid to women, using each company's own legally required filings.
+          Nivel shows how much of that wage bill is paid to women, using each company's own legally required filings.
         </p>
       </section>
 
@@ -69,6 +69,24 @@ export function Home() {
           </div>
         </section>
       ))}
+
+      <section>
+        <h2>Compare across markets</h2>
+        <p className="small muted">Each market measures pay differently, so we also put every company on two shared scales: women's share of staff, and women's pay as a share of men's.</p>
+        <div className="grid g3">
+          {[
+            { tab: 'countries', title: 'Countries', text: 'Median company in each market, side by side, with every index on the same scales.' },
+            { tab: 'sectors', title: 'Sectors', text: 'Eleven shared sectors, from banks to miners, compared within and across markets.' },
+            { tab: 'map', title: 'Parity map', text: 'Every company plotted by how many women it employs and how it pays them.' },
+          ].map((t) => (
+            <a key={t.tab} className="card link-card" href={href('compare', t.tab)}>
+              <h3>{t.title}</h3>
+              <p className="small">{t.text}</p>
+              <span className="link-more">Open</span>
+            </a>
+          ))}
+        </div>
+      </section>
 
       <section>
         <h2>The pace of change</h2>

@@ -1,16 +1,23 @@
 ---
 type: design-system
-title: Parity Tracker design system
-description: Visual and writing rules for Parity Tracker, derived from The Equal Lens brand package (minimal register) plus a validated chart palette.
-updated: 2026-10-01
+title: Nivel design system
+description: Visual and writing rules for Nivel (formerly Parity Tracker), derived from The Equal Lens brand package (minimal register) plus a validated chart palette.
+updated: 2026-10-02
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/4a6b2d55-5d5f-4713-848c-561e3e343184
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/3ddee1dc-99b4-4f03-83c8-55cdf3f78b30
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/5a065a68-b7a5-4d83-a44b-72136f487dad
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/46ef9975-81f3-4023-9779-f5c717132dc6
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/aa1e98d8-d58d-4a3e-8d0b-eccea0459975
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/b98b37f6-08c0-4d83-b520-c1833aba2285
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/407a23e9-92e6-433a-964d-89201b51fcd9
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/16062d26-a8a8-4072-9fa6-3be0a36b4e5e
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/6b573de9-f46f-4610-8561-02b11b0e395d
 ---
 
-# Parity Tracker design system
+# Nivel design system
+
+The brand reads "Nivel" in the header next to the eQ mark, and "Nivel by The Equal Lens" in the install manifest.
 
 Source: The Equal Lens brand package (`equal-lens` skill, `references/brand.md` and `voice.md`). Patterns were checked against references from Lazyweb: investing.com's major-indices table with sparklines, WSJ's leaders and laggards tables, and ESG Book's score dashboard. We copied the first two and rejected the third's circular gauges.
 
@@ -39,6 +46,9 @@ Source: The Equal Lens brand package (`equal-lens` skill, `references/brand.md` 
 | `--good` | `#0F6E56` | Text for increases (teal deep) |
 | `--bad` | `#C2553F` | Text for decreases (coral deep) |
 | `--sun-deep` | `#B97F0E` | Estimated or flagged data labels |
+| `--good-bg` / `--bad-bg` | `#E5F3EE` / `#FBEAE5` | Change-chip fills (dark: `#133227` / `#3A1D17`) |
+| `--bad-ink` | `#A9442F` | Text on `--bad-bg` (5.1:1; `--bad` is only 3.9:1 there). Dark: `#FF8A6E` |
+| `--dot-dim` | violet-grey at 28% | Context dots on the parity map (dark: 22%) |
 
 ### Dark theme (PARITY-10)
 **Switching:**
@@ -75,37 +85,51 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
 - Max content width 1120px, 16px side gutter on phones, 24px from 720px up.
 - Cards: white, 1px `--line` border, 12px radius, no shadow.
 - Sections are separated by a 1px `--mist` rule and 40px spacing.
-- **Header:** white and sticky. Brand, then main nav (active item gets a 2px violet underline), then global search on the right. Below 720px, search goes full width and the nav takes its own row.
+- **Header:** white and sticky. Brand, then main nav (Indexes, Companies, Compare, Method; the active item gets a 2px violet underline), then global search, the Install button (only when the browser can install), and the theme toggle. Below 720px, search goes full width and the nav moves to a bottom tab bar.
+- **Bottom tab bar (below 720px):** four items with 22px line icons and 11px labels: Indexes (chart), Companies (buildings), Compare (balance scale), Method (info). Fixed, white, hairline top border, padded for the home indicator (`safe-area-inset-bottom`). The active item is violet with `aria-current`.
+- **Page head:** breadcrumb, title (with a 52px logo tile on company pages), chips, then section tabs. The first section after the page head has no top rule.
 - **Index strip:** a white bar under the header on every page, scrolling horizontally. Each item shows name, headline value and like-for-like change. The current index is highlighted with a tint.
 - **Card grids** use `auto-fill`, so a market with one index keeps a normal-width card.
 
 ## 5. Components
 - **Stat tile:** label (Poppins 500, 13px, `--soft`), value (Poppins 600, 32–44px, `--ink`), one line of context. Never a gauge or ring.
-- **Change indicator:** arrow glyph plus signed percentage points (pp), in `--good` or `--bad`. Never colour alone. Flat (|change| < 0.05 pp) shows "no change" in `--muted`.
+- **Change chip:** a filled triangle plus signed percentage points (pp) on a tinted chip, 12px Poppins 600, 6px radius: `--good` on `--good-bg` for rises, `--bad-ink` on `--bad-bg` for falls. Never colour alone. Flat (|change| < 0.05 pp) shows "no change" in `--soft` on `--tint`; missing shows "n/a" with no chip.
 - **Data badge:** `Reported`, `Rescaled`, `Estimated` (sun-deep text on tint), `Basis changed`, `Missing`. Every number that is not cleanly reported carries one.
 - **Status chip** (coverage map): `Live`, `Planned`, `Limited data`, with text labels, not colour alone.
-- **Tables:**
-  - sortable headers (`aria-sort`), tabular figures, `--tint` header row, hairline row rules, a sticky first column on small screens
-  - long lists sit in a 72vh scroll area with a sticky header
+- **Tables (data tables, `table.data`):**
+  - 8px by 12px cells, tabular figures, `--tint` header row with 12px `--soft` labels; the sorted column's label turns `--ink`
+  - sortable headers carry a two-triangle sort icon and `aria-sort`; the active direction is solid, the other faded
+  - a bar above the table: row count on the left, a quiet "Download CSV" button on the right (exports the visible rows in the current sort)
+  - optional rank column (`#`, muted, right-aligned) and a highlighted current row (tint fill plus a 3px violet inner left edge), used for peers
+  - company cells: logo tile, name link, then ticker and market or industry as a muted sub-line
+  - long lists sit in a 72vh scroll area with a sticky header; the name column stays sticky on small screens
   - the whole row opens the company, with the name link kept for keyboard and screen-reader users
+- **Meter (inline data bar):** the value, then a 52px by 6px `--line` track with a `--s1` fill and a 2px ink tick at parity. Employment parity and share of pay run 0–100% (tick at 50%); wage parity runs 0–140% (tick at 100%). Replaces bare percentages wherever a value has a parity point.
+- **Tabs:** underline tabs for sections that have their own URL (company pages: Overview, Trend, Peers, Data and sources; Compare: Countries, Sectors, Parity map). 14px Poppins 500, `--soft`, active `--violet` with a 2px underline and `aria-current="page"`. They scroll sideways on phones.
+- **Segmented control:** for switching views in place (Chart or Table, One map or By market, the measure). A `--tint` well with 3px padding; the selected option is a white raised pill. Buttons carry `aria-pressed`.
+- **Chart frame:** every chart sits in a card with a title, a one-line subtitle and a Chart / Table segmented control at the top right, so every chart has a table view one click away. Extra controls (market pills) sit beside the toggle.
+- **Scale card (company overview):** label, big value, the basis in one muted line, a parity track with its own scale (0%, parity, maximum), and the market percentile in violet ("Higher than 66% of companies in the UK").
+- **Link card:** a card that is one link, with a title, one sentence and a violet "Open →".
+- **Install button:** violet filled, download icon plus "Install app" (icon only on phones). Shown only after `beforeinstallprompt`, or on iOS Safari, where it opens a note: Share, then Add to Home Screen. Hidden when running installed.
 - **Index card:** name, headline value, sparkline (right of the value), change since last year, parity track, coverage line.
 - **Global search:**
   - combobox over every company and index, at most 8 results, monogram plus title plus "symbol · market"
   - opens with ⌘K, Ctrl+K or "/"; arrow keys, Enter and Esc work
-- **Monogram:** 30px circle (44px in page titles) with two initials, skipping words like Ltd and Group. Tone is chosen by hashing the symbol across four brand tints:
+- **Logo tile:** the company's own icon on a white rounded square (radius 26% of the size, 1px `--line` border, 2px padding), white in both themes so logos keep their colours. 30px in tables and search, 26px in compact lists, 52px in the company title. Icons smaller than 32px are drawn at half the tile size rather than stretched. Logos are trademarks shown only to identify the company; the footer and method page say so.
+- **Monogram (fallback):** when a company has no logo, a tile of the same size and radius with two initials, skipping words like Ltd and Group. Tone is chosen by hashing the symbol across four brand tints:
   - `--tint` with violet
   - `#E6F1F9` with sky deep
   - `#FBE9F0` with rose deep
   - `#E5F3EE` with teal deep
 
-  Used instead of company logos, which are trademarks.
+  Indexes in search always use a monogram.
 - **Sparkline:**
   - 1.75px line with an end dot, no axes, domain fitted to the data with 15% padding
   - coloured by direction from first to last point (`--good`, `--bad`, `--muted`)
   - always paired with an explicit number or table, never on its own
   - only reported values are plotted
 - **Pill filters:** 999px radius, white with `--line` border; selected is violet fill with white text and `aria-pressed`. Used for index filters instead of selects.
-- **Cross-market rule:** never sort or rank across markets by the headline measure. The directory opens on one index, "All indexes" sorts by name, and the headline column states its unit per row.
+- **Cross-market rule:** never sort or rank across markets by a market's own headline. Cross-market views use only the shared scales (employment parity, wage parity, implied share of pay; see [decisions/0001](decisions/0001-comparable-parity-measures.md)), always with the basis stated nearby. Rankings across markets use the market percentile. The directory opens on one index, "All indexes" sorts by name, and the headline column states its unit per row.
 
 ## 6. Charts
 Validated with the dataviz `validate_palette.js` using `--pairs all`, because company charts show all three series at once.
@@ -117,12 +141,21 @@ Validated with the dataviz `validate_palette.js` using `--pairs all`, because co
 | Series 2 | `#2F86C6` | `#0BA0AD` | sky (cyan-shifted in dark to separate from violet) |
 | Series 3 | `#D2497F` | `#DA5D8A` | rose |
 
-- **Lines:** 2px with round joins. Markers 8px with a 2px paper ring. Estimated points are hollow.
+- **Lines:** 2px with round joins. Markers 7px with a 2px card ring, growing to 11px at the hovered year. Estimated points are hollow.
+- **Area wash:** single-series line charts get a vertical gradient under the line, series colour from 22% to 0%. Never on multi-series charts.
+- **Gridlines:** at most four intervals. The step is the one of 0.5, 0.25 or 0.2 that gives 2–4 intervals with the lowest top, so a 0–50% axis shows 0, 25% and 50% only. The zero line is `--line`, the rest `--mist`. Axis labels drop the decimal on whole percentages.
+- **Tooltip:** the year in bold, then one row per series: swatch, label, value, and the change from the previous reported point in good or bad text. It flips to the left of the crosshair past the chart's midpoint.
+- **Range-dot plot (countries and sectors):** one row per group with the median as a 14px `--s1` dot with a card ring, the middle half of companies as a 10px `--s1` band at 28% opacity, and a parity tick. The median value sits in a right-hand column. Groups with fewer than three companies are listed as "too few", not plotted. A key explains dot, band and tick.
+- **Parity map (scatter):** employment parity on x (0–100%, parity line at 50%) and wage parity on y (30–150%, parity line at 100%). The parity quadrant (top right) is tinted. Quadrant labels with counts sit in the corners with a card-coloured halo, drawn above the dots.
+  - One hue only: highlighted companies are `--s1` dots (4.5px radius, 1.5px card ring); everything else is `--dot-dim` context. Markets are compared by highlighting one at a time or by facets ("By market", a 2×2 grid with shared axes), never by four hues: the dataviz all-pairs check caps scatter at three colours.
+  - Values outside the axis are pinned to the edge and drawn hollow, and the page says how many.
+  - Hover picks the nearest dot within 24px and shows a tooltip with logo, market, sector and all three measures; a click opens the company. A focused company (from its page's "See it on the parity map" link) gets an ink ring and a haloed name label.
+  - The table view lists every plotted company with meters, rank and CSV export.
 - **Bars:** at most 24px thick, 4px rounded data end, single hue (series 1) for magnitude.
 - **Grid:** solid 1px `--mist`, never dashed.
 - **Parity reference:** the 50% line is a solid 1px `--muted` rule, labelled at its left end so it never collides with the series end labels on the right.
 - **Y axis:** shares run from 0 to 50% so distance to parity is visible. If any value exceeds 50%, the axis or bar scale extends to the next 10%, and the parity mark stays at 50%.
-- **Markets:** each market has its own metric label (India: share of total wages; UK: share of hourly pay, UK staff). Never compare across markets in one chart.
+- **Markets:** each market has its own metric label (India: share of total wages; UK: share of hourly pay, UK staff). Never put two markets' own headlines in one chart. Only the shared scales appear in cross-market charts (Compare pages), with each market's basis stated.
 - **Legends and labels:** a legend whenever there are two or more series, plus direct end labels. Text always uses text tokens, never series colours.
 - **Hover:** a crosshair and tooltip on lines. Every chart also has a table view with the same numbers.
 

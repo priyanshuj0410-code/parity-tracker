@@ -87,6 +87,7 @@ export const MARKET: Record<string, Market> = {
   },
 }
 
+export const euYear = (c: Company): string => (c.years[MARKET.EU.latest] ? MARKET.EU.latest : MARKET.EU.prev)
 export const marketOf = (c: Company): Market => MARKET[c.country] ?? MARKET.IN
 export const indexMarket = (ix: IndexData): Market => MARKET[ix.country] ?? MARKET.IN
 
