@@ -1,0 +1,149 @@
+{
+ "values": [
+  {
+   "ticker": "ADS.DE",
+   "name": "Adidas",
+   "gap2025": 12.4,
+   "gap2024": 13.3,
+   "basis": "ESRS gender pay gap, hourly total direct compensation, all active employees",
+   "source": "https://report.adidas-group.com/2025/en/_assets/downloads/sustainability-statement-adidas-ar25.pdf"
+  },
+  {
+   "ticker": "ADYEN.AS",
+   "name": "Adyen",
+   "gap2025": 16.6,
+   "gap2024": 17.7,
+   "basis": "Average unadjusted gender pay gap",
+   "source": "https://filings.xbrl.org/724500973ODKK3IFQ447/2025-12-31/ESEF/NL/0/724500973ODKK3IFQ447-2025-12-31-1-en/reports/724500973ODKK3IFQ447-2025-12-31-1-en.xhtml"
+  },
+  {
+   "ticker": "ASML.AS",
+   "name": "ASML Holding",
+   "gap2025": 9.3,
+   "gap2024": 10.2,
+   "basis": "Gender pay gap (ESRS, average gross hourly pay)",
+   "source": "https://filings.xbrl.org/724500Y6DUVHQD6OXN27/2025-12-31/ESEF/NL/0/asml-2025-12-31-1-en/reports/asml-2025-12-31-1-en.xhtml"
+  },
+  {
+   "ticker": "CS.PA",
+   "name": "Axa",
+   "gap2025": 26,
+   "gap2024": null,
+   "basis": "Unadjusted global gap, total direct compensation (22% on fixed salary); scope widened in 2025",
+   "source": "https://filings.xbrl.org/F5WCUMTUM4RKZ1MAIE39/2025-12-31/ESEF/FR/0/axa-2025-12-31-1-fr/reports/axa-2025-12-31-1-fr.html"
+  },
+  {
+   "ticker": "BNP.PA",
+   "name": "BNP Paribas",
+   "gap2025": 35,
+   "gap2024": 35,
+   "basis": "Gender pay gap, total remuneration (27% fixed), ~98% of employees",
+   "source": "https://filings.xbrl.org/R0MUWSFPU8MPRO8K5P83/2025-12-31/ESEF/FR/1/bnp-2025-12-31-1/reports/bnp-2025-12-31-1-fr.html"
+  },
+  {
+   "ticker": "ENI.MI",
+   "name": "Eni",
+   "gap2025": 10,
+   "gap2024": 7,
+   "basis": "Global gender pay gap; rise linked to acquisitions",
+   "source": "https://filings.xbrl.org/BUCRF72VH5RBN7X3VL35/2025-12-31/ESEF/IT/0/BUCRF72VH5RBN7X3VL35-2025-12-31-1-it/reports/BUCRF72VH5RBN7X3VL35-2025-12-31-1-it.xhtml"
+  },
+  {
+   "ticker": "RACE.MI",
+   "name": "Ferrari",
+   "gap2025": 2.2,
+   "gap2024": -1.2,
+   "basis": "Total gross hourly pay gap; 2024 restated under 2025 method",
+   "source": "https://filings.xbrl.org/549300RIVY5EX8RCON76/2025-12-31/ESEF/NL/0/race-2025-12-31-1-en/reports/race-2025-12-31-1-en.xhtml"
+  },
+  {
+   "ticker": "INGA.AS",
+   "name": "ING Group",
+   "gap2025": 27,
+   "gap2024": 28,
+   "basis": "Unadjusted gender pay gap, ING Group level",
+   "source": "https://filings.xbrl.org/549300NYKK9MWM7GGW15/2025-12-31/ESEF/NL/0/ing-2025-12-31-en/reports/ing-2025-12-31-en.xhtml"
+  },
+  {
+   "ticker": "OR.PA",
+   "name": "L'Oréal",
+   "gap2025": 2.5,
+   "gap2024": 2.9,
+   "basis": "Gross pay gap excluding beauty advisers",
+   "source": "https://filings.xbrl.org/529900JI1GG6F7RKVI53/2025-12-31/ESEF/FR/0/loreal-2025-12-31-1-fr/reports/loreal-2025-12-31-1-fr.xhtml"
+  },
+  {
+   "ticker": "SGO.PA",
+   "name": "Saint-Gobain",
+   "gap2025": 9,
+   "gap2024": 9,
+   "basis": "Women/men total remuneration ratio 0.91 (base salary 0.96)",
+   "source": "https://filings.xbrl.org/NFONVGN05Z0FMN5PEC35/2025-12-31/ESEF/FR/0/com-2025-12-31-fr/reports/com-2025-12-31-fr.xhtml"
+  },
+  {
+   "ticker": "SAN.PA",
+   "name": "Sanofi",
+   "gap2025": 4.4,
+   "gap2024": null,
+   "basis": "Global average base salary gap",
+   "source": "https://filings.xbrl.org/549300E9PC51EN656011/2025-12-31/ESEF/FR/0/sny-2025-12-31-2-fr/reports/sny-2025-12-31-2-fr.xhtml"
+  },
+  {
+   "ticker": "DG.PA",
+   "name": "Vinci SA",
+   "gap2025": 2.2,
+   "gap2024": 2.3,
+   "basis": "Average hourly wage gap",
+   "source": "https://filings.xbrl.org/213800WFQ334R8UXUG83/2025-12-31/ESEF/FR/0/VINCI-2025-12-31-1-fr/reports/VINCI-2025-12-31-1-fr.xhtml"
+  },
+  {
+   "ticker": "WKL.AS",
+   "name": "Wolters Kluwer",
+   "gap2025": 12.9,
+   "gap2024": 14.8,
+   "basis": "Unadjusted gender pay-gap ratio",
+   "source": "https://filings.xbrl.org/724500TEM53I0U077B74/2025-12-31/ESEF/NL/0/wolt-2025-12-31-0-en/reports/wolt-2025-12-31-0-en.xhtml"
+  }
+ ],
+ "excluded": {
+  "RMS.PA": "Reports only an adjusted gap (2.79%)",
+  "SAF.PA": "Gap computed within job categories and countries (effectively adjusted): 4.5%",
+  "SU.PA": "Only adjusted pay-equity KPIs found",
+  "TTE.PA": "Only adjusted gap (2.9%) found in ESEF text",
+  "AIR.PA": "No figure found in ESEF text",
+  "AI.PA": "7% (2025) reported via search summary; not yet verified in the source document"
+ },
+ "todo": [
+  "AD.AS",
+  "ALV.DE",
+  "ABI.BR",
+  "ARGX.BR",
+  "BAS.DE",
+  "BAYN.DE",
+  "BBVA.MC",
+  "SAN.MC",
+  "BMW.DE",
+  "BN.PA",
+  "DB1.DE",
+  "DHL.DE",
+  "DTE.DE",
+  "ENEL.MI",
+  "EL.PA",
+  "IBE.MC",
+  "ITX.MC",
+  "IFX.DE",
+  "ISP.MI",
+  "MC.PA",
+  "MBG.DE",
+  "MUV2.DE",
+  "NDA-FI.HE",
+  "PRX.AS",
+  "SAP.DE",
+  "SIE.DE",
+  "UCG.MI",
+  "VOW.DE",
+  "DBK.DE",
+  "RHM.DE",
+  "ENR.DE"
+ ]
+}

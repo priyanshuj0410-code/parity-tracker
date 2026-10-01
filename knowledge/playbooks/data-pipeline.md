@@ -41,6 +41,18 @@ Run these in a scratch folder with the scripts copied in.
 - **Headcount:** the workforce share uses permanent employees and workers only.
 - **Boards:** totals outside 6–20 are discarded as filing errors.
 
+## EU pipeline (Euro Stoxx 50): in progress, not published
+Scripts and verified values are in `pipeline/eu/`.
+
+- **Measure:** the CSRD ESRS S1-16 unadjusted gender pay gap, from each company's own sustainability statement. It will show like Japan's, as women's average pay as a share of men's, with parity at 100%.
+- **France, Netherlands, Italy:**
+  - `esef_find.py` queries the filings.xbrl.org API by entity name for FY2025 ESEF filings.
+  - `esef_extract.py` strips the XHTML and prints pay-gap passages, searching English, French and Italian terms.
+  - The repository has no German or Spanish FY2025 filings.
+- **Germany, Spain, Belgium, Finland:** find the FY2025 report PDF per company, then `./grab.sh CODE URL`, which downloads, runs pdftotext and prints the pay-gap passages.
+- **Verification:** every value is read from the source passage before it goes into `eu_values.json`, and the source URL is stored. Search-engine summaries are not trusted: they mixed up adjusted gaps (Adidas) and UK-only figures (Airbus).
+- **Status (2026-10-02):** 13 of 50 verified, 6 excluded with reasons (adjusted-only or unverified), 31 to do, mostly German and Spanish. Publish once coverage is broad enough not to skew the average toward French and Dutch filers.
+
 ## Japan pipeline (Nikkei 225)
 Scripts are in `pipeline/jp/`.
 
