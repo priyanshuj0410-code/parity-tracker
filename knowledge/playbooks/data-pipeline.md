@@ -55,10 +55,19 @@ Scripts and verified values are in `pipeline/eu/`. `eu_build.py` turns `eu_value
   - `crawl.py` walks HTML report sites.
   - The WebFetch tool saves PDFs under 10 MB locally, which then go through pdftotext. This worked for BMW.
   - Allianz, SAP, Iberdrola and Mercedes return 403 to both routes.
-- **Status (2026-10-02):** 29 of 50 verified, 10 excluded with stated reasons, 11 unresolved (access blocked or no FY2025 statement located). Every company page shows its value with source link, or its reason.
+- **Status (2026-10-02, PARITY-8):** 31 of 50 verified, 12 excluded with stated reasons, 7 unresolved. Every company page shows its value with source link, or its reason.
+- **Unresolved:**
+  - Allianz, SAP, Iberdrola and Mercedes-Benz return 403 to scripts and to WebFetch.
+  - AB InBev, Rheinmetall and Prosus have no locatable FY2025 report URL.
+  - The Chrome extension was connected but failed with a tab-session error, so these need a manual browser check.
+- **URL patterns that worked:**
+  - Santander: `informe-financiero-anual/2025/ifa-2025-consolidated-annual-financial-report-en.pdf`
+  - Enel: `.../annuali/en/integrated-annual-report_2025.pdf`
+  - BBVA: listed on its financial-reports page.
+  - Argenx: `reports.argenx.com/2025/_assets/downloads/nfi-…-ar25.pdf`
 - **Next refresh:**
   - Air Liquide and EssilorLuxottica: replace the 2024 figures once their FY2025 ESEF filings reach the repository.
-  - Retry the 11 unresolved companies, ideally from a browser session.
+  - Retry the 7 unresolved companies from a browser.
 
 ## Japan pipeline (Nikkei 225)
 Scripts are in `pipeline/jp/`.

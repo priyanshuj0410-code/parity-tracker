@@ -231,6 +231,22 @@
    "gap2024": 25.8,
    "basis": "ESRS gap on average gross hourly pay, all Group employees",
    "source": "https://group.intesasanpaolo.com/content/dam/portalgroup/repository-documenti/investor-relations/bilanci-relazioni-en/2025/2025_Annual_Report.pdf"
+  },
+  {
+   "ticker": "BBVA.MC",
+   "name": "BBVA",
+   "gap2025": 27.0,
+   "gap2024": 28.3,
+   "basis": "Gross gender pay gap, average total remuneration (median 20.4%), 99.7% of workforce",
+   "source": "https://shareholdersandinvestors.bbva.com/wp-content/uploads/2026/02/5_2_BBVA_Group_Annual_Report_and_Management_Report_2025.pdf"
+  },
+  {
+   "ticker": "SAN.MC",
+   "name": "Banco Santander",
+   "gap2025": 35,
+   "gap2024": 36,
+   "basis": "Hourly gender pay gap ratio, average (median 26%)",
+   "source": "https://www.santander.com/content/dam/santander-com/en/documentos/informe-financiero-anual/2025/ifa-2025-consolidated-annual-financial-report-en.pdf"
   }
  ],
  "excluded": {
@@ -243,19 +259,17 @@
   "IFX.DE": "Assessed the unadjusted gap (S1-16) as not material, so no figure is disclosed",
   "MC.PA": "Assessed the unadjusted gap (S1-16) as not material, so no figure is disclosed",
   "BN.PA": "Discloses a gap only for manager, director and executive grades (1.1 points), not for all employees",
-  "UCG.MI": "Discloses gaps per country (Italy 20.0%, Germany 29.2%), not a Group figure"
+  "UCG.MI": "Discloses gaps per country (Italy 20.0%, Germany 29.2%), not a Group figure",
+  "ARGX.BR": "Gap computed within job categories and averaged (effectively adjusted): -4.6% weighted average",
+  "ENEL.MI": "Discloses only job-category ratios and an adjusted Equal Remuneration Ratio (94.0%), not an unadjusted Group gap"
  },
  "unresolved": {
   "ALV.DE": "Report blocks automated access",
   "SAP.DE": "Report blocks automated access",
   "IBE.MC": "Report blocks automated access",
   "MBG.DE": "Report blocks automated access",
-  "ABI.BR": "FY2025 sustainability statement not located",
-  "ARGX.BR": "FY2025 sustainability statement not located",
-  "BBVA.MC": "FY2025 sustainability statement not located",
-  "SAN.MC": "FY2025 sustainability statement not located",
-  "ENEL.MI": "FY2025 sustainability statement not located",
-  "RHM.DE": "FY2025 annual report not located",
+  "ABI.BR": "FY2025 sustainability statement PDF not reachable from the company site; listed with the Mexican exchange in a summary form without the pay gap",
+  "RHM.DE": "Group annual report 2025 not located; the parent-company statements on EQS do not include the pay gap",
   "PRX.AS": "Financial year ends in March; FY2026 report not yet in the filings repository"
  }
 }
