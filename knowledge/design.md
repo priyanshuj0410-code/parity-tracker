@@ -1,7 +1,7 @@
 ---
 type: design-system
-title: Parity Tracker design system
-description: Visual and writing rules for Parity Tracker, derived from The Equal Lens brand package (minimal register) plus a validated chart palette.
+title: Nivel design system
+description: Visual and writing rules for Nivel (formerly Parity Tracker), derived from The Equal Lens brand package (minimal register) plus a validated chart palette.
 updated: 2026-10-02
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/4a6b2d55-5d5f-4713-848c-561e3e343184
@@ -15,7 +15,9 @@ plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/6b573de9-f46f-4610-8561-02b11b0e395d
 ---
 
-# Parity Tracker design system
+# Nivel design system
+
+The brand reads "Nivel" in the header next to the eQ mark, and "Nivel by The Equal Lens" in the install manifest.
 
 Source: The Equal Lens brand package (`equal-lens` skill, `references/brand.md` and `voice.md`). Patterns were checked against references from Lazyweb: investing.com's major-indices table with sparklines, WSJ's leaders and laggards tables, and ESG Book's score dashboard. We copied the first two and rejected the third's circular gauges.
 

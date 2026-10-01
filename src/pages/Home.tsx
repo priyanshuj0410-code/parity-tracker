@@ -38,7 +38,7 @@ export function Home() {
         <h1>How much of the payroll you own <span className="accent">goes to women</span></h1>
         <p className="lead">
           Buy an index fund and you own a small slice of every company in it, including a slice of its wage bill.
-          Parity Tracker shows how much of that wage bill is paid to women, using each company's own legally required filings.
+          Nivel shows how much of that wage bill is paid to women, using each company's own legally required filings.
         </p>
       </section>
 

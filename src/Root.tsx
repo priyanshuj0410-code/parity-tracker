@@ -36,7 +36,7 @@ export default function Root() {
     <>
       <header className="site-header">
         <div className="wrap header-row">
-          <a className="brand" href={href('')}><img className="logo-light" src={logo} alt="The Equal Lens" /><img className="logo-dark" src={logoReversed} alt="The Equal Lens" />Parity Tracker</a>
+          <a className="brand" href={href('')}><img className="logo-light" src={logo} alt="The Equal Lens" /><img className="logo-dark" src={logoReversed} alt="The Equal Lens" />Nivel</a>
           <nav className="nav" aria-label="Main">
             <a href={href('')} className={at('')}>Indexes</a>
             <a href={href('companies')} className={at('companies')}>Companies</a>

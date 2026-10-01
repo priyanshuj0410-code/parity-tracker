@@ -11,3 +11,6 @@ Append-only timeline. Entries: `## [YYYY-MM-DD] type | title` (type = scaffold /
 
 ## [2026-10-02] build | shared scales, compare tabs, parity map, logos, profile tabs, PWA
 Employment and wage parity put every company and index on the same scales (knowledge/decisions/0001). New Compare section (Countries, Sectors, Parity map), company pages with Overview, Trend, Peers and Sources tabs, logos for 595 of 675 companies, redesigned tables and charts, and an installable offline app. PARITY-11 to 15.
+
+## [2026-10-02] decision | the app is renamed Nivel
+Chosen from the N-name shortlist (knowledge/decisions/0002). Repo, Vercel and Plane identifiers keep parity-tracker / PARITY. Trademark and domain checks still to do.

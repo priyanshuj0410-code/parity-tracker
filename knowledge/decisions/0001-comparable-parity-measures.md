@@ -1,7 +1,7 @@
 ---
 type: decision
 title: Comparable parity measures across markets
-description: How Parity Tracker puts every company and index on two shared scales, employment parity and wage parity, so they can be compared across India, the UK, Australia, Japan and the EU, and what stays non-comparable.
+description: How Nivel puts every company and index on two shared scales, employment parity and wage parity, so they can be compared across India, the UK, Australia, Japan and the EU, and what stays non-comparable.
 status: accepted
 date: 2026-10-02
 plane_issues:
