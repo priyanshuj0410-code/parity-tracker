@@ -119,11 +119,12 @@ a.card:hover { text-decoration: none; border-color: var(--soft); }
 .bar-row .name { color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .bar-row .name small { display: block; color: var(--muted); font-size: 12px; }
 .bar-track { position: relative; height: 18px; margin-right: 52px; }
-.bar-track::after { content: ''; position: absolute; right: 0; top: -4px; bottom: -4px; width: 1px; background: var(--muted); }
+.parity-mark { position: absolute; top: -4px; bottom: -4px; width: 1px; background: var(--muted); }
 .bar { position: absolute; left: 0; top: 0; height: 18px; background: var(--s1); border-radius: 0 4px 4px 0; }
 .bar-val { position: absolute; top: 0; line-height: 18px; font: 600 12px var(--font-display); color: var(--ink); padding-left: 6px; white-space: nowrap; }
 .bar-scale { display: grid; grid-template-columns: minmax(110px, 200px) 1fr; gap: 12px; font: 500 11px var(--font-display); color: var(--muted); }
-.bar-scale div { display: flex; justify-content: space-between; margin-right: 52px; }
+.bar-scale div { position: relative; display: flex; justify-content: space-between; margin-right: 52px; min-height: 16px; }
+.bar-scale .parity-label { position: absolute; transform: translateX(-50%); white-space: nowrap; }
 
 .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--card); }
 table { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }

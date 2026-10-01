@@ -1,23 +1,36 @@
 import { Change } from '../components/Change'
 import { ParityTrack } from '../components/ParityTrack'
 import { MARKETS, type MarketStatus } from '../data/markets'
-import { INDEX_ORDER, LATEST, PREV, companies, indexes, yoyChange } from '../lib/data'
-import { fy, pct } from '../lib/format'
+import { INDEX_ORDER, MARKET, companies, indexes, yoyChange, type Market } from '../lib/data'
+import { pct } from '../lib/format'
 import { href } from '../lib/router'
 
 const STATUS: Record<MarketStatus, string> = { live: 'Live', planned: 'Planned', limited: 'Limited data' }
+const PACE_INDEX: Record<string, string> = { IN: 'nifty50', GB: 'ftse100' }
 
-export function Home() {
+function Pace({ m }: { m: Market }) {
   const changes = Object.values(companies)
+    .filter((c) => c.country === m.code)
     .map((c) => yoyChange(c))
     .filter((v): v is number => v != null)
     .sort((a, b) => a - b)
+  if (!changes.length) return null
   const median = changes[Math.floor(changes.length / 2)]
   const up = changes.filter((v) => v >= 0.0005).length
   const down = changes.filter((v) => v <= -0.0005).length
-  const n50 = indexes.nifty50.years[LATEST]
-  const years = median > 0 ? Math.round((0.5 - n50.headline) / median / 5) * 5 : null
+  const ix = indexes[PACE_INDEX[m.code]]
+  const level = ix.years[m.latest].headline
+  const years = median > 0 ? Math.round((0.5 - level) / median / 5) * 5 : null
+  return (
+    <p>
+      <strong>{m.name}:</strong> {changes.length} companies can be compared like for like between {m.label(m.prev)} and {m.label(m.latest)}.
+      {' '}{up} raised women's share of pay and {down} lowered it, a median change of <strong>{(median * 100).toFixed(1)} percentage points</strong>.
+      {years != null && <> At that pace, a company at the {ix.name} level ({pct(level)}) would take about <strong>{years} years</strong> to reach 50%.</>}
+    </p>
+  )
+}
 
+export function Home() {
   return (
     <>
       <section>
@@ -28,39 +41,36 @@ export function Home() {
         </p>
       </section>
 
-      <section>
-        <h2>Indexes</h2>
-        <div className="grid g3">
-          {INDEX_ORDER.map((id) => {
-            const ix = indexes[id]
-            const y = ix.years[LATEST]
-            const ch = ix.yoy[`${PREV}>${LATEST}`]
-            return (
-              <a key={id} className="card" href={href('index', id)}>
-                <div className="tile-label">{ix.name} · {fy(LATEST)}</div>
-                <div className="tile-value">{pct(y.headline)}</div>
-                <div className="tile-context"><Change value={ch ? ch.change : null} /> <span className="muted">like for like since {fy(PREV)}</span></div>
-                <ParityTrack value={y.headline} />
-                <div className="tile-context muted">{y.companiesCovered} of {ix.constituents.length + ix.missing.length} companies covered</div>
-              </a>
-            )
-          })}
-        </div>
-      </section>
+      {Object.values(MARKET).map((m) => (
+        <section key={m.code}>
+          <h2>{m.name}</h2>
+          <p className="small muted">{m.code === 'GB'
+            ? 'UK gender pay gap reports cover UK staff only and give hourly pay, so each company counts equally and the measure differs from India\'s.'
+            : 'Company BRSR filings give total wages paid to women, so the index figure weights each company by its payroll.'}</p>
+          <div className="grid g3">
+            {INDEX_ORDER.filter((id) => indexes[id].country === m.code).map((id) => {
+              const ix = indexes[id]
+              const y = ix.years[m.latest]
+              const ch = ix.yoy[`${m.prev}>${m.latest}`]
+              return (
+                <a key={id} className="card" href={href('index', id)}>
+                  <div className="tile-label">{ix.name} · {m.label(m.latest)}</div>
+                  <div className="tile-value">{pct(y.headline)}</div>
+                  <div className="tile-context"><Change value={ch ? ch.change : null} /> <span className="muted">like for like since {m.label(m.prev)}</span></div>
+                  <ParityTrack value={y.headline} />
+                  <div className="tile-context muted">{y.companiesCovered} of {ix.constituents.length + ix.missing.length} companies covered</div>
+                </a>
+              )
+            })}
+          </div>
+        </section>
+      ))}
 
       <section>
         <h2>The pace of change</h2>
         <div className="callout">
-          <p>
-            <strong>{changes.length} companies</strong> can be compared like for like between {fy(PREV)} and {fy(LATEST)}.
-            {' '}{up} raised women's share of wages and {down} lowered it. The median change was <strong>{(median * 100).toFixed(1)} percentage points</strong>.
-          </p>
-          {years && (
-            <p>
-              At that pace, a company at the Nifty 50 level ({pct(n50.headline)}) would take about <strong>{years} years</strong> to reach 50%.
-              This is one year of change, so read it as a signal, not a forecast.
-            </p>
-          )}
+          {Object.values(MARKET).map((m) => <Pace key={m.code} m={m} />)}
+          <p className="small">One year of change is noisy, so read these as signals, not forecasts.</p>
         </div>
       </section>
 

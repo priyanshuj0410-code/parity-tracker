@@ -18,7 +18,7 @@ export const MARKETS: Market[] = [
   },
   {
     market: 'United Kingdom',
-    status: 'planned',
+    status: 'live',
     source: 'Government gender pay gap service',
     required: 'Mean and median hourly pay gap, women in each pay quartile. Employers with 250+ staff.',
     indexes: 'FTSE 100',

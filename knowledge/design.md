@@ -5,6 +5,7 @@ description: Visual and writing rules for Parity Tracker, derived from The Equal
 updated: 2026-10-01
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/4a6b2d55-5d5f-4713-848c-561e3e343184
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/3ddee1dc-99b4-4f03-83c8-55cdf3f78b30
 ---
 
 # Parity Tracker design system
@@ -67,8 +68,9 @@ Validated with the dataviz `validate_palette.js` against `#FAF8F4`. All checks p
 - **Lines:** 2px with round joins. Markers 8px with a 2px paper ring. Estimated points are hollow.
 - **Bars:** at most 24px thick, 4px rounded data end, single hue (series 1) for magnitude.
 - **Grid:** solid 1px `--mist`, never dashed.
-- **Parity reference:** the 50% line is a solid 1px `--muted` rule with a text label.
-- **Y axis:** shares run from 0 to 50% so distance to parity is visible.
+- **Parity reference:** the 50% line is a solid 1px `--muted` rule, labelled at its left end so it never collides with the series end labels on the right.
+- **Y axis:** shares run from 0 to 50% so distance to parity is visible. If any value exceeds 50%, the axis or bar scale extends to the next 10%, and the parity mark stays at 50%.
+- **Markets:** each market has its own metric label (India: share of total wages; UK: share of hourly pay, UK staff). Never compare across markets in one chart.
 - **Legends and labels:** a legend whenever there are two or more series, plus direct end labels. Text always uses text tokens, never series colours.
 - **Hover:** a crosshair and tooltip on lines. Every chart also has a table view with the same numbers.
 

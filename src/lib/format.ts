@@ -11,7 +11,3 @@ export function inr(v: number): string {
 export function crore(v: number | null | undefined): string {
   return v == null ? NA : `₹${v.toLocaleString('en-IN')} cr`
 }
-
-export function fy(label: string): string {
-  return 'FY' + label.slice(-2)
-}

@@ -1,13 +1,19 @@
-import { LATEST, SOURCE_DATE, YEARS, companies } from '../lib/data'
-import { fy } from '../lib/format'
+import { MARKET, SOURCE_DATE, companies } from '../lib/data'
 
 export function Method() {
-  const all = Object.values(companies)
+  const IN = MARKET.IN
+  const GB = MARKET.GB
+  const LATEST = IN.latest
+  const fy = IN.label
+  const all = Object.values(companies).filter((c) => c.country === 'IN')
   const latest = all.map((c) => c.years[LATEST]).filter(Boolean)
   const estimated = latest.filter((y) => y.wKind === 'estimated').length
   const rescaled = latest.filter((y) => y.dq === 2).length
   const missing = all.filter((c) => c.years[LATEST]?.w == null).length
-  const basis = all.reduce((n, c) => n + YEARS.filter((k) => c.years[k]?.basisChange).length, 0)
+  const basis = all.reduce((n, c) => n + IN.years.filter((k) => c.years[k]?.basisChange).length, 0)
+  const uk = Object.values(companies).filter((c) => c.country === 'GB')
+  const ukCovered = uk.filter((c) => c.years[GB.latest]).length
+  const ukNone = uk.filter((c) => c.ukStatus).length
 
   return (
     <>
@@ -19,7 +25,10 @@ export function Method() {
       <section>
         <h2>Limitations</h2>
         <ul className="tight">
-          <li><strong>India only, for now.</strong> The UK, Japan, Australia and the EU require gender pay disclosure and are next. The US requires none, so US numbers will be limited to board seats.</li>
+          <li><strong>Two markets so far, measured differently.</strong> India's figures are shares of total wages; the UK's are shares of hourly pay for UK staff. Compare companies within a market, not across. Japan, Australia and the EU require gender pay disclosure and are next. The US requires none, so US numbers will be limited to board seats.</li>
+          <li><strong>UK figures cover UK staff only.</strong> A global group like HSBC or Unilever is measured on its UK employers, not its worldwide workforce. {ukNone} FTSE 100 members have no UK report: investment trusts with no staff, or groups with no UK employer of 250 or more people. {ukCovered} have data for {GB.label(GB.latest)}.</li>
+          <li><strong>UK groups are matched to their employers by name.</strong> Reports are filed by legal employers, not listed groups, so we match subsidiaries by name and list every match on the company page. Some subsidiaries with unrelated names will be missed.</li>
+          <li><strong>UK pay is hourly.</strong> Women do more part-time work, so their share of annual pay is lower than their share of hourly pay. Size bands are coarse, so employers are weighted by band midpoints and the FTSE 100 figure counts each company equally.</li>
           <li><strong>Company filings contain errors.</strong> In {fy(LATEST)}, {rescaled} companies filed wages in the wrong unit (we rescaled them), {estimated} needed estimates from median pay, and {missing} have no usable wage data. Each one is badged.</li>
           <li><strong>Reporting bases change.</strong> We found {basis} company-years where payroll, headcount or reporting scope jumped. They stay in company trajectories but are left out of like-for-like comparisons.</li>
           <li><strong>Contract workers are mostly invisible.</strong> BRSR wages cover people on the company's own payroll. Over 1.3 million contract workers across the Nifty 50 and Nifty Next 50 are largely outside the wage figures, and about 5% of them are women.</li>
@@ -42,13 +51,17 @@ gap to parity   = 50% × payroll you own − wages paid to women
   too few women employed  = Σ slice × payroll × (50% − women's share of permanent staff)
   women paid less         = Σ slice × payroll × (women's share of staff − women's share of wages)`}</pre>
         <p>We rank by the share, never by the rupee gap. A rupee gap rewards companies that employ few people at all.</p>
+        <p>UK reports give the mean hourly pay gap and the share of women in each quarter of the pay distribution, not payroll totals. We derive women's share of hourly pay for each employer, then combine a group's employers by size band:</p>
+        <pre className="formula">{`women in workforce  f = average of women's share in the four pay quarters
+women's share of pay  = f × (1 − mean gap) ÷ (f × (1 − mean gap) + (1 − f))`}</pre>
       </section>
 
       <section>
         <h2>Where the data comes from</h2>
         <ul className="tight">
-          <li><strong>Company data:</strong> Business Responsibility and Sustainability Reports (BRSR), which SEBI requires from India's top 1,000 listed companies. We read the machine-readable XBRL versions published by NSE, {fy(YEARS[0])} to {fy(LATEST)}. Women's share of wages is a BRSR Core field and is assured for the largest companies.</li>
+          <li><strong>Company data:</strong> Business Responsibility and Sustainability Reports (BRSR), which SEBI requires from India's top 1,000 listed companies. We read the machine-readable XBRL versions published by NSE, {fy(IN.years[0])} to {fy(LATEST)}. Women's share of wages is a BRSR Core field and is assured for the largest companies.</li>
           <li><strong>Market data:</strong> NSE market capitalisation on 30 September 2026 and the latest shareholding patterns.</li>
+          <li><strong>UK company data:</strong> the government's gender pay gap service, every reporting year from {GB.years[0]} to {GB.label(GB.latest)}. FTSE 100 membership is as of 1 October 2026.</li>
           <li><strong>Collected:</strong> {SOURCE_DATE}.</li>
         </ul>
       </section>
@@ -60,6 +73,7 @@ gap to parity   = 50% × payroll you own − wages paid to women
           <li><strong>Fixed weights:</strong> each company's index weight uses its median reported payroll across years, so one bad filing cannot swing an index.</li>
           <li><strong>Reported vs estimated:</strong> where wage totals are missing we estimate from median pay by gender and headcount, mark the value as estimated, and never join it to a reported trend.</li>
           <li><strong>Permanent staff:</strong> the workforce share uses permanent employees and workers, because contract workers' wages are not in the wage totals.</li>
+          <li><strong>UK basis changes:</strong> if fewer than 70% of a group's weighted UK employers carry over between two years with the same size band, in either direction, the pair is left out of like-for-like comparisons.</li>
         </ul>
       </section>
 

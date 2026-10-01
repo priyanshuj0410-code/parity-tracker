@@ -5,6 +5,7 @@ description: How the India dataset (BRSR filings for the Nifty 50, Nifty Next 50
 updated: 2026-10-01
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/4a6b2d55-5d5f-4713-848c-561e3e343184
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/3ddee1dc-99b4-4f03-83c8-55cdf3f78b30
   - https://app.plane.so/claude-pri/projects/18017c30-d8f6-436a-b4ca-a743d5317720/issues/3f4b5bd3-f746-4845-847f-e2e7400b79b4
 ---
 
@@ -39,6 +40,20 @@ Run these in a scratch folder with the scripts copied in.
 - **Fixed weights:** each company's index payroll weight is the median plausible reported payroll from FY2022-23 on.
 - **Headcount:** the workforce share uses permanent employees and workers only.
 - **Boards:** totals outside 6–20 are discarded as filing errors.
+
+## UK pipeline (FTSE 100)
+Scripts are in `pipeline/uk/`; `pipeline/merge_markets.py` merges both markets into `src/data/`.
+
+1. **Members:** `ftse100.json` is parsed from the Wikipedia FTSE 100 constituents table (members after the 1 October 2026 changes). Refresh it after each quarterly review.
+2. **Data:** download `https://gender-pay-gap.service.gov.uk/viewing/download-data/{year}` for every year from 2017, saved as `gpg{year}.csv`. The year is the April snapshot year.
+3. **Mapping:** `uk_map.py` holds a name regex per FTSE company, with exclusions. Trusts have no staff. Prudential plc has no UK filer since the M&G demerger.
+4. **Build:** `python3 uk_build.py`, then `python3 merge_markets.py`.
+
+UK rules:
+- **Per employer:** women's share of the workforce is the mean of the four quartile shares. Women's share of pay is `f(1−g) / (f(1−g) + (1−f))`, using the mean hourly gap `g`.
+- **Combining a group's employers:** weighted by size-band midpoints (250–499 → 375 … 20,000+ → 30,000).
+- **Index:** each company counts equally.
+- **Basis change:** if fewer than 70% of the weighted (employer, size band) pairs carry over between two years, in either direction, the pair is left out of like-for-like YoY.
 
 ## Known data issues (FY2025-26 refresh)
 - **Unparseable files:** Torrent Pharma's FY2021-22 XBRL is malformed, and M&M's FY2023-24 file on NSE is near empty.

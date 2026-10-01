@@ -1,0 +1,502 @@
+[
+{
+"name": "3i",
+"ticker": "III",
+"sector": "Financial services"
+},
+{
+"name": "Aberdeen Group",
+"ticker": "ABDN",
+"sector": "Financial Services"
+},
+{
+"name": "Admiral Group",
+"ticker": "ADM",
+"sector": "Insurance"
+},
+{
+"name": "Airtel Africa",
+"ticker": "AAF",
+"sector": "Telecommunications services"
+},
+{
+"name": "Alliance Witan",
+"ticker": "ALW",
+"sector": "Investment Trusts"
+},
+{
+"name": "Anglo American plc",
+"ticker": "AAL",
+"sector": "Mining"
+},
+{
+"name": "Antofagasta plc",
+"ticker": "ANTO",
+"sector": "Mining"
+},
+{
+"name": "Associated British Foods",
+"ticker": "ABF",
+"sector": "Food & tobacco"
+},
+{
+"name": "AstraZeneca",
+"ticker": "AZN",
+"sector": "Pharmaceuticals & biotechnology"
+},
+{
+"name": "Autotrader Group",
+"ticker": "AUTO",
+"sector": "Media"
+},
+{
+"name": "Aviva",
+"ticker": "AV",
+"sector": "Life insurance"
+},
+{
+"name": "Babcock International",
+"ticker": "BAB",
+"sector": "Aerospace & defence"
+},
+{
+"name": "BAE Systems",
+"ticker": "BA",
+"sector": "Aerospace & defence"
+},
+{
+"name": "Balfour Beatty",
+"ticker": "BBY",
+"sector": "Construction & Materials"
+},
+{
+"name": "Barclays",
+"ticker": "BARC",
+"sector": "Banks"
+},
+{
+"name": "Barratt Redrow",
+"ticker": "BTRW",
+"sector": "Household goods & home construction"
+},
+{
+"name": "BP",
+"ticker": "BP",
+"sector": "Oil & gas producers"
+},
+{
+"name": "British American Tobacco",
+"ticker": "BATS",
+"sector": "Tobacco"
+},
+{
+"name": "British Land",
+"ticker": "BLND",
+"sector": "Real estate"
+},
+{
+"name": "BT Group",
+"ticker": "BT.A",
+"sector": "Telecommunications services"
+},
+{
+"name": "Bunzl",
+"ticker": "BNZL",
+"sector": "Support services"
+},
+{
+"name": "Burberry Group",
+"ticker": "BRBY",
+"sector": "Personal goods"
+},
+{
+"name": "Centrica",
+"ticker": "CNA",
+"sector": "Multiline utilities"
+},
+{
+"name": "Coca-Cola Europacific Partners",
+"ticker": "CCEP",
+"sector": "Beverages"
+},
+{
+"name": "Coca-Cola HBC",
+"ticker": "CCH",
+"sector": "Beverages"
+},
+{
+"name": "Compass Group",
+"ticker": "CPG",
+"sector": "Support services"
+},
+{
+"name": "Computacenter",
+"ticker": "CCC",
+"sector": "Software & Computer Services"
+},
+{
+"name": "Convatec",
+"ticker": "CTEC",
+"sector": "Health care equipment & supplies"
+},
+{
+"name": "Croda International",
+"ticker": "CRDA",
+"sector": "Chemicals"
+},
+{
+"name": "DCC Energy",
+"ticker": "DCC",
+"sector": "Support services"
+},
+{
+"name": "Diageo",
+"ticker": "DGE",
+"sector": "Beverages"
+},
+{
+"name": "Diploma",
+"ticker": "DPLM",
+"sector": "Industrial Support services"
+},
+{
+"name": "EasyJet",
+"ticker": "EZJ",
+"sector": "Travel and Leisure"
+},
+{
+"name": "Endeavour Mining",
+"ticker": "EDV",
+"sector": "Mining"
+},
+{
+"name": "Experian",
+"ticker": "EXPN",
+"sector": "Support services"
+},
+{
+"name": "F & C Investment Trust",
+"ticker": "FCIT",
+"sector": "Collective investments"
+},
+{
+"name": "Fresnillo plc",
+"ticker": "FRES",
+"sector": "Mining"
+},
+{
+"name": "Games Workshop",
+"ticker": "GAW",
+"sector": "Leisure Goods"
+},
+{
+"name": "Glencore",
+"ticker": "GLEN",
+"sector": "Mining"
+},
+{
+"name": "GSK plc",
+"ticker": "GSK",
+"sector": "Pharmaceuticals & biotechnology"
+},
+{
+"name": "Haleon",
+"ticker": "HLN",
+"sector": "Pharmaceuticals & biotechnology"
+},
+{
+"name": "Halma plc",
+"ticker": "HLMA",
+"sector": "Electronic equipment & parts"
+},
+{
+"name": "Hiscox",
+"ticker": "HSX",
+"sector": "Non-life Insurance"
+},
+{
+"name": "Howdens Joinery",
+"ticker": "HWDN",
+"sector": "Homebuilding & construction supplies"
+},
+{
+"name": "HSBC",
+"ticker": "HSBA",
+"sector": "Banks"
+},
+{
+"name": "ICG",
+"ticker": "ICG",
+"sector": "Financial services"
+},
+{
+"name": "IG Group",
+"ticker": "IGG",
+"sector": "Financial services"
+},
+{
+"name": "IHG Hotels & Resorts",
+"ticker": "IHG",
+"sector": "Travel & leisure"
+},
+{
+"name": "IMI",
+"ticker": "IMI",
+"sector": "Industrial engineering"
+},
+{
+"name": "Imperial Brands",
+"ticker": "IMB",
+"sector": "Tobacco"
+},
+{
+"name": "Informa",
+"ticker": "INF",
+"sector": "Media"
+},
+{
+"name": "International Airlines Group",
+"ticker": "IAG",
+"sector": "Travel & leisure"
+},
+{
+"name": "Intertek",
+"ticker": "ITRK",
+"sector": "Support services"
+},
+{
+"name": "Investec",
+"ticker": "INVP",
+"sector": "Financial Services"
+},
+{
+"name": "Ithaca Energy",
+"ticker": "ITH",
+"sector": "Oil & Gas Producers"
+},
+{
+"name": "JD Sports",
+"ticker": "JD",
+"sector": "General retailers"
+},
+{
+"name": "Lion Finance Group",
+"ticker": "BGEO",
+"sector": "Banking Services"
+},
+{
+"name": "Kingfisher plc",
+"ticker": "KGF",
+"sector": "Retailers"
+},
+{
+"name": "Land Securities",
+"ticker": "LAND",
+"sector": "Real estate investment trusts"
+},
+{
+"name": "Legal & General",
+"ticker": "LGEN",
+"sector": "Life insurance"
+},
+{
+"name": "Lloyds Banking Group",
+"ticker": "LLOY",
+"sector": "Banks"
+},
+{
+"name": "LondonMetric Property",
+"ticker": "LMP",
+"sector": "Real Estate Investment Trusts"
+},
+{
+"name": "London Stock Exchange Group",
+"ticker": "LSEG",
+"sector": "Financial services"
+},
+{
+"name": "M&G",
+"ticker": "MNG",
+"sector": "Financial services"
+},
+{
+"name": "Marks & Spencer",
+"ticker": "MKS",
+"sector": "Food & drug retailing"
+},
+{
+"name": "Melrose Industries",
+"ticker": "MRO",
+"sector": "Aerospace & defence"
+},
+{
+"name": "Metlen Energy & Metals",
+"ticker": "MTLN",
+"sector": "Multiline utilities"
+},
+{
+"name": "National Grid plc",
+"ticker": "NG",
+"sector": "Multiline utilities"
+},
+{
+"name": "NatWest Group",
+"ticker": "NWG",
+"sector": "Banks"
+},
+{
+"name": "Next plc",
+"ticker": "NXT",
+"sector": "General retailers"
+},
+{
+"name": "Pearson plc",
+"ticker": "PSON",
+"sector": "Media"
+},
+{
+"name": "Pershing Square Holdings",
+"ticker": "PSH",
+"sector": "Financial services"
+},
+{
+"name": "Polar Capital Technology Trust",
+"ticker": "PCT",
+"sector": "Investment trusts"
+},
+{
+"name": "Prudential plc",
+"ticker": "PRU",
+"sector": "Life insurance"
+},
+{
+"name": "Reckitt",
+"ticker": "RKT",
+"sector": "Household goods & home construction"
+},
+{
+"name": "RELX",
+"ticker": "REL",
+"sector": "Media"
+},
+{
+"name": "Rentokil Initial",
+"ticker": "RTO",
+"sector": "Support services"
+},
+{
+"name": "Rio Tinto",
+"ticker": "RIO",
+"sector": "Mining"
+},
+{
+"name": "Rolls-Royce Holdings",
+"ticker": "RR",
+"sector": "Aerospace & defence"
+},
+{
+"name": "Sage Group",
+"ticker": "SGE",
+"sector": "Software & computer services"
+},
+{
+"name": "Sainsbury's",
+"ticker": "SBRY",
+"sector": "Food & drug retailing"
+},
+{
+"name": "Scottish Mortgage Investment Trust",
+"ticker": "SMT",
+"sector": "Collective investments"
+},
+{
+"name": "Segro",
+"ticker": "SGRO",
+"sector": "Real estate investment trusts"
+},
+{
+"name": "Severn Trent",
+"ticker": "SVT",
+"sector": "Multiline utilities"
+},
+{
+"name": "Shell plc",
+"ticker": "SHEL",
+"sector": "Oil & gas producers"
+},
+{
+"name": "Smiths Group",
+"ticker": "SMIN",
+"sector": "General industrials"
+},
+{
+"name": "Smith & Nephew",
+"ticker": "SN",
+"sector": "Health care equipment & supplies"
+},
+{
+"name": "Spirax Group",
+"ticker": "SPX",
+"sector": "Industrial engineering"
+},
+{
+"name": "SSE plc",
+"ticker": "SSE",
+"sector": "Electrical utilities & independent power producers"
+},
+{
+"name": "Standard Chartered",
+"ticker": "STAN",
+"sector": "Banks"
+},
+{
+"name": "Standard Life",
+"ticker": "SDLF",
+"sector": "Life insurance"
+},
+{
+"name": "St. James's Place",
+"ticker": "STJ",
+"sector": "Financial services"
+},
+{
+"name": "Tesco",
+"ticker": "TSCO",
+"sector": "Food & drug retailing"
+},
+{
+"name": "Tritax Big Box REIT",
+"ticker": "BBOX",
+"sector": "Real Estate Investment Trusts"
+},
+{
+"name": "Unilever",
+"ticker": "ULVR",
+"sector": "Personal goods"
+},
+{
+"name": "United Utilities",
+"ticker": "UU",
+"sector": "Multiline utilities"
+},
+{
+"name": "Vodafone Group",
+"ticker": "VOD",
+"sector": "Mobile telecommunications"
+},
+{
+"name": "Weir",
+"ticker": "WEIR",
+"sector": "Industrial goods and services"
+},
+{
+"name": "Whitbread",
+"ticker": "WTB",
+"sector": "Retail hospitality"
+},
+{
+"name": "WPP",
+"ticker": "WPP",
+"sector": "Media"
+}
+]

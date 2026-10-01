@@ -14,6 +14,17 @@ export interface CompanyYear {
   note: string
   boundary: string
   basisChange?: boolean
+  topQuartile?: number | null
+  gapMean?: number | null
+  gapMedian?: number | null
+  bonusGapMean?: number | null
+  entityCount?: number
+}
+
+export interface Entity {
+  name: string
+  size: string
+  link: string
 }
 
 export interface Filing {
@@ -27,7 +38,11 @@ export interface Company {
   name: string
   industry: string
   exchange: string
+  country: string
   indexes: string[]
+  ukStatus?: string | null
+  entities?: Entity[]
+  entitiesYear?: string
   marketCapCr: number | null
   publicFloatPct: number | null
   years: Record<string, CompanyYear>
@@ -39,21 +54,24 @@ export interface Company {
 export interface Sector {
   industry: string
   w: number
-  payrollShare: number
+  payrollShare: number | null
   companies: number
 }
 
 export interface IndexYear {
   headline: number
-  ownedPayroll: number
-  womenWages: number
-  gap: number
+  ownedPayroll: number | null
+  womenWages: number | null
+  gap: number | null
   representationShare: number | null
   payShare: number | null
   companiesCovered: number
   companiesReported: number
   reportedPayrollShare: number
   sectors: Sector[]
+  workforce?: number | null
+  topQuartile?: number | null
+  gapMean?: number | null
 }
 
 export interface Yoy {
@@ -66,11 +84,12 @@ export interface Yoy {
 export interface IndexData {
   id: string
   name: string
+  country: string
   market: string
   exchange: string
   weightsAsOf: string
   weighting: string
-  constituents: { symbol: string; weight: number }[]
+  constituents: { symbol: string; weight: number | null }[]
   missing: string[]
   years: Record<string, IndexYear>
   yoy: Record<string, Yoy>

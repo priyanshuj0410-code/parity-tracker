@@ -89,7 +89,7 @@ export function LineChart({ series, xs, xLabel, fmt, ariaLabel, yMax = 0.5, heig
         {reference && (
           <g>
             <line className="ref" x1={M.l} x2={M.l + iw} y1={yPos(reference.y)} y2={yPos(reference.y)} />
-            <text className="reflabel" x={M.l + iw + 8} y={yPos(reference.y)} dominantBaseline="middle">{reference.label}</text>
+            <text className="reflabel" x={M.l + 6} y={yPos(reference.y) - 6}>{reference.label}</text>
           </g>
         )}
         {xs.map((x, i) => (
