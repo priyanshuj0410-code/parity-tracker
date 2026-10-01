@@ -7,6 +7,7 @@ plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/4a6b2d55-5d5f-4713-848c-561e3e343184
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/3ddee1dc-99b4-4f03-83c8-55cdf3f78b30
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/5a065a68-b7a5-4d83-a44b-72136f487dad
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/46ef9975-81f3-4023-9779-f5c717132dc6
 ---
 
 # Parity Tracker design system
@@ -38,6 +39,30 @@ Source: The Equal Lens brand package (`equal-lens` skill, `references/brand.md` 
 | `--good` | `#0F6E56` | Text for increases (teal deep) |
 | `--bad` | `#C2553F` | Text for decreases (coral deep) |
 | `--sun-deep` | `#B97F0E` | Estimated or flagged data labels |
+
+### Dark theme (PARITY-10)
+**Switching:**
+- The theme follows the device (`prefers-color-scheme`) unless the header toggle sets `data-theme="light"` or `"dark"` on `<html>`.
+- The choice persists in `localStorage` (`pt-theme`).
+- A pre-paint script in `index.html` applies it before first render, so there's no flash.
+- `?theme=dark` or `?theme=light` in the URL forces a theme, for screenshots and shared links.
+- Dark mode uses the reversed (white) logo.
+
+| Token | Dark value | WCAG on page (#16111E) |
+|---|---|---|
+| `--paper` | `#16111E` | page |
+| `--card` | `#1F1829` | surface |
+| `--ink` | `#F2EEF8` | 16.2 |
+| `--body` | `#CEC5DD` | 11.2 |
+| `--soft` | `#AA9CC6` | 7.3 |
+| `--muted` | `#9B8FB4` | 6.2 (5.1 on tint) |
+| `--violet` | `#C3A8F0` | 9.0 |
+| `--mist` / `--line` / `--tint` | `#2C2339` / `#352B45` / `#2A2138` | rules, borders, fills |
+| `--good` / `--bad` | `#4CC79A` / `#FF8A6E` | 8.8 / 8.0 |
+| `--sun-deep` | `#F2C05C` | 11.0 |
+| `--on-accent` | `#16111E` | text on violet pills (9.0) |
+
+Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#133227`/`#7FD9B5`, all at least 7.4 contrast. Shadows use `--shadow` (light: violet ink at 10%; dark: black at 45%).
 
 ## 3. Type
 - **Poppins** (400/500/600/700): headings, numbers, UI labels, table headers.
@@ -83,12 +108,14 @@ Source: The Equal Lens brand package (`equal-lens` skill, `references/brand.md` 
 - **Cross-market rule:** never sort or rank across markets by the headline measure. The directory opens on one index, "All indexes" sorts by name, and the headline column states its unit per row.
 
 ## 6. Charts
-Validated with the dataviz `validate_palette.js` against `#FAF8F4`. All checks pass.
-| Slot | Hex | Brand family |
-|---|---|---|
-| Series 1 | `#6A44A3` | violet |
-| Series 2 | `#2F86C6` | sky |
-| Series 3 | `#D2497F` | rose |
+Validated with the dataviz `validate_palette.js` using `--pairs all`, because company charts show all three series at once.
+- **Light, against `#FAF8F4`:** all checks pass.
+- **Dark, against `#16111E`:** lightness, chroma, normal-vision separation (15.7) and contrast pass. Colour-blind separation is a WARN at 7.1, which is legal only because every chart also carries direct end labels, a legend and a table view. Never ship a dark chart without those.
+| Slot | Light | Dark | Brand family |
+|---|---|---|---|
+| Series 1 | `#6A44A3` | `#9F78DD` | violet |
+| Series 2 | `#2F86C6` | `#0BA0AD` | sky (cyan-shifted in dark to separate from violet) |
+| Series 3 | `#D2497F` | `#DA5D8A` | rose |
 
 - **Lines:** 2px with round joins. Markers 8px with a 2px paper ring. Estimated points are hollow.
 - **Bars:** at most 24px thick, 4px rounded data end, single hue (series 1) for magnitude.

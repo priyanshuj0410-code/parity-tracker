@@ -4,6 +4,18 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1F1829" media="(prefers-color-scheme: dark)" />
+    <script>
+      (function () {
+        try {
+          var q = new URLSearchParams(location.search).get('theme')
+          if (q === 'light' || q === 'dark') localStorage.setItem('pt-theme', q)
+          var t = q || localStorage.getItem('pt-theme')
+          if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t)
+        } catch (e) {}
+      })()
+    </script>
     <meta name="description" content="How much of the payroll you own through an index fund goes to women. Built with The Equal Lens from companies' own filings." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

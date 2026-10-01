@@ -52,6 +52,6 @@ Screenshots: `assets/before-*.jpg` and `assets/after-*.jpg` (1280px), plus `asse
 ## Next, not yet done
 - **Section tabs on company pages,** as Groww uses (Overview, Trend, Data and sources) to shorten long pages.
 - **Compare view:** two companies or two indexes side by side within a market.
-- **Dark mode,** which Kite offers. It needs dark chart tokens validated with the palette checker first.
+- **Dark mode:** done in PARITY-10. It follows the device setting, has a header toggle, and uses a validated dark chart palette. Screenshots are in `assets/dark-*.jpg`.
 - **CSV export of index tables,** for researchers and journalists.
 - **Device testing below 500px** on a real phone.
