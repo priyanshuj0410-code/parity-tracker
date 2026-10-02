@@ -1,44 +1,56 @@
 import { useEffect, useLayoutEffect, useState } from 'react'
+import { href, segments } from './paths'
 
-const path = () => window.location.hash.split('?')[0]
+export { href }
 
-function parse(): string[] {
-  return path()
-    .replace(/^#\/?/, '')
-    .split('/')
-    .filter(Boolean)
-    .map(decodeURIComponent)
+// Links shared before October 2026 used #/ routes.
+if (location.hash.startsWith('#/')) {
+  const [p, q] = location.hash.slice(1).split('?')
+  history.replaceState(null, '', href(...segments(p)) + (q ? `?${q}` : ''))
 }
 
-/** In-app navigation is a new page and starts at the top; browser Back and Forward return to where the reader was. */
-let pushed = false
-let restoreTo: number | null = null
-let current = path()
-const scrolls = new Map<string, number>()
+const keyOf = () => (history.state as { k?: number } | null)?.k
 
-document.addEventListener('click', (e) => {
-  const link = (e.target as Element).closest?.('a[href^="#/"]')
-  if (link && !e.metaKey && !e.ctrlKey && !e.shiftKey) pushed = true
-}, true)
+/** In-app navigation is a new page and starts at the top; Back and Forward return each page to where the reader left it. */
+let entry = keyOf() ?? Date.now()
+if (keyOf() == null) history.replaceState({ k: entry }, '')
+let restoreTo: number | null = null
+const scrolls = new Map<number, number>()
+const listeners = new Set<() => void>()
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
 
-export function navigate(to: string) {
-  pushed = true
-  window.location.hash = to
+function arrive(next: number, top: boolean) {
+  scrolls.set(entry, window.scrollY)
+  entry = next
+  restoreTo = top ? 0 : scrolls.get(entry) ?? 0
+  listeners.forEach((l) => l())
 }
 
+export function navigate(to: string) {
+  if (to === location.pathname + location.search) { window.scrollTo(0, 0); return }
+  const k = Date.now() + Math.random()
+  history.pushState({ k }, '', to)
+  arrive(k, true)
+}
+
+window.addEventListener('popstate', () => arrive(keyOf() ?? 0, false))
+
+document.addEventListener('click', (e) => {
+  if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
+  const a = (e.target as Element).closest?.('a[href]')
+  if (!(a instanceof HTMLAnchorElement) || a.target || a.hasAttribute('download')) return
+  const url = new URL(a.href)
+  if (url.origin !== location.origin || /\.[a-z0-9]+$/i.test(url.pathname)) return
+  e.preventDefault()
+  navigate(url.pathname + url.search)
+})
+
 export function useRoute(): string[] {
-  const [route, setRoute] = useState(parse)
+  const [route, setRoute] = useState(() => segments(location.pathname))
   useEffect(() => {
-    const onChange = () => {
-      scrolls.set(current, window.scrollY)
-      current = path()
-      restoreTo = pushed ? 0 : scrolls.get(current) ?? 0
-      pushed = false
-      setRoute(parse())
-    }
-    window.addEventListener('hashchange', onChange)
-    return () => window.removeEventListener('hashchange', onChange)
+    const on = () => setRoute(segments(location.pathname))
+    listeners.add(on)
+    return () => { listeners.delete(on) }
   }, [])
   useLayoutEffect(() => {
     if (restoreTo == null) return
@@ -49,8 +61,7 @@ export function useRoute(): string[] {
 }
 
 export function query(): URLSearchParams {
-  const i = window.location.hash.indexOf('?')
-  return new URLSearchParams(i < 0 ? '' : window.location.hash.slice(i + 1))
+  return new URLSearchParams(location.search)
 }
 
 /** Keeps view state (filters, sorts) in the URL without adding history entries. */
@@ -62,7 +73,7 @@ export function setQuery(params: Record<string, string | null>) {
   }
   const s = q.toString()
   try {
-    history.replaceState(history.state, '', (path() || '#/') + (s ? `?${s}` : ''))
+    history.replaceState(history.state, '', location.pathname + (s ? `?${s}` : ''))
   } catch {
     // Safari rate-limits replaceState while someone types fast; the next change brings the URL up to date.
   }
@@ -85,8 +96,4 @@ export function usePageTitle(title: string) {
   useEffect(() => {
     document.title = title ? `${title} · Nivel` : 'Nivel · The Equal Lens'
   }, [title])
-}
-
-export function href(...parts: string[]): string {
-  return '#/' + parts.map(encodeURIComponent).join('/')
 }

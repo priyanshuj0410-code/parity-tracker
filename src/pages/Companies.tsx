@@ -4,6 +4,7 @@ import { Change } from '../components/Change'
 import { Logo } from '../components/Logo'
 import { Meter } from '../components/Meter'
 import { DataTable, type Column } from '../components/DataTable'
+import { EmptyState } from '../components/EmptyState'
 import { E_PARITY, W_PARITY, percentile, pointOf, sectorOf } from '../lib/compare'
 import { INDEX_ORDER, companies, indexes, marketOf, yoyChange } from '../lib/data'
 import { ordinal, pct } from '../lib/format'
@@ -71,14 +72,15 @@ export function Companies() {
       <DataTable key={ix} caption="Companies" columns={columns} rows={rows} rowKey={(c) => c.symbol} rank urlState limit={30}
         initial={ix === 'all' ? { key: 'name', dir: 1 } : { key: 'h', dir: -1 }} rowHref={(c) => href('company', c.symbol)}
         summary={rows.length === 1 ? '1 company' : `${rows.length} companies`} download={`companies-${ix}`}
-        empty={<>
-          <p><strong>No companies match “{q.trim()}”{ix === 'all' ? '' : ` in the ${indexes[ix].name}`}.</strong></p>
-          <p className="small muted">Try a ticker such as TCS, a sector such as banks, or search all indexes.</p>
-          <p className="actions-row">
-            <button type="button" className="btn-quiet" onClick={() => setQ('')}>Clear search</button>
-            {ix !== 'all' && <button type="button" className="btn-quiet" onClick={() => setIx('all')}>Search all indexes</button>}
-          </p>
-        </>} />
+        empty={(
+          <EmptyState art="results" title={<>No companies match “{q.trim()}”{ix === 'all' ? '' : ` in the ${indexes[ix].name}`}</>}
+            actions={<>
+              <button type="button" className="btn-quiet" onClick={() => setQ('')}>Clear search</button>
+              {ix !== 'all' && <button type="button" className="btn-quiet" onClick={() => setIx('all')}>Search all indexes</button>}
+            </>}>
+            Try a ticker such as TCS, a sector such as banks, or search all indexes.
+          </EmptyState>
+        )} />
       {rows.length > 0 && <p className="small muted key-note">≈ means estimated or derived rather than reported. pp means percentage points.</p>}
     </section>
   )

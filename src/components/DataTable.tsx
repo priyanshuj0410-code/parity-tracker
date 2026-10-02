@@ -96,7 +96,7 @@ export function DataTable<T>({ columns, rows, rowKey, initial, caption, rowHref,
     if (rowHref && !(e.target as HTMLElement).closest('a, button')) navigate(rowHref(r))
   }
 
-  if (rows.length === 0 && empty) return <div className="table-block"><div className="empty-state">{empty}</div></div>
+  if (rows.length === 0 && empty) return <div className="table-block">{empty}</div>
 
   if (phone) {
     const role = (c: Column<T>, i: number) => c.mobile ?? (i === 0 ? 'title' : 'meta')

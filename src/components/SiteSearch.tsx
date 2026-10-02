@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { INDEX_ORDER, companies, indexes, marketOf } from '../lib/data'
 import { href, navigate } from '../lib/router'
 import { PHONE, useMedia } from '../lib/useMedia'
+import { EmptyState } from './EmptyState'
 import { Logo } from './Logo'
 import { Monogram } from './Monogram'
 
@@ -94,7 +95,9 @@ export function SiteSearch() {
               <div className="search-field">{ICON}{field}</div>
               <button type="button" className="sheet-cancel" onClick={close}>Cancel</button>
             </div>
-            {results || <p className="sheet-hint" role="status">{q.trim() ? `No companies or indexes match “${q.trim()}”. Try a ticker, such as TCS.` : 'Type a company, ticker or index'}</p>}
+            {results || (q.trim()
+              ? <div role="status"><EmptyState art="results" compact title={`No companies or indexes match “${q.trim()}”`}>Try a ticker, such as TCS, or an index name.</EmptyState></div>
+              : <p className="sheet-hint">Type a company, ticker or index</p>)}
           </div>,
           document.body,
         )}

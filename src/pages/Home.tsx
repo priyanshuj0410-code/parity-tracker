@@ -10,7 +10,9 @@ import { href, usePageTitle } from '../lib/router'
 const STATUS: Record<MarketStatus, string> = { live: 'Live', planned: 'Planned', limited: 'Limited data' }
 const PACE_INDEX: Record<string, string> = { IN: 'nifty50', GB: 'ftse100', AU: 'asx200', JP: 'nikkei225', EU: 'eurostoxx50' }
 
-function Pace({ m }: { m: Market }) {
+interface PaceRow { m: Market; n: number; up: number; down: number; median: number; years: number | null }
+
+function pace(m: Market): PaceRow | null {
   const changes = Object.values(companies)
     .filter((c) => c.country === m.code)
     .map((c) => yoyChange(c))
@@ -18,18 +20,13 @@ function Pace({ m }: { m: Market }) {
     .sort((a, b) => a - b)
   if (!changes.length) return null
   const median = changes[Math.floor(changes.length / 2)]
-  const up = changes.filter((v) => v >= 0.0005).length
-  const down = changes.filter((v) => v <= -0.0005).length
-  const ix = indexes[PACE_INDEX[m.code]]
-  const level = ix.years[m.latest].headline
-  const years = median > 0 ? Math.round((m.parity - level) / median / 5) * 5 : null
-  return (
-    <p>
-      <strong>{m.name}:</strong> {changes.length} companies can be compared like for like between {m.label(m.prev)} and {m.label(m.latest)}.
-      {' '}{up} raised women's share of pay and {down} lowered it, a median change of <strong>{(median * 100).toFixed(1)} percentage points</strong>.
-      {years != null && <> At that pace, a company at the {ix.name} level ({pct(level)}) would take about <strong>{years} years</strong> to reach {pct(m.parity, 0)}.</>}
-    </p>
-  )
+  const level = indexes[PACE_INDEX[m.code]].years[m.latest].headline
+  return {
+    m, n: changes.length, median,
+    up: changes.filter((v) => v >= 0.0005).length,
+    down: changes.filter((v) => v <= -0.0005).length,
+    years: median > 0 ? Math.round((m.parity - level) / median / 5) * 5 : null,
+  }
 }
 
 export function Home() {
@@ -61,7 +58,7 @@ export function Home() {
                     <Sparkline values={m.years.map((k) => ix.years[k]?.headline ?? null)} width={110} height={34} label={`${ix.name} trend`} />
                   </div>
                   <div className="tile-context">{m.prev
-                    ? <><Change value={ch ? ch.change : null} /> <span className="muted">like for like since {m.label(m.prev)}</span></>
+                    ? <><Change value={ch ? ch.change : null} /> <span className="muted">since {m.label(m.prev)}, same companies</span></>
                     : <span className="muted">First snapshot</span>}</div>
                   <ParityTrack value={y.headline} parity={m.parity} />
                   <div className="tile-context muted">{y.companiesCovered} of {ix.constituents.length + ix.missing.length} companies covered</div>
@@ -92,10 +89,15 @@ export function Home() {
 
       <section>
         <h2>The pace of change</h2>
-        <div className="callout">
-          {Object.values(MARKET).map((m) => <Pace key={m.code} m={m} />)}
-          <p className="small">One year of change is noisy, so read these as signals, not forecasts.</p>
-        </div>
+        <DataTable caption="The pace of change by market" bare rows={Object.values(MARKET).map(pace).filter((r): r is PaceRow => r !== null)} rowKey={(r) => r.m.code}
+          initial={{ key: 'market', dir: 1 }} columns={[
+            { key: 'market', label: 'Market', render: (r) => <strong>{r.m.name}</strong>, sort: (r) => Object.keys(MARKET).indexOf(r.m.code) },
+            { key: 'median', label: 'Median change', right: true, mobile: 'value', render: (r) => <Change value={r.median} /> },
+            { key: 'n', label: 'Compared like for like', right: true, render: (r) => `${r.n} companies, ${r.m.label(r.m.prev)} to ${r.m.label(r.m.latest)}` },
+            { key: 'split', label: 'Rose / fell', right: true, render: (r) => `${r.up} / ${r.down}` },
+            { key: 'years', label: 'Years to parity at this pace', right: true, render: (r) => (r.years == null ? 'not on track' : `about ${r.years}`) },
+          ]} />
+        <p className="small muted" style={{ marginTop: 10 }}>Like for like means the same companies in both years. Years to parity is how long a company at its index's level would take to reach 50% at the median pace. One year of change is noisy, so read these as signals, not forecasts.</p>
       </section>
 
       <section>

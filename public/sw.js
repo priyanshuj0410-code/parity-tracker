@@ -1,4 +1,4 @@
-const CACHE = 'parity-v1'
+const CACHE = 'nivel-v2'
 const SHELL = ['/', '/manifest.webmanifest', '/favicon.svg', '/icons/icon-192.png']
 
 async function precache() {
@@ -32,8 +32,10 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(req)
         .then((res) => {
-          const copy = res.clone()
-          caches.open(CACHE).then((c) => c.put('/', copy))
+          if (res.ok) {
+            const copy = res.clone()
+            caches.open(CACHE).then((c) => c.put('/', copy))
+          }
           return res
         })
         .catch(() => caches.match('/')),

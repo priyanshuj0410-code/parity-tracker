@@ -10,15 +10,18 @@ import { Logo } from '../components/Logo'
 import { Meter } from '../components/Meter'
 import { ParityTrack } from '../components/ParityTrack'
 import { DataTable, type Column } from '../components/DataTable'
+import { EmptyState } from '../components/EmptyState'
 import { Tabs } from '../components/Tabs'
 import { BASIS, E_PARITY, POINTS, W_PARITY, inMarket, marketName, pointOf, sectorOf, standing, type Point } from '../lib/compare'
-import { boardShare, companies, euYear, indexName, marketOf, payRatio, shareChange, workforce, yoyChange } from '../lib/data'
+import { SOURCE_DATE, boardShare, companies, euYear, indexName, marketOf, payRatio, shareChange, workforce, yoyChange } from '../lib/data'
 import { crore, pct, pctTick } from '../lib/format'
+import { correctionHref } from '../lib/contact'
 import { href, usePageTitle } from '../lib/router'
+import { COMPANY_TABS } from '../lib/tabs'
 import type { Company as Co } from '../types'
 import { NotFound } from './NotFound'
 
-const TABS = [['overview', 'Overview'], ['trend', 'Trend'], ['peers', 'Peers'], ['calculations', 'Calculations'], ['sources', 'Sources']] as const
+const TABS = COMPANY_TABS
 type Tab = (typeof TABS)[number][0]
 
 const ticker = (c: Co) => c.symbol.replace(/^(ASX|TSE|EU)-/, '')
@@ -130,10 +133,11 @@ function Trend({ c }: { c: Co }) {
   const uk = c.country !== 'IN'
   const gb = c.country === 'GB'
   if (c.country === 'JP') {
-    return <section><p className="small muted">Japan's database holds one snapshot so far, mostly covering FY2025. The trend starts with next year's disclosures.</p></section>
+    return <section><EmptyState art="notEnough" title="One snapshot so far">Japan's database holds one snapshot, mostly covering FY2025. The trend starts with next year's disclosures.</EmptyState></section>
   }
   if (c.country === 'EU') {
     const ys = YEARS.filter((k) => c.years[k])
+    if (ys.length < 2) return <section><EmptyState art="notEnough" title="One year so far">{c.name} has one verified CSRD statement{ys[0] ? `, for ${ys[0]}` : ''}. The trend starts when the next one is out.</EmptyState></section>
     return (
       <section>
         <ChartFrame level={2} title="Women's share of pay and of the workforce" sub="From each year's CSRD statement: the unadjusted gap (S1-16) and headcount by gender (S1-6)"
@@ -172,6 +176,7 @@ function Trend({ c }: { c: Co }) {
   const peak = Math.max(0, ...series.flatMap((s) => s.points.map((pt) => pt.y ?? 0)))
   const yMax = Math.max(0.5, Math.ceil(peak * 10) / 10)
   const rows = YEARS.filter((k) => c.years[k])
+  if (rows.length < 2) return <section><EmptyState art="notEnough" title="One year so far">{c.name} has one year of figures{rows[0] ? `, for ${fy(rows[0])}` : ''}. The trend starts with its next report.</EmptyState></section>
   const table = uk ? (
     <DataTable caption="Values by year" bare rows={rows} rowKey={(k) => k} initial={{ key: 'year', dir: 1 }} columns={[
       { key: 'year', label: 'Year', render: (k) => fy(k), sort: (k) => k },
@@ -259,7 +264,7 @@ function Sources({ c }: { c: Co }) {
                 <li key={e.name}>{e.name} ({gb ? `${e.size} staff` : e.size}){gb && e.link && /^https?:\/\//.test(e.link) ? <> · <a href={e.link} target="_blank" rel="noreferrer">employer's report</a></> : null}</li>
               ))}
             </ul>
-            <p className="small muted">Employers are matched to the listed group by name. If one is missing or wrongly included, tell The Equal Lens team.</p>
+            <p className="small muted">Employers are matched to the listed group by name. If one is missing or wrongly included, <a href={correctionHref(`${c.name} employers`)}>report a correction</a>.</p>
           </>
         )}
       </section>
@@ -304,13 +309,13 @@ export function Company({ symbol, tab }: { symbol: string; tab?: string }) {
           </div>
         </div>
         <p className="meta member-of">In {c.indexes.map((id, i) => <span key={id}>{i > 0 && (i === c.indexes.length - 1 ? ' and ' : ', ')}<a className="go" href={href('index', id)}>{indexName(id)}</a></span>)}</p>
-        {hasData && <Tabs label="Company sections" current={current} items={TABS.map(([id, label]) => ({ id, label, href: href('company', c.symbol, id) }))} />}
+        {hasData && <Tabs label="Company sections" current={current} items={TABS.map(([id, label]) => ({ id, label, href: id === 'overview' ? href('company', c.symbol) : href('company', c.symbol, id) }))} />}
       </section>
       {!hasData ? (
-        <section><p>{c.noDataReason ?? 'No BRSR filing is available for this company yet, so there is nothing to show. Recent listings file their first report after their first full financial year.'}</p></section>
+        <section><EmptyState art="reports" title="No gender pay report to show">{c.noDataReason ?? 'No BRSR filing is available for this company yet. Recent listings file their first report after their first full financial year.'}</EmptyState></section>
       ) : current === 'trend' ? <Trend c={c} />
         : current === 'peers' ? <Peers c={c} />
-          : current === 'sources' ? <Sources c={c} />
+          : current === 'sources' ? <><Sources c={c} /><p className="small muted correction">Figures checked against the filings on {SOURCE_DATE}. Spotted an error? <a className="go" href={correctionHref(c.name)}>Report a correction</a></p></>
             : current === 'calculations' ? <Calculations c={c} pt={pt} />
             : <Overview c={c} pt={pt} />}
     </>

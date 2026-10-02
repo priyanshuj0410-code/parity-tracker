@@ -7,18 +7,16 @@ import { ParityMap } from '../components/ParityMap'
 import { RangeDots, type RangeRow } from '../components/RangeDots'
 import { Segmented } from '../components/Segmented'
 import { DataTable, type Column } from '../components/DataTable'
+import { EmptyState } from '../components/EmptyState'
 import { Tabs } from '../components/Tabs'
 import { BASIS, COMPARE_MARKETS, E_PARITY, MEASURE, POINTS, SECTORS, W_PARITY, indexPoints, marketName, marketPoints, summarise, type Measure, type Point, type Summary } from '../lib/compare'
 import { INDEX_ORDER, indexMarket, indexes } from '../lib/data'
 import { pct } from '../lib/format'
 import { href, usePageTitle, useQueryState } from '../lib/router'
+import { COMPARE_TABS } from '../lib/tabs'
 import { PHONE, useMedia } from '../lib/useMedia'
 
-const TABS = [
-  { id: 'countries', label: 'Countries', href: href('compare', 'countries') },
-  { id: 'sectors', label: 'Sectors', href: href('compare', 'sectors') },
-  { id: 'map', label: 'Parity map', href: href('compare', 'map') },
-]
+const TABS = COMPARE_TABS.map(([id, label]) => ({ id, label, href: id === 'countries' ? href('compare') : href('compare', id) }))
 const MAX: Record<Measure, number> = { e: 1, w: 1.4, s: 1 }
 const MEASURES: { id: Measure; label: string }[] = [{ id: 'w', label: 'Wage parity' }, { id: 'e', label: 'Employment parity' }, { id: 's', label: 'Share of pay' }]
 const MAP_MARKETS = COMPARE_MARKETS
@@ -155,11 +153,14 @@ function Sectors() {
         <Segmented label="Measure" value={measure} onChange={setMeasure} options={MEASURES} />
         <span className="small muted">{MEASURE[measure].label}. {MEASURE[measure].note}</span>
       </div>
-      <ChartFrame level={2} title={`${MEASURE[measure].short} by sector, ${marketName(market)}`} sub="Median company in each sector, with the middle half of companies. Sectors with fewer than three companies are not plotted."
+      <ChartFrame level={2} title={`${MEASURE[measure].short} by sector, ${marketName(market)}`} sub="The dot is the median company. The bar covers the middle half: a quarter of companies sit above it and a quarter below. Sectors with fewer than three companies are not plotted."
         controls={<MarketPicker label="Market" value={market} onChange={setMarket} options={COMPARE_MARKETS.map((c) => ({ id: c, label: marketName(c) }))} />}
         table={<DataTable caption="Sectors" columns={[mcols[0], mcols.find((c) => c.key === market)!]} rows={SECTORS.map((sector) => ({ sector }))} rowKey={(r) => r.sector} initial={{ key: market, dir: -1 }} summary={`${SECTORS.length} sectors`} />}>
         {empty
-          ? <p className="small muted">{marketName(market)} companies do not report a workforce split in the data we hold, so this measure is not available. Try wage parity.</p>
+          ? <EmptyState art="data" compact title={`No ${MEASURE[measure].short.toLowerCase()} for ${marketName(market)}`}
+              actions={<button type="button" className="btn-quiet" onClick={() => setMeasure('w')}>Show wage parity</button>}>
+              {marketName(market)} companies do not report a workforce split in the data we hold.
+            </EmptyState>
           : <RangeDots label={`${MEASURE[measure].short} by sector`} rows={rows} parity={MEASURE[measure].parity} max={MAX[measure]} />}
       </ChartFrame>
       <h2 style={{ marginTop: 40 }}>Every sector in every market</h2>
@@ -200,7 +201,8 @@ function MapTab({ focus }: { focus?: string }) {
         <Dropdown label="Sector" value={sector} onChange={setSector} options={[{ id: 'all', label: 'All sectors' }, ...SECTORS.map((s) => ({ id: s, label: s }))]} />
       </div>
       <ChartFrame level={2} urlState title="Where companies sit on both scales" sub="Each dot is a company. Right of the line: half or more of staff are women. Above the line: women are paid at least as much as men on average."
-        table={<DataTable caption="Companies on the parity map" columns={columns} rows={shown} rowKey={(p) => p.c.symbol} initial={{ key: 's', dir: -1 }} rowHref={(p) => href('company', p.c.symbol)} urlState limit={30} rank download="parity-map" summary={`${shown.length} companies`} />}>
+        table={<DataTable caption="Companies on the parity map" columns={columns} rows={shown} rowKey={(p) => p.c.symbol} initial={{ key: 's', dir: -1 }} rowHref={(p) => href('company', p.c.symbol)} urlState limit={30} rank download="parity-map"
+          empty={<EmptyState art="results" compact title="No companies match these filters">Choose another market or sector.</EmptyState>} summary={`${shown.length} companies`} />}>
         {view === 'one' ? (
           <ParityMap points={plotted} on={on} focus={focus} label="Parity map" />
         ) : (

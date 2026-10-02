@@ -8,18 +8,22 @@ import { Sparkline } from '../components/Sparkline'
 import { ParityTrack } from '../components/ParityTrack'
 import { SectorBars } from '../components/SectorBars'
 import { DataTable, type Column } from '../components/DataTable'
+import { EmptyState } from '../components/EmptyState'
+import { Tabs } from '../components/Tabs'
 import { indexPoints, summarise } from '../lib/compare'
 import { boardShare, companies, indexMarket, indexes, payRatio, workforce, yoyChange } from '../lib/data'
 import { inr, pct, pctTick } from '../lib/format'
 import { href, usePageTitle } from '../lib/router'
+import { INDEX_TABS } from '../lib/tabs'
 import type { Company, Sector } from '../types'
 import { NotFound } from './NotFound'
 
 interface Row { symbol: string; weight: number | null; co: Company }
 
-export function IndexPage({ id }: { id: string }) {
+export function IndexPage({ id, tab }: { id: string; tab?: string }) {
   const ix = indexes[id]
-  usePageTitle(ix ? ix.name : 'Page not found')
+  const current = INDEX_TABS.find(([t]) => t === tab) ?? INDEX_TABS[0]
+  usePageTitle(!ix ? 'Page not found' : current[0] === 'overview' ? ix.name : `${ix.name} · ${current[1]}`)
   if (!ix) return <NotFound />
   const m = indexMarket(ix)
   const uk = ix.country !== 'IN'
@@ -83,16 +87,21 @@ export function IndexPage({ id }: { id: string }) {
 
   return (
     <>
-      <section>
+      <section className="page-head">
         <div className="meta crumbs"><a href={href('')}>Indexes</a> / {ix.market}</div>
         <h1>{ix.name}</h1>
-        <p className="meta">{ix.exchange} · <button type="button" className="link-btn" onClick={() => document.getElementById('constituents')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })}>{ix.constituents.length + ix.missing.length} companies</button> · members as of {ix.weightsAsOf}, {weightNote}</p>
-        <div className="grid g2" style={{ marginTop: 20 }}>
+        <p className="meta crumbs">{ix.exchange} · <a href={href('index', ix.id, 'companies')}>{ix.constituents.length + ix.missing.length} companies</a> · members as of {ix.weightsAsOf}, {weightNote}</p>
+        <Tabs label="Index sections" current={current[0]} items={INDEX_TABS.map(([t, label]) => ({ id: t, label, href: t === 'overview' ? href('index', ix.id) : href('index', ix.id, t) }))} />
+      </section>
+
+      {current[0] === 'overview' && <>
+      <section>
+        <div className="grid g2">
           <div className="card">
             <div className="tile-label">{m.headlineLabel} · {fy(LATEST)}</div>
             <div className="tile-value hero">{pct(y.headline)}</div>
             <div className="tile-context">{PREV
-              ? <><Change value={ch ? ch.change : null} /> <span className="muted">like for like across {ch?.companies ?? 0} companies since {fy(PREV)}</span></>
+              ? <><Change value={ch ? ch.change : null} /> <span className="muted">since {fy(PREV)}, comparing the same {ch?.companies ?? 0} companies in both years</span></>
               : <span className="muted">First snapshot</span>}</div>
             <ParityTrack value={y.headline} parity={m.parity} />
             <div className="tile-context muted">{uk ? m.coverage(y.companiesCovered) : `${m.coverage(y.companiesCovered)} · ${pct(y.reportedPayrollShare, 0)} of payroll from reported values`}</div>
@@ -162,7 +171,7 @@ export function IndexPage({ id }: { id: string }) {
       {xs.length < 2 ? (
         <section>
           <h2>The trend</h2>
-          <p className="small muted">One snapshot so far, mostly covering FY2025. The trend starts with next year's disclosures.</p>
+          <EmptyState art="notEnough" title="One snapshot so far">Mostly covering FY2025. The trend starts with next year's disclosures.</EmptyState>
         </section>
       ) : (
       <section>
@@ -179,8 +188,9 @@ export function IndexPage({ id }: { id: string }) {
         <p className="small muted" style={{ marginTop: 10 }}>{TREND_NOTE[ix.country]}</p>
       </section>
       )}
+      </>}
 
-      <section>
+      {current[0] === 'sectors' && <section>
         <h2>By sector, {fy(LATEST)}</h2>
         <ChartFrame title={m.wageLabel} sub={uk ? 'Average company in each sector, using the exchange\'s own sector labels' : 'Payroll-weighted, using the exchange\'s own sector labels'}
           table={(
@@ -194,9 +204,9 @@ export function IndexPage({ id }: { id: string }) {
           <SectorBars sectors={y.sectors} parity={m.parity} />
         </ChartFrame>
         <p className="small muted" style={{ marginTop: 10 }}><a className="go" href={href('compare', 'sectors')}>Compare sectors across markets</a> on a shared 11-sector scheme.</p>
-      </section>
+      </section>}
 
-      {PREV && <section>
+      {current[0] === 'overview' && PREV && <section>
         <h2>Biggest moves since {fy(PREV)}</h2>
         <div className="grid g2">
           {[{ title: 'Rose most', list: risers }, { title: 'Fell most', list: fallers }].map((g) => (
@@ -222,7 +232,7 @@ export function IndexPage({ id }: { id: string }) {
         <p className="small muted" style={{ marginTop: 10 }}>Companies whose reporting basis changed between the two years are left out of this comparison.</p>
       </section>}
 
-      <section id="constituents">
+      {current[0] === 'companies' && <section>
         <h2>All {ix.name} companies</h2>
         <DataTable caption={`${ix.name} constituents`} columns={columns} rows={rows} rowKey={(r) => r.symbol} initial={{ key: uk ? 'w' : 'weight', dir: -1 }} rowHref={(r) => href('company', r.symbol)}
           urlState limit={20} rank download={`${ix.id}-companies`} summary={`${rows.length} companies`} />
@@ -240,7 +250,7 @@ export function IndexPage({ id }: { id: string }) {
             {noData.length > 0 && <>No usable {fy(LATEST)} data for {noData.map((r) => r.co.name).join(', ')}.</>}
           </p>
         )}
-      </section>
+      </section>}
     </>
   )
 }

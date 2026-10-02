@@ -1,5 +1,4 @@
-import logoReversed from './assets/logo-reversed.svg'
-import logo from './assets/logo.svg'
+import mark from './assets/nivel-mark.svg'
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { InstallLink, InstallPrompt } from './components/InstallPrompt'
@@ -7,6 +6,7 @@ import { MarketStrip } from './components/MarketStrip'
 import { SiteSearch } from './components/SiteSearch'
 import { TabBar } from './components/TabBar'
 import { ThemeToggle } from './components/ThemeToggle'
+import { correctionHref } from './lib/contact'
 import { SOURCE_DATE } from './lib/data'
 import { href, useRoute } from './lib/router'
 import { Companies } from './pages/Companies'
@@ -20,7 +20,7 @@ import { NotFound } from './pages/NotFound'
 function Page({ route }: { route: string[] }) {
   const [head, arg, sub] = route
   if (!head) return <Home />
-  if (head === 'index' && arg) return <IndexPage id={arg} />
+  if (head === 'index' && arg) return <IndexPage id={arg} tab={sub} />
   if (head === 'company' && arg) return <Company key={arg} symbol={arg} tab={sub} />
   if (head === 'companies') return <Companies />
   if (head === 'compare') return <Compare tab={arg} focus={sub} />
@@ -60,7 +60,7 @@ export default function Root() {
       <header className="site-header">
         <div className="wrap header-row">
           <a className="brand" href={href('')} aria-label="Nivel by The Equal Lens, home">
-            <img className="logo-light" src={logo} alt="" /><img className="logo-dark" src={logoReversed} alt="" />
+            <img src={mark} alt="" width="276" height="317" />
             <span className="brand-text"><span className="brand-name">Nivel</span><span className="brand-by">by The Equal Lens</span></span>
           </a>
           <nav className="nav" aria-label="Main">
@@ -82,9 +82,9 @@ export default function Root() {
       </main>
       <footer className="site-footer">
         <div className="wrap">
-          <img className="logo-light" src={logo} alt="" /><img className="logo-dark" src={logoReversed} alt="" />
-          <span>Built with The Equal Lens. Data from companies' own legally required gender pay disclosures in India, the UK, Australia, Japan and the EU, collected {SOURCE_DATE}. Company logos are trademarks of their owners, shown only to identify them. Not investment advice.</span>
-          <InstallLink />
+          <img src={mark} alt="" width="276" height="317" />
+          <span>Built with The Equal Lens from companies' own legally required gender pay disclosures, collected {SOURCE_DATE}. Not investment advice.</span>
+          <span className="footer-links"><a className="go" href={correctionHref()}>Report a correction</a><InstallLink /></span>
         </div>
       </footer>
       <TabBar section={section} />

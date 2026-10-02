@@ -17,7 +17,7 @@ A public tracker, built with The Equal Lens for its MIT Solve pitch, of how much
 - **Design rules:** [../knowledge/design.md](../knowledge/design.md). Pipeline runbook: [../knowledge/playbooks/data-pipeline.md](../knowledge/playbooks/data-pipeline.md).
 
 ## Stack
-Vite + React + TypeScript, static data in `src/data/*.json`, hash routing, Vercel. Data pipeline in Python under `pipeline/india/`.
+Vite + React + TypeScript, static data in `src/data/*.json`, path URLs with one prerendered HTML file per page for link previews (see `knowledge/decisions/0003`), Vercel. Data pipeline in Python under `pipeline/india/`.
 
 ## Related
 [index](index.md) · [tickets / board](tickets/index.md)

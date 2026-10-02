@@ -2,7 +2,7 @@
 <script>
 const P = new URLSearchParams(location.search)
 const W = +(P.get('w') || 412), H = +(P.get('h') || 915), theme = P.get('theme') || 'light'
-const routes = ['', 'index/nifty50', 'index/ftse100', 'index/nikkei225', 'index/eurostoxx50', 'companies', 'company/TCS', 'company/TCS/trend', 'company/TCS/peers', 'company/TCS/calculations', 'company/TCS/sources', 'company/TSCO', 'company/TSE-6758', 'company/EU-ADS.DE', 'company/BRITANNIA', 'compare/countries', 'compare/sectors', 'compare/map', 'method', 'nope']
+const routes = ['', 'index/nifty50', 'index/ftse100', 'index/nikkei225', 'index/eurostoxx50', 'index/nifty50/companies', 'index/ftse100/sectors', 'companies', 'company/TCS', 'company/TCS/trend', 'company/TCS/peers', 'company/TCS/calculations', 'company/TCS/sources', 'company/TSCO', 'company/TSE-6758', 'company/EU-ADS_DE', 'company/BRITANNIA', 'company/III', 'company/TSE-6758/trend', 'compare', 'compare/sectors', 'compare/map', 'method', 'nope']
 const out = []
 const parse = (c) => { const m = c.match(/rgba?\(([^)]+)\)/); if (!m) return null; const p = m[1].split(',').map(Number); return { r: p[0], g: p[1], b: p[2], a: p.length > 3 ? p[3] : 1 } }
 const lum = ({ r, g, b }) => { const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4 }; return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b) }
@@ -44,7 +44,7 @@ async function run() {
   for (const r of routes) {
     await new Promise((done) => {
       const f = document.createElement('iframe'); f.style.width = W + 'px'; f.style.height = H + 'px'
-      f.src = `/?theme=${theme}#/${r}`; document.body.appendChild(f)
+      f.src = `/${r}?theme=${theme}`; document.body.appendChild(f)
       f.onload = () => setTimeout(() => { try { out.push(check(r, f)) } catch (e) { out.push({ route: r, error: String(e) }) } f.remove(); done() }, 2500)
     })
   }
