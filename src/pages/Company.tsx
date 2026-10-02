@@ -78,17 +78,17 @@ function Overview({ c, pt }: { c: Co; pt?: Point }) {
       <section>
         <h2>{jp ? 'Latest disclosure' : eu ? euYear(c) : latest ? m.label(latest) : ''} as reported</h2>
         {jp ? <JapanGlance c={c} /> : eu ? <EuGlance c={c} /> : (
-          <div className="grid g4">
+          <div className="grid g4 tiles">
             <div className="card">
               <div className="tile-label">{m.wageLabel}</div>
               <div className="tile-value">{pct(y?.w)}</div>
-              <div className="tile-context"><DataBadge year={y} /> <Change hideMissing value={latest ? yoyChange(c, latest, prevKey) : null} /></div>
+              <div className="tile-context"><DataBadge year={y} quiet /> <Change hideMissing value={latest ? yoyChange(c, latest, prevKey) : null} /></div>
             </div>
             <div className="card">
               <div className="tile-label">{m.workforceLabel}</div>
               <div className="tile-value">{pct(workforce(c, y))}</div>
               <div className="tile-context"><Change hideMissing value={shareChange(workforce(c, p), workforce(c, y))} /></div>
-              {y?.permHeadcount ? <div className="tile-context muted">{y.permHeadcount.toLocaleString('en-IN')} permanent staff</div> : null}
+              {y?.permHeadcount ? <div className="tile-context muted">of {y.permHeadcount.toLocaleString('en-IN')} permanent staff</div> : null}
               {gb && y?.entityCount ? <div className="tile-context muted">across {y.entityCount} UK {y.entityCount === 1 ? 'employer' : 'employers'}</div> : null}
             </div>
             {uk ? (
@@ -107,15 +107,15 @@ function Overview({ c, pt }: { c: Co; pt?: Point }) {
                 </div>
               </div>
             )}
-            <div className="card">
-              <div className="tile-label">Women's average pay</div>
-              <div className="tile-value">{ratio == null ? 'n/a' : gb ? `${Math.round(ratio * 100)}p` : uk ? `${Math.round(ratio * 100)}c` : `₹${Math.round(ratio * 100)}`}</div>
-              <div className="tile-context muted">{gb
-                ? `for every £1 men earn per hour (mean). Median hourly gap: ${pct(y?.gapMedian)}.`
-                : uk
-                  ? `for every $1 men earn, full-time equivalent (mean).${p?.gapMean != null && y?.gapMean != null ? ` The mean gap was ${pct(p.gapMean)} in ${m.label(prevKey ?? '')}.` : ''}`
-                  : 'for every ₹100 paid to men, on average. Approximate: wage share compared with share of permanent staff.'}</div>
-            </div>
+            {uk && (
+              <div className="card">
+                <div className="tile-label">Women's average pay</div>
+                <div className="tile-value">{ratio == null ? 'n/a' : gb ? `${Math.round(ratio * 100)}p` : `${Math.round(ratio * 100)}c`}</div>
+                <div className="tile-context muted">{gb
+                  ? `per £1 men earn per hour (mean). Median hourly gap ${pct(y?.gapMedian)}.`
+                  : `per $1 men earn, full-time equivalent (mean).${p?.gapMean != null && y?.gapMean != null ? ` The gap was ${pct(p.gapMean)} in ${m.label(prevKey ?? '')}.` : ''}`}</div>
+              </div>
+            )}
           </div>
         )}
       </section>

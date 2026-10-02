@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ChartFrame } from '../components/ChartFrame'
 import { Dropdown } from '../components/Dropdown'
+import { MarketPicker } from '../components/MarketPicker'
 import { Logo } from '../components/Logo'
 import { Meter } from '../components/Meter'
 import { ParityMap } from '../components/ParityMap'
@@ -12,6 +13,7 @@ import { BASIS, COMPARE_MARKETS, E_PARITY, MEASURE, POINTS, SECTORS, W_PARITY, i
 import { INDEX_ORDER, indexMarket, indexes } from '../lib/data'
 import { pct } from '../lib/format'
 import { href } from '../lib/router'
+import { PHONE, useMedia } from '../lib/useMedia'
 
 const TABS = [
   { id: 'countries', label: 'Countries', href: href('compare', 'countries') },
@@ -71,11 +73,11 @@ function Countries() {
       </div>
       <div className="grid g2" style={{ marginTop: 24 }}>
         <ChartFrame title="Employment parity by market" sub="Women's share of staff, median company"
-          table={<DataTable caption="Employment parity by market" columns={columns.filter((c) => c.key !== 'w' && c.key !== 's')} rows={rows} rowKey={(r) => r.code} initial={{ key: 'e', dir: -1 }} />}>
+          table={<DataTable caption="Employment parity by market" summary={`${rows.length} markets`} columns={columns.filter((c) => c.key !== 'w' && c.key !== 's')} rows={rows} rowKey={(r) => r.code} initial={{ key: 'e', dir: -1 }} />}>
           <RangeDots label="Employment parity by market" rows={ranges('e')} parity={E_PARITY} max={1} />
         </ChartFrame>
         <ChartFrame title="Wage parity by market" sub="Women's average pay as a share of men's, median company"
-          table={<DataTable caption="Wage parity by market" columns={columns.filter((c) => c.key !== 'e' && c.key !== 's')} rows={rows} rowKey={(r) => r.code} initial={{ key: 'w', dir: -1 }} />}>
+          table={<DataTable caption="Wage parity by market" summary={`${rows.length} markets`} columns={columns.filter((c) => c.key !== 'e' && c.key !== 's')} rows={rows} rowKey={(r) => r.code} initial={{ key: 'w', dir: -1 }} />}>
           <RangeDots label="Wage parity by market" rows={ranges('w')} parity={W_PARITY} max={MAX.w} />
         </ChartFrame>
       </div>
@@ -90,9 +92,51 @@ function Countries() {
   )
 }
 
+const SHORT_SECTOR: Record<string, string> = {
+  'Communication Services': 'Communication', 'Consumer Discretionary': 'Discretionary', 'Consumer Staples': 'Staples', 'Information Technology': 'Technology',
+}
+const SHORT_MARKET: Record<string, string> = { IN: 'IN', GB: 'UK', AU: 'AU', JP: 'JP', EU: 'EU' }
+
+/** Phones: every sector against every market in one compact grid. Tap a market to sort by it. */
+function SectorGrid({ measure, cell }: { measure: Measure; cell: (code: string, sector: string) => Summary | null }) {
+  const [by, setBy] = useState('IN')
+  const val = (code: string, s: string) => { const x = cell(code, s); return x && x.n >= 3 ? x.median : null }
+  const rows = [...SECTORS].sort((a, b) => (val(by, b) ?? -1) - (val(by, a) ?? -1))
+  return (
+    <div className="sgrid-wrap">
+      <table className="sgrid">
+        <caption className="sr-only">{MEASURE[measure].short} by sector and market, median company, percent</caption>
+        <thead>
+          <tr>
+            <th scope="col">Sector</th>
+            {COMPARE_MARKETS.map((code) => (
+              <th key={code} scope="col" aria-sort={by === code ? 'descending' : undefined} className={by === code ? 'on' : undefined}>
+                <button type="button" onClick={() => setBy(code)} aria-label={`Sort by ${marketName(code)}`}>{SHORT_MARKET[code]}</button>
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((s) => (
+            <tr key={s}>
+              <th scope="row">{SHORT_SECTOR[s] ?? s}</th>
+              {COMPARE_MARKETS.map((code) => {
+                const v = val(code, s)
+                return <td key={code} className={by === code ? 'on' : undefined}>{v == null ? <span className="muted" aria-label="no data">·</span> : Math.round(v * 100)}</td>
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p className="small muted">Median company, in percent. A dot means fewer than three companies. Tap a market to sort.</p>
+    </div>
+  )
+}
+
 function Sectors() {
   const [measure, setMeasure] = useState<Measure>('w')
   const [market, setMarket] = useState('IN')
+  const phone = useMedia(PHONE)
   const cell = (code: string, sector: string) => summarise(marketPoints(code).filter((p) => p.sector === sector).map((p) => p[measure]))
   const rows: RangeRow[] = SECTORS.map((s) => ({ key: s, label: s, s: cell(market, s) }))
     .sort((a, b) => (b.s && b.s.n >= 3 ? b.s.median : -1) - (a.s && a.s.n >= 3 ? a.s.median : -1))
@@ -113,16 +157,18 @@ function Sectors() {
         <span className="small muted">{MEASURE[measure].label}. {MEASURE[measure].note}</span>
       </div>
       <ChartFrame title={`${MEASURE[measure].short} by sector, ${marketName(market)}`} sub="Median company in each sector, with the middle half of companies. Sectors with fewer than three companies are not plotted."
-        controls={<div className="pills compact" role="group" aria-label="Market">{COMPARE_MARKETS.map((c) => <button key={c} type="button" className={market === c ? 'pill on' : 'pill'} aria-pressed={market === c} onClick={() => setMarket(c)}>{marketName(c)}</button>)}</div>}
-        table={<DataTable caption="Sectors" columns={[mcols[0], mcols.find((c) => c.key === market)!]} rows={SECTORS.map((sector) => ({ sector }))} rowKey={(r) => r.sector} initial={{ key: market, dir: -1 }} />}>
+        controls={<MarketPicker label="Market" value={market} onChange={setMarket} options={COMPARE_MARKETS.map((c) => ({ id: c, label: marketName(c) }))} />}
+        table={<DataTable caption="Sectors" columns={[mcols[0], mcols.find((c) => c.key === market)!]} rows={SECTORS.map((sector) => ({ sector }))} rowKey={(r) => r.sector} initial={{ key: market, dir: -1 }} summary={`${SECTORS.length} sectors`} />}>
         {empty
           ? <p className="small muted">{marketName(market)} companies do not report a workforce split in the data we hold, so this measure is not available. Try wage parity.</p>
           : <RangeDots label={`${MEASURE[measure].short} by sector`} rows={rows} parity={MEASURE[measure].parity} max={MAX[measure]} />}
       </ChartFrame>
       <h2 style={{ marginTop: 40 }}>Every sector in every market</h2>
       <p className="small muted">{MEASURE[measure].short}, median company. Sectors follow a shared 11-sector scheme mapped from each exchange's own labels.</p>
-      <DataTable caption="Sectors by market" columns={mcols} rows={SECTORS.map((sector) => ({ sector }))} rowKey={(r) => r.sector} initial={{ key: 'sector', dir: 1 }}
-        download={`sectors-${measure}`} summary={`${SECTORS.length} sectors`} />
+      {phone
+        ? <SectorGrid measure={measure} cell={cell} />
+        : <DataTable caption="Sectors by market" columns={mcols} rows={SECTORS.map((sector) => ({ sector }))} rowKey={(r) => r.sector} initial={{ key: 'sector', dir: 1 }}
+            download={`sectors-${measure}`} summary={`${SECTORS.length} sectors`} />}
       {measure !== 'e' && <p className="small muted" style={{ marginTop: 10 }}>India's wage parity is derived from the wage share and the share of permanent staff, so treat Indian sector figures as approximate.</p>}
     </>
   )
@@ -149,9 +195,8 @@ function MapTab({ focus }: { focus?: string }) {
       <div className="toolbar">
         <Segmented label="Layout" value={view} onChange={setView} options={[{ id: 'one', label: 'One map' }, { id: 'facets', label: 'By market' }]} />
         {view === 'one' && (
-          <div className="pills compact" role="group" aria-label="Highlight a market">
-            {['all', ...MAP_MARKETS].map((c) => <button key={c} type="button" className={market === c ? 'pill on' : 'pill'} aria-pressed={market === c} onClick={() => setMarket(c)}>{c === 'all' ? 'All markets' : marketName(c)}</button>)}
-          </div>
+          <MarketPicker label="Highlight a market" value={market} onChange={setMarket}
+            options={['all', ...MAP_MARKETS].map((c) => ({ id: c, label: c === 'all' ? 'All markets' : marketName(c) }))} />
         )}
         <Dropdown label="Sector" value={sector} onChange={setSector} options={[{ id: 'all', label: 'All sectors' }, ...SECTORS.map((s) => ({ id: s, label: s }))]} />
       </div>

@@ -16,11 +16,9 @@ export function ChartFrame({ title, sub, table, children, controls }: {
           {title && <h3>{title}</h3>}
           {sub && <p className="small muted">{sub}</p>}
         </div>
-        <div className="frame-controls">
-          {controls}
-          <Segmented label="View" value={view} onChange={setView} options={[{ id: 'chart', label: 'Chart' }, { id: 'table', label: 'Table' }]} />
-        </div>
+        <Segmented label="View" value={view} onChange={setView} options={[{ id: 'chart', label: 'Chart' }, { id: 'table', label: 'Table' }]} />
       </div>
+      {controls && <div className="frame-filters">{controls}</div>}
       {view === 'chart' ? children : <div className="frame-table">{table}</div>}
     </div>
   )

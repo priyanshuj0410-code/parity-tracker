@@ -22,10 +22,12 @@ interface Props {
 export function ParityMap({ points, on, label, focus, height = 480, compact = false }: Props) {
   const [ref, width] = useWidth<HTMLDivElement>()
   const [hover, setHover] = useState<Point | null>(null)
-  const M = compact ? { t: 10, r: 12, b: 30, l: 40 } : { t: 14, r: 18, b: 50, l: 58 }
   const w = Math.max(width, 260)
+  const narrow = !compact && w < 560
+  const M = compact ? { t: 10, r: 12, b: 30, l: 40 } : narrow ? { t: 24, r: 10, b: 36, l: 40 } : { t: 14, r: 18, b: 50, l: 58 }
+  const H = narrow ? Math.round(w * 1.05) : height
   const iw = w - M.l - M.r
-  const ih = height - M.t - M.b
+  const ih = H - M.t - M.b
   const x = (v: number) => M.l + Math.min(Math.max(v, 0), 1) * iw
   const y = (v: number) => M.t + ih - ((Math.min(Math.max(v, Y0), Y1) - Y0) / (Y1 - Y0)) * ih
   const plotted = points.filter((p) => p.e != null && p.w != null)
@@ -35,8 +37,7 @@ export function ParityMap({ points, on, label, focus, height = 480, compact = fa
   const quad = { tl: 0, tr: 0, bl: 0, br: 0 }
   for (const p of lit) quad[`${(p.w as number) >= W_PARITY ? 't' : 'b'}${(p.e as number) >= E_PARITY ? 'r' : 'l'}` as keyof typeof quad]++
   const focused = focus ? plotted.find((p) => p.c.symbol === focus) : undefined
-  const r = compact ? 3.25 : 4.5
-  const narrow = w < 560
+  const r = compact ? 3.25 : narrow ? 3 : 4.5
 
   const pick = (ev: PointerEvent<SVGRectElement>) => {
     const box = (ev.currentTarget.ownerSVGElement ?? ev.currentTarget).getBoundingClientRect()
@@ -54,8 +55,8 @@ export function ParityMap({ points, on, label, focus, height = 480, compact = fa
   const hx = hover ? x(hover.e as number) : 0
   const hy = hover ? y(hover.w as number) : 0
   return (
-    <div className="chart map" ref={ref}>
-      <svg width={w} height={height} role="img"
+    <div className={narrow ? 'chart map narrow' : 'chart map'} ref={ref}>
+      <svg width={w} height={H} role="img"
         aria-label={`${label}: ${lit.length} companies. ${quad.tr} at or above parity on both measures, ${quad.bl} below on both, ${quad.tl} paid at parity with too few women, ${quad.br} with enough women paid less.`}>
         <rect className="quad-good" x={x(E_PARITY)} y={y(Y1)} width={x(1) - x(E_PARITY)} height={y(W_PARITY) - y(Y1)} />
         {XT.map((t) => (
@@ -72,22 +73,28 @@ export function ParityMap({ points, on, label, focus, height = 480, compact = fa
         ))}
         <line className="ref" x1={x(E_PARITY)} x2={x(E_PARITY)} y1={M.t} y2={M.t + ih} />
         <line className="ref" x1={M.l} x2={M.l + iw} y1={y(W_PARITY)} y2={y(W_PARITY)} />
-        {!compact && (
+        {!compact && !narrow && (
           <>
-            <text className="axis-title" x={M.l + iw / 2} y={height - 8} textAnchor="middle">Employment parity: women's share of staff</text>
+            <text className="axis-title" x={M.l + iw / 2} y={H - 8} textAnchor="middle">Employment parity: women's share of staff</text>
             <text className="axis-title" transform={`translate(14 ${M.t + ih / 2}) rotate(-90)`} textAnchor="middle">Wage parity: women's pay as a share of men's</text>
+          </>
+        )}
+        {narrow && (
+          <>
+            <text className="axis-title" x={M.l + iw} y={H - 4} textAnchor="end">Women's share of staff →</text>
+            <text className="axis-title" x={4} y={12}>↑ Women's pay as a share of men's</text>
           </>
         )}
         {dim.map((p) => <circle key={p.c.symbol} className="pt-dim" cx={x(p.e as number)} cy={y(p.w as number)} r={r - 0.75} />)}
         {lit.map((p) => (
           <circle key={p.c.symbol} className={outside(p) ? 'pt out' : 'pt'} cx={x(p.e as number)} cy={y(p.w as number)} r={hover === p ? r + 2 : r} />
         ))}
-        {!compact && (
+        {!compact && !narrow && (
           <g>
-            <text className="quad" x={x(1) - 8} y={M.t + 28} textAnchor="end">{narrow ? 'Parity' : 'Parity on both'} · {quad.tr}</text>
-            <text className="quad" x={M.l + 8} y={M.t + 28}>{narrow ? 'Equal pay, few women' : 'Paid at parity, too few women'} · {quad.tl}</text>
-            <text className="quad" x={M.l + 8} y={M.t + ih - 10}>{narrow ? 'Few women, paid less' : 'Too few women, paid less'} · {quad.bl}</text>
-            <text className="quad" x={x(1) - 8} y={M.t + ih - 10} textAnchor="end">{narrow ? 'Paid less' : 'Enough women, paid less'} · {quad.br}</text>
+            <text className="quad" x={x(1) - 8} y={M.t + 28} textAnchor="end">Parity on both · {quad.tr}</text>
+            <text className="quad" x={M.l + 8} y={M.t + 28}>Paid at parity, too few women · {quad.tl}</text>
+            <text className="quad" x={M.l + 8} y={M.t + ih - 10}>Too few women, paid less · {quad.bl}</text>
+            <text className="quad" x={x(1) - 8} y={M.t + ih - 10} textAnchor="end">Enough women, paid less · {quad.br}</text>
           </g>
         )}
         {focused && (
@@ -101,8 +108,16 @@ export function ParityMap({ points, on, label, focus, height = 480, compact = fa
           onPointerMove={pick} onPointerDown={pick} onPointerLeave={() => setHover(null)}
           onClick={() => { if (hover) window.location.hash = href('company', hover.c.symbol) }} />
       </svg>
+      {narrow && (
+        <div className="quad-key" aria-hidden="true">
+          <span>Equal pay, few women<b>{quad.tl}</b></span>
+          <span className="good">Parity on both<b>{quad.tr}</b></span>
+          <span>Paid less, few women<b>{quad.bl}</b></span>
+          <span>Paid less, more women<b>{quad.br}</b></span>
+        </div>
+      )}
       {hover && (
-        <div className="tooltip map-tip" style={{ left: hx > w / 2 ? hx - 252 : hx + 14, top: Math.max(0, Math.min(hy - 40, height - 170)) }}>
+        <div className="tooltip map-tip" style={{ left: Math.max(0, Math.min(w - 240, hx > w / 2 ? hx - 252 : hx + 14)), top: Math.max(0, Math.min(hy - 40, H - 170)) }}>
           <div className="tt-head"><Logo symbol={hover.c.symbol} name={hover.c.name} size={24} /><strong>{hover.c.name}</strong></div>
           <div className="tt-sub">{marketName(hover.c.country)} · {hover.sector}</div>
           <div className="tt-row"><span className="tt-label">Women's share of {BASIS[hover.c.country].employment}</span><span className="tt-val">{pct(hover.e)}</span></div>

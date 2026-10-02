@@ -8,11 +8,11 @@ export function JapanGlance({ c }: { c: Company }) {
   const y = c.years.latest
   const board = boardShare(y) ?? y.boardShareReported ?? null
   return (
-        <div className="grid g4">
+        <div className="grid g4 tiles">
           <div className="card">
             <div className="tile-label">Women's share of pay</div>
             <div className="tile-value">{pct(y.w)}</div>
-            <div className="tile-context"><DataBadge year={y} /></div>
+            <div className="tile-context"><DataBadge year={y} quiet /></div>
             {y.w != null && <ParityTrack value={y.w} parity={0.5} />}
           </div>
           <div className="card">

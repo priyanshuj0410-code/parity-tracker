@@ -93,10 +93,10 @@ export function DataTable<T>({ columns, rows, rowKey, initial, caption, rowHref,
             <div className="mtable-head">
               <span className="mtable-count">{summary}{!byMetric && primary ? ` · ${primary.short ?? primary.label}` : ''}</span>
               <div className="list-tools">
-                {options.length > 1 && (
-                  <Dropdown label="Show and sort by" value={sort.key} options={options.map((c) => ({ id: c.key, label: c === title ? 'Name, A to Z' : c.short ?? c.label }))}
-                    onChange={(k) => setSort((s) => ({ key: k, dir: k === s.key ? s.dir : k === title?.key ? 1 : -1 }))} />
-                )}
+                {metrics.length > 1
+                  ? <Dropdown label="Show and sort by" value={sort.key} options={options.map((c) => ({ id: c.key, label: c === title ? 'Name, A to Z' : c.short ?? c.label }))}
+                      onChange={(k) => setSort((s) => ({ key: k, dir: k === s.key ? s.dir : k === title?.key ? 1 : -1 }))} />
+                  : primary && <span className="mtable-metric">{primary.short ?? primary.label}</span>}
                 <button type="button" className="btn-icon" onClick={() => setSort((s) => ({ ...s, dir: s.dir === 1 ? -1 : 1 }))}
                   aria-label={sort.dir === 1 ? 'Sorted ascending. Switch to descending.' : 'Sorted descending. Switch to ascending.'}>
                   <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
