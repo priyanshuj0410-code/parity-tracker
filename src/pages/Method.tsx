@@ -1,4 +1,6 @@
 import { Eq, Frac, Step, Steps } from '../components/Formula'
+import { CORRECTIONS_EMAIL, correctionHref } from '../lib/contact'
+import { usePageTitle } from '../lib/router'
 import { MARKET, SOURCE_DATE, companies, indexes } from '../lib/data'
 import { inr, pct } from '../lib/format'
 
@@ -19,6 +21,7 @@ const EXAMPLES = EXAMPLE_OF.flatMap(([code, symbol, inputs, wNote, eNote]) => {
 })
 
 export function Method() {
+  usePageTitle('Method')
   const IN = MARKET.IN
   const GB = MARKET.GB
   const LATEST = IN.latest
@@ -150,7 +153,13 @@ export function Method() {
       <section>
         <h2>What this is not</h2>
         <p>This is not an ESG rating and not investment advice. It is arithmetic on figures that companies publish themselves, with every number linked to its source filing.</p>
-        <p>Built with The Equal Lens. If you find an error, tell The Equal Lens team and we will correct it.</p>
+        <p>Company logos are trademarks of their owners, shown only to identify them.</p>
+      </section>
+
+      <section>
+        <h2>Corrections</h2>
+        <p>Every figure was checked against the companies' filings on {SOURCE_DATE}. If you find an error, a missing filing or a company matched to the wrong employer, email us with the company and the figure, and we will correct it.</p>
+        <p><a className="go" href={correctionHref()}>{CORRECTIONS_EMAIL}</a></p>
       </section>
     </>
   )

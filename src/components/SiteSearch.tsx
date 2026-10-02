@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { INDEX_ORDER, companies, indexes, marketOf } from '../lib/data'
-import { href } from '../lib/router'
+import { href, navigate } from '../lib/router'
 import { PHONE, useMedia } from '../lib/useMedia'
+import { EmptyState } from './EmptyState'
 import { Logo } from './Logo'
 import { Monogram } from './Monogram'
 
@@ -53,7 +55,7 @@ export function SiteSearch() {
   }, [sheet])
 
   const close = () => { setQ(''); setOpen(false); setSheet(false); input.current?.blur() }
-  const go = (h: Hit) => { window.location.hash = h.to; close() }
+  const go = (h: Hit) => { navigate(h.to); close() }
 
   const field = (
     <input
@@ -87,14 +89,17 @@ export function SiteSearch() {
     return (
       <>
         <button type="button" className="icon-btn" aria-label="Search companies and indexes" onClick={() => setSheet(true)}>{ICON}</button>
-        {sheet && (
+        {sheet && createPortal(
           <div className="search-sheet" role="dialog" aria-modal="true" aria-label="Search">
             <div className="sheet-bar">
               <div className="search-field">{ICON}{field}</div>
               <button type="button" className="sheet-cancel" onClick={close}>Cancel</button>
             </div>
-            {results || <p className="sheet-hint">{q.trim() ? 'No matches' : 'Type a company, ticker or index'}</p>}
-          </div>
+            {results || (q.trim()
+              ? <div role="status"><EmptyState art="results" compact title={`No companies or indexes match “${q.trim()}”`}>Try a ticker, such as TCS, or an index name.</EmptyState></div>
+              : <p className="sheet-hint">Type a company, ticker or index</p>)}
+          </div>,
+          document.body,
         )}
       </>
     )
@@ -105,6 +110,7 @@ export function SiteSearch() {
       {field}
       <kbd className="search-kbd" aria-hidden="true">⌘K</kbd>
       {results}
+      {open && q.trim() && hits.length === 0 && <p className="search-empty" role="status">No companies or indexes match “{q.trim()}”. Try a ticker, such as TCS.</p>}
     </div>
   )
 }

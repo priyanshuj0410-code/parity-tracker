@@ -8,7 +8,7 @@ export function Monogram({ name, seed, size = 30 }: { name: string; seed: string
   for (const ch of seed) h = (h * 31 + ch.charCodeAt(0)) >>> 0
   return (
     <span className={`mono ${TONES[h % TONES.length]}`} aria-hidden="true"
-      style={{ width: size, height: size, fontSize: Math.round(size * 0.36), borderRadius: Math.round(size * 0.26) }}>
+      style={{ width: size, height: size, fontSize: Math.max(12, Math.round(size * 0.36)), borderRadius: Math.round(size * 0.26) }}>
       {initials}
     </span>
   )

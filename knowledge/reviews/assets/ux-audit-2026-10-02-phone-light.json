@@ -1,0 +1,1055 @@
+[
+ {
+  "route": "",
+  "title": "Nivel \u00b7 The Equal Lens",
+  "hOverflow": 0,
+  "targets": 25,
+  "under24": [
+   {
+    "n": "Method and limitations",
+    "w": 165,
+    "h": 22
+   }
+  ],
+  "under44": 10,
+  "under48": 11,
+  "noName": [],
+  "h1": 1,
+  "headingSkips": 0,
+  "text": 171,
+  "textUnder12": 37,
+  "contrastFails": 55,
+  "contrastByColor": {
+   "rgb(146, 134, 174) 3.36": {
+    "n": 47,
+    "ex": "0.0",
+    "cls": "strip-chg flat",
+    "fs": 12
+   },
+   "rgb(146, 134, 174) 3.17": {
+    "n": 6,
+    "ex": "Company BRSR filings giv",
+    "cls": "small muted",
+    "fs": 14
+   },
+   "rgb(127, 101, 164) 4.35": {
+    "n": 1,
+    "ex": "no change",
+    "cls": "chg flat",
+    "fs": 12
+   },
+   "rgb(185, 127, 14) 3.44": {
+    "n": 1,
+    "ex": "Limited data",
+    "cls": "status limited",
+    "fs": 12
+   }
+  },
+  "skipLink": false,
+  "liveRegion": false
+ },
+ {
+  "route": "index/nifty50",
+  "title": "Nivel \u00b7 The Equal Lens",
+  "hOverflow": 0,
+  "targets": 83,
+  "under24": [
+   {
+    "n": "Indexes",
+    "w": 48,
+    "h": 19
+   },
+   {
+    "n": "Compare with other markets",
+    "w": 179,
+    "h": 19
+   },
+   {
+    "n": "Compare sectors across marke",
+    "w": 203,
+    "h": 19
+   },
+   {
+    "n": "Trent Ltd.",
+    "w": 60,
+    "h": 22
+   },
+   {
+    "n": "Cipla Ltd.",
+    "w": 59,
+    "h": 22
+   },
+   {
+    "n": "Axis Bank Ltd.",
+    "w": 90,
+    "h": 22
+   },
+   {
+    "n": "Bharti Airtel Ltd.",
+    "w": 104,
+    "h": 22
+   },
+   {
+    "n": "Eternal Ltd.",
+    "w": 72,
+    "h": 22
+   }
+  ],
+  "under44": 73,
+  "under48": 79,
+  "noName": [],
+  "h1": 1,
+  "headingSkips": 0,
+  "text": 318,
+  "textUnder12": 21,
+  "contrastFails": 80,
+  "contrastByColor": {
+   "rgb(146, 134, 174) 3.36": {
+    "n": 74,
+    "ex": "0.0",
+    "cls": "strip-chg flat",
+    "fs": 12
+   },
+   "rgb(127, 101, 164) 4.35": {
+    "n": 3,
+    "ex": "Table",
+    "cls": "",
+    "fs": 13
+   },
+   "rgb(146, 134, 174) 3.17": {
+    "n": 3,
+    "ex": "Each company keeps a fix",
+    "cls": "small muted",
+    "fs": 14
+   }
+  },
+  "skipLink": false,
+  "liveRegion": false
+ },
+ {
+  "route": "index/ftse100",
+  "title": "Nivel \u00b7 The Equal Lens",
+  "hOverflow": 0,
+  "targets": 133,
+  "under24": [
+   {
+    "n": "Indexes",
+    "w": 48,
+    "h": 19
+   },
+   {
+    "n": "Compare with other markets",
+    "w": 179,
+    "h": 19
+   },
+   {
+    "n": "Compare sectors across marke",
+    "w": 203,
+    "h": 19
+   },
+   {
+    "n": "ICG",
+    "w": 23,
+    "h": 22
+   },
+   {
+    "n": "Informa",
+    "w": 48,
+    "h": 22
+   },
+   {
+    "n": "Barratt Redrow",
+    "w": 97,
+    "h": 22
+   },
+   {
+    "n": "DCC Energy",
+    "w": 76,
+    "h": 22
+   },
+   {
+    "n": "Ithaca Energy",
+    "w": 85,
+    "h": 22
+   },
+   {
+    "n": "Weir",
+    "w": 30,
+    "h": 22
+   },
+   {
+    "n": "Standard Life",
+    "w": 84,
+    "h": 22
+   },
+   {
+    "n": "Rentokil Initial",
+    "w": 90,
+    "h": 22
+   },
+   {
+    "n": "Compass Group",
+    "w": 100,
+    "h": 22
+   },
+   {
+    "n": "Sainsbury's",
+    "w": 72,
+    "h": 22
+   }
+  ],
+  "under44": 128,
+  "under48": 129,
+  "noName": [],
+  "h1": 1,
+  "headingSkips": 0,
+  "text": 605,
+  "textUnder12": 23,
+  "contrastFails": 173,
+  "contrastByColor": {
+   "rgb(146, 134, 174) 3.36": {
+    "n": 167,
+    "ex": "0.0",
+    "cls": "strip-chg flat",
+    "fs": 12
+   },
+   "rgb(127, 101, 164) 4.35": {
+    "n": 3,
+    "ex": "Table",
+    "cls": "",
+    "fs": 13
+   },
+   "rgb(146, 134, 174) 3.17": {
+    "n": 3,
+    "ex": "Each company counts equa",
+    "cls": "small muted",
+    "fs": 14
+   }
+  },
+  "skipLink": false,
+  "liveRegion": false
+ },
+ {
+  "route": "index/nikkei225",
+  "title": "Nivel \u00b7 The Equal Lens",
+  "hOverflow": 0,
+  "targets": 246,
+  "under24": [
+   {
+    "n": "Indexes",
+    "w": 48,
+    "h": 19
+   },
+   {
+    "n": "Compare with other markets",
+    "w": 179,
+    "h": 19
+   },
+   {
+    "n": "Compare sectors across marke",
+    "w": 203,
+    "h": 19
+   }
+  ],
+  "under44": 241,
+  "under48": 242,
+  "noName": [],
+  "h1": 1,
+  "headingSkips": 0,
+  "text": 826,
+  "textUnder12": 10,
+  "contrastFails": 384,
+  "contrastByColor": {
+   "rgb(146, 134, 174) 3.36": {
+    "n": 380,
+    "ex": "0.0",
+    "cls": "strip-chg flat",
+    "fs": 12
+   },
+   "rgb(146, 134, 174) 3.17": {
+    "n": 2,
+    "ex": "One snapshot so far, mos",
+    "cls": "small muted",
+    "fs": 14
+   },
+   "rgb(127, 101, 164) 4.35": {
+    "n": 2,
+    "ex": "Table",
+    "cls": "",
+    "fs": 13
+   }
+  },
+  "skipLink": false,
+  "liveRegion": false
+ },
+ {
+  "route": "index/eurostoxx50",
+  "title": "Nivel \u00b7 The Equal Lens",
+  "hOverflow": 0,
+  "targets": 83,
+  "under24": [
+   {
+    "n": "Indexes",
+    "w": 48,
+    "h": 19
+   },
+   {
+    "n": "Compare with other markets",
+    "w": 179,
+    "h": 19
+   },
+   {
+    "n": "Compare sectors across marke",
+    "w": 203,
+    "h": 19
+   },
+   {
+    "n": "Adyen",
+    "w": 41,
+    "h": 22
+   },
+   {
+    "n": "Volkswagen Group",
+    "w": 119,
+    "h": 22
+   },
+   {
+    "n": "Wolters Kluwer",
+    "w": 99,
+    "h": 22
+   },
+   {
+    "n": "Adidas",
+    "w": 44,
+    "h": 22
+   },
+   {
+    "n": "ASML Holding",
+    "w": 92,
+    "h": 22
+   },
+   {
+    "n": "Deutsche Post",
+    "w": 91,
+    "h": 22
+   },
+   {
+    "n": "Munich Re",
+    "w": 66,
+    "h": 22
+   },
+   {
+    "n": "Eni",
+    "w": 19,
+    "h": 22
+   },
+   {
+    "n": "L'Or\u00e9al",
+    "w": 45,
+    "h": 22
+   },
+   {
+    "n": "Deutsche Telekom",
+    "w": 116,
+    "h": 22
+   }
+  ],
+  "under44": 78,
+  "under48": 79,
+  "noName": [],
+  "h1": 1,
+  "headingSkips": 0,
+  "text": 317,
+  "textUnder12": 16,
+  "contrastFails": 96,
+  "contrastByColor": {
+   "rgb(146, 134, 174) 3.36": {
+    "n": 90,
+    "ex": "0.0",
+    "cls": "strip-chg flat",
+    "fs": 12
+   },
+   "rgb(127, 101, 164) 4.35": {
+    "n": 3,
+    "ex": "Table",
+    "cls": "",
+    "fs": 13
+   },
+   "rgb(146, 134, 174) 3.17": {
+    "n": 3,
+    "ex": "Each company counts equa",
+    "cls": "small muted",
+    "fs": 14
+   }
+  },
+  "skipLink": false,
+  "liveRegion": false
+ },
+ {
+  "route": "companies",
+  "title": "Nivel \u00b7 The Equal Lens",
+  "hOverflow": 0,
+  "targets": 77,
+  "under24": [
+   {
+    "n": "What the numbers mean",
+    "w": 191,
+    "h": 21
+   },
+   {
+    "n": "How we compare",
+    "w": 110,
+    "h": 19
+   }
+  ],
+  "under44": 72,
+  "under48": 73,
+  "noName": [],
+  "h1": 1,
+  "headingSkips": 0,
+  "text": 244,
+  "textUnder12": 8,
+  "contrastFails": 53,
+  "contrastByColor": {
+   "rgb(146, 134, 174) 3.36": {
+    "n": 52,
+    "ex": "0.0",
+    "cls": "strip-chg flat",
+    "fs": 12
+   },
+   "rgb(127, 101, 164) 4.35": {
+    "n": 1,
+    "ex": "50 companies",
+    "cls": "mtable-count",
+    "fs": 12
+   }
+  },
+  "skipLink": false,
+  "liveRegion": false
+ },
+ {
+  "route": "company/TCS",
+  "title": "Nivel \u00b7 The Equal Lens",
+  "hOverflow": 0,
+  "targets": 23,
+  "under24": [
+   {
+    "n": "Companies",
+    "w": 70,
+    "h": 19
+   },
+   {
+    "n": "See it on the parity map",
+    "w": 149,
+    "h": 22
+   }
+  ],
+  "under44": 15,
+  "under48": 19,
+  "noName": [],
+  "h1": 1,
+  "headingSkips": 0,
+  "text": 73,
+  "textUnder12": 14,
+  "contrastFails": 16,
+  "contrastByColor": {
+   "rgb(146, 134, 174) 3.36": {
+    "n": 14,
+    "ex": "0.0",
+    "cls": "strip-chg flat",
+    "fs": 12
+   },
+   "rgb(146, 134, 174) 3.17": {
+    "n": 1,
+    "ex": "From the FY26 disclosure",
+    "cls": "small muted",
+    "fs": 14
+   },
+   "rgb(127, 101, 164) 4.35": {
+    "n": 1,
+    "ex": "no change",
+    "cls": "chg flat",
+    "fs": 12
+   }
+  },
+  "skipLink": false,
+  "liveRegion": false
+ },
+ {
+  "route": "company/TCS/trend",
+  "title": "Nivel \u00b7 The Equal Lens",
+  "hOverflow": 0,
+  "targets": 24,
+  "under24": [
+   {
+    "n": "Companies",
+    "w": 70,
+    "h": 19
+   }
+  ],
+  "under44": 16,
+  "under48": 20,
+  "noName": [],
+  "h1": 1,
+  "headingSkips": 1,
+  "text": 58,
+  "textUnder12": 14,
+  "contrastFails": 4,
+  "contrastByColor": {
+   "rgb(146, 134, 174) 3.36": {
+    "n": 2,
+    "ex": "0.0",
+    "cls": "strip-chg flat",
+    "fs": 12
+   },
+   "rgb(127, 101, 164) 4.35": {
+    "n": 1,
+    "ex": "Table",
+    "cls": "",
+    "fs": 13
+   },
+   "rgb(146, 134, 174) 3.17": {
+    "n": 1,
+    "ex": "Hollow points are estima",
+    "cls": "small muted",
+    "fs": 14
+   }
+  },
+  "skipLink": false,
+  "liveRegion": false
+ },
+ {
+  "route": "company/TCS/peers",
+  "title": "Nivel \u00b7 The Equal Lens",
+  "hOverflow": 0,
+  "targets": 30,
+  "under24": [
+   {
+    "n": "Companies",
+    "w": 70,
+    "h": 19
+   }
+  ],
+  "under44": 22,
+  "under48": 26,
+  "noName": [],
+  "h1": 1,
+  "headingSkips": 0,
+  "text": 64,
+  "textUnder12": 5,
+  "contrastFails": 8,
+  "contrastByColor": {
+   "rgb(146, 134, 174) 3.36": {
+    "n": 6,
+    "ex": "0.0",
+    "cls": "strip-chg flat",
+    "fs": 12
+   },
+   "rgb(127, 101, 164) 4.35": {
+    "n": 1,
+    "ex": "6 companies",
+    "cls": "mtable-count",
+    "fs": 12
+   },
+   "rgb(146, 134, 174) 2.99": {
+    "n": 1,
+    "ex": "TCS \u00b7 Information Techno",
+    "cls": "sub",
+    "fs": 12
+   }
+  },
+  "skipLink": false,
+  "liveRegion": false
+ },
+ {
+  "route": "company/TCS/calculations",
+  "title": "Nivel \u00b7 The Equal Lens",
+  "hOverflow": 0,
+  "targets": 22,
+  "under24": [
+   {
+    "n": "Companies",
+    "w": 70,
+    "h": 19
+   }
+  ],
+  "under44": 14,
+  "under48": 18,
+  "noName": [],
+  "h1": 1,
+  "headingSkips": 0,
+  "text": 132,
+  "textUnder12": 14,
+  "contrastFails": 16,
+  "contrastByColor": {
+   "rgb(146, 134, 174) 3.36": {
+    "n": 12,
+    "ex": "0.0",
+    "cls": "strip-chg flat",
+    "fs": 12
+   },
+   "rgb(146, 134, 174) 3.17": {
+    "n": 4,
+    "ex": "BRSR filing (SEBI), via ",
+    "cls": "small muted",
+    "fs": 14
+   }
+  },
+  "skipLink": false,
+  "liveRegion": false
+ },
+ {
+  "route": "company/TCS/sources",
+  "title": "Nivel \u00b7 The Equal Lens",
+  "hOverflow": 0,
+  "targets": 32,
+  "under24": [
+   {
+    "n": "Companies",
+    "w": 70,
+    "h": 19
+   },
+   {
+    "n": "XBRL",
+    "w": 41,
+    "h": 22
+   },
+   {
+    "n": "PDF",
+    "w": 31,
+    "h": 22
+   },
+   {
+    "n": "XBRL",
+    "w": 41,
+    "h": 22
+   },
+   {
+    "n": "PDF",
+    "w": 31,
+    "h": 22
+   },
+   {
+    "n": "XBRL",
+    "w": 41,
+    "h": 22
+   },
+   {
+    "n": "PDF",
+    "w": 31,
+    "h": 22
+   },
+   {
+    "n": "XBRL",
+    "w": 41,
+    "h": 22
+   },
+   {
+    "n": "PDF",
+    "w": 31,
+    "h": 22
+   },
+   {
+    "n": "XBRL",
+    "w": 41,
+    "h": 22
+   },
+   {
+    "n": "PDF",
+    "w": 31,
+    "h": 22
+   }
+  ],
+  "under44": 24,
+  "under48": 28,
+  "noName": [],
+  "h1": 1,
+  "headingSkips": 1,
+  "text": 60,
+  "textUnder12": 5,
+  "contrastFails": 1,
+  "contrastByColor": {
+   "rgb(146, 134, 174) 3.36": {
+    "n": 1,
+    "ex": "0.0",
+    "cls": "strip-chg flat",
+    "fs": 12
+   }
+  },
+  "skipLink": false,
+  "liveRegion": false
+ },
+ {
+  "route": "company/TSCO",
+  "title": "Nivel \u00b7 The Equal Lens",
+  "hOverflow": 0,
+  "targets": 22,
+  "under24": [
+   {
+    "n": "Companies",
+    "w": 70,
+    "h": 19
+   },
+   {
+    "n": "See it on the parity map",
+    "w": 149,
+    "h": 22
+   }
+  ],
+  "under44": 14,
+  "under48": 18,
+  "noName": [],
+  "h1": 1,
+  "headingSkips": 0,
+  "text": 76,
+  "textUnder12": 14,
+  "contrastFails": 17,
+  "contrastByColor": {
+   "rgb(146, 134, 174) 3.36": {
+    "n": 16,
+    "ex": "0.0",
+    "cls": "strip-chg flat",
+    "fs": 12
+   },
+   "rgb(146, 134, 174) 3.17": {
+    "n": 1,
+    "ex": "From the 2025 disclosure",
+    "cls": "small muted",
+    "fs": 14
+   }
+  },
+  "skipLink": false,
+  "liveRegion": false
+ },
+ {
+  "route": "company/TSE-6758",
+  "title": "Nivel \u00b7 The Equal Lens",
+  "hOverflow": 0,
+  "targets": 22,
+  "under24": [
+   {
+    "n": "Companies",
+    "w": 70,
+    "h": 19
+   },
+   {
+    "n": "See it on the parity map",
+    "w": 149,
+    "h": 22
+   }
+  ],
+  "under44": 14,
+  "under48": 18,
+  "noName": [],
+  "h1": 1,
+  "headingSkips": 0,
+  "text": 75,
+  "textUnder12": 16,
+  "contrastFails": 19,
+  "contrastByColor": {
+   "rgb(146, 134, 174) 3.36": {
+    "n": 18,
+    "ex": "0.0",
+    "cls": "strip-chg flat",
+    "fs": 12
+   },
+   "rgb(146, 134, 174) 3.17": {
+    "n": 1,
+    "ex": "From the latest disclosu",
+    "cls": "small muted",
+    "fs": 14
+   }
+  },
+  "skipLink": false,
+  "liveRegion": false
+ },
+ {
+  "route": "company/EU-ADS.DE",
+  "title": "Nivel \u00b7 The Equal Lens",
+  "hOverflow": 0,
+  "targets": 22,
+  "under24": [
+   {
+    "n": "Companies",
+    "w": 70,
+    "h": 19
+   },
+   {
+    "n": "See it on the parity map",
+    "w": 149,
+    "h": 22
+   }
+  ],
+  "under44": 14,
+  "under48": 18,
+  "noName": [],
+  "h1": 1,
+  "headingSkips": 0,
+  "text": 75,
+  "textUnder12": 16,
+  "contrastFails": 18,
+  "contrastByColor": {
+   "rgb(146, 134, 174) 3.36": {
+    "n": 17,
+    "ex": "0.0",
+    "cls": "strip-chg flat",
+    "fs": 12
+   },
+   "rgb(146, 134, 174) 3.17": {
+    "n": 1,
+    "ex": "From the 2025 disclosure",
+    "cls": "small muted",
+    "fs": 14
+   }
+  },
+  "skipLink": false,
+  "liveRegion": false
+ },
+ {
+  "route": "company/BRITANNIA",
+  "title": "Nivel \u00b7 The Equal Lens",
+  "hOverflow": 0,
+  "targets": 22,
+  "under24": [
+   {
+    "n": "Companies",
+    "w": 70,
+    "h": 19
+   },
+   {
+    "n": "See it on the parity map",
+    "w": 149,
+    "h": 22
+   }
+  ],
+  "under44": 14,
+  "under48": 18,
+  "noName": [],
+  "h1": 1,
+  "headingSkips": 0,
+  "text": 68,
+  "textUnder12": 11,
+  "contrastFails": 12,
+  "contrastByColor": {
+   "rgb(146, 134, 174) 3.36": {
+    "n": 11,
+    "ex": "0.0",
+    "cls": "strip-chg flat",
+    "fs": 12
+   },
+   "rgb(146, 134, 174) 3.17": {
+    "n": 1,
+    "ex": "From the FY26 disclosure",
+    "cls": "small muted",
+    "fs": 14
+   }
+  },
+  "skipLink": false,
+  "liveRegion": false
+ },
+ {
+  "route": "compare/countries",
+  "title": "Nivel \u00b7 The Equal Lens",
+  "hOverflow": 0,
+  "targets": 33,
+  "under24": [
+   {
+    "n": "How we compare",
+    "w": 110,
+    "h": 19
+   }
+  ],
+  "under44": 25,
+  "under48": 29,
+  "noName": [],
+  "h1": 1,
+  "headingSkips": 1,
+  "text": 136,
+  "textUnder12": 11,
+  "contrastFails": 38,
+  "contrastByColor": {
+   "rgb(146, 134, 174) 3.36": {
+    "n": 31,
+    "ex": "0.0",
+    "cls": "strip-chg flat",
+    "fs": 12
+   },
+   "rgb(127, 101, 164) 4.35": {
+    "n": 4,
+    "ex": "Table",
+    "cls": "",
+    "fs": 13
+   },
+   "rgb(146, 134, 174) 3.17": {
+    "n": 3,
+    "ex": "The median company in ea",
+    "cls": "small muted",
+    "fs": 14
+   }
+  },
+  "skipLink": false,
+  "liveRegion": false
+ },
+ {
+  "route": "compare/sectors",
+  "title": "Nivel \u00b7 The Equal Lens",
+  "hOverflow": 0,
+  "targets": 28,
+  "under24": [
+   {
+    "n": "Sort by India",
+    "w": 20,
+    "h": 22
+   },
+   {
+    "n": "Sort by United Kingdom",
+    "w": 24,
+    "h": 22
+   },
+   {
+    "n": "Sort by Australia",
+    "w": 25,
+    "h": 22
+   },
+   {
+    "n": "Sort by Japan",
+    "w": 22,
+    "h": 22
+   },
+   {
+    "n": "Sort by European Union",
+    "w": 23,
+    "h": 22
+   }
+  ],
+  "under44": 20,
+  "under48": 24,
+  "noName": [],
+  "h1": 1,
+  "headingSkips": 1,
+  "text": 158,
+  "textUnder12": 8,
+  "contrastFails": 40,
+  "contrastByColor": {
+   "rgb(146, 134, 174) 3.36": {
+    "n": 32,
+    "ex": "0.0",
+    "cls": "strip-chg flat",
+    "fs": 12
+   },
+   "rgb(127, 101, 164) 4.35": {
+    "n": 3,
+    "ex": "Employment parity",
+    "cls": "",
+    "fs": 13
+   },
+   "rgb(146, 134, 174) 3.17": {
+    "n": 3,
+    "ex": "Wage parity: women's ave",
+    "cls": "small muted",
+    "fs": 14
+   },
+   "rgb(146, 134, 174) 2.99": {
+    "n": 2,
+    "ex": "\u00b7",
+    "cls": "muted",
+    "fs": 13
+   }
+  },
+  "skipLink": false,
+  "liveRegion": false
+ },
+ {
+  "route": "compare/map",
+  "title": "Nivel \u00b7 The Equal Lens",
+  "hOverflow": 0,
+  "targets": 23,
+  "under24": [],
+  "under44": 15,
+  "under48": 19,
+  "noName": [],
+  "h1": 1,
+  "headingSkips": 1,
+  "text": 66,
+  "textUnder12": 16,
+  "contrastFails": 4,
+  "contrastByColor": {
+   "rgb(146, 134, 174) 3.36": {
+    "n": 2,
+    "ex": "0.0",
+    "cls": "strip-chg flat",
+    "fs": 12
+   },
+   "rgb(127, 101, 164) 4.35": {
+    "n": 2,
+    "ex": "By market",
+    "cls": "",
+    "fs": 13
+   }
+  },
+  "skipLink": false,
+  "liveRegion": false
+ },
+ {
+  "route": "method",
+  "title": "Nivel \u00b7 The Equal Lens",
+  "hOverflow": 0,
+  "targets": 14,
+  "under24": [],
+  "under44": 9,
+  "under48": 10,
+  "noName": [],
+  "h1": 1,
+  "headingSkips": 0,
+  "text": 250,
+  "textUnder12": 24,
+  "contrastFails": 21,
+  "contrastByColor": {
+   "rgb(146, 134, 174) 3.36": {
+    "n": 8,
+    "ex": "0.0",
+    "cls": "strip-chg flat",
+    "fs": 12
+   },
+   "rgb(146, 134, 174) 3.17": {
+    "n": 13,
+    "ex": "Mean hourly pay gap, UK ",
+    "cls": "eq-label",
+    "fs": 11
+   }
+  },
+  "skipLink": false,
+  "liveRegion": false
+ },
+ {
+  "route": "nope",
+  "title": "Nivel \u00b7 The Equal Lens",
+  "hOverflow": 0,
+  "targets": 15,
+  "under24": [
+   {
+    "n": "Back to indexes",
+    "w": 112,
+    "h": 22
+   }
+  ],
+  "under44": 10,
+  "under48": 11,
+  "noName": [],
+  "h1": 1,
+  "headingSkips": 0,
+  "text": 29,
+  "textUnder12": 5,
+  "contrastFails": 1,
+  "contrastByColor": {
+   "rgb(146, 134, 174) 3.36": {
+    "n": 1,
+    "ex": "0.0",
+    "cls": "strip-chg flat",
+    "fs": 12
+   }
+  },
+  "skipLink": false,
+  "liveRegion": false
+ }
+]

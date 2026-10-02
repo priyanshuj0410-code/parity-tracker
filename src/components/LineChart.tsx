@@ -45,12 +45,16 @@ export function LineChart({ series, xs, xLabel, fmt, ariaLabel, yMax = 0.5, heig
   const gid = 'wash' + useId().replace(/[^a-zA-Z0-9_-]/g, '')
   const ticks = niceTicks(yMax)
   const top = ticks[ticks.length - 1]
-  const w = Math.max(width, 300)
-  const iw = w - M.l - M.r
-  const ih = height - M.t - M.b
+  const endText = (s: Series, v: number) => (series.length > 1 ? `${s.short} ${fmt(v)}` : fmt(v))
+  const lastOf = (s: Series) => s.points.filter((p) => p.y != null && xs.includes(p.x)).at(-1)
+  const longest = Math.max(0, ...series.map((s) => { const l = lastOf(s); return l ? endText(s, l.y as number).length : 0 }))
+  const m = { ...M, r: Math.min(M.r, 18 + 7 * longest) }
+  const w = Math.max(width, 260)
+  const iw = w - m.l - m.r
+  const ih = height - m.t - m.b
   const step = xs.length > 1 ? iw / (xs.length - 1) : iw
-  const xPos = (i: number) => M.l + (xs.length > 1 ? i * step : iw / 2)
-  const yPos = (v: number) => M.t + ih - (Math.min(v, top) / top) * ih
+  const xPos = (i: number) => m.l + (xs.length > 1 ? i * step : iw / 2)
+  const yPos = (v: number) => m.t + ih - (Math.min(v, top) / top) * ih
 
   const runs = (s: Series) => {
     const out: { i: number; y: number }[][] = []
@@ -75,8 +79,7 @@ export function LineChart({ series, xs, xLabel, fmt, ariaLabel, yMax = 0.5, heig
 
   const ends = series
     .map((s) => {
-      const pts = s.points.filter((p) => p.y != null && xs.includes(p.x))
-      const last = pts[pts.length - 1]
+      const last = lastOf(s)
       return last ? { s, i: xs.indexOf(last.x), v: last.y as number, ty: yPos(last.y as number) } : null
     })
     .filter((e): e is NonNullable<typeof e> => e !== null)
@@ -87,7 +90,7 @@ export function LineChart({ series, xs, xLabel, fmt, ariaLabel, yMax = 0.5, heig
 
   const pick = (clientX: number, el: Element) => {
     const x = clientX - el.getBoundingClientRect().left
-    setHover(Math.max(0, Math.min(xs.length - 1, Math.round((x - M.l) / step))))
+    setHover(Math.max(0, Math.min(xs.length - 1, Math.round((x - m.l) / step))))
   }
 
   return (
@@ -108,21 +111,21 @@ export function LineChart({ series, xs, xLabel, fmt, ariaLabel, yMax = 0.5, heig
         </defs>
         {ticks.map((t) => (
           <g key={t}>
-            <line className={t === 0 ? 'base-line' : 'grid-line'} x1={M.l} x2={M.l + iw} y1={yPos(t)} y2={yPos(t)} />
-            <text className="axis" x={M.l - 10} y={yPos(t)} textAnchor="end" dominantBaseline="middle">{fmt(t)}</text>
+            <line className={t === 0 ? 'base-line' : 'grid-line'} x1={m.l} x2={m.l + iw} y1={yPos(t)} y2={yPos(t)} />
+            <text className="axis" x={m.l - 10} y={yPos(t)} textAnchor="end" dominantBaseline="middle">{fmt(t)}</text>
           </g>
         ))}
         {reference && (
           <g>
-            <line className="ref" x1={M.l} x2={M.l + iw} y1={yPos(reference.y)} y2={yPos(reference.y)} />
-            <text className="reflabel" x={M.l + 6} y={yPos(reference.y) - 6}>{reference.label}</text>
+            <line className="ref" x1={m.l} x2={m.l + iw} y1={yPos(reference.y)} y2={yPos(reference.y)} />
+            <text className="reflabel" x={m.l + 6} y={yPos(reference.y) - 6}>{reference.label}</text>
           </g>
         )}
         {xs.map((x, i) => (
           <text key={x} className={hover === i ? 'axis on' : 'axis'} x={xPos(i)} y={height - 8} textAnchor="middle">{xLabel(x)}</text>
         ))}
         {area && series[0] && <path d={wash(series[0])} fill={`url(#${gid})`} stroke="none" />}
-        {hover != null && <line className="crosshair" x1={xPos(hover)} x2={xPos(hover)} y1={M.t} y2={M.t + ih} />}
+        {hover != null && <line className="crosshair" x1={xPos(hover)} x2={xPos(hover)} y1={m.t} y2={m.t + ih} />}
         {series.map((s) => (
           <path key={s.id} d={path(s)} fill="none" stroke={s.color} strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
         ))}
@@ -138,16 +141,16 @@ export function LineChart({ series, xs, xLabel, fmt, ariaLabel, yMax = 0.5, heig
         )}
         {ends.map((e) => (
           <text key={e.s.id} className="endlabel" x={xPos(e.i) + 10} y={e.ty} dominantBaseline="middle">
-            {series.length > 1 ? `${e.s.short} ${fmt(e.v)}` : fmt(e.v)}
+            {endText(e.s, e.v)}
           </text>
         ))}
-        <rect x={M.l - step / 2} y={M.t} width={iw + step} height={ih} fill="transparent"
+        <rect x={m.l - step / 2} y={m.t} width={iw + step} height={ih} fill="transparent"
           onPointerMove={(ev) => pick(ev.clientX, ev.currentTarget.ownerSVGElement ?? ev.currentTarget)}
           onPointerDown={(ev) => pick(ev.clientX, ev.currentTarget.ownerSVGElement ?? ev.currentTarget)}
           onPointerLeave={() => setHover(null)} />
       </svg>
       {hover != null && (
-        <div className="tooltip" style={{ left: xPos(hover) > w / 2 ? xPos(hover) - 232 : xPos(hover) + 14, top: M.t }}>
+        <div className="tooltip" style={{ left: xPos(hover) > w / 2 ? xPos(hover) - 232 : xPos(hover) + 14, top: m.t }}>
           <strong>{xLabel(xs[hover])}</strong>
           {series.map((s) => {
             const p = s.points.find((q) => q.x === xs[hover])
