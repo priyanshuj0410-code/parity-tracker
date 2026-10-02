@@ -26,6 +26,8 @@ The app was renamed from Parity Tracker to Nivel on 2 October 2026 ([decisions/0
 - [plans/nivel-play-and-markets.md](plans/nivel-play-and-markets.md): Nivel's play side (Spot the Stereotype) and its prediction markets on a shared engine
 - [plans/spot-the-stereotype-anytime-and-nivel.md](plans/spot-the-stereotype-anytime-and-nivel.md): for the game team, anytime play without the discussion steps, the Nivel feed for a workplace theme, and bringing Nivel's readers to play
 - [plans/mit-solve-application.md](plans/mit-solve-application.md): the draft MIT Solve 2027 application and the plan to submit it by 2 November 2026
+- [research/personas-and-journeys.md](research/personas-and-journeys.md): proto-personas and customer journeys for Nivel, Spot the Stereotype and the markets, with the plan to validate them
+- [research/solve-innovation-assessment.md](research/solve-innovation-assessment.md): competitors, past Solver teams and literature, scored on Solve's Innovative Approach criterion
 - [reviews/design-audit-2026-10.md](reviews/design-audit-2026-10.md): design audit against Kite, Coin and Groww, with before and after screenshots
 - [reviews/ux-audit-2026-10-02.md](reviews/ux-audit-2026-10-02.md): ship-readiness audit against Nielsen's heuristics, Apple HIG, Material 3, Gestalt and WCAG 2.2 AA, with a reusable checker
 
