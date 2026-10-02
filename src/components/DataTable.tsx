@@ -82,47 +82,47 @@ export function DataTable<T>({ columns, rows, rowKey, initial, caption, rowHref,
     const sortable = columns.filter((c) => c.sort)
     if (!bare) {
       const sortedCol = columns.find((c) => c.key === sort.key)
-      const extra = sortedCol && sortedCol !== title && sortedCol !== value && sortedCol.mobile !== 'hide' ? sortedCol : undefined
-      const primary = value ?? extra
-      const second = columns.find((c) => c.mobile === 'second')
+      const byMetric = sortedCol && sortedCol !== title && sortedCol.mobile !== 'hide'
+      const primary = byMetric ? sortedCol : value
+      const second = primary === value ? columns.find((c) => c.mobile === 'second') : undefined
+      const metrics = sortable.filter((c) => c !== title && c.mobile !== 'hide')
+      const options = [...metrics, ...sortable.filter((c) => !metrics.includes(c))]
       return (
         <div className="table-block">
-          <div className="list-bar">
-            <span className="meta">{summary}</span>
-            <div className="list-tools">
-              {sortable.length > 1 && (
-                <Dropdown label="Sort by" prefix="Sort" value={sort.key} options={sortable.map((c) => ({ id: c.key, label: c.short ?? c.label }))}
-                  onChange={(k) => setSort((s) => ({ key: k, dir: k === s.key ? s.dir : k === 'name' ? 1 : -1 }))} />
-              )}
-              <button type="button" className="btn-icon" onClick={() => setSort((s) => ({ ...s, dir: s.dir === 1 ? -1 : 1 }))}
-                aria-label={sort.dir === 1 ? 'Sorted ascending. Switch to descending.' : 'Sorted descending. Switch to ascending.'}>
-                <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  {sort.dir === -1 ? <path d="M12 5v14m0 0-5-5m5 5 5-5" /> : <path d="M12 19V5m0 0-5 5m5-5 5 5" />}
-                </svg>
-              </button>
+          <div className="mtable">
+            <div className="mtable-head">
+              <span className="mtable-count">{summary}{!byMetric && primary ? ` · ${primary.short ?? primary.label}` : ''}</span>
+              <div className="list-tools">
+                {options.length > 1 && (
+                  <Dropdown label="Show and sort by" value={sort.key} options={options.map((c) => ({ id: c.key, label: c === title ? 'Name, A to Z' : c.short ?? c.label }))}
+                    onChange={(k) => setSort((s) => ({ key: k, dir: k === s.key ? s.dir : k === title?.key ? 1 : -1 }))} />
+                )}
+                <button type="button" className="btn-icon" onClick={() => setSort((s) => ({ ...s, dir: s.dir === 1 ? -1 : 1 }))}
+                  aria-label={sort.dir === 1 ? 'Sorted ascending. Switch to descending.' : 'Sorted descending. Switch to ascending.'}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    {sort.dir === -1 ? <path d="M12 5v14m0 0-5-5m5 5 5-5" /> : <path d="M12 19V5m0 0-5 5m5-5 5 5" />}
+                  </svg>
+                </button>
+              </div>
             </div>
+            <ul className="mrows" aria-label={caption}>
+              {sorted.map((r) => {
+                const k = rowKey(r)
+                const line = second ? (second.phone ?? second.render)(r) : null
+                return (
+                  <li key={k} className={[rowHref && 'link', current === k && 'current'].filter(Boolean).join(' ') || undefined} onClick={(e) => open(e, r)}>
+                    <div className="mr-main">{title && (title.phone ?? title.render)(r)}</div>
+                    {primary && (
+                      <div className="mr-side">
+                        <div className="mr-value">{(primary.phone ?? primary.render)(r)}</div>
+                        {line != null && line !== false && <div className="mr-second">{line}</div>}
+                      </div>
+                    )}
+                  </li>
+                )
+              })}
+            </ul>
           </div>
-          <ul className="mrows" aria-label={caption}>
-            {sorted.map((r) => {
-              const k = rowKey(r)
-              return (
-                <li key={k} className={[rowHref && 'link', current === k && 'current'].filter(Boolean).join(' ') || undefined} onClick={(e) => open(e, r)}>
-                  <div className="mr-main">{title && (title.phone ?? title.render)(r)}</div>
-                  {primary && (
-                    <div className="mr-side">
-                      <div className="mr-value">{(primary.phone ?? primary.render)(r)}</div>
-                      {(() => {
-                        if (extra && extra !== primary) return <div className="mr-second"><span className="mr-label">{extra.short ?? extra.label}</span>{(extra.phone ?? extra.render)(r)}</div>
-                        const line = second ? (second.phone ?? second.render)(r) : null
-                        if (line != null && line !== false) return <div className="mr-second">{line}</div>
-                        return !value && !second ? <div className="mr-second muted">{primary.short ?? primary.label}</div> : null
-                      })()}
-                    </div>
-                  )}
-                </li>
-              )
-            })}
-          </ul>
         </div>
       )
     }

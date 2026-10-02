@@ -22,7 +22,7 @@ const MAX: Record<Measure, number> = { e: 1, w: 1.4, s: 1 }
 const MEASURES: { id: Measure; label: string }[] = [{ id: 'w', label: 'Wage parity' }, { id: 'e', label: 'Employment parity' }, { id: 's', label: 'Share of pay' }]
 const MAP_MARKETS = COMPARE_MARKETS
 
-const med = (s: Summary | null) => (s && s.n >= 3 ? pct(s.median) : '–')
+const med = (s: Summary | null) => (s && s.n >= 3 ? pct(s.median) : <span className="muted">n/a</span>)
 const iqr = (s: Summary) => `middle half ${Math.round(s.q1 * 100)}–${pct(s.q3, 0)}`
 
 function SummaryCell({ s, measure, min = 3, n = false }: { s: Summary | null; measure: Measure; min?: number; n?: boolean }) {
@@ -99,7 +99,7 @@ function Sectors() {
   const empty = rows.every((r) => !r.s)
   type MRow = { sector: string }
   const mcols: Column<MRow>[] = [
-    { key: 'sector', label: 'Sector', phone: (r) => <><strong>{r.sector}</strong><span className="sub">{MEASURE[measure].short}, India</span></>, render: (r) => <strong>{r.sector}</strong>, sort: (r) => r.sector, csv: (r) => r.sector },
+    { key: 'sector', label: 'Sector', render: (r) => <strong>{r.sector}</strong>, sort: (r) => r.sector, csv: (r) => r.sector },
     ...COMPARE_MARKETS.map((code): Column<MRow> => ({
       key: code, label: marketName(code), mobile: code === 'IN' ? 'value' : undefined, phone: (r) => med(cell(code, r.sector)),
       render: (r) => <SummaryCell s={cell(code, r.sector)} measure={measure} n />,

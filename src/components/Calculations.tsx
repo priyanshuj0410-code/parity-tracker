@@ -57,6 +57,7 @@ export function Calculations({ c, pt }: { c: Company; pt?: Point }) {
   if (!y) return <section><p className="small muted">No reported figures to work from.</p></section>
   const E = pt?.e ?? null
   const W = pt?.w ?? null
+  const Wd = W ?? pt?.wRaw ?? null
   const S = pt?.s ?? null
   const peers = POINTS.filter((p) => p.c.country === c.country)
   const below = pt ? peers.filter((p) => (p.w as number) < (pt.w as number)).length : 0
@@ -92,13 +93,15 @@ export function Calculations({ c, pt }: { c: Company; pt?: Point }) {
             )}
           </Step>
 
-          <Step n={++n} title="Wage parity: women's average pay as a share of men's" resultLabel="Parity is 100%" result={pct(W)}>
-            {c.country === 'IN' && y.w != null && E != null && W != null ? (
+          <Step n={++n} title="Wage parity: women's average pay as a share of men's" resultLabel="Parity is 100%" result={W == null && Wd != null ? 'Not comparable' : pct(W)}>
+            {c.country === 'IN' && y.w != null && E != null && Wd != null ? (
               <><p>BRSR gives women's share of the wage bill, not average pay, so we compare each group's share of wages with its share of staff.</p>
                 <Eq label="Women's pay per head, relative" answer={false} lhs={<Frac top="share of wages" bottom="share of staff" />} steps={[<Frac key="1" top={pct(y.w)} bottom={pct(E)} />, r3(y.w / E)]} />
                 <Eq label="Men's pay per head, relative" answer={false} lhs={<Frac top={pct(1 - y.w)} bottom={pct(1 - E)} />} steps={[r3((1 - y.w) / (1 - E))]} />
-                <Eq label="Wage parity" lhs="W" steps={[<Frac key="1" top={r3(y.w / E)} bottom={r3((1 - y.w) / (1 - E))} />, pct(W)]} />
-                <p className="small muted">Approximate: wage totals cover all employees while the staff share is permanent staff only.</p></>
+                <Eq label="Wage parity" lhs="W" steps={[<Frac key="1" top={r3(y.w / E)} bottom={r3((1 - y.w) / (1 - E))} />, pct(Wd)]} />
+                {W == null
+                  ? <p className="small"><strong>Not comparable.</strong> {pct(Wd, 0)} is outside the plausible 30–130%. BRSR's wage total covers more staff than its permanent headcount{y.fAll != null ? ` (women are ${pct(y.fAll)} of all staff against ${pct(E)} of permanent staff)` : ''}, so the ratio breaks down. We leave it out of rankings and the parity map.</p>
+                  : <p className="small muted">Approximate: wage totals cover all employees while the staff share is permanent staff only.</p>}</>
             ) : c.country === 'JP' ? (
               <p>Reported directly: women's average annual pay is <strong>{pct(W)}</strong> of men's, across all workers.</p>
             ) : y.gapMean != null ? (
@@ -108,7 +111,9 @@ export function Calculations({ c, pt }: { c: Company; pt?: Point }) {
           </Step>
 
           <Step n={++n} title="Women's share of pay" resultLabel="Parity is 50%" result={pct(S)}>
-            {E != null && W != null && S != null ? (
+            {c.country === 'IN' && W == null && S != null ? (
+              <p>Reported directly in BRSR: women receive <strong>{pct(S)}</strong> of the wage bill. It does not depend on the wage parity step.</p>
+            ) : E != null && W != null && S != null ? (
               <><p>If women are E of staff and earn W of what men earn on average, this is their share of the whole pay bill.</p>
                 <Eq lhs="S" steps={[<Frac key="1" top="E × W" bottom="E × W + (100% − E)" />, <Frac key="2" top={`${pct(E)} × ${pct(W)}`} bottom={`${pct(E)} × ${pct(W)} + ${pct(1 - E)}`} />, <Frac key="3" top={pct(E * W)} bottom={pct(E * W + 1 - E)} />, pct(S)]} />
                 {c.country === 'IN' && <p className="small muted">This matches the reported wage share, as it should: steps 1 and 2 only unpack it.</p>}

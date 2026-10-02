@@ -18,18 +18,18 @@ import { href } from '../lib/router'
 import type { Company as Co } from '../types'
 import { NotFound } from './NotFound'
 
-const TABS = [['overview', 'Overview'], ['trend', 'Trend'], ['peers', 'Peers'], ['calculations', 'How we calculated'], ['sources', 'Data and sources']] as const
+const TABS = [['overview', 'Overview'], ['trend', 'Trend'], ['peers', 'Peers'], ['calculations', 'Calculations'], ['sources', 'Sources']] as const
 type Tab = (typeof TABS)[number][0]
 
 const ticker = (c: Co) => c.symbol.replace(/^(ASX|TSE|EU)-/, '')
 
-function ScaleCard({ label, value, parity, max, basis, rank, children }: {
-  label: string; value: number | null | undefined; parity: number; max: number; basis: string; rank: string | null; children?: ReactNode
+function ScaleCard({ label, value, parity, max, basis, rank, children, empty = 'n/a' }: {
+  label: string; value: number | null | undefined; parity: number; max: number; basis: string; rank: string | null; children?: ReactNode; empty?: string
 }) {
   return (
     <div className="card scale-card">
       <div className="tile-label">{label}</div>
-      <div className="tile-value">{value == null ? 'n/a' : pct(value)}</div>
+      <div className={value == null ? 'tile-value none' : 'tile-value'}>{value == null ? empty : pct(value)}</div>
       <div className="tile-context muted">{basis}</div>
       {value != null && <ParityTrack value={value} parity={parity} max={max} />}
       {rank && <div className="standing">{rank}</div>}
@@ -62,8 +62,10 @@ function Overview({ c, pt }: { c: Co; pt?: Point }) {
         <div className="grid g3">
           <ScaleCard label="Employment parity" value={pt?.e} parity={E_PARITY} max={1}
             basis={b.employment ? `Women's share of ${b.employment}. Parity is 50%.` : 'Workforce split not collected yet.'} rank={standing(pt, 'e')} />
-          <ScaleCard label="Wage parity" value={pt?.w} parity={W_PARITY} max={1.4}
-            basis={`Women's average pay as a share of men's${b.approx ? ', approximate' : ''}. Parity is 100%.`} rank={standing(pt, 'w')} />
+          <ScaleCard label="Wage parity" value={pt?.w} parity={W_PARITY} max={1.4} empty={pt?.wRaw != null ? 'Not comparable' : 'n/a'}
+            basis={pt?.wRaw != null
+              ? `Our derivation gives ${pct(pt.wRaw, 0)}, outside the plausible 30–130%. The wage total and the permanent headcount cover different staff, so it is left out of rankings.`
+              : `Women's average pay as a share of men's${b.approx ? ', approximate' : ''}. Parity is 100%.`} rank={standing(pt, 'w')} />
           <ScaleCard label="Women's share of pay" value={pt?.s} parity={E_PARITY} max={1}
             basis="Implied by the two measures. Parity is 50%." rank={standing(pt, 's')} />
         </div>
