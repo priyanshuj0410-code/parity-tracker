@@ -54,7 +54,7 @@ export function Companies() {
           <li><strong>Share of pay:</strong> women's share of the company's pay bill. Parity is 50%.</li>
           <li><strong>Employment parity:</strong> women's share of staff. Parity is 50%.</li>
           <li><strong>Wage parity:</strong> women's average pay as a share of men's. Parity is 100%.</li>
-          <li><strong>Market percentile:</strong> where wage parity ranks among companies in the same market, which compares fairly across markets.</li>
+          <li><strong>Market percentile:</strong> wage parity rank within the market.</li>
         </ul>
         <a className="go small" href={href('compare')}>How we compare</a>
       </details>
@@ -81,7 +81,7 @@ export function Companies() {
             Try a ticker such as TCS, a sector such as banks, or search all indexes.
           </EmptyState>
         )} />
-      {rows.length > 0 && <p className="small muted key-note">≈ means estimated or derived rather than reported. pp means percentage points.</p>}
+      {rows.length > 0 && <p className="small muted key-note">≈ estimated. pp: percentage points.</p>}
     </section>
   )
 }

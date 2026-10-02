@@ -7,7 +7,7 @@ import { COMPANY_TABS, COMPARE_TABS, INDEX_TABS } from './lib/tabs'
 export interface PageMeta { path: string; title: string; description: string }
 
 const COMPARE: Record<string, string> = {
-  countries: "Every market and index on the same two scales: how many women companies employ, and how women's pay compares with men's.",
+  countries: "Every market and index on two scales: women's share of staff, and women's pay as a share of men's.",
   sectors: "Employment parity, wage parity and women's share of pay by sector, in every market.",
   map: 'Every company placed by employment parity and wage parity, from their own filings.',
 }
@@ -17,8 +17,8 @@ const dated = (label: string) => (label === 'latest' ? '' : label)
 /** Every page the build writes as its own HTML file, so a shared link previews with that page's title and figures. */
 export function pages(): PageMeta[] {
   const out: PageMeta[] = [
-    { path: href('companies'), title: 'Companies', description: `Women's share of pay at all ${Object.keys(companies).length} companies in the ${INDEX_ORDER.length} indexes Nivel tracks, from their own filings.` },
-    { path: href('method'), title: 'Method', description: "How Nivel turns companies' own gender pay disclosures into women's share of the payroll you own, and what the numbers cannot tell you." },
+    { path: href('companies'), title: 'Companies', description: `Women's share of pay at ${Object.keys(companies).length} companies across ${INDEX_ORDER.length} indexes, from their own filings.` },
+    { path: href('method'), title: 'Method', description: "How Nivel measures women's share of the payroll you own, and its limits." },
   ]
   for (const [id, label] of COMPARE_TABS) {
     out.push({ path: id === 'countries' ? href('compare') : href('compare', id), title: `Compare · ${label}`, description: COMPARE[id] })
@@ -37,7 +37,7 @@ export function pages(): PageMeta[] {
     out.push({
       path: href('simulation', s.id),
       title: `${s.name}, a simulation`,
-      description: `A fictional index of the 50 largest Nifty 500 companies that pay women at least the ${parent}'s own share of wages, ${pct(s.bar)}. Its lowest holding pays women ${pct(s.headline.lowest.w)}; the ${parent}'s pays ${pct(s.headline.parentLowest.w)}. Not investable, not investment advice.`,
+      description: `Fictional index: the 50 largest Nifty 500 companies paying women at least the ${parent}'s share, ${pct(s.bar)}. Lowest holding ${pct(s.headline.lowest.w)}, against ${pct(s.headline.parentLowest.w)} in the ${parent}. Not investable.`,
     })
   }
   for (const c of Object.values(companies)) {

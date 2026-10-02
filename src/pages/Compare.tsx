@@ -61,12 +61,12 @@ function Countries() {
   return (
     <>
       <div className="callout">
-        <p><strong>Two scales that mean the same thing everywhere.</strong> Each market's law asks for different numbers, so we convert what each company reports into two measures:</p>
+        <p><strong>Two scales, the same in every market:</strong></p>
         <ul className="tight">
           <li><strong>Employment parity:</strong> women's share of staff. Parity is 50%.</li>
           <li><strong>Wage parity:</strong> women's average pay as a share of men's. Parity is 100%.</li>
         </ul>
-        <p className="small">Together they imply women's share of the pay bill: E×W ÷ (E×W + 1 − E). Bases still differ (hourly, annual, full-time equivalent), so read gaps of a few points as noise. <a className="go" href={href('method')}>How we compare</a></p>
+        <p className="small">Together they give women's share of pay: E×W ÷ (E×W + 1 − E). Pay bases differ by market. <a className="go" href={href('method')}>Method</a></p>
       </div>
       <div className="grid g2" style={{ marginTop: 24 }}>
         <ChartFrame level={2} title="Employment parity by market" sub="Women's share of staff, median company"
@@ -79,12 +79,12 @@ function Countries() {
         </ChartFrame>
       </div>
       <h2 style={{ marginTop: 40 }}>Markets side by side</h2>
-      <p className="small muted">The median company in each market, from its latest reported year.</p>
+      <p className="small muted">Median company, latest year.</p>
       <DataTable caption="Markets on the shared scales" columns={columns} rows={rows} rowKey={(r) => r.code} initial={{ key: 'w', dir: -1 }} download="parity-by-market" summary={`${rows.length} markets`} />
       <h2 style={{ marginTop: 40 }}>Every index on the same scales</h2>
-      <p className="small muted">The median constituent company. Each index's own headline is shown for reference.</p>
+      <p className="small muted">Median company, with each index's headline.</p>
       <DataTable caption="Indexes on the shared scales" columns={ixCols} rows={ixRows} rowKey={(r) => r.id} initial={{ key: 'w', dir: -1 }} rowHref={(r) => href('index', r.id)} download="parity-by-index" summary={`${ixRows.length} indexes`} />
-      <p className="small muted" style={{ marginTop: 10 }}>Every index headline is now women's share of pay, so the last column reads on one 50% scale. India's wage parity is derived from the wage share and the share of permanent staff, so it is approximate. Japan's workforce split is regular staff only.</p>
+      <p className="small muted" style={{ marginTop: 10 }}>India's wage parity is derived, so approximate. Japan counts regular staff only.</p>
     </>
   )
 }
@@ -125,7 +125,7 @@ function SectorGrid({ measure, cell }: { measure: Measure; cell: (code: string, 
           ))}
         </tbody>
       </table>
-      <p className="small muted">Median company, in percent. A dot means fewer than three companies. Tap a market to sort.</p>
+      <p className="small muted">Median company. A dot: fewer than three companies. Tap a market to sort.</p>
     </div>
   )
 }
@@ -153,23 +153,23 @@ function Sectors() {
         <Segmented label="Measure" value={measure} onChange={setMeasure} options={MEASURES} />
         <span className="small muted">{MEASURE[measure].label}. {MEASURE[measure].note}</span>
       </div>
-      <ChartFrame level={2} title={`${MEASURE[measure].short} by sector, ${marketName(market)}`} sub="The dot is the median company. The bar covers the middle half: a quarter of companies sit above it and a quarter below. Sectors with fewer than three companies are not plotted."
+      <ChartFrame level={2} title={`${MEASURE[measure].short} by sector, ${marketName(market)}`} sub="Dot: median company. Bar: middle half of companies. Sectors with fewer than three are left out."
         controls={<MarketPicker label="Market" value={market} onChange={setMarket} options={COMPARE_MARKETS.map((c) => ({ id: c, label: marketName(c) }))} />}
         table={<DataTable caption="Sectors" columns={[mcols[0], mcols.find((c) => c.key === market)!]} rows={SECTORS.map((sector) => ({ sector }))} rowKey={(r) => r.sector} initial={{ key: market, dir: -1 }} summary={`${SECTORS.length} sectors`} />}>
         {empty
           ? <EmptyState art="data" compact title={`No ${MEASURE[measure].short.toLowerCase()} for ${marketName(market)}`}
               actions={<button type="button" className="btn-quiet" onClick={() => setMeasure('w')}>Show wage parity</button>}>
-              {marketName(market)} companies do not report a workforce split in the data we hold.
+              No workforce split for {marketName(market)} companies.
             </EmptyState>
           : <RangeDots label={`${MEASURE[measure].short} by sector`} rows={rows} parity={MEASURE[measure].parity} max={MAX[measure]} />}
       </ChartFrame>
       <h2 style={{ marginTop: 40 }}>Every sector in every market</h2>
-      <p className="small muted">{MEASURE[measure].short}, median company. Sectors follow a shared 11-sector scheme mapped from each exchange's own labels.</p>
+      <p className="small muted">{MEASURE[measure].short}, median company, 11 shared sectors.</p>
       {phone
         ? <SectorGrid measure={measure} cell={cell} />
         : <DataTable caption="Sectors by market" columns={mcols} rows={SECTORS.map((sector) => ({ sector }))} rowKey={(r) => r.sector} initial={{ key: 'sector', dir: 1 }}
             download={`sectors-${measure}`} summary={`${SECTORS.length} sectors`} />}
-      {measure !== 'e' && <p className="small muted" style={{ marginTop: 10 }}>India's wage parity is derived from the wage share and the share of permanent staff, so treat Indian sector figures as approximate.</p>}
+      {measure !== 'e' && <p className="small muted" style={{ marginTop: 10 }}>India's wage parity is derived, so approximate.</p>}
     </>
   )
 }
@@ -196,7 +196,7 @@ function MapTab({ focus }: { focus?: string }) {
       {missing && (
         <EmptyState art="offMap" title={`${companies[focus as string].name} is not on the map`}
           actions={<a className="go" href={href('company', focus as string)}>Open {companies[focus as string].name}</a>}>
-          The map needs both employment parity and wage parity. {missing}
+          The map needs both measures. {missing}
         </EmptyState>
       )}
       <div className="toolbar">
@@ -207,7 +207,7 @@ function MapTab({ focus }: { focus?: string }) {
         )}
         <Dropdown label="Sector" value={sector} onChange={setSector} options={[{ id: 'all', label: 'All sectors' }, ...SECTORS.map((s) => ({ id: s, label: s }))]} />
       </div>
-      <ChartFrame level={2} urlState title="Where companies sit on both scales" sub="Each dot is a company. Right of the line: half or more of staff are women. Above the line: women are paid at least as much as men on average."
+      <ChartFrame level={2} urlState title="Where companies sit on both scales" sub="Right of the line: half or more staff are women. Above it: women paid at least as much as men."
         table={<DataTable caption="Companies on the parity map" columns={columns} rows={shown} rowKey={(p) => p.c.symbol} initial={{ key: 's', dir: -1 }} rowHref={(p) => href('company', p.c.symbol)} urlState limit={30} rank download="parity-map"
           empty={<EmptyState art="results" compact title="No companies match these filters">Choose another market or sector.</EmptyState>} summary={`${shown.length} companies`} />}>
         {view === 'one' ? (
@@ -224,9 +224,9 @@ function MapTab({ focus }: { focus?: string }) {
         )}
       </ChartFrame>
       <ul className="tight small" style={{ marginTop: 14 }}>
-        <li><strong>Who is on the map:</strong> {plotted.length} companies that report both a workforce split and a pay comparison. Companies with only one of the two are in the tables but not on the map.</li>
+        <li><strong>On the map:</strong> {plotted.length} companies with both measures.</li>
         <li><strong>Bases differ:</strong> {MAP_MARKETS.map((c) => `${marketName(c)}: women's share of ${BASIS[c].employment}, ${BASIS[c].wage}`).join('. ')}.</li>
-        {pinned > 0 && <li><strong>Off the chart:</strong> {pinned} {pinned === 1 ? 'company has' : 'companies have'} wage parity outside 30–150%, mostly derived Indian figures. They are pinned to the edge and drawn hollow.</li>}
+        {pinned > 0 && <li><strong>Off the chart:</strong> {pinned} with wage parity outside 30–150%, pinned to the edge and hollow.</li>}
       </ul>
     </>
   )
@@ -239,7 +239,7 @@ export function Compare({ tab, focus }: { tab?: string; focus?: string }) {
     <>
       <section className="page-head">
         <h1>Compare <span className="accent">on the same scales</span></h1>
-        <p className="lead">Every company and index, measured two ways that mean the same thing in every market: how many women they employ, and how women's pay compares with men's.</p>
+        <p className="lead">How many women companies employ, and how their pay compares with men's, on scales that work in every market.</p>
         <Tabs label="Compare views" items={TABS} current={current} />
       </section>
       <section className="tab-panel">

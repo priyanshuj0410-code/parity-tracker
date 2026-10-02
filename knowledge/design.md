@@ -103,7 +103,7 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
 - **Header (PARITY-17):** white and sticky, 64px. Left: the Nivel mark (32px tall, 28px on phones) and a two-line brand, "Nivel" (Poppins 600, 19px, line height 1.1) over "by The Equal Lens" (12px, line height 1.25, `--soft`), 1px apart so the two lines read as one lockup. Then the main nav (Indexes, Companies, Compare, Method) as underline tabs. Right: global search (38px field, at most 340px, with a ⌘K hint) and the theme menu: a borderless 40px icon button (44px on phones) that opens a small right-aligned menu. No install button. Below 900px the header is 56px: brand on the left, a search icon and the theme toggle on the right, and the nav moves to the bottom tab bar.
 - **Bottom tab bar (below 900px):** four items with 22px line icons and 12px labels: Indexes (chart), Companies (buildings), Compare (balance scale), Method (info). Fixed, white, hairline top border, padded for the home indicator (`safe-area-inset-bottom`). The active item has a Material-style indicator pill (`--mist`, 62 by 30px, behind the icon), a bold violet label and `aria-current`, so the state never rests on colour alone.
 - **Search sheet (below 900px):** the search icon opens a full-screen sheet: a 44px field (16px text, so iOS does not zoom) with a Cancel link, then up to 20 results as tall rows with logo or monogram. The page behind stops scrolling while it is open. The sheet renders in a portal on `<body>` so nothing (the tab bar included) can paint over it. No matches repeats the query and suggests a ticker, here and in the desktop dropdown.
-- **Page head:** breadcrumb, title (with a 52px logo tile on company pages), a meta line ("In Nifty 50 and Sensex", plain links, not chips), then section tabs. The first section after the page head has no top rule.
+- **Page head:** breadcrumb, title (with a 52px logo tile on company pages), a meta line of index names ("Nifty 50 · BSE Sensex", plain links separated by middots, not chips, no "In"), then section tabs. The first section after the page head has no top rule.
 - **Title row (company pages):** the 52px logo tile, then the name (h1, line height 1.15) with the exchange and industry line 4px below it.
 - **Index strip:** a white bar under the header on every page, scrolling horizontally. Each item shows name, headline value and like-for-like change. The current index is highlighted with a tint. The right edge fades on every width to show the strip scrolls, with 20px of end padding so the last index can scroll clear of the fade. On phones the chips are 34px tall with 6px of strip above and below, so the selected chip never touches the borders, and an invisible area makes each one 44px to tap. The fade is 24px, so the next index peeks in.
 - **Offline bar:** when the device is offline, a slim tint bar under the header says "Offline. Showing data collected 1 October 2026." (`role="status"`).
@@ -252,6 +252,17 @@ Validated with the dataviz `validate_palette.js` using `--pairs all`, because co
 - No em dashes. Use colons, commas and full stops. En dashes only for ranges.
 - **Links in running text are underlined** (paragraphs, prose lists, meta lines and breadcrumbs), so they never rely on colour alone (WCAG 1.4.1). Standalone links (`.go`), tabs, navigation and table name links are not.
 - Bold leads a point. Numbers come with the finding attached.
-- State limitations before the reader finds them. Show the unflattering rows: missing companies, estimated values, broken filings.
+- State limitations once, in one line, where they matter. Show the unflattering rows: missing companies, estimated values, broken filings.
+- **UX copy (PARITY-65, the owner's call: "crisp, clear and concise text only"):**
+  - **Lead with the finding.** The number or fact comes first; context follows.
+  - **One idea per sentence.** Aim for 20 words or fewer.
+  - **Don't repeat the UI.** Cut any sentence that restates a heading, a label, a chart or another sentence.
+  - **Labels over sentences.** If a label and a number say it, add nothing.
+  - **No hedging.** Drop "about", "roughly", "may", "can", "likely", "note that", "in other words" and "read these as". If a figure is uncertain, the badge or one plain reason says so.
+  - **One caveat per section.** The detail lives on Method; link to it instead of explaining inline.
+  - **Names are tags.** Write "Nifty 50", not "in the Nifty 50"; "FY26", not "for fiscal 2025-26".
+  - **Headings say what you learn,** in six words or fewer.
+  - **Links name the destination or action.** For example, "Parity map", "Download CSV".
+  - **Sources:** Material Design's writing guidelines, Nielsen Norman Group's research on how people scan, and the GOV.UK style guide.
 - This is not an ESG rating and not investment advice. Say so on the method page.
 - **One name per measure (PARITY-24):** "Women's share of pay" (short "Share of pay"), "Employment parity" and "Wage parity", from `MEASURE` in `src/lib/compare.ts`. Each market's basis goes in brackets or a subtitle ("Employment parity (permanent staff)"), never in a new name. Figures a company reports are labelled in the filing's own words ("Women in regular staff"), because they are inputs, not our measures.

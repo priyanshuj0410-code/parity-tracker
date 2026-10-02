@@ -41,9 +41,9 @@ export function EuSources({ c }: { c: Company }) {
   const source = c.entities?.[0]
   return (
         <ul className="tight">
-          <li><strong>Source:</strong> the company's own CSRD sustainability statement: the pay gap from ESRS S1-16 and headcount by gender from S1-6, read directly from the document. {source?.link && /^https?:\/\//.test(source.link) && <a href={source.link} target="_blank" rel="noreferrer">Source document</a>}</li>
-          <li><strong>Positive gap:</strong> men earn more on average. A negative gap means women's average pay is higher, usually because of the mix of jobs.</li>
-          <li><strong>Workforce split:</strong> women's share counts women and men only; employees recorded as other or not disclosed are left out.</li>
+          <li><strong>Source:</strong> the company's CSRD statement: pay gap (S1-16), headcount by gender (S1-6). {source?.link && /^https?:\/\//.test(source.link) && <a href={source.link} target="_blank" rel="noreferrer">Source document</a>}</li>
+          <li><strong>Gap:</strong> positive means men earn more on average; negative, women do, usually because of the job mix.</li>
+          <li><strong>Workforce split:</strong> women and men only.</li>
         </ul>
   )
 }

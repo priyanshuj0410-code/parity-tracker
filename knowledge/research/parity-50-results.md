@@ -134,7 +134,7 @@ plane_issues:
   - **Rights issues:** adjusted by the theoretical ex-rights price.
   - **Bonus preference shares:** counted at face value.
   - **Companies:** followed by ISIN.
-  - **Inputs:** event values are in `pipeline/equal50/results/events-2026-10-02.json`.
+  - **Inputs:** event values are in `pipeline/equal50/results/events-2026-10-03.json`, which since 3 October 2026 also covers October 2021 to September 2024.
 - **Effect:**
   - the Parity 50 figures above;
   - the Parity-Aligned Nifty 500 moved to −6.5% against −6.3% (from −7.0% against −6.9%);

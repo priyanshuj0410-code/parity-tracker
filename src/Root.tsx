@@ -85,7 +85,7 @@ export default function Root() {
       <footer className="site-footer">
         <div className="wrap">
           <img src={mark} alt="" width="276" height="317" />
-          <span>Built with The Equal Lens from companies' own legally required gender pay disclosures, collected {SOURCE_DATE}. Not investment advice.</span>
+          <span>By The Equal Lens, from companies' own gender pay filings, collected {SOURCE_DATE}. Not investment advice.</span>
           <span className="footer-links"><a className="go" href={correctionHref()}>Report a correction</a><InstallLink /></span>
         </div>
       </footer>

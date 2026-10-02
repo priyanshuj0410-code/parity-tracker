@@ -16,9 +16,9 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, { failed: 
       <section>
         <h1>{offline ? "You're offline" : 'Something went wrong'}</h1>
         <EmptyState art={offline ? 'offline' : 'error'}
-          title={offline ? 'This page needs a connection to finish loading' : 'This page hit an error while loading'}
+          title={offline ? 'Connect to finish loading' : "This page didn't load"}
           actions={<><button type="button" className="btn-primary" onClick={() => window.location.reload()}>Reload the page</button><a className="go" href={href('')}>Go to indexes</a></>}>
-          {offline ? 'Reconnect and reload. Pages you have already opened keep working offline.' : 'The figures are not affected. Reloading usually fixes it.'}
+          {offline ? "Reconnect and reload. Pages you've opened still work offline." : 'The figures are fine. Reload to try again.'}
         </EmptyState>
       </section>
     )
