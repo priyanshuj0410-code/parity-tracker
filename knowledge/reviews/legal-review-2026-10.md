@@ -34,7 +34,7 @@ Prepared by the team from public sources for counsel. It frames the questions; i
 | Fund footprints (F-4) | Planned | ESG ratings, adviser rules | Medium | Q5 |
 | Portfolio upload, CAS read in the browser (F-5) | Planned | DPDP Act, adviser rules | Low if nothing leaves the device | Q10, Q11 |
 | Parity 50 as a smallcase with a registered manager | Idea | Intermediary association rule, education circular, PaRRVA | High as the site stands | Q9 |
-| Play and prediction markets | Planned | Online Gaming Act, 2025 | Separate check | [PARITY-51][p51] |
+| Play and prediction markets | Planned | Online Gaming Act, 2025 | Low as designed | [Gaming Act check](gaming-act-check-2026-10.md) |
 | Foreign grants and prizes (MIT Solve) | Planned | FCRA, 2010 | Must clear before any money arrives | Q12, [PARITY-67][p67] |
 
 ## 1. Investment advice and research
@@ -137,7 +137,7 @@ Prepared by the team from public sources for counsel. It frames the questions; i
 ## Outside this review
 
 - **FCRA:** money from MIT Solve or any foreign funder is a foreign contribution. An organisation with a social programme needs FCRA registration or prior permission to accept it. Settle the route before the Solve submission on 2 November 2026 ([PARITY-67][p67], [Solve plan](../plans/mit-solve-application.md)).
-- **Prediction markets:** the Online Gaming Act check is [PARITY-51][p51] ([plan](../plans/nivel-play-and-markets.md)).
+- **Prediction markets:** see the [Online Gaming Act check](gaming-act-check-2026-10.md) ([PARITY-51][p51]).
 
 ## Questions for counsel
 

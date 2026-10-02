@@ -3,9 +3,10 @@ type: plan
 title: Nivel play and prediction markets
 description: Plan for Nivel's two engagement layers, Spot the Stereotype (The Equal Lens's bias game) and prediction markets on women's pay, work and norms, hosted in Nivel on a prediction market engine shared with Thoth.
 status: planned
-updated: 2026-10-02
+updated: 2026-10-03
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/66905658-70ce-4e96-a7c0-effb34139826
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/0d978739-fe5b-4c6a-967d-fcca1fb16b77
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/a7d95186-1e6e-4db7-a8ea-2e8f2b947b04
   - https://app.plane.so/claude-pri/projects/18017c30-d8f6-436a-b4ca-a743d5317720/issues/d3d482ab-c1bf-43df-9a9b-3ea19e3d3564
 ---
@@ -48,7 +49,7 @@ plane_issues:
   2. **Forecast the norm.** What other people believe, resolved against published surveys. This targets misperceived social norms: Bursztyn, González and Yanagizawa-Drott (2020) found most Saudi men privately supported women working outside the home but underestimated how many other men agreed, and correcting the belief changed behaviour.
   3. **See your own bias.** After resolution, players see how their forecasts about women compared with the data, as calibration by topic.
 - **Built on the common engine:** markets from templates, pricing, a play-money balance, resolution against named and dated sources, and an 18+ age gate.
-- **Play money only:** tokens are earned, cannot be bought or cashed out, and carry no prizes of monetary value (Promotion and Regulation of Online Gaming Act, 2025).
+- **Play money only:** tokens are earned, cannot be bought or cashed out, and carry no prizes of monetary value (Promotion and Regulation of Online Gaming Act, 2025). Checked in the [Online Gaming Act check](../reviews/gaming-act-check-2026-10.md), with eight build rules; awaiting counsel.
 
 ## Resolution sources (to confirm schedules)
 - **Nivel's own yearly refresh:** pay share, staff share and board seats.
