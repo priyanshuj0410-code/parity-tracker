@@ -15,7 +15,7 @@ def get(url, path):
 def bhav(d):
     os.makedirs(f'{OUT}/px', exist_ok=True)
     p = f'{OUT}/px/{d:%Y%m%d}.zip'
-    if os.path.exists(p) and os.path.getsize(p) > 1000:
+    if os.path.exists(p) and zipfile.is_zipfile(p):
         return p
     if d >= dt.date(2024, 7, 8):
         url = f'https://nsearchives.nseindia.com/content/cm/BhavCopy_NSE_CM_0_0_0_{d:%Y%m%d}_F_0000.csv.zip'
@@ -39,9 +39,9 @@ def parse_bhav(p):
 
 
 closes, idx, used = {}, {}, {}
-for y in range(2022, 2027):
+for y in range(2021, 2027):
     for m in range(1, 13):
-        if (y, m) < (2022, 9) or (y, m) > (2026, 9):
+        if (y, m) < (2021, 9) or (y, m) > (2026, 9):
             continue
         d = dt.date(y, m, calendar.monthrange(y, m)[1])
         for _ in range(8):
@@ -61,7 +61,7 @@ for y in range(2022, 2027):
         print(key, d, len(closes[key]), 'stocks;', 'Nifty 50', idx.get(key, {}).get('Nifty 50', {}).get('close'))
 
 mcap = {}
-for key in ('2022-09', '2023-09', '2024-09', '2025-09', '2026-09'):
+for key in ('2021-09', '2022-09', '2023-09', '2024-09', '2025-09', '2026-09'):
     d = dt.date.fromisoformat(used[key])
     zp = f'{OUT}/px/PR{d:%d%m%y}.zip'
     if os.path.exists(zp) or get(f'https://nsearchives.nseindia.com/archives/equities/bhavcopy/pr/PR{d:%d%m%y}.zip', zp):

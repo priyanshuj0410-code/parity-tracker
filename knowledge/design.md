@@ -226,13 +226,26 @@ Validated with the dataviz `validate_palette.js` using `--pairs all`, because co
   - The sub-line gives the real index's figure ("none held · Nifty 50 9%").
   - A key names the bar and the tick, and the table view has both columns.
   - Below 720px each row stacks: the name above a full-width bar.
-- **Growth of ₹100 (PARITY-63):** monthly lines from ₹100. The y axis is fitted to the data on a round step (5, 10, 20, 25 or 50) giving 2–4 intervals, so a 2% gap is visible; it is money, not a share, so the 0–50% rule does not apply. The start value is the reference line, labelled at its left end. Markers only at the end and the hovered month. Month labels every six months, yearly below 520px wide. Checked against Monarch Money's portfolio-versus-benchmark chart on Lazyweb.
+- **Growth of ₹100 (PARITY-63, PARITY-64):** monthly lines from ₹100.
+  - **Y axis:** fitted to the data on a round step (5, 10, 20, 25 or 50) giving 2–4 intervals, so a 2% gap is visible. It is money, not a share, so the 0–50% rule does not apply.
+  - **Start line:** the start value is an unlabelled reference line; the axis already shows ₹100.
+  - **Markers:** only at the end and at the hovered month.
+  - **Month labels:** every 6, 12 or 24 months, whichever keeps them at least 64px apart.
+  - **Checked against** Monarch Money's portfolio-versus-benchmark chart on Lazyweb.
+- **Backfilled stretch (PARITY-64):**
+  - Months built from figures published later sit in a `--tint` band from the first month to the last backfilled rebuild, labelled "Backfilled" in its top-left corner.
+  - The tooltip and the table view mark those months.
+  - The real-world comparison (an index fund) is drawn as a third line, so the backfill's flattery is visible.
 - **Simulated series:** dashed (6 on, 4 off, butt caps) in its slot colour, with a dashed legend swatch. Real series stay solid.
 - **Grid:** solid 1px `--mist`, never dashed.
 - **Parity reference:** the 50% line is a solid 1px `--muted` rule, labelled at its left end so it never collides with the series end labels on the right.
 - **Y axis:** shares run from 0 to 50% so distance to parity is visible. If any value exceeds 50%, the axis or bar scale extends to the next 10%, and the parity mark stays at 50%.
 - **Markets:** each market keeps its own metric label (India: share of total wages; UK: share of hourly pay, UK staff), but all are shares of pay on a 0–50% axis with parity at 50%. Pay ratios (parity 100%) appear only as supporting figures, never as a market's headline.
-- **Legends and labels:** a legend whenever there are two or more series, plus direct end labels. Text always uses text tokens, never series colours.
+- **Legends and labels:**
+  - A legend names the series whenever there are two or more.
+  - End labels show only the value, because naming the series twice squeezed the plot (PARITY-64, the owner's call; on a phone named end labels took a third of the width).
+  - Legend names stay short ("Nifty 50, rebuilt", "Index fund"); the page text gives the detail.
+  - Text always uses text tokens, never series colours.
 - **Hover:** a crosshair and tooltip on lines. Every chart also has a table view with the same numbers.
 
 ## 7. Voice (house rules)

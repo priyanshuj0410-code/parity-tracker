@@ -62,7 +62,10 @@ export function SimulationPage({ id }: { id: string }) {
   const st = p.stats
   const first = p.months[0]
   const last = p.months[p.months.length - 1]
-  const gap = st.sim.cumulative - st.parent.cumulative
+  const five = p.five
+  const bfill = p.backfill
+  const etf = p.etfStats
+  const backfilled = (k: string) => k <= p.backfillUntil && k !== p.months[0]
   const biggest = sim.left[0]
   const outSectors = sim.out.sectors
 
@@ -176,42 +179,56 @@ export function SimulationPage({ id }: { id: string }) {
 
       <section>
         <h2>What it would have delivered</h2>
-        <p>₹100 put into each at the {monthLabel(first)} rebuild, with dividends reinvested and the index rebuilt each September.</p>
+        <p>
+          ₹100 put into each at the end of {monthLabel(first)}, with dividends reinvested and the index rebuilt each September.
+          The shaded years are backfilled: no company published women's share of wages until mid-2024, so for those years the {sim.name} picks companies using figures they published later.
+        </p>
         <ChartFrame title="Growth of ₹100" sub={`${monthLabel(first)} to ${monthLabel(last)}, month-end values`}
           table={(
             <DataTable caption="Growth of ₹100" bare rows={p.months} rowKey={(k) => k} initial={{ key: 'month', dir: 1 }} columns={[
-              { key: 'month', label: 'Month', render: (k) => monthLabel(k), sort: (k) => k },
+              { key: 'month', label: 'Month', render: (k) => <>{monthLabel(k)}{backfilled(k) && <span className="sub">backfilled</span>}</>, sort: (k) => k },
               { key: 'sim', label: sim.name, right: true, mobile: 'value', render: (k) => `₹${p.sim[p.months.indexOf(k)].toFixed(1)}`, sort: (k) => p.sim[p.months.indexOf(k)] },
-              { key: 'parent', label: parent.name, right: true, render: (k) => `₹${p.parent[p.months.indexOf(k)].toFixed(1)}`, sort: (k) => p.parent[p.months.indexOf(k)] },
+              { key: 'parent', label: `${parent.name}, rebuilt`, right: true, render: (k) => `₹${p.parent[p.months.indexOf(k)].toFixed(1)}`, sort: (k) => p.parent[p.months.indexOf(k)] },
+              { key: 'etf', label: 'Index fund', right: true, render: (k) => `₹${p.etf[p.months.indexOf(k)].toFixed(1)}`, sort: (k) => p.etf[p.months.indexOf(k)] },
             ]} />
           )}>
-          <GrowthChart months={p.months} xLabel={monthLabel} ariaLabel={`Growth of ₹100 in the ${sim.name} and the ${parent.name}, ${monthLabel(first)} to ${monthLabel(last)}`}
+          <GrowthChart months={p.months} xLabel={monthLabel} shade={{ until: p.backfillUntil, label: 'Backfilled' }}
+            ariaLabel={`Growth of ₹100 in the ${sim.name}, the ${parent.name} rebuilt the same way, and a ${parent.name} index fund, ${monthLabel(first)} to ${monthLabel(last)}`}
             series={[
-              { id: 'sim', label: `${sim.name} (simulation)`, short: sim.name, color: 'var(--s1)', dashed: true, values: p.sim },
-              { id: 'parent', label: parent.name, short: parent.name, color: 'var(--s2)', values: p.parent },
+              { id: 'sim', label: sim.name, short: sim.name, color: 'var(--s1)', dashed: true, values: p.sim },
+              { id: 'parent', label: `${parent.name}, rebuilt`, short: parent.name, color: 'var(--s2)', values: p.parent },
+              { id: 'etf', label: 'Index fund', short: 'Index fund', color: 'var(--s3)', values: p.etf },
             ]} />
         </ChartFrame>
-        <div className="card table-card" style={{ marginTop: 16 }}>
-          <table>
-            <caption className="sr-only">Returns, {monthLabel(first)} to {monthLabel(last)}</caption>
-            <thead><tr><th scope="col">{monthLabel(first)} to {monthLabel(last)}</th><th scope="col" className="r">{sim.name}</th><th scope="col" className="r">{parent.name}</th></tr></thead>
-            <tbody>
-              <tr><td>Total return</td><td className="r">{ret(st.sim.cumulative)}</td><td className="r">{ret(st.parent.cumulative)}</td></tr>
-              <tr><td>A year</td><td className="r">{ret(st.sim.annualised)}</td><td className="r">{ret(st.parent.annualised)}</td></tr>
-              <tr><td>Volatility, a year</td><td className="r">{pct(st.sim.volatility)}</td><td className="r">{pct(st.parent.volatility)}</td></tr>
-              <tr><td>Largest fall</td><td className="r">{ret(st.sim.maxDrawdown)}</td><td className="r">{ret(st.parent.maxDrawdown)}</td></tr>
-              <tr><td>Tracking error against the {parent.name}</td><td className="r">{pct(st.trackingError)}</td><td className="r">n/a</td></tr>
-            </tbody>
-          </table>
+        <div style={{ marginTop: 16 }}>
+          <DataTable caption={`Returns of the ${sim.name}, the ${parent.name} rebuilt the same way, and a ${parent.name} index fund`} bare rows={[
+            { key: 'five', label: `Five years, ${monthLabel(first)} to ${monthLabel(last)}`, sim: ret(five.sim.cumulative), parent: ret(five.parent.cumulative), etf: ret(etf.full.cumulative) },
+            { key: 'backfill', label: `Backfilled, ${monthLabel(first)} to ${monthLabel(p.backfillUntil)}`, sim: ret(bfill.sim.cumulative), parent: ret(bfill.parent.cumulative), etf: ret(etf.backfill.cumulative) },
+            { key: 'live', label: `At the time, ${monthLabel(p.backfillUntil)} to ${monthLabel(last)}`, sim: ret(st.sim.cumulative), parent: ret(st.parent.cumulative), etf: ret(etf.live.cumulative) },
+            { key: 'year', label: 'A year, over five years', sim: ret(five.sim.annualised), parent: ret(five.parent.annualised), etf: ret(etf.full.annualised) },
+            { key: 'vol', label: 'Volatility, a year', sim: pct(five.sim.volatility), parent: pct(five.parent.volatility), etf: pct(etf.full.volatility) },
+            { key: 'fall', label: 'Largest fall', sim: ret(five.sim.maxDrawdown), parent: ret(five.parent.maxDrawdown), etf: ret(etf.full.maxDrawdown) },
+            { key: 'te', label: `Tracking error against the rebuilt ${parent.name}`, sim: pct(five.trackingError), parent: 'n/a', etf: 'n/a' },
+          ]} rowKey={(r) => r.key} initial={{ key: 'label', dir: 1 }} columns={[
+            { key: 'label', label: 'Return', mobile: 'title', render: (r) => r.label },
+            { key: 'sim', label: sim.name, right: true, mobile: 'meta', render: (r) => r.sim },
+            { key: 'parent', label: `${parent.name}, rebuilt`, right: true, mobile: 'meta', render: (r) => r.parent },
+            { key: 'etf', label: 'Index fund', right: true, mobile: 'meta', render: (r) => r.etf },
+          ]} />
         </div>
         <ul className="tight" style={{ marginTop: 16 }}>
           <li>
-            <strong>It {gap < 0 ? 'trailed' : 'beat'} the {parent.name} by {points(gap)} points over two years.</strong> In the first year it returned {ret(st.year1.index)} against {ret(st.year1.parent)},
-            and in the second {ret(st.year2.index)} against {ret(st.year2.parent)}.
+            <strong>Over five years it kept pace.</strong> It returned {ret(five.sim.cumulative)} against {ret(five.parent.cumulative)} for the {parent.name} rebuilt the same way,
+            with bigger swings: its largest fall was {ret(five.sim.maxDrawdown)} against {ret(five.parent.maxDrawdown)}.
           </li>
-          <li><strong>Both lost money.</strong> Indian large caps fell over these two years: index funds tracking the {parent.name} and the Sensex returned {ret(st.nifty50Etf)} and {ret(st.sensexEtf)}.</li>
-          <li><strong>It moves on its own.</strong> {pct(sim.out.activeShare, 0)} of its money sits outside the {parent.name}'s weights, so it can lead or trail by several points a year (tracking error {pct(st.trackingError)}).</li>
-          <li><strong>Two years settle nothing.</strong> Both were falling years, so this cannot show whether parity pays.</li>
+          <li>
+            <strong>The backfill flatters both lines.</strong> Both use today's members, so companies that shrank or left since 2021 are missing. Over five years the rebuilt {parent.name} returned {ret(five.parent.cumulative)},
+            against {ret(etf.full.cumulative)} for a real index fund. The {sim.name} also picks companies using figures published later: {listOf(p.backfillYears.map((y) => `${y.laterFigures} of 50 in the September 20${y.year.slice(-2)} rebuild`))}.
+          </li>
+          <li>
+            <strong>Only the last two years use information available at the time.</strong> Both lost money then: {ret(st.sim.cumulative)} against {ret(st.parent.cumulative)}, and {ret(etf.live.cumulative)} for the index fund.
+          </li>
+          <li><strong>Simulated results settle nothing.</strong> They cannot show whether parity pays, and they do not predict future returns.</li>
         </ul>
       </section>
 
@@ -231,8 +248,12 @@ export function SimulationPage({ id }: { id: string }) {
           <li>A Nifty 500 company qualifies if women get at least the bar as a share of its total wages and it has at least 1,000 permanent staff, so that a handful of people cannot set its figure.</li>
           <li>The index holds the 50 largest qualifying companies by the market value of shares the public holds.</li>
           <li>Each weight is that value times the company's women's share of pay divided by the bar, so companies that clear the bar by more weigh more. No company is above 8%, and there are no sector limits.</li>
-          <li>Only figures from a company's own filing count: filed before the rebuild, and reported rather than estimated.</li>
+          <li>From the September 2024 rebuild on, only figures from a company's own filing count: filed before the rebuild, and reported rather than estimated.</li>
           <li>Returns include dividends, splits, bonus issues and demergers. The {parent.name} it is compared with is rebuilt from the same prices, using its September 2026 members.</li>
+          <li>
+            Before September 2024 the history is backfilled. The September 2021, 2022 and 2023 rebuilds use each company's figures for that year if any filing reports them, and otherwise the earliest later year.
+            They also use the earliest shareholding pattern on record, and today's shares outstanding, adjusted for splits and bonus issues.
+          </li>
           <li>"Close to parity" means women are 35% to 65% of permanent staff and are paid at least 80% of what men are paid per head, among companies with at least 1,000 staff.</li>
           <li>We wrote these rules down before calculating any return. An earlier version kept the {parent.name}'s sector mix, and so held companies where women get as little as 1.5% of the pay. We replaced it.</li>
         </ul>
