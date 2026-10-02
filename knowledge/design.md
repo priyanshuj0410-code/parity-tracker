@@ -112,11 +112,10 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
   - company cells: logo tile, name link, then ticker and market or industry as a muted sub-line
   - tables flow with the page: no inner scroll box. The header row stays pinned under the site header (`top: 64px`) while the page scrolls, with rounded outer corners on the first and last cells. Long headers wrap.
   - columns carry a priority: priority 2 hides below 1100px wide and priority 3 below 1000px (sparklines, sector, board), so a desktop table never scrolls sideways
-  - **below 900px every data table becomes a stacked list of cards** (PARITY-16, reworked in PARITY-23 after testing on a Pixel 9, 412px wide). Each card:
-    - top row: muted rank, logo tile, the name in `--ink` (Poppins 600, 15px, up to two lines) with a muted subtitle line under it (ticker · market · sector), and one key value at the top right (Poppins 600, 17px) with a data tag only when the figure is not cleanly reported
-    - details under a hairline in a two-column grid: 11px muted labels over 13px values; meters shrink to a 36px track; long text (what is measured, sources, basis) spans both columns
-    - columns choose their phone role: title, value, detail or hidden, and can give a compact phone rendering (the value never carries a meter or a "Reported" tag)
-  - the list bar wraps: a long summary takes its own line, and the Sort dropdown truncates its label so the direction and CSV buttons always stay on screen. Small tables (years, sectors, markets) drop the bar entirely.
+  - **below 900px, lists become two-line rows** (PARITY-23, after testing on a Pixel 9): the logo, then the name (Poppins 600, 15px, one line, ellipsis) over a muted subtitle (ticker · market · sector). On the right is one fixed figure (16px), share of pay wherever there is one, so it never changes meaning, and a small second line: the 1-year change in coloured text, or the sorted column with its label ("Weight 10.0%") when sorting by something else. Everything else lives on the company page or behind the Sort menu. No rank numbers, no meters, and a data tag only when a figure is not cleanly reported.
+  - small reference tables (years, a sector breakdown, the markets list) keep detail cards instead: details in a two-column grid under a hairline, long text across both columns.
+  - list bars carry a short count ("50 companies") with Sort and a direction button; explanations sit in the text above the table, and there is no CSV button on phones.
+  - the Sort dropdown truncates its label so the direction button always stays on screen. Small tables (years, sectors, markets) drop the bar entirely.
   - every table goes through this component, including chart frames' table views and the markets table, so no table on a phone scrolls sideways
   - the whole row opens the company, with the name link kept for keyboard and screen-reader users
 - **Meter (inline data bar):** the value, then a 52px by 6px `--line` track with a `--s1` fill and a 2px ink tick at parity. Employment parity and share of pay run 0–100% (tick at 50%); wage parity runs 0–140% (tick at 100%). Replaces bare percentages wherever a value has a parity point.
@@ -145,7 +144,8 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
   - coloured by direction from first to last point (`--good`, `--bad`, `--muted`)
   - always paired with an explicit number or table, never on its own
   - only reported values are plotted
-- **Pill filters:** 999px radius, white with `--line` border; selected is violet fill with white text and `aria-pressed`. Used for index filters instead of selects.
+- **Pill filters:** 999px radius, white with `--line` border; selected is violet fill with white text and `aria-pressed`. Used for index filters instead of selects. On phones, a filter group is one row that scrolls sideways rather than wrapping onto several lines.
+- **Explainer disclosure:** definitions that every visitor does not need sit in a collapsed "What the numbers mean" disclosure (violet summary with a chevron) under the page lead, not as a paragraph above the controls.
 - **Cross-market rule:** every headline is now women's share of pay with parity at 50% (Japan and the EU since PARITY-20), so index headlines can sit side by side. Rankings across markets still use the market percentile, and the basis is always stated nearby.
 
 ## 6. Charts

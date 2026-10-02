@@ -220,10 +220,10 @@ function Peers({ c }: { c: Co }) {
   }
   const columns: Column<Point>[] = [
     { key: 'name', label: 'Company', render: (p) => <span className="name-cell"><Logo symbol={p.c.symbol} name={p.c.name} /><a href={href('company', p.c.symbol)}>{p.c.name}<span className="sub">{ticker(p.c)} · {p.c.industry}</span></a></span>, sort: (p) => p.c.name, csv: (p) => p.c.name },
-    { key: 'e', label: 'Employment parity', render: (p) => <Meter value={p.e} parity={E_PARITY} />, sort: (p) => p.e },
-    { key: 'w', label: 'Wage parity', render: (p) => <Meter value={p.w} parity={W_PARITY} max={1.4} approx={p.c.country === 'IN'} />, sort: (p) => p.w },
+    { key: 'e', label: 'Employment parity', phone: (p) => pct(p.e), render: (p) => <Meter value={p.e} parity={E_PARITY} />, sort: (p) => p.e },
+    { key: 'w', label: 'Wage parity', phone: (p) => p.w == null ? 'n/a' : `${p.c.country === 'IN' ? '≈' : ''}${pct(p.w)}`, render: (p) => <Meter value={p.w} parity={W_PARITY} max={1.4} approx={p.c.country === 'IN'} />, sort: (p) => p.w },
     { key: 's', label: 'Share of pay', mobile: 'value', phone: (p) => pct(p.s), render: (p) => <Meter value={p.s} parity={E_PARITY} />, sort: (p) => p.s },
-    { key: 'chg', label: 'Change on last year', short: '1-year change', right: true, render: (p) => <Change value={yoyChange(p.c)} />, sort: (p) => yoyChange(p.c) },
+    { key: 'chg', label: 'Change on last year', short: '1-year change', right: true, mobile: 'second', render: (p) => <Change value={yoyChange(p.c)} />, sort: (p) => yoyChange(p.c) },
   ]
   return (
     <section>
