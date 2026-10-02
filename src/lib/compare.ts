@@ -69,8 +69,8 @@ export const pointOf = (symbol: string): Point | undefined => BY_SYMBOL.get(symb
 export function offMapReason(symbol: string): string | null {
   const p = pointOf(symbol)
   if (p && p.e != null && p.w != null) return null
-  if (p?.wRaw != null) return 'Its wage figure falls outside the plausible range, so it cannot be compared.'
-  if (!p || p.w == null) return 'It does not report a pay comparison we can use.'
+  if (p?.wRaw != null) return 'Its wage figure is outside the plausible range.'
+  if (!p || p.w == null) return 'No usable pay comparison.'
   return 'It does not report a workforce split.'
 }
 

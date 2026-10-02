@@ -4,5 +4,12 @@
  "STLTECH": {"spins": [["STLNETWORK", 1.0]]},
  "TMPV": {"spins": [["TMCV", 1.0]]},
  "HINDUNILVR": {"spins": [["KWIL", 1.0]]},
- "VEDL": {"spins": [["VAML", 1.0], ["VEDPOWER", 1.0], ["VISL", 1.0], ["VOGL", 1.0]]}
+ "VEDL": {"spins": [["VAML", 1.0], ["VEDPOWER", 1.0], ["VISL", 1.0], ["VOGL", 1.0]]},
+ "GMRAIRPORT": {"spins": [["GMRP&UI", 0.1]]},
+ "MOTHERSON": {"spins": [["MSUMI", 1.0]]},
+ "BEML": {"spins": [["BLAL", 1.0]]},
+ "AARTIIND": {"spins": [["AARTIPHARM", 0.25]]},
+ "NMDC": {"spins": [["NSLNISP", 1.0]]},
+ "SCI": {"spins": [["SCILAL", 1.0]]},
+ "RELIANCE": {"spins": [["JIOFIN", 1.0]]}
 }

@@ -284,6 +284,8 @@ h1 .badge.sim { margin-left: 8px; vertical-align: middle; }
   .bars.wide-names .bar-scale > span:first-child { display: none; }
 }
 .table-card { padding: 0; overflow: hidden; }
+.chart .band { fill: var(--tint); }
+.chart .bandlabel { font: 600 12px var(--font-display); fill: var(--soft); }
 .ref-mark { position: absolute; top: -4px; bottom: -4px; width: 2px; margin-left: -1px; background: var(--ink); opacity: .55; border-radius: 1px; }
 .bars .keys { margin-top: 4px; }
 .key i.tick { width: 2px; height: 14px; border-radius: 1px; background: var(--ink); opacity: .55; }

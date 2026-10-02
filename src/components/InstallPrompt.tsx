@@ -39,7 +39,7 @@ export function InstallPrompt() {
         <strong id="install-title">Install Nivel</strong>
         <p id="install-text">{steps
           ? <>In Safari, tap <b>Share</b>, then <b>Add to Home Screen</b>.</>
-          : 'Open it from your home screen like an app. It works offline too.'}</p>
+          : 'Opens from your home screen and works offline.'}</p>
         <div className="install-actions">
           {!steps && <button type="button" className="btn-primary" onClick={install}>{prompt ? 'Install' : 'Show me how'}</button>}
           <button type="button" className="btn-quiet" onClick={() => setOpen(false)}>{steps ? 'Done' : 'Not now'}</button>

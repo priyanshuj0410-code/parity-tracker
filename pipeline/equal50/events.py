@@ -1,4 +1,4 @@
-"""Corporate events Oct 2024 to Sep 2026 that the price adjustments miss: demergers, rights issues, bonus preference shares.
+"""Corporate events Oct 2021 to Sep 2026 that the price adjustments miss: demergers, rights issues, bonus preference shares.
 Values each from NSE's bhavcopy on the ex-date and writes events.json, which build_e50.py reads."""
 import csv, datetime as dt, io, json, os, re, subprocess, sys, time, zipfile
 
@@ -15,13 +15,20 @@ SPIN = json.load(open(f'{HERE}/spin_map.json')) if os.path.exists(f'{HERE}/spin_
 def bhav(d):
     p = f'{HERE}/px/{d:%Y%m%d}.zip'
     if not (os.path.exists(p) and os.path.getsize(p) > 1000):
-        url = f'https://nsearchives.nseindia.com/content/cm/BhavCopy_NSE_CM_0_0_0_{d:%Y%m%d}_F_0000.csv.zip'
+        mon = d.strftime('%b').upper()
+        url = (f'https://nsearchives.nseindia.com/content/cm/BhavCopy_NSE_CM_0_0_0_{d:%Y%m%d}_F_0000.csv.zip' if d >= dt.date(2024, 7, 8)
+               else f'https://nsearchives.nseindia.com/content/historical/EQUITIES/{d.year}/{mon}/cm{d:%d}{mon}{d.year}bhav.csv.zip')
         r = subprocess.run(['curl', '-s', '-m', '60', '-A', UA, '-o', p, '-w', '%{http_code}', url], capture_output=True, text=True)
         time.sleep(0.7)
         if r.stdout != '200':
             return None
     z = zipfile.ZipFile(p)
-    return [r for r in csv.DictReader(io.TextIOWrapper(z.open(z.namelist()[0]), encoding='utf-8')) if r['SctySrs'].strip() in ('EQ', 'BE', 'BZ')]
+    rows = list(csv.DictReader(io.TextIOWrapper(z.open(z.namelist()[0]), encoding='utf-8')))
+    if rows and 'TckrSymb' not in rows[0]:
+        # Bhavcopies before July 2024 use the old column names; read them as the new ones.
+        rows = [{'TckrSymb': r['SYMBOL'], 'SctySrs': r['SERIES'], 'ISIN': r.get('ISIN', ''), 'OpnPric': r['OPEN'], 'ClsPric': r['CLOSE'],
+                 'PrvsClsgPric': r['PREVCLOSE'], 'FinInstrmNm': ''} for r in rows]
+    return [r for r in rows if r['SctySrs'].strip() in ('EQ', 'BE', 'BZ')]
 
 
 def face_values():
@@ -51,7 +58,7 @@ def collect():
                 ex = dt.datetime.strptime(a['exDate'].strip(), '%d-%b-%Y').date()
             except (ValueError, KeyError, AttributeError):
                 continue
-            if dt.date(2024, 10, 1) <= ex <= dt.date(2026, 9, 30) and s in n500:
+            if dt.date(2021, 10, 1) <= ex <= dt.date(2026, 9, 30) and s in n500:
                 ev.append((s, ex, sub))
     return sorted(ev, key=lambda e: e[1])
 

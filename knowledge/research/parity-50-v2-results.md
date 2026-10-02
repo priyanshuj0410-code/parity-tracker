@@ -32,6 +32,7 @@ plane_issues:
 - **Returns, October 2024 to September 2026:**
   - −11.0%, against −9.5% for the Nifty 50 rebuilt from the same data: 0.8 points a year behind, with tracking error 5.8%.
   - It was behind in the first year and ahead in the second. Two falling years settle nothing.
+- **Five years, three of them backfilled:** +46.3%, against +47.4% for the rebuilt Nifty 50 and +35.8% for a real Nifty 50 index fund. The backfill flatters both rebuilt lines; see [below](#backfilled-history-september-2021-to-september-2024).
 
 ## Parity, each year
 | Rebuild | Bar | Companies that qualify | Women's share of the payroll owned | Nifty 50 | Average holding: women's share of pay | Nifty 50 | Lowest holding |
@@ -95,8 +96,35 @@ plane_issues:
 - **A higher bar:** a 25% bar leaves only 42 qualifying companies in the Nifty 500, too few for 50.
 - **Near parity:** of 360 large listed employers with usable figures, 6 are near parity on both staff and pay. The method is in [version 1's results](parity-50-results.md).
 
+## Backfilled history, September 2021 to September 2024
+- **Method:** [0009](../decisions/0009-parity-50-backfill.md), committed (4471b5e, clarified in 69053e9) before any backfilled return was computed.
+  - Each rebuild uses a company's figures for that year if any filing reports them, otherwise the earliest later year. That applies to every holding in the 2021 and 2022 rebuilds, and to 12 of 50 in 2023.
+  - It uses the earliest shareholding pattern on record.
+  - Share counts are September 2024's, adjusted for splits and bonus issues.
+- **Parity at the backfilled rebuilds:**
+  - the bar was 21.8%, 21.8% and 21.6%;
+  - 58, 64 and 70 companies qualified;
+  - the average holding paid women 28.3%, 29.4% and 27.9% of wages, against 16.0%, 15.7% and 15.5% for the Nifty 50.
+
+| | Parity 50 | Nifty 50, rebuilt | Nifty 50 index fund |
+|---|---|---|---|
+| Five years, October 2021 to September 2026 | +46.3% | +47.4% | +35.8% |
+| Backfilled, October 2021 to September 2024 | +64.4% | +62.9% | +51.4% |
+| At the time, October 2024 to September 2026 | −11.0% | −9.5% | −10.3% |
+| A year, over five years | +7.9% | +8.1% | +6.3% |
+| Volatility, a year | 15.6% | 13.4% | 13.3% |
+| Largest fall | −19.8% | −14.7% | −14.6% |
+
+- **Against the rebuilt Nifty 50 over five years:** tracking error 6.3%, beta 1.07, active return −0.2 points a year.
+- **What the index fund shows:** the rebuilt Nifty 50 beat a real index fund by 11.6 points over five years, nearly all of it in the backfilled years, because it uses today's members. The Parity 50 shares that bias and adds figures published later.
+- **Events valued in the new window:**
+  - **Demergers:** Reliance (Jio Financial), Motherson (its wiring business), GMR, BEML, Aarti Industries, NMDC and Shipping Corporation.
+  - **Rights issues:** Indian Hotels, Wockhardt, Suzlon, Capri Global, PNB Housing, Piramal Pharma, Grasim, Sammaan Capital, IIFL, Sobha and Tata Consumer.
+  - The values are in `pipeline/equal50/results/events-2026-10-03.json`.
+- **Equal 50:** a rerun with the wider event window changed none of its reported figures.
+
 ## Limits
-- **History:** two years, both falling.
+- **History:** two years at the time, both falling; three more backfilled, as above.
 - **Survivorship:** the Nifty 500 of September 2026 is used for earlier years.
 - **Concentration:** there are no sector limits. Financial services is 41%, and whole sectors are absent.
 - **Data:**

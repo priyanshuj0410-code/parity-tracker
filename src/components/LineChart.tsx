@@ -45,9 +45,10 @@ export function LineChart({ series, xs, xLabel, fmt, ariaLabel, yMax = 0.5, heig
   const gid = 'wash' + useId().replace(/[^a-zA-Z0-9_-]/g, '')
   const ticks = niceTicks(yMax)
   const top = ticks[ticks.length - 1]
-  const endText = (s: Series, v: number) => (series.length > 1 ? `${s.short} ${fmt(v)}` : fmt(v))
+  // The legend names the series, so end labels carry only the value and keep the plot wide.
+  const endText = (v: number) => fmt(v)
   const lastOf = (s: Series) => s.points.filter((p) => p.y != null && xs.includes(p.x)).at(-1)
-  const longest = Math.max(0, ...series.map((s) => { const l = lastOf(s); return l ? endText(s, l.y as number).length : 0 }))
+  const longest = Math.max(0, ...series.map((s) => { const l = lastOf(s); return l ? endText(l.y as number).length : 0 }))
   const m = { ...M, r: Math.min(M.r, 18 + 7 * longest) }
   const w = Math.max(width, 260)
   const iw = w - m.l - m.r
@@ -141,7 +142,7 @@ export function LineChart({ series, xs, xLabel, fmt, ariaLabel, yMax = 0.5, heig
         )}
         {ends.map((e) => (
           <text key={e.s.id} className="endlabel" x={xPos(e.i) + 10} y={e.ty} dominantBaseline="middle">
-            {endText(e.s, e.v)}
+            {endText(e.v)}
           </text>
         ))}
         <rect x={m.l - step / 2} y={m.t} width={iw + step} height={ih} fill="transparent"

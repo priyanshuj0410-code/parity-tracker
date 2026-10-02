@@ -43,8 +43,8 @@ export function JapanSources({ c }: { c: Company }) {
           {entity && <li><strong>Reporting employer:</strong> {entity.name} ({entity.size})</li>}
           {y.period && <li><strong>Pay period:</strong> {y.period}</li>}
           {y.updated && <li><strong>Last updated by the company:</strong> {y.updated}</li>}
-          <li><strong>Scope:</strong> the listed company's own employees. For holding companies this can be a small head-office staff rather than the whole group.</li>
-          <li><strong>Women in regular staff:</strong> {y.fPerm != null ? `${pct(y.fPerm)}, from the same database. With the pay ratio it gives women's share of pay.` : "not disclosed in the database, so women's share of pay cannot be worked out and the company is not in the Nikkei 225 headline."}</li>
+          <li><strong>Scope:</strong> the listed company's own employees; for holding companies, often head office only.</li>
+          <li><strong>Women in regular staff:</strong> {y.fPerm != null ? `${pct(y.fPerm)}, from the same database.` : 'not disclosed, so no share of pay and not in the Nikkei 225 headline.'}</li>
         </ul>
   )
 }

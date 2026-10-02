@@ -119,6 +119,8 @@ export interface SimLeft { symbol: string; sector: string; w: number | null; par
 
 export interface SimReturns { cumulative: number; annualised: number; volatility: number; maxDrawdown: number }
 
+export interface SimVersus { sim: SimReturns; parent: SimReturns; trackingError: number; beta: number; active: number }
+
 /** A fictional index shown as a simulation (pipeline/equal50/export_parity50.py). Every holding clears a bar set at the real index's own level. */
 export interface Simulation {
   id: string
@@ -147,8 +149,15 @@ export interface Simulation {
   left: SimLeft[]
   performance: {
     months: string[]
+    /** Rebuilds before this month use figures published later (knowledge/decisions/0009-parity-50-backfill.md). */
+    backfillUntil: string
     sim: number[]
     parent: number[]
+    etf: number[]
+    five: SimVersus
+    backfill: SimVersus
+    etfStats: { full: SimReturns; backfill: SimReturns; live: SimReturns }
+    backfillYears: { year: string; bar: number; eligible: number; laterFigures: number; pay: number; parentPay: number }[]
     stats: {
       sim: SimReturns
       parent: SimReturns

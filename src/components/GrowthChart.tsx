@@ -17,10 +17,14 @@ interface Props {
   xLabel: (month: string) => string
   ariaLabel: string
   start?: number
+  /** Index of the month valued at `start`; the tooltip shows change since then only after it. */
+  base?: number
   height?: number
+  /** A shaded band from the first month to `until`, for a stretch built from data published later. */
+  shade?: { until: string; label: string }
 }
 
-const M = { t: 16, r: 112, b: 32, l: 44 }
+const MARGIN = { t: 16, b: 32, l: 44 }
 const DASH = '6 4'
 
 /** Two to four gridline intervals on a round step, covering the data and the starting value. */
@@ -41,21 +45,25 @@ const since = (v: number, start: number) => {
 }
 
 /** Monthly value of ₹100 invested at the start. Markers only at the end and the hovered month, as monthly lines would drown in dots. */
-export function GrowthChart({ series, months, xLabel, ariaLabel, start = 100, height = 260 }: Props) {
+export function GrowthChart({ series, months, xLabel, ariaLabel, start = 100, base = 0, height = 260, shade }: Props) {
   const [ref, width] = useWidth<HTMLDivElement>()
   const [hover, setHover] = useState<number | null>(null)
   const all = series.flatMap((s) => s.values).concat(start)
   const ticks = ticksFor(Math.min(...all), Math.max(...all))
   const lo = ticks[0]
   const hi = ticks[ticks.length - 1]
+  const last = months.length - 1
+  // The legend names the series, so end labels carry only the value and keep the plot wide.
+  const endText = (v: number) => `₹${Math.round(v)}`
+  const M = { ...MARGIN, r: 18 + 7 * Math.max(...series.map((s) => endText(s.values[last]).length)) }
   const w = Math.max(width, 260)
   const iw = w - M.l - M.r
   const ih = height - M.t - M.b
   const step = iw / Math.max(months.length - 1, 1)
   const xPos = (i: number) => M.l + i * step
   const yPos = (v: number) => M.t + ih - ((v - lo) / (hi - lo)) * ih
-  const labelled = (k: string) => (w < 520 ? k.endsWith('-09') : k.endsWith('-03') || k.endsWith('-09'))
-  const last = months.length - 1
+  const every = [6, 12, 24].find((n) => n * step >= 64) ?? 24
+  const shadeEnd = shade ? months.indexOf(shade.until) : -1
 
   const ends = series
     .map((s) => ({ s, v: s.values[last], ty: yPos(s.values[last]) }))
@@ -78,6 +86,12 @@ export function GrowthChart({ series, months, xLabel, ariaLabel, start = 100, he
         ))}
       </div>
       <svg width={w} height={height} role="img" aria-label={ariaLabel}>
+        {shade && shadeEnd > 0 && (
+          <g>
+            <rect className="band" x={xPos(0)} y={M.t} width={xPos(shadeEnd) - xPos(0)} height={ih} />
+            <text className="bandlabel" x={xPos(0) + 6} y={M.t + 14}>{shade.label}</text>
+          </g>
+        )}
         {ticks.map((t) => (
           <g key={t}>
             <line className="grid-line" x1={M.l} x2={M.l + iw} y1={yPos(t)} y2={yPos(t)} />
@@ -85,8 +99,7 @@ export function GrowthChart({ series, months, xLabel, ariaLabel, start = 100, he
           </g>
         ))}
         <line className="ref" x1={M.l} x2={M.l + iw} y1={yPos(start)} y2={yPos(start)} />
-        <text className="reflabel" x={M.l + 6} y={yPos(start) - 6}>₹{start} at the start</text>
-        {months.map((k, i) => (labelled(k) || hover === i) && (
+        {months.map((k, i) => (i % every === 0 || hover === i) && (
           <text key={k} className={hover === i ? 'axis on' : 'axis'} x={xPos(i)} y={height - 8} textAnchor="middle">{xLabel(k)}</text>
         ))}
         {hover != null && <line className="crosshair" x1={xPos(hover)} x2={xPos(hover)} y1={M.t} y2={M.t + ih} />}
@@ -98,7 +111,7 @@ export function GrowthChart({ series, months, xLabel, ariaLabel, start = 100, he
           <circle key={s.id + i} cx={xPos(i)} cy={yPos(s.values[i])} r={hover === i ? 5.5 : 3.5} fill={s.color} stroke="var(--card)" strokeWidth={2} />
         )))}
         {ends.map((e) => (
-          <text key={e.s.id} className="endlabel" x={xPos(last) + 10} y={e.ty} dominantBaseline="middle">{e.s.short} {money(e.v)}</text>
+          <text key={e.s.id} className="endlabel" x={xPos(last) + 10} y={e.ty} dominantBaseline="middle">{endText(e.v)}</text>
         ))}
         <rect x={M.l - step / 2} y={M.t} width={iw + step} height={ih} fill="transparent"
           onPointerMove={(ev) => pick(ev.clientX, ev.currentTarget.ownerSVGElement ?? ev.currentTarget)}
@@ -108,12 +121,13 @@ export function GrowthChart({ series, months, xLabel, ariaLabel, start = 100, he
       {hover != null && (
         <div className="tooltip" style={{ left: xPos(hover) > w / 2 ? xPos(hover) - 232 : xPos(hover) + 14, top: M.t }}>
           <strong>{xLabel(months[hover])}</strong>
+          {shade && hover <= shadeEnd && <div className="tt-sub">{shade.label}</div>}
           {series.map((s) => (
             <div key={s.id} className="tt-row">
               <i style={{ background: s.color }} />
               <span className="tt-label">{s.short}</span>
               <span className="tt-val">{money(s.values[hover])}</span>
-              {hover > 0 && <span className={s.values[hover] >= start ? 'tt-d up' : 'tt-d down'}>{since(s.values[hover], start)}</span>}
+              {hover > base && <span className={s.values[hover] >= start ? 'tt-d up' : 'tt-d down'}>{since(s.values[hover], start)}</span>}
             </div>
           ))}
         </div>
