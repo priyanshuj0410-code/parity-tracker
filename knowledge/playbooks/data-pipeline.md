@@ -116,6 +116,13 @@ UK rules:
 - **Index:** each company counts equally.
 - **Basis change:** if fewer than 70% of the weighted (employer, size band) pairs carry over between two years, in either direction, the pair is left out of like-for-like YoY.
 
+## US pipeline (S&P 500 and Dow): in progress
+The US is limited to board seats ([plan](../plans/us-indexes.md), PARITY-6). Scripts are in `pipeline/us/`; run them in a scratch folder like the others.
+1. `djia.txt` lists the Dow 30, kept by hand.
+2. `python3 fetch_constituents.py` writes `constituents.json`: the S&P 500 with SEC CIKs, from Wikipedia's maintained list. It stops if a Dow member is missing.
+3. `python3 fetch_proxies.py` writes `proxies.json` with each company's latest DEF 14A from data.sec.gov. 497 of 503 had one on 2 October 2026.
+4. Next (US-2): download the proxies and extract board seats. This needs `SEC_USER_AGENT` set to a name and contact email, because www.sec.gov refuses undeclared clients (403).
+
 ## Shared scale for Japan and the EU (PARITY-20)
 Run after `merge_markets.py`, from the repo root: `python3 pipeline/shared_scale.py`, then `python3 pipeline/sectors.py`.
 - `pipeline/eu/eu_workforce.py` holds ESRS S1-6 headcount by gender (women, men) per EU company and year, read by hand from the same CSRD statements as the pay gap. Percent-only disclosures (ING, Saint-Gobain, Vinci, Siemens Energy) are stored as shares. Not found: Deutsche Bank, Air Liquide, EssilorLuxottica.
