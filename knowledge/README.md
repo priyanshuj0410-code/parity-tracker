@@ -30,6 +30,7 @@ The app was renamed from Parity Tracker to Nivel on 2 October 2026 ([decisions/0
 - [research/solve-innovation-assessment.md](research/solve-innovation-assessment.md): competitors, past Solver teams and literature, scored on Solve's Innovative Approach criterion
 - [research/solve-winning-pitches.md](research/solve-winning-pitches.md): what six winning Solve applications have in common, the AI for Humanity Prize, and how Nivel's draft compares
 - [research/solve-criteria-check.md](research/solve-criteria-check.md): the reframed draft scored on every Solve criterion, under Economic Prosperity and under Learning, with the fix for each gap
+- [research/solve-swipeed-learning-check.md](research/solve-swipeed-learning-check.md): whether The Equal Lens's SwipeEd app fits Solve's 2027 Learning challenge, and what must change first
 - [reviews/design-audit-2026-10.md](reviews/design-audit-2026-10.md): design audit against Kite, Coin and Groww, with before and after screenshots
 - [reviews/ux-audit-2026-10-02.md](reviews/ux-audit-2026-10-02.md): ship-readiness audit against Nielsen's heuristics, Apple HIG, Material 3, Gestalt and WCAG 2.2 AA, with a reusable checker
 
