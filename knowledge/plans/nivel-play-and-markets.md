@@ -32,9 +32,12 @@ plane_issues:
   - Rewrite a line to keep the romance, which is deliberately unscored.
 - **The scoring rule:** "points for prediction and recall, never for opinion". This is the misperceived-norms mechanism, played live among friends.
 - **Privacy:** it keeps nothing by default. No accounts, names never beside answers, and counts only.
+- **Reach so far:** one game night on the Bollywood rounds, with 14 players.
+- **Themes:** the game is designed to scale beyond Bollywood to other themes, such as family and the workplace.
 - **With Nivel:**
   - Nivel links to game nights.
-  - A proposed Nivel round would use the published-figure format with Nivel's numbers, for example women's share of the Nifty 50 payroll, guessed cold and then revealed. It needs the owner's agreement and the rulebook's fit check.
+  - A **workplace theme** draws on Nivel's figures. For example, women's share of the Nifty 50 payroll is guessed cold in the published-figure format, then revealed.
+  - The theme is built in the game's own project, not from here.
 - **Safeguarding:** if young people play, The Equal Lens's child-safety rules apply. The play side never connects to markets or tokens for anyone under 18.
 
 ## Forecasting: prediction markets in Nivel

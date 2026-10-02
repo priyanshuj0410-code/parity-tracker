@@ -61,7 +61,8 @@ Three connected parts, all in Nivel: see the gap, play with the stereotypes behi
 - **What the rounds ask:** players finish famous film lines, guess published figures, and rate lines before predicting how the room will rate them. They also judge whether a trait is treated as a good thing in a hero, a heroine, both or neither, and then rewrite a line to keep the romance without the stereotype.
 - **How it scores:** "You get points for prediction and recall, never for opinion." Players are scored on how well they read the room and the facts, so each reveal corrects a misperceived norm in the moment, among friends.
 - **Privacy:** nothing is kept by default. There are no accounts, names never sit beside an answer, and the room only holds counts.
-- **Why it fits:** the data shows where women are missing; the game works on the assumptions about women and work that help keep them out. A proposed Nivel round would have players guess a published figure, such as women's share of the Nifty 50 payroll, before the reveal.
+- **Why it fits:** the data shows where women are missing; the game works on the assumptions about women and work that help keep them out.
+- **A workplace theme built on Nivel:** the game is designed to take new themes beyond Bollywood, such as family and the workplace. A workplace theme would draw on Nivel's figures, for example guessing women's share of the Nifty 50 payroll before the reveal.
 
 **3. Forecast it: prediction markets in Nivel (in development).** Play-money markets, where people forecast with tokens they earn and cannot buy, in three kinds of question:
 - **Forecast the data:** "Will the Nifty 50's women's share of pay rise next year?", resolved on Nivel's next refresh, alongside questions on official labour statistics.
@@ -93,9 +94,9 @@ Seeing the numbers changes what owners ask companies and funds. Playing and fore
 - **Nivel is public** (October 2026), after a ship-readiness audit.
   - It covers 675 companies across 3,401 shareable pages.
   - Automated accessibility testing found 0 violations.
-- **Spot the Stereotype is live** at spot-the-stereotype.vercel.app, and has been stress-tested with sixteen players in four teams. [Team: game nights run and players so far]
+- **Spot the Stereotype is live** at spot-the-stereotype.vercel.app. One game night has run on the Bollywood rounds, with 14 players, after a stress test with sixteen players in four teams.
 - **Next:**
-  - Spot the Stereotype reached from Nivel, plus a proposed Nivel round built on its figures.
+  - Spot the Stereotype reached from Nivel, with a workplace theme built on Nivel's figures.
   - A forecasting pilot in Nivel, measured with a question before and after.
 
 ### Impact goals
@@ -145,21 +146,20 @@ Seeing the numbers changes what owners ask companies and funds. Playing and fore
 
 | Week | Dates | Work | Owner | Ticket |
 |---|---|---|---|---|
-| 1 | 3 to 9 Oct | Create the Solve account and start the application. Confirm the questions and word limits. Collect team bios, city and entity details, and Spot the Stereotype's nights and players so far | Team | PARITY-46 |
+| 1 | 3 to 9 Oct | Create the Solve account and start the application. Confirm the questions and word limits. Collect team bios, city and entity details | Team | PARITY-46 |
 | 1 | 3 to 9 Oct | Evidence brief on stereotypes and misperceived norms. Catalogue of sources forecasts resolve against | Claude | PARITY-42, PARITY-43 |
 | 2 | 10 to 16 Oct | Evaluation design. Safeguarding review. Online Gaming Act check | Claude and team | PARITY-45 |
 | 2 | 10 to 16 Oct | Design where Spot the Stereotype sits in Nivel and what one forecasting question looks like | Claude | PARITY-41 |
-| 3 | 17 to 23 Oct | Demo build: Spot the Stereotype in Nivel and a clickable forecasting question. Record the demo video. Evidence brief and evaluation design final by 23 October | Team and Claude | PARITY-42, PARITY-45 |
+| 3 | 17 to 23 Oct | Demo build: Spot the Stereotype reached from Nivel, a sketch of the workplace theme, and a clickable forecasting question. Record the demo video. Evidence brief and evaluation design final by 23 October | Team and Claude | PARITY-42, PARITY-45 |
 | 4 | 24 to 30 Oct | Final answers, team review, submit by 30 October | Team and Claude | PARITY-46 |
 
 The form closes on 2 November at 12:00pm EST. Submitting on 30 October leaves three days of slack.
 
 ## Open items for the team
-- Team names, roles and short bios; head office city; legal entity type.
-- Spot the Stereotype: game nights run and players so far, and whether a Nivel round fits the rulebook. Any Equal Lens programme reach figures.
-- Which optional prizes to enter. Check each prize's criteria and only claim AI use that is real.
+- Later: team names, roles and short bios; head office city; legal entity type.
+- Later: which optional prizes to enter. Check each prize's criteria and only claim AI use that is real.
 - A one to two minute demo video, if the form asks for one.
-- Sign-off on the impact goal numbers.
+- Later: sign-off on the impact goal numbers.
 
 ## Sources
 - MIT Solve, [2027 Global Economic Prosperity Challenge](https://solve.mit.edu/challenges/2027-global-economic-prosperity-challenge).
