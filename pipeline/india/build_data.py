@@ -19,6 +19,7 @@ for f in sorted(glob.glob(os.path.join(HERE,'indexes','ind_*.csv'))):
     k=os.path.basename(f)[4:-4]
     rows=list(csv.DictReader(open(f)))
     for r in rows:
+        if r['Symbol'].strip() not in mcap: continue  # stale or placeholder symbols (MOTHERSUMI, DUMMYHEG) that no longer trade
         info.setdefault(r['Symbol'].strip(),{'name':r['Company Name'].strip(),'industry':r['Industry'].strip(),'isin':r['ISIN Code'].strip()})
     idx_members[k]=[r['Symbol'].strip() for r in rows]
 YEARS=['2021-22','2022-23','2023-24','2024-25','2025-26']
@@ -46,6 +47,13 @@ for s,i in info.items():
         r=ys.get(y)
         if not r: continue
         r=dict(r)
+        w0=r.get('w')
+        if w0 is not None and not (0<w0<=0.9):
+            m=re.search(r'restated next year to ([0-9.]+)',r.get('note') or '')
+            if m and 0<float(m.group(1))<=0.9:
+                r.update(w=float(m.group(1)),note=f"The filing's value was implausible; restated in the next filing to {float(m.group(1))*100:.1f}%")
+            else:
+                r.update(w=None,kind=None,dq=4,note=f"Implausible wage share in the filing ({w0:.3g}), left out")
         if r.get('kind')=='estimated':
             ok=r['W'] and r['N'] and 1.5e5<=r['W']/r['N']<=7.5e6 and r['w'] and 0<r['w']<1
             if not ok: r.update(w=None,kind=None,W=None,dq=4,note='no usable wage data')
@@ -57,6 +65,13 @@ for s,i in info.items():
         indexes=[k for k,v in idx_members.items() if s in v],
         marketCapCr=round(mcap[s]/1e7) if s in mcap else None,publicFloatPct=shp.get(s,{}).get('public'),
         years=years,filings={f"{int(k)-1}-{k[2:]}":v for k,v in sorted(fl.items())})
+import statistics
+for s_,c in companies.items():
+    vals={y:v['w'] for y,v in c['years'].items() if v.get('w') is not None}
+    for y,w in list(vals.items()):
+        others=[v for k,v in vals.items() if k!=y]
+        if len(others)>=2 and abs(w-statistics.median(others))>0.15:
+            c['years'][y].update(w=None,wKind=None,dq=4,note='Moved more than 15 points from the company\'s other years, left out until confirmed')
 def plausible(v):
     return v and v.get('payrollCr') and v.get('headcount') and 1.5e5 <= v['payrollCr']*1e7/v['headcount'] <= 7.5e6
 for s,c in companies.items():
@@ -124,6 +139,13 @@ for k,mem in idx_members.items():
         constituents=[dict(symbol=s,weight=rd(w,5)) for s,w in sorted(wts.items(),key=lambda x:-x[1])],
         missing=[s for s in mem if s not in wts],years=res,yoy=yoy)
     print(k,len(wts),{y:(v['headline'],v['companiesCovered'],v['reportedPayrollShare']) for y,v in res.items()}); print('   yoy',yoy)
+RENAME={'BBOX':'NSE-BBOX'}  # NSE symbols that clash with another market's (BBOX is also Tritax Big Box in the FTSE 100)
+for a_,b_ in RENAME.items():
+    if a_ in companies:
+        c=companies.pop(a_); c['symbol']=b_; companies[b_]=c
+for ix in indexes.values():
+    for c in ix['constituents']: c['symbol']=RENAME.get(c['symbol'],c['symbol'])
+    ix['missing']=[RENAME.get(x,x) for x in ix['missing']]
 json.dump(companies,open('out/companies.json','w'),separators=(',',':'))
 json.dump(indexes,open('out/indexes.json','w'),separators=(',',':'))
 # company YoY

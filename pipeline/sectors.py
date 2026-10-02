@@ -15,7 +15,7 @@ RULES = [
     ('Energy', r'oil|petroleum|energy|coal|consumable fuel'),
     ('Utilities', r'power|utilit|^gas$|water'),
     ('Financials', r'bank|financ|insur|securities|investment|asset manag|capital market|exchange|credit|lending|life'),
-    ('Information Technology', r'information technology|software|technology|electric machinery|semiconductor|computer'),
+    ('Information Technology', r'^it$|information technology|software|technology|electric machinery|semiconductor|computer'),
     ('Communication Services', r'telecom|communication|media|publication|entertainment'),
     ('Consumer Staples', r'fmcg|fast moving|staples|food|beverage|tobacco|household products|personal care|fishery|agri'),
     ('Materials', r'metal|mining|steel|chemical|cement|construction material|glass|ceramic|paper|pulp|forest|nonferrous|materials'),
