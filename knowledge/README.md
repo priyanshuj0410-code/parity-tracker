@@ -21,6 +21,9 @@ The app was renamed from Parity Tracker to Nivel on 2 October 2026 ([decisions/0
 - [decisions/0002-app-name-shortlist.md](decisions/0002-app-name-shortlist.md): the N-name shortlist and the choice of Nivel
 - [decisions/0003-path-urls-and-prerendered-pages.md](decisions/0003-path-urls-and-prerendered-pages.md): plain path URLs with one prerendered HTML file per page, so shared links preview their own page
 - [decisions/0004-data-as-separate-files.md](decisions/0004-data-as-separate-files.md): company and index data load as hashed JSON files alongside the code, not inside it
+- [plans/us-indexes.md](plans/us-indexes.md): adding the S&P 500 and Dow as a limited-data market, measured by women's share of board seats
+- [plans/fund-footprints.md](plans/fund-footprints.md): women's share of the payroll a mutual fund or personal portfolio owns
+- [plans/thoth-norm-markets.md](plans/thoth-norm-markets.md): linking Nivel with Thoth's play-money markets on gender norms, for MIT Solve
 - [reviews/design-audit-2026-10.md](reviews/design-audit-2026-10.md): design audit against Kite, Coin and Groww, with before and after screenshots
 - [reviews/ux-audit-2026-10-02.md](reviews/ux-audit-2026-10-02.md): ship-readiness audit against Nielsen's heuristics, Apple HIG, Material 3, Gestalt and WCAG 2.2 AA, with a reusable checker
 
