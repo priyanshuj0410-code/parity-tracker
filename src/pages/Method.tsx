@@ -1,10 +1,7 @@
 import { Eq, Frac, Step, Steps } from '../components/Formula'
 import { MARKET, SOURCE_DATE, companies, indexes } from '../lib/data'
 import { inr, pct } from '../lib/format'
-import type { ReactNode } from 'react'
 
-const Op = ({ children }: { children: ReactNode }) => <span className="op">{children}</span>
-const Ans = ({ children }: { children: ReactNode }) => <span className="ans">{children}</span>
 
 const EXAMPLE_OF: [string, string, string, string, string][] = [
   ['GB', 'TSCO', 'mean hourly pay gap and the pay quarters', 'Mean hourly pay gap, UK staff', "E: average of women's share in the four pay quarters"],
@@ -71,19 +68,19 @@ export function Method() {
         <Steps>
           <Step n={1} title="Your slice of each company">
             <p>An index fund holds every company in proportion to its free-float market value, so your slice of a company is your holding divided by its value.</p>
-            <Eq><span>slice</span><Op>=</Op><Frac top="your holding in the company" bottom="the company's market value" /></Eq>
+            <Eq lhs="slice" answer={false} steps={[<Frac key="1" top="your holding in the company" bottom="the company's market value" />]} />
           </Step>
           <Step n={2} title="The payroll you own" resultLabel="A year, per ₹10 lakh" result={inr(ny.ownedPayroll ?? 0)}>
             <p>Each company's yearly wage bill, times your slice of it, added up across the index.</p>
-            <Eq><span>payroll you own</span><Op>=</Op><span>Σ slice × company payroll</span><Op>=</Op><Ans>{inr(ny.ownedPayroll ?? 0)}</Ans></Eq>
+            <Eq lhs="payroll you own" steps={['Σ slice × company payroll', inr(ny.ownedPayroll ?? 0)]} />
           </Step>
           <Step n={3} title="How much of it goes to women" resultLabel="Parity is 50%" result={pct(ny.headline)}>
             <p>Every company reports women's share of its wages. Applied to the payroll you own, that gives the wages paid to women.</p>
-            <Eq><span>women's share</span><Op>=</Op><Frac top="wages paid to women" bottom="payroll you own" /><Op>=</Op><Frac top={inr(ny.womenWages ?? 0)} bottom={inr(ny.ownedPayroll ?? 0)} /><Op>=</Op><Ans>{pct(ny.headline)}</Ans></Eq>
+            <Eq lhs="women's share" steps={[<Frac key="1" top="wages paid to women" bottom="payroll you own" />, <Frac key="2" top={inr(ny.womenWages ?? 0)} bottom={inr(ny.ownedPayroll ?? 0)} />, pct(ny.headline)]} />
           </Step>
           <Step n={4} title="The gap to parity" resultLabel="A year, per ₹10 lakh" result={inr(ny.gap ?? 0)}>
             <p>At parity, half the payroll you own would go to women.</p>
-            <Eq><span>gap</span><Op>=</Op><span>50% × {inr(ny.ownedPayroll ?? 0)}</span><Op>−</Op><span>{inr(ny.womenWages ?? 0)}</span><Op>=</Op><Ans>{inr(ny.gap ?? 0)}</Ans></Eq>
+            <Eq lhs="gap" steps={[`50% × ${inr(ny.ownedPayroll ?? 0)} − ${inr(ny.womenWages ?? 0)}`, inr(ny.gap ?? 0)]} />
             {ny.representationShare != null && ny.payShare != null && <p>{pct(ny.representationShare, 0)} of that gap is too few women employed, and {pct(ny.payShare, 0)} is women paid less on average.</p>}
           </Step>
         </Steps>
@@ -99,9 +96,9 @@ export function Method() {
           </Step>
           {EXAMPLES.map((x) => (
             <Step key={x.code} n={x.code} title={`${MARKET[x.code].name}: ${x.inputs}`} resultLabel={x.name} result={pct(x.s)}>
-              <Eq label={x.wNote}><span>W</span><Op>=</Op>{x.code === 'JP' ? <span>{pct(x.w)}</span> : <><span>100%</span><Op>−</Op><span>{pct(x.gap)}</span><Op>=</Op><span>{pct(x.w)}</span></>}</Eq>
-              <Eq label={x.eNote}><span>E</span><Op>=</Op><span>{pct(x.e)}</span></Eq>
-              <Eq label="Women's share of pay"><span>S</span><Op>=</Op><Frac top="E × W" bottom="E × W + (100% − E)" /><Op>=</Op><Frac top={`${pct(x.e)} × ${pct(x.w)}`} bottom={`${pct(x.e)} × ${pct(x.w)} + ${pct(1 - x.e)}`} /><Op>=</Op><Ans>{pct(x.s)}</Ans></Eq>
+              <Eq label={x.wNote} lhs="W" answer={false} steps={x.code === 'JP' ? [pct(x.w)] : [`100% − ${pct(x.gap)}`, pct(x.w)]} />
+              <Eq label={x.eNote} lhs="E" answer={false} steps={[pct(x.e)]} />
+              <Eq label="Women's share of pay" lhs="S" steps={[<Frac key="1" top="E × W" bottom="E × W + (100% − E)" />, <Frac key="2" top={`${pct(x.e)} × ${pct(x.w)}`} bottom={`${pct(x.e)} × ${pct(x.w)} + ${pct(1 - x.e)}`} />, pct(x.s)]} />
             </Step>
           ))}
         </Steps>

@@ -7,8 +7,6 @@ import { Eq, Frac, Step, Steps } from './Formula'
 
 const n0 = (v: number) => Math.round(v).toLocaleString('en-GB')
 const r3 = (v: number) => v.toFixed(3)
-const Op = ({ children }: { children: ReactNode }) => <span className="op">{children}</span>
-const Ans = ({ children }: { children: ReactNode }) => <span className="ans">{children}</span>
 
 function Input({ label, value, note }: { label: string; value: ReactNode; note?: ReactNode }) {
   return <div><dt>{label}</dt><dd>{value}{note && <small>{note}</small>}</dd></div>
@@ -83,10 +81,10 @@ export function Calculations({ c, pt }: { c: Company; pt?: Point }) {
           <Step n={++n} title="Employment parity: women's share of staff" resultLabel="Parity is 50%" result={pct(E)}>
             {c.country === 'IN' && y.permHeadcount && y.fPerm != null ? (
               <><p>Women as a share of permanent staff. Contract workers are left out because their wages are not in the wage total.</p>
-                <Eq><span>E</span><Op>=</Op><Frac top="women" bottom="permanent staff" /><Op>=</Op><Frac top={n0(y.permHeadcount * y.fPerm)} bottom={n0(y.permHeadcount)} /><Op>=</Op><Ans>{pct(E)}</Ans></Eq></>
+                <Eq lhs="E" steps={[<Frac key="1" top="women" bottom="permanent staff" />, <Frac key="2" top={n0(y.permHeadcount * y.fPerm)} bottom={n0(y.permHeadcount)} />, pct(E)]} /></>
             ) : c.country === 'EU' && y.headcountWomen != null && y.headcountMen != null ? (
               <><p>Women as a share of employees who are recorded as women or men.</p>
-                <Eq><span>E</span><Op>=</Op><Frac top="women" bottom="women + men" /><Op>=</Op><Frac top={n0(y.headcountWomen)} bottom={`${n0(y.headcountWomen)} + ${n0(y.headcountMen)}`} /><Op>=</Op><Ans>{pct(E)}</Ans></Eq></>
+                <Eq lhs="E" steps={[<Frac key="1" top="women" bottom="women + men" />, <Frac key="2" top={n0(y.headcountWomen)} bottom={`${n0(y.headcountWomen)} + ${n0(y.headcountMen)}`} />, pct(E)]} /></>
             ) : c.country === 'GB' ? (
               <p>Each pay quarter holds a quarter of the staff, so the average of women's share across the four quarters is women's share of the whole workforce: <strong>{pct(E)}</strong>.</p>
             ) : (
@@ -97,22 +95,22 @@ export function Calculations({ c, pt }: { c: Company; pt?: Point }) {
           <Step n={++n} title="Wage parity: women's average pay as a share of men's" resultLabel="Parity is 100%" result={pct(W)}>
             {c.country === 'IN' && y.w != null && E != null && W != null ? (
               <><p>BRSR gives women's share of the wage bill, not average pay, so we compare each group's share of wages with its share of staff.</p>
-                <Eq label="Women's pay per head, relative"><Frac top="share of wages" bottom="share of staff" /><Op>=</Op><Frac top={pct(y.w)} bottom={pct(E)} /><Op>=</Op><span>{r3(y.w / E)}</span></Eq>
-                <Eq label="Men's pay per head, relative"><Frac top={pct(1 - y.w)} bottom={pct(1 - E)} /><Op>=</Op><span>{r3((1 - y.w) / (1 - E))}</span></Eq>
-                <Eq label="Wage parity"><span>W</span><Op>=</Op><Frac top={r3(y.w / E)} bottom={r3((1 - y.w) / (1 - E))} /><Op>=</Op><Ans>{pct(W)}</Ans></Eq>
+                <Eq label="Women's pay per head, relative" answer={false} lhs={<Frac top="share of wages" bottom="share of staff" />} steps={[<Frac key="1" top={pct(y.w)} bottom={pct(E)} />, r3(y.w / E)]} />
+                <Eq label="Men's pay per head, relative" answer={false} lhs={<Frac top={pct(1 - y.w)} bottom={pct(1 - E)} />} steps={[r3((1 - y.w) / (1 - E))]} />
+                <Eq label="Wage parity" lhs="W" steps={[<Frac key="1" top={r3(y.w / E)} bottom={r3((1 - y.w) / (1 - E))} />, pct(W)]} />
                 <p className="small muted">Approximate: wage totals cover all employees while the staff share is permanent staff only.</p></>
             ) : c.country === 'JP' ? (
               <p>Reported directly: women's average annual pay is <strong>{pct(W)}</strong> of men's, across all workers.</p>
             ) : y.gapMean != null ? (
               <><p>A pay gap is the shortfall in women's average pay, so wage parity is what is left.</p>
-                <Eq><span>W</span><Op>=</Op><span>100%</span><Op>−</Op><span>{pct(y.gapMean)}</span><Op>=</Op><Ans>{pct(W)}</Ans></Eq></>
+                <Eq lhs="W" steps={[`100% − ${pct(y.gapMean)}`, pct(W)]} /></>
             ) : <p>No pay gap reported.</p>}
           </Step>
 
           <Step n={++n} title="Women's share of pay" resultLabel="Parity is 50%" result={pct(S)}>
             {E != null && W != null && S != null ? (
               <><p>If women are E of staff and earn W of what men earn on average, this is their share of the whole pay bill.</p>
-                <Eq><span>S</span><Op>=</Op><Frac top="E × W" bottom="E × W + (100% − E)" /><Op>=</Op><Frac top={`${pct(E)} × ${pct(W)}`} bottom={`${pct(E)} × ${pct(W)} + ${pct(1 - E)}`} /><Op>=</Op><Frac top={pct(E * W)} bottom={pct(E * W + 1 - E)} /><Op>=</Op><Ans>{pct(S)}</Ans></Eq>
+                <Eq lhs="S" steps={[<Frac key="1" top="E × W" bottom="E × W + (100% − E)" />, <Frac key="2" top={`${pct(E)} × ${pct(W)}`} bottom={`${pct(E)} × ${pct(W)} + ${pct(1 - E)}`} />, <Frac key="3" top={pct(E * W)} bottom={pct(E * W + 1 - E)} />, pct(S)]} />
                 {c.country === 'IN' && <p className="small muted">This matches the reported wage share, as it should: steps 1 and 2 only unpack it.</p>}
                 {c.country === 'GB' && y.w != null && Math.abs(y.w - S) >= 0.0005 && <p className="small muted">The FTSE 100 figure uses {pct(y.w)}, worked out employer by employer and combined by size band, which differs slightly from this one-step version.</p>}</>
             ) : <p>Needs both of the numbers above.</p>}
@@ -121,14 +119,14 @@ export function Calculations({ c, pt }: { c: Company; pt?: Point }) {
           {pt && (
             <Step n={++n} title={`Rank among companies ${inMarket(c.country)}`} resultLabel="Market percentile" result={ordinal(Math.round(((below + ties / 2) / peers.length) * 100))}>
               <p>Wage parity is measured differently in each market, so we rank only against companies measured the same way: those with lower wage parity, plus half of those level with it (this company included).</p>
-              <Eq><Frac top={`${below} + ${ties === 1 ? '½' : `${ties} ÷ 2`}`} bottom={`${peers.length} companies`} /><Op>=</Op><Ans>{pct((below + ties / 2) / peers.length, 0)}</Ans></Eq>
+              <Eq lhs={<Frac top={`${below} + ${ties === 1 ? '½' : `${ties} ÷ 2`}`} bottom={`${peers.length} companies`} />} steps={[pct((below + ties / 2) / peers.length, 0)]} />
             </Step>
           )}
 
           {change != null && prev && (
             <Step n={++n} title={`Change since ${m.label(prev)}`} resultLabel="Like for like" result={`${change > 0 ? '+' : change < 0 ? '−' : ''}${Math.abs(change * 100).toFixed(1)} pp`}>
               <p>Women's share of pay this year minus last year, counted only when both years were reported on the same basis.</p>
-              <Eq><span>{pct(c.years[year].w)}</span><Op>−</Op><span>{pct(c.years[prev].w)}</span><Op>=</Op><Ans>{`${change > 0 ? '+' : change < 0 ? '−' : ''}${Math.abs(change * 100).toFixed(1)} percentage points`}</Ans></Eq>
+              <Eq lhs={`${pct(c.years[year].w)} − ${pct(c.years[prev].w)}`} steps={[`${change > 0 ? '+' : change < 0 ? '−' : ''}${Math.abs(change * 100).toFixed(1)} percentage points`]} />
             </Step>
           )}
 

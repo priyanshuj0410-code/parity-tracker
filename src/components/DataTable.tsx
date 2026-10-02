@@ -111,11 +111,12 @@ export function DataTable<T>({ columns, rows, rowKey, initial, caption, rowHref,
                   {primary && (
                     <div className="mr-side">
                       <div className="mr-value">{(primary.phone ?? primary.render)(r)}</div>
-                      {extra && extra !== primary
-                        ? <div className="mr-second"><span className="mr-label">{extra.short ?? extra.label}</span>{(extra.phone ?? extra.render)(r)}</div>
-                        : second
-                          ? <div className="mr-second">{(second.phone ?? second.render)(r)}</div>
-                          : !value && <div className="mr-second muted">{primary.short ?? primary.label}</div>}
+                      {(() => {
+                        if (extra && extra !== primary) return <div className="mr-second"><span className="mr-label">{extra.short ?? extra.label}</span>{(extra.phone ?? extra.render)(r)}</div>
+                        const line = second ? (second.phone ?? second.render)(r) : null
+                        if (line != null && line !== false) return <div className="mr-second">{line}</div>
+                        return !value && !second ? <div className="mr-second muted">{primary.short ?? primary.label}</div> : null
+                      })()}
                     </div>
                   )}
                 </li>

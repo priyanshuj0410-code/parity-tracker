@@ -1,4 +1,4 @@
-import { DataBadge } from '../components/Badge'
+import { DataBadge, ShareFigure } from '../components/Badge'
 import { Change } from '../components/Change'
 import { ChartFrame } from '../components/ChartFrame'
 import { LineChart } from '../components/LineChart'
@@ -52,8 +52,8 @@ export function IndexPage({ id }: { id: string }) {
     { key: 'name', label: 'Company', render: (r) => <span className="name-cell"><Logo symbol={r.symbol} name={r.co.name} /><a href={href('company', r.symbol)}>{r.co.name}<span className="sub">{r.co.industry}</span></a></span>, sort: (r) => r.co.name, csv: (r) => r.co.name },
     ...(xs.length > 1 ? [{ key: 'trend', label: 'Trend', mobile: 'hide' as const, priority: 2 as const, render: (r: Row) => <Sparkline values={xs.map((k) => (r.co.years[k]?.wKind === 'reported' ? r.co.years[k].w : null))} label={`${r.co.name} trend`} /> }] : []),
     ...(uk ? [] : [{ key: 'weight', label: 'Weight', right: true, render: (r: Row) => pct(r.weight), sort: (r: Row) => r.weight }]),
-    { key: 'w', label: `${m.wageLabel} ${fy(LATEST)}`, short: 'Share of pay', mobile: 'value', phone: (r) => <>{pct(r.co.years[LATEST]?.w)}<DataBadge year={r.co.years[LATEST]} quiet /></>, render: (r) => <span className="nowrap"><Meter value={r.co.years[LATEST]?.w} parity={m.parity} /> <DataBadge year={r.co.years[LATEST]} /></span>, sort: (r) => r.co.years[LATEST]?.w ?? null },
-    ...(PREV ? [{ key: 'chg', label: `Change since ${fy(PREV)}`, short: '1-year change', right: true, mobile: 'second' as const, render: (r: Row) => <Change value={yoyChange(r.co)} />, sort: (r: Row) => yoyChange(r.co) }] : []),
+    { key: 'w', label: `${m.wageLabel} ${fy(LATEST)}`, short: 'Share of pay', mobile: 'value', phone: (r) => <ShareFigure year={r.co.years[LATEST]} />, render: (r) => <span className="nowrap"><Meter value={r.co.years[LATEST]?.w} parity={m.parity} /> <DataBadge year={r.co.years[LATEST]} /></span>, sort: (r) => r.co.years[LATEST]?.w ?? null },
+    ...(PREV ? [{ key: 'chg', label: `Change since ${fy(PREV)}`, short: '1-year change', right: true, mobile: 'second' as const, phone: (r: Row) => <Change value={yoyChange(r.co)} hideMissing />, render: (r: Row) => <Change value={yoyChange(r.co)} />, sort: (r: Row) => yoyChange(r.co) }] : []),
     { key: 'f', label: m.workforceLabel, right: true, render: (r: Row) => pct(workforce(r.co, r.co.years[LATEST])), sort: (r: Row) => workforce(r.co, r.co.years[LATEST]) },
     ...(jp || eu
       ? [

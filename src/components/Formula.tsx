@@ -9,11 +9,19 @@ export function Frac({ top, bottom }: { top: ReactNode; bottom: ReactNode }) {
   )
 }
 
-export function Eq({ children, label }: { children: ReactNode; label?: string }) {
+export function Eq({ label, lhs, steps, answer = true }: { label?: string; lhs?: ReactNode; steps: ReactNode[]; answer?: boolean }) {
   return (
     <div className="eq">
       {label && <span className="eq-label">{label}</span>}
-      <span className="eq-body">{children}</span>
+      <div className="eq-body">
+        {lhs != null && <span className="eq-lhs">{lhs}</span>}
+        {steps.map((step, i) => (
+          <span key={i} className={answer && i === steps.length - 1 ? 'eq-step ans' : 'eq-step'}>
+            {(lhs != null || i > 0) && <span className="op">=</span>}
+            {step}
+          </span>
+        ))}
+      </div>
     </div>
   )
 }
@@ -31,17 +39,17 @@ export function Step({ n, title, children, result, resultLabel }: {
 }) {
   return (
     <li className="step">
-      <span className="step-n" aria-hidden="true">{n}</span>
-      <div className="step-body">
+      <div className="step-head">
+        <span className="step-n" aria-hidden="true">{n}</span>
         <h3>{title}</h3>
-        {children}
+        {result != null && (
+          <div className="step-result">
+            <span className="step-result-value">{result}</span>
+            {resultLabel && <span className="step-result-label">{resultLabel}</span>}
+          </div>
+        )}
       </div>
-      {result != null && (
-        <div className="step-result">
-          {resultLabel && <span className="step-result-label">{resultLabel}</span>}
-          <span className="step-result-value">{result}</span>
-        </div>
-      )}
+      <div className="step-body">{children}</div>
     </li>
   )
 }

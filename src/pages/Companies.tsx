@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { DataBadge } from '../components/Badge'
+import { DataBadge, ShareFigure } from '../components/Badge'
 import { Change } from '../components/Change'
 import { Logo } from '../components/Logo'
 import { Meter } from '../components/Meter'
@@ -13,8 +13,8 @@ import type { Company } from '../types'
 const latest = (c: Company) => c.years[marketOf(c).latest]
 const rankOf = (c: Company) => { const p = pointOf(c.symbol); return p ? percentile(p, 'w') : null }
 
-const columns: Column<Company>[] = [
-  { key: 'name', label: 'Company', render: (c) => <span className="name-cell"><Logo symbol={c.symbol} name={c.name} /><a href={href('company', c.symbol)}>{c.name}<span className="sub">{c.symbol.replace(/^(ASX|TSE|EU)-/, '')} · {marketOf(c).name}</span></a></span>, phone: (c) => <span className="name-cell"><Logo symbol={c.symbol} name={c.name} /><a href={href('company', c.symbol)}>{c.name}<span className="sub">{c.symbol.replace(/^(ASX|TSE|EU)-/, '')} · {marketOf(c).name} · {sectorOf(c)}</span></a></span>, sort: (c) => c.name, csv: (c) => c.name },
+const makeColumns = (mixed: boolean): Column<Company>[] => [
+  { key: 'name', label: 'Company', render: (c) => <span className="name-cell"><Logo symbol={c.symbol} name={c.name} /><a href={href('company', c.symbol)}>{c.name}<span className="sub">{c.symbol.replace(/^(ASX|TSE|EU)-/, '')} · {marketOf(c).name}</span></a></span>, phone: (c) => <span className="name-cell"><Logo symbol={c.symbol} name={c.name} /><a href={href('company', c.symbol)}>{c.name}<span className="sub">{mixed ? `${marketOf(c).name} · ` : ''}{sectorOf(c)}</span></a></span>, sort: (c) => c.name, csv: (c) => c.name },
   { key: 'sector', label: 'Sector', priority: 3, mobile: 'hide', render: (c) => <span title={c.industry}>{sectorOf(c)}</span>, sort: (c) => sectorOf(c) },
   { key: 'e', label: 'Employment parity', phone: (c) => pct(pointOf(c.symbol)?.e), render: (c) => <Meter value={pointOf(c.symbol)?.e} parity={E_PARITY} />, sort: (c) => pointOf(c.symbol)?.e ?? null },
   {
@@ -27,13 +27,14 @@ const columns: Column<Company>[] = [
     },
   },
   { key: 'rank', label: 'Market percentile', short: 'Percentile', priority: 2, right: true, render: (c) => { const r = rankOf(c); return r == null ? <span className="muted">n/a</span> : ordinal(Math.round(r * 100)) }, sort: (c) => rankOf(c), csv: (c) => { const r = rankOf(c); return r == null ? null : Math.round(r * 100) } },
-  { key: 'h', label: 'Share of pay', right: true, mobile: 'value', phone: (c) => <>{pct(latest(c)?.w)}<DataBadge year={latest(c)} quiet /></>, render: (c) => <span className="nowrap">{pct(latest(c)?.w)} <DataBadge year={latest(c)} /></span>, sort: (c) => latest(c)?.w ?? null },
-  { key: 'chg', label: '1-year change', right: true, mobile: 'second', render: (c) => <Change value={yoyChange(c)} />, sort: (c) => yoyChange(c) },
+  { key: 'h', label: 'Share of pay', right: true, mobile: 'value', phone: (c) => <ShareFigure year={latest(c)} />, render: (c) => <span className="nowrap">{pct(latest(c)?.w)} <DataBadge year={latest(c)} /></span>, sort: (c) => latest(c)?.w ?? null },
+  { key: 'chg', label: '1-year change', right: true, mobile: 'second', phone: (c) => <Change value={yoyChange(c)} hideMissing />, render: (c) => <Change value={yoyChange(c)} />, sort: (c) => yoyChange(c) },
 ]
 
 export function Companies() {
   const [q, setQ] = useState('')
   const [ix, setIx] = useState(INDEX_ORDER[0])
+  const columns = useMemo(() => makeColumns(ix === 'all'), [ix])
   const rows = useMemo(() => {
     const needle = q.trim().toLowerCase()
     return Object.values(companies).filter((c) =>
