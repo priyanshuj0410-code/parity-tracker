@@ -1,6 +1,6 @@
 {
  "methodology": "knowledge/decisions/0005-equal-50-methodology.md",
- "built": "2026-10-02T21:23:40",
+ "built": "2026-10-02T22:09:35",
  "mainSummary": {
   "totalReturn": {
    "cumulative": -0.10843067938379214,
@@ -178,22 +178,22 @@
    "label": "Parity score only, no fundamentals screens",
    "summary": {
     "totalReturn": {
-     "cumulative": -0.11329356636781895,
-     "annualised": -0.05834909141859734,
-     "volatility": 0.17676998447492367,
-     "maxDrawdown": -0.18301504058204476,
+     "cumulative": -0.11326977776223579,
+     "annualised": -0.05833646017393013,
+     "volatility": 0.17676171025464701,
+     "maxDrawdown": -0.18301182132586846,
      "months": 24
     },
     "priceReturn": {
-     "cumulative": -0.1368989802608016,
-     "annualised": -0.07096769714977169,
-     "volatility": 0.17581603249607633,
-     "maxDrawdown": -0.1908315461706943,
+     "cumulative": -0.13687580698666468,
+     "annualised": -0.07095522550668454,
+     "volatility": 0.17580781213397897,
+     "maxDrawdown": -0.19082841331176426,
      "months": 24
     },
     "vsNifty50TR": {
-     "trackingError": 0.08682981566546774,
-     "beta": 1.0620338953131547,
+     "trackingError": 0.08682246839577921,
+     "beta": 1.0619947958300566,
      "months": 24,
      "benchmarkSamePeriod": {
       "cumulative": -0.10313325506310556,
@@ -202,11 +202,11 @@
       "maxDrawdown": -0.1456057685442994,
       "months": 24
      },
-     "excessAnnualised": -0.005379579278884994
+     "excessAnnualised": -0.005366948034217778
     },
     "vsNifty50PR": {
-     "trackingError": 0.08629977630384371,
-     "beta": 1.0433835437215269,
+     "trackingError": 0.08629277237202612,
+     "beta": 1.0433445991725108,
      "months": 24,
      "benchmarkSamePeriod": {
       "cumulative": -0.12360693274340051,
@@ -215,11 +215,11 @@
       "maxDrawdown": -0.14775244772058116,
       "months": 24
      },
-     "excessAnnualised": -0.00712637347371603
+     "excessAnnualised": -0.007113901830628877
     },
     "vsSensexTR": {
-     "trackingError": 0.08756679824864798,
-     "beta": 1.06840662746783,
+     "trackingError": 0.08755851043121468,
+     "beta": 1.068371100551168,
      "months": 24,
      "benchmarkSamePeriod": {
       "cumulative": -0.12102613685327812,
@@ -228,11 +228,11 @@
       "maxDrawdown": -0.16062043981835816,
       "months": 24
      },
-     "excessAnnualised": 0.004114848929976822
+     "excessAnnualised": 0.004127480174644038
     },
     "periods": {
      "Oct 2024 to Sep 2025": {
-      "index": -0.05609026653052995,
+      "index": -0.056064943271891154,
       "nifty50TR": -0.036322277663633495,
       "sensexTR": -0.037266297436759466
      },
@@ -1031,17 +1031,16 @@
   "2024": {
    "eligible": 117,
    "held": 50,
-   "footprint": 0.2573766517365676,
    "excludedFor": {
     "return on equity": 69,
+    "annual results missing": 48,
     "profit": 44,
-    "size data missing": 37,
     "interest cover": 34,
     "debt": 23,
     "revenue": 20,
-    "annual results missing": 11,
     "equity missing": 1
    },
+   "footprint": 0.2573766517365676,
    "constituents": [
     {
      "symbol": "APOLLOHOSP",
@@ -1648,17 +1647,16 @@
   "2025": {
    "eligible": 146,
    "held": 50,
-   "footprint": 0.26633528680706087,
    "excludedFor": {
     "return on equity": 76,
-    "size data missing": 52,
+    "annual results missing": 65,
     "profit": 40,
     "interest cover": 39,
     "revenue": 34,
     "debt": 22,
-    "annual results missing": 13,
     "equity missing": 1
    },
+   "footprint": 0.26633528680706087,
    "constituents": [
     {
      "symbol": "FEDERALBNK",
@@ -2265,17 +2263,16 @@
   "2026": {
    "eligible": 175,
    "held": 50,
-   "footprint": 0.2759235664269057,
    "excludedFor": {
     "return on equity": 74,
-    "size data missing": 68,
+    "annual results missing": 73,
     "profit": 44,
     "interest cover": 33,
     "debt": 22,
     "revenue": 20,
-    "equity missing": 8,
-    "annual results missing": 5
+    "equity missing": 8
    },
+   "footprint": 0.2759235664269057,
    "constituents": [
     {
      "symbol": "DOMS",

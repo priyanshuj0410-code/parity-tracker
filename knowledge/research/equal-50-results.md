@@ -86,13 +86,12 @@ plane_issues:
 - **Parity:** weighted by holding, women are 31.0% of permanent staff, and earn 83.1% of what men earn per head.
 - **Why companies were left out in 2026** (a company can fail several tests):
   - return on equity 74;
-  - size data 68 (most outside the candidate pool);
+  - results missing 73 (nearly all outside the candidate pool, whose results were not collected);
   - profit 44;
   - interest cover 33;
   - debt 22;
   - revenue 20;
-  - equity missing 8;
-  - results missing 5.
+  - equity missing 8.
 
 ## How the rules were applied
 - **Point in time:**
@@ -105,6 +104,10 @@ plane_issues:
   - Any company outside it ranks lower, so the portfolios are the same as running the rules on all 501.
 - **Results:** fiscal 2025 and 2026 results come from NSE's integrated filings, SEBI's format since 2025. Earlier years come from NSE's results filings. Both are read by the same extractor.
 - **Corporate actions:** splits and bonus issues adjust prices, and dividends are reinvested. No holding period contained a demerger, rights issue or unexplained move over 60%.
+- **Re-run on 2 October 2026:**
+  - The shared return code now values demerged shares and rights issues, and follows renamed companies by ISIN (see the [Parity 50 results](parity-50-results.md#correction-after-the-first-run)).
+  - The re-run changed no figure on this page.
+  - It did change the 2026 exclusion counts above: shareholding data had since been collected for all 501 companies, so those outside the pool now fail on missing results rather than on size data.
 
 ## Limits
 - **History:**

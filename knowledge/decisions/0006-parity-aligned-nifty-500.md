@@ -83,3 +83,7 @@ plane_issues:
 - **Survivorship:** the September 2026 membership is used for all years.
 - **Data rules:** as for the Equal 50.
 - **Not advice:** past results do not predict future returns, and this is not investment advice.
+
+## Correction to the return calculation (2 October 2026, after the results)
+- **What changed:** total return now also values demerged shares, adjusts for rights issues, and follows renamed companies by ISIN. The rules above are unchanged.
+- **Reporting:** the [results](../research/parity-aligned-nifty-500-results.md) show the corrected figures and the first ones. The method is in the [Parity 50 results](../research/parity-50-results.md#correction-after-the-first-run).

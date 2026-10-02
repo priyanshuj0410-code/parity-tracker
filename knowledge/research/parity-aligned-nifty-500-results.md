@@ -16,7 +16,8 @@ plane_issues:
 - **Where it may appear:** not on Nivel until the legal review (PARITY-35).
 - **Rules:** [0006-parity-aligned-nifty-500.md](../decisions/0006-parity-aligned-nifty-500.md), committed (35ceed6) before any of its returns were computed.
 - **Reproducing it:** code is in `pipeline/equal50/pa500.py` and `parity_frontier.py`, and outputs in `pipeline/equal50/results/`.
-- **Proposal:** this replaces the [Equal 50](equal-50-results.md) as the index to propose. The Equal 50 picks 50 companies; this one represents the market.
+- **Proposal:** this replaces the [Equal 50](equal-50-results.md) as the index to propose. The Equal 50 picks 50 companies; this one represents the market. The [Parity 50](parity-50-results.md) is its 50-stock version, sized for a model portfolio.
+- **Corrected on 2 October 2026:** demerged shares and rights issues are now valued, and renamed companies are followed by ISIN. The first figures were −7.0% against −6.9%, with tracking error 1.1%. The method is set out in the [Parity 50 results](parity-50-results.md#correction-after-the-first-run).
 
 ## In one minute
 - **Parity:**
@@ -25,9 +26,9 @@ plane_issues:
 - **It represents the market:**
   - every sector at exactly its market weight;
   - 80% of the portfolio identical to the market;
-  - tracking error 1.1% a year;
+  - tracking error 1.0% a year;
   - beta 1.01.
-- **It earned what the market earned:** −7.0% from October 2024 to September 2026, against −6.9% for the Nifty 500 at market weights.
+- **It earned what the market earned:** −6.5% from October 2024 to September 2026, against −6.3% for the Nifty 500 at market weights.
 - **It is not at parity.** No index that represents the Indian market can be today, because the companies employ too few women. The index closes about a quarter of the gap. The glide path and the list of companies holding the gap are how the rest gets closed.
 
 ## Why exact parity cannot represent the market
@@ -52,26 +53,26 @@ plane_issues:
 ## Results, October 2024 to September 2026
 | | Parity-Aligned Nifty 500 | Nifty 500, market weights |
 |---|---|---|
-| Women's share of owned payroll, 2024 | 25.8% | 19.1% |
+| Women's share of owned payroll, 2024 | 25.9% | 19.1% |
 | Women's share of owned payroll, 2025 | 26.0% | 18.8% |
 | Women's share of owned payroll, 2026 | 27.2% | 19.3% |
 | Women's share of owned staff, 2026 | 32.7% | 22.8% |
-| Total return, cumulative | −7.0% | −6.9% |
-| Total return, a year | −3.6% | −3.5% |
-| Volatility, a year | 16.7% | 16.6% |
-| Largest fall | −17.2% | n/a |
+| Total return, cumulative | −6.5% | −6.3% |
+| Total return, a year | −3.3% | −3.2% |
+| Volatility, a year | 16.9% | 16.8% |
+| Largest fall | −17.4% | n/a |
 
-- **Against the parent:** tracking error 1.1%, beta 1.01, active return 0.0% a year. Sector weights match exactly in every year.
+- **Against the parent:** tracking error 1.0%, beta 1.01, active return −0.1 points a year. Sector weights match exactly in every year.
 - **Context:** the Nifty 50 returned −10.3% and the Sensex −12.1% over the same months (ETF proxies). The broader market held up better than the large caps.
-- **Coverage:** 305 of 432 companies had point-in-time parity data in 2024, 366 of 464 in 2025, and 409 of 495 in 2026. Companies without data are held at their market weight.
+- **Coverage:** 305 of 442 companies had point-in-time parity data in 2024, 366 of 467 in 2025, and 409 of 495 in 2026. Companies without data are held at their market weight.
 
 ## Sensitivity checks
 | Version | Payroll to women, 2026 | Tracking error | Active return a year |
 |---|---|---|---|
-| 20% active share, stocks up to 5x (the rules) | 27.2% | 1.1% | 0.0% |
-| Stocks up to 3x | 26.1% | 0.9% | 0.0% |
+| 20% active share, stocks up to 5x (the rules) | 27.2% | 1.0% | −0.1% |
+| Stocks up to 3x | 26.1% | 0.9% | −0.1% |
 | 10% active share | 25.4% | 0.7% | +0.5% |
-| 30% active share | 28.1% | 1.9% | −1.0% |
+| 30% active share | 28.1% | 1.9% | −1.2% |
 
 Each step closer to parity costs a little more distance from the market. Over two years, returns stayed within about one point a year of the parent either way.
 

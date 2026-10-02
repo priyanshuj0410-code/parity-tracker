@@ -12,9 +12,8 @@ REB = {2022: '2022-09', 2023: '2023-09', 2024: '2024-09', 2025: '2025-09', 2026:
 POOL_N = int(os.environ.get('POOL_N', 120))
 FIN = 'Financial Services'
 
-N500 = next(p for p in (f'{SCR}/funds/ind_nifty500.csv', os.path.join(HERE, '..', 'india', 'indexes', 'ind_nifty500.csv')) if os.path.exists(p))
 n500 = {r['Symbol'].strip(): dict(name=r['Company Name'].strip(), industry=r['Industry'].strip(), isin=r['ISIN Code'].strip())
-        for r in csv.DictReader(open(N500))}
+        for r in csv.DictReader(open(f'{SCR}/funds/ind_nifty500.csv'))}
 cy = json.load(open(f'{SCR}/company_years.json'))
 meta = json.load(open(f'{SCR}/meta_all.json'))
 prices = json.load(open(f'{HERE}/prices.json'))
@@ -86,7 +85,16 @@ if sys.argv[1] == 'pool':
 fin = json.load(open(f'{HERE}/fin.json'))
 ca = json.load(open(f'{HERE}/ca.json'))
 sh = json.load(open(f'{HERE}/shp_hist.json'))
+EVENTS = json.load(open(f'{HERE}/events.json'))
 _acts = {}
+_by_isin = {k: {v['isin']: x for x, v in prices['closes'][k].items() if v.get('isin')} for k in MONTHS}
+
+
+def sym_at(s, k):
+    """The symbol a company traded under at month-end k: renamed companies are followed by ISIN."""
+    if s in prices['closes'][k]:
+        return s
+    return _by_isin[k].get(n500.get(s, {}).get('isin'))
 
 
 def actions(s):
@@ -96,6 +104,10 @@ def actions(s):
     for a in ca.get(s) or []:
         sub, when = a.get('subject') or '', day(a.get('exDate'))
         if not when:
+            continue
+        ev = next((e for e in EVENTS.get(s, []) if e['exDate'] == when.isoformat()), None)
+        if ev:
+            out.append((when, ev['kind'], ev['factor'] if ev['kind'] == 'factor' else ev['amount'] if ev['kind'] == 'div' else ev))
             continue
         low = sub.lower()
         m = re.search(r'from\s*r[se]\.?\s*([\d.]+).*?to\s*r[se]\.?\s*([\d.]+)', low)
@@ -115,13 +127,22 @@ def actions(s):
                 out.append((when, 'div', sum(amts)))
         if any(k in low for k in ('demerger', 'scheme of arrangement', 'rights')):
             out.append((when, 'flag', sub[:70]))
-    _acts[s] = sorted(out)
+    _acts[s] = sorted(out, key=lambda t: (t[0], t[1]))
     return _acts[s]
 
 
 def close(s, k):
-    x = prices['closes'][k].get(s)
+    x = prices['closes'][k].get(sym_at(s, k))
     return x['close'] if x else None
+
+
+def spin_value(ev, k):
+    """Value per parent share of the demerged shares at month-end k, and whether they were all listed by then."""
+    sp = ev.get('spins') or []
+    px = [close(x, k) for x, _ in sp]
+    if sp and all(px):
+        return sum(r * p for (_, r), p in zip(sp, px)), True
+    return ev['dummy'], False
 
 
 def month_return(s, k0, k1):
@@ -129,9 +150,17 @@ def month_return(s, k0, k1):
     if not p0 or not p1:
         return None, None, None
     a, b = dt.date.fromisoformat(DATES[k0]), dt.date.fromisoformat(DATES[k1])
-    F, D, flag = 1.0, 0.0, None
+    F, D, V0, V1, flag = 1.0, 0.0, 0.0, 0.0, None
     for when, kind, v in actions(s):
-        if a < when <= b:
+        if kind == 'spin':
+            if a < when <= b:
+                V1 += spin_value(v, k1)[0]
+            elif (when <= a and v.get('spins') and not spin_value(v, k0)[1]
+                  and not any(when <= dt.date.fromisoformat(DATES[m]) <= a for m in REB.values())):
+                # Demerged shares are held until their first listed month-end, then reinvested; a rebalance drops them.
+                V0 += spin_value(v, k0)[0]
+                V1 += spin_value(v, k1)[0]
+        elif a < when <= b:
             if kind == 'factor':
                 F *= v
             elif kind == 'div':
@@ -139,16 +168,16 @@ def month_return(s, k0, k1):
             else:
                 flag = v
     pr = p1 * F / p0 - 1
-    if flag is None and abs(pr) > 0.6:
+    if flag is None and abs(pr) > 0.6 and not V1:
         flag = 'move over 60% with no recorded action'
-    return (p1 * F + D) / p0 - 1, pr, flag
+    return (p1 * F + D + V1) / (p0 + V0) - 1, pr, flag
 
 
 def mcap(s, Y):
-    m = prices['mcap'].get(REB[Y], {}).get(s)
+    m = prices['mcap'].get(REB[Y], {}).get(sym_at(s, REB[Y]))
     if m:
         return m['mcap'], 'file'
-    m24, p = prices['mcap'].get('2024-09', {}).get(s), close(s, REB[Y])
+    m24, p = prices['mcap'].get('2024-09', {}).get(sym_at(s, '2024-09')), close(s, REB[Y])
     if not m24 or not p:
         return None, None
     a, b = reb_date(Y), dt.date.fromisoformat(DATES['2024-09'])

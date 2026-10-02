@@ -1,0 +1,204 @@
+{
+ "UPL": [
+  {
+   "subject": "Rights 1:8 @ Premium Rs 358/-",
+   "exDate": "2024-11-26",
+   "prevClose": 568.55,
+   "open": 545.0,
+   "close": 551.75,
+   "kind": "factor",
+   "issuePrice": 360.0,
+   "terp": 545.3778,
+   "factor": 1.0424883872545025
+  }
+ ],
+ "ITC": [
+  {
+   "subject": "Demerger",
+   "exDate": "2025-01-06",
+   "prevClose": 481.6,
+   "open": 455.6,
+   "close": 442.65,
+   "kind": "spin",
+   "dummy": 26.0,
+   "spins": [
+    [
+     "ITCHOTELS",
+     0.1
+    ]
+   ]
+  }
+ ],
+ "THANGAMAYL": [
+  {
+   "subject": "Rights 2:15 @ Premium Rs 1390/-",
+   "exDate": "2025-02-11",
+   "prevClose": 1904.5,
+   "open": 1839.0,
+   "close": 1809.3,
+   "kind": "factor",
+   "issuePrice": 1400.0,
+   "terp": 1845.1471,
+   "factor": 1.0321670518849126
+  }
+ ],
+ "SIEMENS": [
+  {
+   "subject": "Demerger",
+   "exDate": "2025-04-07",
+   "prevClose": 4928.15,
+   "open": 2450.0,
+   "close": 2812.45,
+   "kind": "spin",
+   "dummy": 2478.15,
+   "spins": [
+    [
+     "ENRIN",
+     1.0
+    ]
+   ]
+  }
+ ],
+ "STLTECH": [
+  {
+   "subject": "Demerger",
+   "exDate": "2025-04-24",
+   "prevClose": 86.97,
+   "open": 61.11,
+   "close": 65.05,
+   "kind": "spin",
+   "dummy": 25.86,
+   "spins": [
+    [
+     "STLNETWORK",
+     1.0
+    ]
+   ]
+  }
+ ],
+ "M&MFIN": [
+  {
+   "subject": "Rights 1:8 @ Premium Rs 192/-",
+   "exDate": "2025-05-14",
+   "prevClose": 256.3,
+   "open": 252.3,
+   "close": 259.65,
+   "kind": "factor",
+   "issuePrice": 194.0,
+   "terp": 249.3778,
+   "factor": 1.0277579754054535
+  }
+ ],
+ "INOXWIND": [
+  {
+   "subject": "Rights 5:78 @ Premium Rs 110/-",
+   "exDate": "2025-07-29",
+   "prevClose": 157.25,
+   "open": 155.0,
+   "close": 156.3,
+   "kind": "factor",
+   "issuePrice": 120.0,
+   "terp": 155.006,
+   "factor": 1.014476701255295
+  }
+ ],
+ "TVSMOTOR": [
+  {
+   "subject": "Scheme Of Arrangement - Bonus Ncrps 4:1",
+   "exDate": "2025-08-25",
+   "prevClose": 3294.6,
+   "open": 3310.0,
+   "close": 3284.7,
+   "kind": "div",
+   "amount": 40.0,
+   "note": "bonus preference shares at their face value of Rs 10"
+  }
+ ],
+ "TMPV": [
+  {
+   "subject": "Demerger",
+   "exDate": "2025-10-14",
+   "prevClose": 660.75,
+   "open": 400.0,
+   "close": 395.45,
+   "kind": "spin",
+   "dummy": 260.75,
+   "spins": [
+    [
+     "TMCV",
+     1.0
+    ]
+   ]
+  }
+ ],
+ "ADANIENT": [
+  {
+   "subject": "Rights 3:25 @ Premium Rs 1799/-",
+   "exDate": "2025-11-17",
+   "prevClose": 2516.8,
+   "open": 2460.0,
+   "close": 2462.0,
+   "kind": "factor",
+   "issuePrice": 1800.0,
+   "terp": 2440.0,
+   "factor": 1.0314754098360657
+  }
+ ],
+ "HINDUNILVR": [
+  {
+   "subject": "Demerger",
+   "exDate": "2025-12-05",
+   "prevClose": 2462.2,
+   "open": 2422.0,
+   "close": 2338.6,
+   "kind": "spin",
+   "dummy": 40.2,
+   "spins": [
+    [
+     "KWIL",
+     1.0
+    ]
+   ]
+  }
+ ],
+ "VEDL": [
+  {
+   "subject": "Demerger",
+   "exDate": "2026-04-30",
+   "prevClose": 773.6,
+   "open": 289.5,
+   "close": 271.55,
+   "kind": "spin",
+   "dummy": 484.1,
+   "spins": [
+    [
+     "VAML",
+     1.0
+    ],
+    [
+     "VEDPOWER",
+     1.0
+    ],
+    [
+     "VISL",
+     1.0
+    ],
+    [
+     "VOGL",
+     1.0
+    ]
+   ]
+  }
+ ],
+ "HEGAM": [
+  {
+   "subject": "Demerger",
+   "exDate": "2026-09-07",
+   "prevClose": 728.25,
+   "open": 260.0,
+   "close": 272.2,
+   "kind": "spin",
+   "dummy": 468.25
+  }
+ ]
+}
