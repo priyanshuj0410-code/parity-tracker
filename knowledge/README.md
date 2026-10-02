@@ -30,6 +30,8 @@ The app was renamed from Parity Tracker to Nivel on 2 October 2026 ([decisions/0
 - [research/parity-aligned-nifty-500-results.md](research/parity-aligned-nifty-500-results.md): why exact parity cannot represent the market, and the Parity-Aligned Nifty 500 backtest
 - [decisions/0007-parity-50.md](decisions/0007-parity-50.md): pre-registered rules for the Parity 50, a 50-stock large-cap portfolio sized for a model portfolio such as a smallcase
 - [research/parity-50-results.md](research/parity-50-results.md): Parity 50 backtest against the Nifty 50, its concentration in Infosys, the gap list, and the data correction made after the first run
+- [decisions/0008-parity-50-v2.md](decisions/0008-parity-50-v2.md): Parity 50 version 2, where every holding pays women at least the Nifty 50's own share
+- [research/parity-50-v2-results.md](research/parity-50-v2-results.md): version 2 results, what the bar keeps out, and the version shown on Nivel as a simulation
 - [reviews/design-audit-2026-10.md](reviews/design-audit-2026-10.md): design audit against Kite, Coin and Groww, with before and after screenshots
 - [reviews/ux-audit-2026-10-02.md](reviews/ux-audit-2026-10-02.md): ship-readiness audit against Nielsen's heuristics, Apple HIG, Material 3, Gestalt and WCAG 2.2 AA, with a reusable checker
 

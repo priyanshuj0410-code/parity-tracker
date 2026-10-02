@@ -24,6 +24,7 @@ plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/997c6dda-88ad-486d-8634-571ca6978989
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/5e3c90ab-26c8-4dca-9e8b-eff1cd6ecc37
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/9c902b7a-2193-4304-a208-7fcd1fdf3a69
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/aaaea5eb-fbaf-45a6-908c-d4d5d62baa25
 ---
 
 # Nivel design system
@@ -168,6 +169,15 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
 - **Dropdown (PARITY-19):** replaces native selects. It also takes an icon trigger and a right-aligned menu, used for the theme menu. A 32px pill button with an optional muted prefix ("Sort") and a chevron that flips when open; the menu is a card (12px radius, shadow) with 8px-radius options, `--tint` for the active option, violet text and a check for the selected one. Full keyboard support (arrows, Home, End, Enter, Escape) with listbox semantics.
 - **Worked steps (PARITY-21, PARITY-22, reworked in PARITY-23):** calculations are numbered cards, never monospace blocks. The header row holds the number badge, the title and the result (20px, with a small label such as "Parity is 50%"), so the answer is visible before the working. The working is a derivation: the left-hand side, then each "= step" as its own unit, with real fractions and the final answer in violet. On desktop the steps run on one line; on phones each "= step" is its own line, so an operator never dangles at a line end and the answer never wraps alone. Reported inputs above the steps are small tiles: label, big value, a muted note.
 - **Index card:** name, headline value, sparkline (right of the value), change since last year, parity track, coverage line.
+- **Simulation (PARITY-63):** a fictional index never passes for a real one.
+  - **Marks:** its cards have a 1.5px dashed `--sun-deep` border (`.sim-card`), the colour already used for estimated and flagged data. A `Simulation` badge (sun-deep text, dashed outline, no fill) sits beside its name everywhere. Its page opens with a standing note under the page head: "This index does not exist", not investable, not advice, simulated results do not predict returns.
+  - **Card:** the last card in its market's grid on Home: name, `Simulation` badge, headline, change against the real index it is compared with, parity track, and one line on its rule ("Every holding pays women at least the Nifty 50's share. Fictional."). No sparkline, so it never reads as a tracked trend.
+  - **Where it appears:** its own page (`/simulation/<id>`), Home, and a dashed link card on its parent index's Overview. Never in the index strip, search, Compare or the pace table.
+  - **The story (Parity 50 version 2):** the bar as the headline ("Every company pays women at least 20.8%"). Then:
+    - the two index cards (the real index plain, the simulation dashed), each ending with its lowest holding;
+    - a comparison table: payroll owned, the average holding's share of pay and of staff, and the lowest holding;
+    - "What the bar keeps out": the count and weight of real-index companies left out, the sectors with no holding, sector bars with the real index as a tick, and a table of every company left out with how far below the bar it is;
+    - the holdings, the growth of ₹100, "Why the bar is not 50%", and how it is built.
 - **Global search:**
   - combobox over every company and index, at most 8 results, monogram plus title plus "symbol · market"
   - opens with ⌘K, Ctrl+K or "/"; arrow keys, Enter and Esc work
@@ -211,6 +221,13 @@ Validated with the dataviz `validate_palette.js` using `--pairs all`, because co
   - Hover picks the nearest dot within 24px and shows a tooltip with logo, market, sector and all three measures; a click opens the company. A focused company (from its page's "See it on the parity map" link) gets an ink ring and a haloed name label.
   - The table view lists every plotted company with meters, rank and CSV export.
 - **Bars:** at most 24px thick, 4px rounded data end, single hue (series 1) for magnitude.
+- **Sector bars with a reference tick (PARITY-63):**
+  - The sector bar row shows the simulation's share as the bar and the real index's share as a 2px ink tick at 55%, so a sector that drops out still shows where it was.
+  - The sub-line gives the real index's figure ("none held · Nifty 50 9%").
+  - A key names the bar and the tick, and the table view has both columns.
+  - Below 720px each row stacks: the name above a full-width bar.
+- **Growth of ₹100 (PARITY-63):** monthly lines from ₹100. The y axis is fitted to the data on a round step (5, 10, 20, 25 or 50) giving 2–4 intervals, so a 2% gap is visible; it is money, not a share, so the 0–50% rule does not apply. The start value is the reference line, labelled at its left end. Markers only at the end and the hovered month. Month labels every six months, yearly below 520px wide. Checked against Monarch Money's portfolio-versus-benchmark chart on Lazyweb.
+- **Simulated series:** dashed (6 on, 4 off, butt caps) in its slot colour, with a dashed legend swatch. Real series stay solid.
 - **Grid:** solid 1px `--mist`, never dashed.
 - **Parity reference:** the 50% line is a solid 1px `--muted` rule, labelled at its left end so it never collides with the series end labels on the right.
 - **Y axis:** shares run from 0 to 50% so distance to parity is visible. If any value exceeds 50%, the axis or bar scale extends to the next 10%, and the parity mark stays at 50%.

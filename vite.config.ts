@@ -9,7 +9,7 @@ const preloadData = (): Plugin => ({
     order: 'post',
     handler: (_html, ctx) =>
       Object.values(ctx.bundle ?? {})
-        .filter((f) => f.type === 'asset' && /^assets\/(companies|indexes)-[\w-]+\.json$/.test(f.fileName))
+        .filter((f) => f.type === 'asset' && /^assets\/(companies|indexes|simulations)-[\w-]+\.json$/.test(f.fileName))
         .map((f) => ({ tag: 'link', attrs: { rel: 'preload', href: `/${f.fileName}`, as: 'fetch', type: 'application/json', crossorigin: '' }, injectTo: 'head' as const })),
   },
 })

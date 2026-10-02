@@ -3,7 +3,7 @@ import { DataTable } from '../components/DataTable'
 import { ParityTrack } from '../components/ParityTrack'
 import { Sparkline } from '../components/Sparkline'
 import { MARKETS, type MarketStatus } from '../data/markets'
-import { INDEX_ORDER, MARKET, companies, indexes, yoyChange, type Market } from '../lib/data'
+import { INDEX_ORDER, MARKET, companies, indexes, simulations, yoyChange, type Market } from '../lib/data'
 import { pct } from '../lib/format'
 import { href, usePageTitle } from '../lib/router'
 
@@ -65,6 +65,15 @@ export function Home() {
                 </a>
               )
             })}
+            {Object.values(simulations).filter((s) => indexes[s.parent]?.country === m.code).map((s) => (
+              <a key={s.id} className="card sim-card" href={href('simulation', s.id)}>
+                <div className="tile-label">{s.name} · {m.label(s.dataYear)} <span className="badge sim">Simulation</span></div>
+                <div className="tile-value">{pct(s.headline.payroll)}</div>
+                <div className="tile-context"><Change value={s.headline.payroll - s.headline.parentPayroll} /> <span className="muted">against the {indexes[s.parent].name}</span></div>
+                <ParityTrack value={s.headline.payroll} parity={m.parity} />
+                <div className="tile-context muted">Every holding pays women at least the {indexes[s.parent].name}'s share. Fictional.</div>
+              </a>
+            ))}
           </div>
         </section>
       ))}

@@ -17,6 +17,7 @@ plane_issues:
 - **A correction after the first run:** the return calculation missed the value of demerged shares and dropped renamed companies. It was fixed for all three indexes, and both runs are reported [below](#correction-after-the-first-run).
 - **Reproducing it:** `pipeline/equal50/parity50.py`; output in `pipeline/equal50/results/parity-50-2026-10-02.json`.
 - **Related:** the [Parity-Aligned Nifty 500](parity-aligned-nifty-500-results.md) is the broad-market version of the same idea.
+- **Replaced on Nivel by [version 2](parity-50-v2-results.md) (3 October 2026):** keeping the Nifty 50's sector mix made this version hold companies where women get as little as 1.5% of the pay. Version 2 requires every holding to clear the Nifty 50's own level.
 
 ## In one minute
 - **Parity:**
