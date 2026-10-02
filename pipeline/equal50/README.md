@@ -1,5 +1,7 @@
 # Equal 50, Parity-Aligned Nifty 500 and Parity 50 pipeline
 
+**On hold:** `fetch_prices.py`, `fundamentals.py`, `fundamentals_if.py`, `ca_shp.py` and `events.py` download from NSE, whose terms need its written consent for scripted collection. Do not run them until consent or a licence is recorded in `knowledge/playbooks/data-pipeline.md` (PARITY-66, `knowledge/reviews/legal-review-2026-10.md`).
+
 Builds the illustrative indexes pre-registered in `knowledge/decisions/0005-equal-50-methodology.md`, `0006-parity-aligned-nifty-500.md` and `0007-parity-50.md`. Results and limits: `knowledge/research/equal-50-results.md`, `parity-aligned-nifty-500-results.md` and `parity-50-results.md`.
 
 Run in the India scratch folder (the one holding `company_years.json`, `meta_all.json` and `funds/ind_nifty500.csv`), with these scripts copied into a subfolder `e50/`:
