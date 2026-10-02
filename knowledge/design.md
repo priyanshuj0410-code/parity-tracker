@@ -22,6 +22,7 @@ plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/6b573de9-f46f-4610-8561-02b11b0e395d
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/c3ec5678-d63b-4dd8-b080-607f10ae9c50
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/997c6dda-88ad-486d-8634-571ca6978989
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/5e3c90ab-26c8-4dca-9e8b-eff1cd6ecc37
 ---
 
 # Nivel design system
@@ -96,11 +97,12 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
 - Max content width 1120px, 16px side gutter on phones, 24px from 720px up.
 - Cards: white, 1px `--line` border, 12px radius, no shadow.
 - Sections are separated by a 1px `--mist` rule and 40px spacing.
-- **Header (PARITY-17):** white and sticky, 64px. Left: the Nivel mark (32px tall, 28px on phones) and a two-line brand, "Nivel" (Poppins 600, 19px) over "by The Equal Lens" (12px, `--soft`). Then the main nav (Indexes, Companies, Compare, Method) as underline tabs. Right: global search (38px field, at most 340px, with a ⌘K hint) and the theme menu: a borderless 40px icon button (44px on phones) that opens a small right-aligned menu. No install button. Below 900px the header is 56px: brand on the left, a search icon and the theme toggle on the right, and the nav moves to the bottom tab bar.
+- **Header (PARITY-17):** white and sticky, 64px. Left: the Nivel mark (32px tall, 28px on phones) and a two-line brand, "Nivel" (Poppins 600, 19px, line height 1.1) over "by The Equal Lens" (12px, line height 1.25, `--soft`), 1px apart so the two lines read as one lockup. Then the main nav (Indexes, Companies, Compare, Method) as underline tabs. Right: global search (38px field, at most 340px, with a ⌘K hint) and the theme menu: a borderless 40px icon button (44px on phones) that opens a small right-aligned menu. No install button. Below 900px the header is 56px: brand on the left, a search icon and the theme toggle on the right, and the nav moves to the bottom tab bar.
 - **Bottom tab bar (below 900px):** four items with 22px line icons and 12px labels: Indexes (chart), Companies (buildings), Compare (balance scale), Method (info). Fixed, white, hairline top border, padded for the home indicator (`safe-area-inset-bottom`). The active item has a Material-style indicator pill (`--mist`, 62 by 30px, behind the icon), a bold violet label and `aria-current`, so the state never rests on colour alone.
 - **Search sheet (below 900px):** the search icon opens a full-screen sheet: a 44px field (16px text, so iOS does not zoom) with a Cancel link, then up to 20 results as tall rows with logo or monogram. The page behind stops scrolling while it is open. The sheet renders in a portal on `<body>` so nothing (the tab bar included) can paint over it. No matches repeats the query and suggests a ticker, here and in the desktop dropdown.
 - **Page head:** breadcrumb, title (with a 52px logo tile on company pages), a meta line ("In Nifty 50 and Sensex", plain links, not chips), then section tabs. The first section after the page head has no top rule.
-- **Index strip:** a white bar under the header on every page, scrolling horizontally. Each item shows name, headline value and like-for-like change. The current index is highlighted with a tint. The right edge fades on every width to show the strip scrolls, with 34px of end padding so the last index can scroll clear of the fade. On phones the items are 44px tall.
+- **Title row (company pages):** the 52px logo tile, then the name (h1, line height 1.15) with the exchange and industry line 4px below it.
+- **Index strip:** a white bar under the header on every page, scrolling horizontally. Each item shows name, headline value and like-for-like change. The current index is highlighted with a tint. The right edge fades on every width to show the strip scrolls, with 20px of end padding so the last index can scroll clear of the fade. On phones the chips are 34px tall with 6px of strip above and below, so the selected chip never touches the borders, and an invisible area makes each one 44px to tap. The fade is 24px, so the next index peeks in.
 - **Offline bar:** when the device is offline, a slim tint bar under the header says "Offline. Showing data collected 1 October 2026." (`role="status"`).
 - **URLs (PARITY-25):** pages have plain paths (`/company/TCS/calculations`, `/index/nifty50/companies`). Dots in tickers become underscores (`/company/EU-ADS_DE`). Links shared before October 2026 (`#/company/TCS`) redirect. The build writes one HTML file per page with its own title, description, Open Graph tags and canonical URL, so every shared link previews its own page. See [decisions/0003](decisions/0003-path-urls-and-prerendered-pages.md).
 - **Footer:** the Nivel mark, one line ("Built with The Equal Lens from companies' own legally required gender pay disclosures, collected 1 October 2026. Not investment advice."), then Report a correction and Install the app. The trademark note lives on Method.
@@ -142,13 +144,17 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
 
   | State | Illustration |
   |---|---|
-  | Companies filter, phone search sheet, parity map filters with no match, 404 (stand-in) | No results found |
-  | Company with no usable report (funds and trusts, not in the database, unverified) | No reports yet |
+  | Companies filter, phone search sheet, parity map filters with no match | No results found |
+  | Page not found (404) | Page not found |
+  | A page that throws (error boundary) | Something went wrong, or You're offline when the device is offline |
+  | Company with no usable report (funds and trusts, not in the database, a report we could not locate or read) | No reports yet |
+  | Company whose figure our rules exclude (adjusted gap only, partial scope, not material: 11 EU companies, `isExcluded`) | Figure excluded |
+  | Company missing one of the two scales, on its Overview and on a shared map link (`offMapReason`) | Not on parity map |
   | Trend with one snapshot or one year (all of Japan, a few UK, Australian and EU companies), index trend with one snapshot | Not enough data yet |
   | A measure a market cannot show (no workforce split) | No data yet |
 
-  The desktop search dropdown stays text-only, as it is too small for art. The error boundary has no illustration yet.
-- **Error states:** a page that throws shows "Something went wrong", says the figures are not affected, and offers Reload and Go to indexes. The error boundary is keyed by route, so the next page renders normally.
+  The states always sit on a card (white, hairline border, 12px radius). Only the compact variant drops the card, and only where a container already frames it: inside a chart frame or the full-screen search sheet. Landscape art (wider than 1.4:1) is 320px wide, or 240px when compact. The desktop search dropdown stays text-only, as it is too small for art. The four unused illustrations (No benchmark selected, No insights yet, No organizations yet, No team members yet) wait for features that need them.
+- **Error states:** a page that throws shows "Something went wrong" (or "You're offline" when the device is offline) with its illustration, says the figures are not affected, and offers Reload and Go to indexes. The error boundary is keyed by route, so the next page renders normally.
 - **Chart frame:** every chart sits in a card with a title, a one-line subtitle and a Chart / Table segmented control at the top right, so every chart has a table view one click away. Extra controls (market pills) sit beside the toggle.
 - **Chart frame on phones:** the title (15px) and a two-line subtitle sit beside the Chart / Table switch; filters (market, sector) go in their own row under the title, and a market filter becomes one dropdown instead of a row of pills (`MarketPicker`). A table view's list header names its single column instead of offering a one-option dropdown.
 - **Scale card (company overview):** label, big value, the basis in one muted line, a parity track with its own scale (0%, parity, maximum), and the market percentile in violet ("Higher than 66% of companies in the UK").
