@@ -9,11 +9,20 @@ plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/3e2cafdb-a457-426b-89bc-ce3a1d7b8740
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/bd128ee2-934e-4d5e-93c2-b0078d245c88
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/4fb24fb0-7ea1-419f-8ee7-ce8f9d2eb5ac
+  - https://app.plane.so/the-equal-lens/projects/8471aa75-1701-46fc-9b61-ff150a1da516/issues/931fede3-f0eb-4e15-860c-5540fd87f30b
+  - https://app.plane.so/the-equal-lens/projects/8471aa75-1701-46fc-9b61-ff150a1da516/issues/355c70c1-b1c1-4680-8a3d-8308f85eaa22
+  - https://app.plane.so/the-equal-lens/projects/8471aa75-1701-46fc-9b61-ff150a1da516/issues/69cda411-005d-4cb3-811a-7478e5382838
+  - https://app.plane.so/the-equal-lens/projects/8471aa75-1701-46fc-9b61-ff150a1da516/issues/a0554e43-8b6e-4a41-a3be-2a6989704411
+  - https://app.plane.so/the-equal-lens/projects/8471aa75-1701-46fc-9b61-ff150a1da516/issues/6d2b78c9-fde4-46ec-abd2-7c04ff2f065c
+  - https://app.plane.so/the-equal-lens/projects/8471aa75-1701-46fc-9b61-ff150a1da516/issues/71d8cd73-f873-4292-906f-a8c6369eaf38
+  - https://app.plane.so/the-equal-lens/projects/8471aa75-1701-46fc-9b61-ff150a1da516/issues/cbd8b53f-d4f0-4109-bac1-a5d722cc9e7f
+  - https://app.plane.so/the-equal-lens/projects/8471aa75-1701-46fc-9b61-ff150a1da516/issues/b8eef84a-37fb-40cf-ac54-efb1726065ba
+  - https://app.plane.so/the-equal-lens/projects/8471aa75-1701-46fc-9b61-ff150a1da516/issues/231a2f6d-10e6-46bf-a272-76f257e9f150
 ---
 
 # Spot the Stereotype: anytime play and the Nivel connection
 
-For The Equal Lens's game team. It was written from a read-only pass over the game's repository and knowledge base on 2 October 2026 (section 10 lists what was read), and nothing here changes that repository. Every game-side item is a proposal for the game's owner to accept, change or refuse, listed as BIAS tickets to file. Nivel's side is PARITY-52 to PARITY-54, under PARITY-47. The wider picture is in [nivel-play-and-markets.md](nivel-play-and-markets.md). The shareable version of this page is at https://claude.ai/artifact/QYFgW7fHANR5veNCfv49Ay (private until shared from its Share menu).
+For The Equal Lens's game team. It was written from a read-only pass over the game's repository and knowledge base on 2 October 2026 (section 10 lists what was read), and nothing here changes that repository. Every game-side item is a proposal for the game's owner to accept, change or refuse. They are filed as BIAS-40 (the parent, with this plan attached) and BIAS-41 to BIAS-48 in The Equal Lens's Plane workspace. Nivel's side is PARITY-52 to PARITY-54, under PARITY-47. The wider picture is in [nivel-play-and-markets.md](nivel-play-and-markets.md). The shareable version of this page is at https://claude.ai/artifact/QYFgW7fHANR5veNCfv49Ay (private until shared from its Share menu).
 
 ## In one minute
 - **Nights stay the heart of the game.** The 75-minute hosted night is where people argue, change their minds and remember it.
@@ -364,15 +373,15 @@ One static file at `https://nivel-equal-lens.vercel.app/feeds/spot/v1.json`, wit
 | 4. Discussion in markets | when markets ship (PARITY-44) | "Take it further" on reveals | PARITY-54 | a Nivel item's market shows its twist cards as new information |
 | 5. Crowd markets | after an abuse check | the abuse check on counts | PARITY-54, later part | the owner signs off |
 
-**BIAS tickets to file in the-equal-lens workspace:**
-1. Anytime play: a one-person set on the phone, with no host (sections 2.1 to 2.5).
-2. Crowd counts for anytime play: the node, +1 rules in the union ruleset, the floor, and leaving the player out on the phone (sections 2.4 and 2.8).
-3. The weekly set: the draw rules for a set, with heavy figures out (sections 2.2 and 2.7).
-4. Pull Nivel's feed into a reviewed `nivel` bank (section 5.3).
-5. The workplace theme to ready: the Nivel part, more trait words, and scenarios where about a third land on men (section 4).
-6. Arrivals from Nivel, and links back to its data and markets (sections 6.2 and 6.3).
-7. The anytime share card (section 2.5).
-8. Copy for anytime play: what is kept, and adults only (sections 2.6 and 2.7).
+**BIAS tickets, filed on 2 October 2026** in The Equal Lens's workspace under BIAS-40, each with this plan attached:
+1. BIAS-41 Anytime play: one person, one phone, no host (sections 2.1 to 2.5).
+2. BIAS-42 Crowd counts for anytime play (sections 2.4 and 2.8). Depends on BIAS-37, which deploys the rooms-go-dark rules.
+3. BIAS-43 The weekly set: a draw rule for anytime play (sections 2.2 and 2.7).
+4. BIAS-44 Pull Nivel's feed into a reviewed `nivel` bank (section 5.3). Depends on PARITY-52.
+5. BIAS-45 Bring the workplace theme to ready (section 4).
+6. BIAS-46 Arrivals from Nivel, and links back to Nivel (sections 6.2 and 6.3).
+7. BIAS-47 A share card for anytime play (section 2.5).
+8. BIAS-48 Copy for anytime play: what is kept, and adults only (sections 2.6 and 2.7).
 
 ## 8. Decisions for the game's owner
 1. **Anytime play exists, under that name, at `/?play=<theme>`.** Recommended: yes.
