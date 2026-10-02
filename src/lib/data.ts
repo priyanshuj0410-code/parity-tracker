@@ -1,9 +1,24 @@
-import companiesJson from '../data/companies.json'
-import indexesJson from '../data/indexes.json'
+import companiesUrl from '../data/companies.json?url'
+import indexesUrl from '../data/indexes.json?url'
 import type { Company, CompanyYear, IndexData } from '../types'
 
-export const companies = companiesJson as unknown as Record<string, Company>
-export const indexes = indexesJson as unknown as Record<string, IndexData>
+/**
+ * The data ships as its own hashed files, fetched alongside the code (index.html preloads them), so it parses
+ * as JSON and stays cached across code-only deploys. The build-time page writer reads the files directly.
+ */
+async function load(): Promise<[unknown, unknown]> {
+  if (import.meta.env.SSR) return [(await import('../data/companies.json')).default, (await import('../data/indexes.json')).default]
+  const get = async (url: string) => {
+    const res = await fetch(url)
+    if (!res.ok) throw new Error(`${url} returned ${res.status}`)
+    return res.json()
+  }
+  return Promise.all([get(companiesUrl), get(indexesUrl)])
+}
+
+const [companiesJson, indexesJson] = await load()
+export const companies = companiesJson as Record<string, Company>
+export const indexes = indexesJson as Record<string, IndexData>
 
 export const INDEX_ORDER = ['nifty50', 'sensex', 'niftynext50', 'ftse100', 'asx200', 'nikkei225', 'eurostoxx50']
 export const SOURCE_DATE = '1 October 2026'
