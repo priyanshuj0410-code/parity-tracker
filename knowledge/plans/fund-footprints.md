@@ -15,7 +15,7 @@ plane_issues:
 - This plan extends the same arithmetic to:
   - **Mutual funds**, from the holdings they publish every month.
   - **A reader's own portfolio**, from the consolidated account statement (CAS) they already receive.
-- This is the original "financed emissions, but for pay" idea from the Thoth research ([nifty50-gender-payroll-footprint](../../../Thoth/knowledge/research/nifty50-gender-payroll-footprint.md)).
+- This is the original "financed emissions, but for pay" idea from the early research, whose files sit in the Thoth repository ([nifty50-gender-payroll-footprint](../../../Thoth/knowledge/research/nifty50-gender-payroll-footprint.md)).
 
 ## Method
 - **Headline:** women's share of the payroll the fund owns, Σ aᵢ·wᵢ·Wᵢ ÷ Σ aᵢ·Wᵢ, where:

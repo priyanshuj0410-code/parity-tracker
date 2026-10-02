@@ -23,7 +23,14 @@ The app was renamed from Parity Tracker to Nivel on 2 October 2026 ([decisions/0
 - [decisions/0004-data-as-separate-files.md](decisions/0004-data-as-separate-files.md): company and index data load as hashed JSON files alongside the code, not inside it
 - [plans/us-indexes.md](plans/us-indexes.md): adding the S&P 500 and Dow as a limited-data market, measured by women's share of board seats
 - [plans/fund-footprints.md](plans/fund-footprints.md): women's share of the payroll a mutual fund or personal portfolio owns
-- [plans/thoth-norm-markets.md](plans/thoth-norm-markets.md): linking Nivel with Thoth's play-money markets on gender norms, for MIT Solve
+- [plans/nivel-play-and-markets.md](plans/nivel-play-and-markets.md): Nivel's play side (Spot the Stereotype) and its prediction markets on a shared engine
+- [plans/spot-the-stereotype-anytime-and-nivel.md](plans/spot-the-stereotype-anytime-and-nivel.md): for the game team, anytime play without the discussion steps, the Nivel feed for a workplace theme, and bringing Nivel's readers to play
+- [plans/mit-solve-application.md](plans/mit-solve-application.md): the draft MIT Solve 2027 application and the plan to submit it by 2 November 2026
+- [research/personas-and-journeys.md](research/personas-and-journeys.md): proto-personas and customer journeys for Nivel, Spot the Stereotype and the markets, with the plan to validate them
+- [research/solve-innovation-assessment.md](research/solve-innovation-assessment.md): competitors, past Solver teams and literature, scored on Solve's Innovative Approach criterion
+- [research/solve-winning-pitches.md](research/solve-winning-pitches.md): what six winning Solve applications have in common, the AI for Humanity Prize, and how Nivel's draft compares
+- [research/solve-criteria-check.md](research/solve-criteria-check.md): the reframed draft scored on every Solve criterion, under Economic Prosperity and under Learning, with the fix for each gap
+- [research/solve-swipeed-learning-check.md](research/solve-swipeed-learning-check.md): whether The Equal Lens's SwipeEd app fits Solve's 2027 Learning challenge, and what must change first
 - [decisions/0005-equal-50-methodology.md](decisions/0005-equal-50-methodology.md): the pre-registered rules for the illustrative Equal 50 index
 - [research/equal-50-results.md](research/equal-50-results.md): Equal 50 results against the Nifty 50 and Sensex, sensitivities and limits
 - [decisions/0006-parity-aligned-nifty-500.md](decisions/0006-parity-aligned-nifty-500.md): pre-registered rules for the Parity-Aligned Nifty 500, an index that represents the market and tilts towards parity

@@ -64,5 +64,23 @@ plane_issues:
 4. **US-4 App integration:** the limited-data market, with index and company pages.
 5. **US-5 Method page and design notes.**
 
-## Open decision
-SEC requires automated clients to send a User-Agent that names an organisation and a contact email before it serves filing documents; the filing index works without one. US-2 needs a contact to declare, for example the corrections address priyanshu.jain@theequallens.com. The pipeline reads it from the `SEC_USER_AGENT` environment variable.
+## Extraction status (US-2, 2 October 2026)
+- **Contact:** the user approved declaring priyanshu.jain@theequallens.com to SEC (`SEC_USER_AGENT="Nivel by The Equal Lens priyanshu.jain@theequallens.com"`).
+- **Downloads:** all 497 proxies (1.2 GB, kept in a scratch folder, not the repo) via `fetch_proxy_docs.py`.
+- **`extract_board.py`:**
+  - Reads each "Director since" biography header for the director's name.
+  - Takes the honorific the proxy uses for that surname (Ms./Mrs. or Mr.); otherwise the pronouns near the director's full name.
+  - Checks the count against the stated number of nominees.
+  - Uses a stated count of women only to settle unresolved directors, and only when it fits.
+- **First full run:**
+  - High confidence: 121 companies (count matches, no unresolved directors).
+  - Review: 211.
+  - No biographies found: 165.
+  - The confident set gives women 33.6% of seats (420 of 1,251), in line with published S&P 500 board studies.
+- **Checks against stated counts:** Apple reads 4 of 8 and 3M 3 of 10. JPMorgan reads 5 of 11 plus 2 unresolved, and its proxy states "6 - Female". Goldman reads 4 of 13 plus 2 unresolved (one is Jan Tighe), against a stated "5 Women".
+- **Next:**
+  - Widen the biography anchors beyond "Director since" (for example "Age 63", "Joined the Board", tenure lines), which covers most of the 165.
+  - Pick up stated counts in summary graphics, such as "6 - Female", for the unresolved 91.
+  - Reconcile the 98 count mismatches (retiring directors, duplicated summary tables).
+  - Review the rest by hand.
+- **Publishing:** nothing goes into the app until a company is high confidence.
