@@ -43,9 +43,18 @@ plane_issues:
 - A comparison group (players who never saw the result) would strengthen it.
 
 ## MIT Solve
+- **Best fit:** the **2027 Global Economic Prosperity Challenge**, focus area "Quality Employment & Economic Opportunity".
+  - It asks how to "expand access to quality work, affordable housing, and financial resilience". Its brief names the gender gap directly: "women remain 24% less likely than men to participate in the labor force".
+  - Misperceived norms about women working outside the home are exactly what the Thoth loop targets, and Nivel makes pay and employment gaps visible to the people who own the companies.
+  - The 2027 Global Learning Challenge (teachers, assessment, low-resource classrooms) is a weaker fit.
+- **Deadline:** 2 November 2026, 12:00pm EST. Applications opened on 22 September 2026.
+- **Stage and type:** concept to scale, for-profit or nonprofit, any country. Both apps are live, so apply as **Pilot**.
+- **Funding:**
+  - Every selected team gets a $10,000 Solver award.
+  - Prizes that may fit: the AI for Humanity Prize (up to $150,000), the Crescent Enterprises AI Prize (up to $100,000) and the E Ink Innovation Prize ($100,000).
+  - The US-based prizes don't apply.
 - **The pitch:** visibility (Nivel) plus belief correction (Thoth), built by The Equal Lens.
 - **Inputs:** live products, the audit, coverage figures and the evaluation design.
-- **To confirm:** the current Solve challenge and its deadline.
 
 ## Steps
 - **On the Nivel side (PARITY):**
