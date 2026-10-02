@@ -10,6 +10,7 @@ plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/4a6b2d55-5d5f-4713-848c-561e3e343184
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/3ddee1dc-99b4-4f03-83c8-55cdf3f78b30
   - https://app.plane.so/claude-pri/projects/18017c30-d8f6-436a-b4ca-a743d5317720/issues/3f4b5bd3-f746-4845-847f-e2e7400b79b4
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/f4ecafb2-e14b-40cc-b5d5-9ac2384f4f9b
 ---
 
 # India data pipeline
@@ -21,7 +22,7 @@ Run these in a scratch folder with the scripts copied in.
 
 1. **Constituents:**
    - Download `ind_nifty50list.csv` and `ind_niftynext50list.csv` from `https://nsearchives.nseindia.com/content/indices/`, saved as `n50.csv` and `nn50.csv`.
-   - Update `sensex.txt` by hand from the Asia Index notice.
+   - Update `sensex.txt` by hand from the BSE Index Services notice (formerly Asia Index). Reviews are semi-annual: announced in May and November, effective in June and December. Notices are at `https://beta.bseindia.com/downloads/UploadDocs/Notices/{no}/{no}.pdf`; fetch them with a browser user agent, because the site returns 403 to plain clients. Check the BSE SENSEX row itself, since news previews are often wrong. In June 2026 analysts expected Trent out and Hindalco in, but nothing changed.
    - Build the symbol list: `(tail -n +2 n50.csv; tail -n +2 nn50.csv) | cut -d, -f3 | sort -u > syms_nse.txt`
 2. **Filings:** `python3 fetch_all.py syms_nse.txt`
    - Calls NSE `api/corporate-bussiness-sustainabilitiy` with `from_date`/`to_date`.
@@ -141,4 +142,4 @@ Scripts are in `pipeline/logos/`. Output is `public/logos/{safe}.png` (64×64, s
 - **Unparseable files:** Torrent Pharma's FY2021-22 XBRL is malformed, and M&M's FY2023-24 file on NSE is near empty.
 - **No BRSR yet:** ENRIN and VAML.
 - **Missing wage totals:** ITC and IndiGo file no wage totals. ITC is estimated in every year; IndiGo has no usable estimate.
-- **Sensex list:** as of December 2025. The June 2026 change is unconfirmed.
+- **Sensex list:** verified current on 2 October 2026 (PARITY-27). The last change took effect on 22 December 2025: InterGlobe Aviation in, Tata Motors Passenger Vehicles out. The June 2026 review (notice 20260522-16, effective 22 June 2026) made no Sensex changes. The July 2026 notice (20260710-37) touched only the IPO indices. The next review is due in December 2026, announced in November.

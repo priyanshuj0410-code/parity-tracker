@@ -59,7 +59,7 @@ export function Method() {
           <li><strong>Contract workers are mostly invisible.</strong> BRSR wages cover people on the company's own payroll. Over 1.3 million contract workers across the Nifty 50 and Nifty Next 50 are largely outside the wage figures, and about 5% of them are women.</li>
           <li><strong>Scope differs by company.</strong> Some file for the parent company only (standalone), others for the whole group (consolidated). Standalone filings leave out subsidiaries' payroll.</li>
           <li><strong>Ownership uses market cap, not enterprise value.</strong> Free float is approximated by public shareholding, not the index providers' exact factors.</li>
-          <li><strong>Index membership is a snapshot.</strong> Constituents are as of 30 September 2026. The June 2026 Sensex rebalance (reported in advance as Trent out, Hindalco in) is not yet reflected.</li>
+          <li><strong>Index membership is a snapshot.</strong> Constituents are as of 30 September 2026. The Sensex last changed in December 2025, when InterGlobe Aviation replaced Tata Motors Passenger Vehicles. Its June 2026 review made no changes.</li>
           <li><strong>One year of change is noisy.</strong> Year-on-year moves under half a percentage point are within the range of reporting differences.</li>
         </ul>
       </section>
