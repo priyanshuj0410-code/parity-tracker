@@ -36,6 +36,7 @@ export function ParityMap({ points, on, label, focus, height = 480, compact = fa
   for (const p of lit) quad[`${(p.w as number) >= W_PARITY ? 't' : 'b'}${(p.e as number) >= E_PARITY ? 'r' : 'l'}` as keyof typeof quad]++
   const focused = focus ? plotted.find((p) => p.c.symbol === focus) : undefined
   const r = compact ? 3.25 : 4.5
+  const narrow = w < 560
 
   const pick = (ev: PointerEvent<SVGRectElement>) => {
     const box = (ev.currentTarget.ownerSVGElement ?? ev.currentTarget).getBoundingClientRect()
@@ -83,10 +84,10 @@ export function ParityMap({ points, on, label, focus, height = 480, compact = fa
         ))}
         {!compact && (
           <g>
-            <text className="quad" x={x(1) - 8} y={M.t + 28} textAnchor="end">Parity on both · {quad.tr}</text>
-            <text className="quad" x={M.l + 8} y={M.t + 28}>Paid at parity, too few women · {quad.tl}</text>
-            <text className="quad" x={M.l + 8} y={M.t + ih - 10}>Too few women, paid less · {quad.bl}</text>
-            <text className="quad" x={x(1) - 8} y={M.t + ih - 10} textAnchor="end">Enough women, paid less · {quad.br}</text>
+            <text className="quad" x={x(1) - 8} y={M.t + 28} textAnchor="end">{narrow ? 'Parity' : 'Parity on both'} · {quad.tr}</text>
+            <text className="quad" x={M.l + 8} y={M.t + 28}>{narrow ? 'Equal pay, few women' : 'Paid at parity, too few women'} · {quad.tl}</text>
+            <text className="quad" x={M.l + 8} y={M.t + ih - 10}>{narrow ? 'Few women, paid less' : 'Too few women, paid less'} · {quad.bl}</text>
+            <text className="quad" x={x(1) - 8} y={M.t + ih - 10} textAnchor="end">{narrow ? 'Paid less' : 'Enough women, paid less'} · {quad.br}</text>
           </g>
         )}
         {focused && (

@@ -10,24 +10,25 @@ export function JapanGlance({ c }: { c: Company }) {
   return (
         <div className="grid g4">
           <div className="card">
-            <div className="tile-label">Women's average pay as a share of men's</div>
+            <div className="tile-label">Women's share of pay</div>
             <div className="tile-value">{pct(y.w)}</div>
-            <div className="tile-context"><DataBadge year={y} /> <span className="muted">all workers</span></div>
-            {y.w != null && <ParityTrack value={y.w} parity={1} />}
+            <div className="tile-context"><DataBadge year={y} /></div>
+            {y.w != null && <ParityTrack value={y.w} parity={0.5} />}
           </div>
           <div className="card">
-            <div className="tile-label">Regular staff</div>
-            <div className="tile-value">{pct(y.ratioRegular)}</div>
-            <div className="tile-context muted">Non-regular staff: {pct(y.ratioNonRegular)}</div>
+            <div className="tile-label">Women's pay per ¥100 of men's</div>
+            <div className="tile-value">{y.gapMean == null ? 'n/a' : `¥${Math.round((1 - y.gapMean) * 100)}`}</div>
+            <div className="tile-context muted">All workers. Regular staff: {pct(y.ratioRegular, 0)}; non-regular: {pct(y.ratioNonRegular, 0)}.</div>
+          </div>
+          <div className="card">
+            <div className="tile-label">Women in regular staff</div>
+            <div className="tile-value">{pct(y.fPerm)}</div>
+            <div className="tile-context muted">{y.fPerm == null ? 'Not disclosed' : 'Share of regular employees'}</div>
           </div>
           <div className="card">
             <div className="tile-label">Women in management</div>
             <div className="tile-value">{pct(y.managerShare)}</div>
-          </div>
-          <div className="card">
-            <div className="tile-label">Women on the board</div>
-            <div className="tile-value">{y.board ? `${y.boardWomen} of ${y.board}` : pct(board)}</div>
-            {y.board ? <div className="tile-context muted">{pct(board, 0)} of seats</div> : null}
+            <div className="tile-context muted">Board: {y.board ? `${y.boardWomen} of ${y.board}` : pct(board)}</div>
           </div>
         </div>
   )
@@ -43,7 +44,7 @@ export function JapanSources({ c }: { c: Company }) {
           {y.period && <li><strong>Pay period:</strong> {y.period}</li>}
           {y.updated && <li><strong>Last updated by the company:</strong> {y.updated}</li>}
           <li><strong>Scope:</strong> the listed company's own employees. For holding companies this can be a small head-office staff rather than the whole group.</li>
-          <li><strong>Women in regular staff:</strong> {y.fPerm != null ? `${pct(y.fPerm)}, from the same database. Used as employment parity.` : 'not disclosed in the database, so this company is not on the parity map.'}</li>
+          <li><strong>Women in regular staff:</strong> {y.fPerm != null ? `${pct(y.fPerm)}, from the same database. With the pay ratio it gives women's share of pay.` : "not disclosed in the database, so women's share of pay cannot be worked out and the company is not in the Nikkei 225 headline."}</li>
         </ul>
   )
 }

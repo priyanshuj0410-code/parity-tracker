@@ -6,6 +6,7 @@ updated: 2026-10-02
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/aa1e98d8-d58d-4a3e-8d0b-eccea0459975
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/16062d26-a8a8-4072-9fa6-3be0a36b4e5e
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/8ff4741b-d95e-4f6d-a59b-a80a0ce8056d
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/4a6b2d55-5d5f-4713-848c-561e3e343184
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/3ddee1dc-99b4-4f03-83c8-55cdf3f78b30
   - https://app.plane.so/claude-pri/projects/18017c30-d8f6-436a-b4ca-a743d5317720/issues/3f4b5bd3-f746-4845-847f-e2e7400b79b4
@@ -113,6 +114,13 @@ UK rules:
 - **Combining a group's employers:** weighted by size-band midpoints (250–499 → 375 … 20,000+ → 30,000).
 - **Index:** each company counts equally.
 - **Basis change:** if fewer than 70% of the weighted (employer, size band) pairs carry over between two years, in either direction, the pair is left out of like-for-like YoY.
+
+## Shared scale for Japan and the EU (PARITY-20)
+Run after `merge_markets.py`, from the repo root: `python3 pipeline/shared_scale.py`, then `python3 pipeline/sectors.py`.
+- `pipeline/eu/eu_workforce.py` holds ESRS S1-6 headcount by gender (women, men) per EU company and year, read by hand from the same CSRD statements as the pay gap. Percent-only disclosures (ING, Saint-Gobain, Vinci, Siemens Energy) are stored as shares. Not found: Deutsche Bank, Air Liquide, EssilorLuxottica.
+- `shared_scale.py` sets each Japanese and EU company-year's `w` to women's share of pay, S = E·W/(E·W + 1 − E), with W = 1 − `gapMean` and E = `fPerm` (Japan, regular staff) or `fAll` (EU). Without E, `w` is empty and a note explains why; the pay ratio stays in `gapMean`.
+- It then recomputes the Nikkei 225 and Euro Stoxx 50 headlines (equal-weighted mean S), `payRatio`, `workforce`, sector averages and like-for-like change. It is idempotent: it reads `gapMean`, `fPerm` and `fAll`, never `w`.
+- Results on 2 October 2026: Nikkei 225 19.1% (105 companies), Euro Stoxx 50 37.3% in 2025 (28 companies), +0.2 pp like for like on 24.
 
 ## Shared sectors
 `python3 pipeline/sectors.py` (run from the repo root after any merge) writes `src/data/sectors.json`, mapping every company to one of 11 GICS-style sectors.

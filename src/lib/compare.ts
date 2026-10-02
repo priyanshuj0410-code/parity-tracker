@@ -15,15 +15,13 @@ export const BASIS: Record<string, Basis> = {
   GB: { employment: 'UK staff', wage: 'mean hourly pay, UK staff' },
   AU: { employment: 'Australian staff', wage: 'mean full-time-equivalent pay, Australian staff' },
   JP: { employment: 'regular staff', wage: 'mean annual pay, all workers' },
-  EU: { employment: null, wage: 'unadjusted mean pay, as each company defines it' },
+  EU: { employment: 'employees (headcount)', wage: 'unadjusted mean pay, as each company defines it' },
 }
 export const COMPARE_MARKETS = ['IN', 'GB', 'AU', 'JP', 'EU']
 
 export function employmentParity(c: Company, y?: CompanyYear): number | null {
   if (!y) return null
-  if (c.country === 'IN' || c.country === 'JP') return y.fPerm
-  if (c.country === 'GB' || c.country === 'AU') return y.fAll
-  return null
+  return c.country === 'IN' || c.country === 'JP' ? y.fPerm : y.fAll
 }
 
 export const wageParity = payRatio
@@ -46,7 +44,7 @@ function build(c: Company): Point | null {
   const m = marketOf(c)
   for (const year of [m.latest, m.prev]) {
     const y = year ? c.years[year] : undefined
-    if (!y || y.w == null || y.wKind !== 'reported') continue
+    if (!y || (c.country === 'IN' && y.wKind !== 'reported')) continue
     const e = employmentParity(c, y)
     const w = wageParity(c, y)
     if (w == null) continue

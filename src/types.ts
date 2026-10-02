@@ -23,6 +23,8 @@ export interface CompanyYear {
   ratioNonRegular?: number | null
   managerShare?: number | null
   boardShareReported?: number | null
+  headcountWomen?: number
+  headcountMen?: number
   period?: string
   asOf?: string
   updated?: string
@@ -82,6 +84,8 @@ export interface IndexYear {
   managers?: number | null
   boards?: number | null
   ratioRegular?: number | null
+  payRatio?: number | null
+  payRatioCompanies?: number
   verified?: number
   excluded?: number
   unresolved?: number
