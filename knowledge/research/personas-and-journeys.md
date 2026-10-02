@@ -3,9 +3,10 @@ type: research
 title: Nivel personas and customer journeys
 description: Proto-personas and customer journeys for Nivel's three parts (see the data, play Spot the Stereotype, forecast in markets) and for the people the work is meant to reach. Grounded in published data and labelled as assumptions until interviews test them.
 status: draft
-updated: 2026-10-02
+updated: 2026-10-03
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/6820aff2-e204-416d-9c83-78ef43c6b6e8
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/3e2cafdb-a457-426b-89bc-ce3a1d7b8740
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/a7d95186-1e6e-4db7-a8ea-2e8f2b947b04
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/efee2516-06b0-44eb-9401-64f59fd312fa
 ---
@@ -195,7 +196,7 @@ Each journey runs stage by stage. **Feel** runs from -2 (frustrated) to 2 (delig
 | Invite | a friend posts a night's link in a group chat | "Not another workshop." Sceptical | the host's call link and room code | it sounds like a lecture | lead with the game, finish the line, not the cause | players per night, counted by the host | -1 |
 | Night | 75 minutes in teams, predicting the room | fun, competitive, surprised by the split | the phone, the stage and the host | tech hiccups and awkward topics | rule 6 framing, and helplines on every screen | answers counted in the room, gone after 12 hours | 2 |
 | Between nights | plays the weekly anytime set on the metro | a light habit, curious | anytime play (BIAS-41) | the crowd still small; no streak to chase | "this week's set", and predictions waiting on the crowd | sets finished per week | 1 |
-| Data moment | a workplace item shows IT companies pay women ₹26 of every ₹100 against ₹6 in automobiles; he taps "See the companies behind this" | his own sector, so interested | Nivel's index and company pages | too much data at once | land on his sector's view | arrivals from the game, counted later by markets | 1 |
+| Data moment | a workplace item shows healthcare companies pay women ₹25 of every ₹100 against ₹7 in metals and mining; he taps "See the companies behind this" | a sector he knows, so interested | Nivel's index and company pages | too much data at once | land on his sector's view | arrivals from the game, counted later by markets | 1 |
 | Home | tells his parents the 77% figure at dinner, and his father says people would talk | unsure how to argue | none: it happens offline | no tool for that conversation | a family theme, and a Hindi card with one figure and one question: "What do most people around here believe?" | none; asked in interviews | -1 |
 | Host | runs a night for his own friends | ownership | the host console | setting up feels like work | a "run your own night" path with a ready theme | nights per month | 2 |
 

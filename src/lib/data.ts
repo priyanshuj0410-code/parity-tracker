@@ -27,7 +27,7 @@ export const simulations = simulationsJson as Record<string, Simulation>
 export const simulationOf = (parent: string): Simulation | undefined => Object.values(simulations).find((s) => s.parent === parent)
 
 export const INDEX_ORDER = ['nifty50', 'sensex', 'niftynext50', 'nifty500', 'niftymidcap150', 'niftysmallcap250', 'ftse100', 'asx200', 'nikkei225', 'eurostoxx50']
-export const SOURCE_DATE = '1 October 2026'
+export { SOURCE_DATE } from './source'
 
 export interface Market {
   code: string
