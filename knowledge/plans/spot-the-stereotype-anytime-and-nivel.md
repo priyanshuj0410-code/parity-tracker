@@ -29,7 +29,7 @@ For The Equal Lens's game team. It was written from a read-only pass over the ga
 - **Anytime play is new:** one person, one phone, no host and no call, for about five minutes. It deals from the same reviewed banks and scores by the same rules, without the discussion steps.
 - **The crowd replaces the room.** Players predict how other players answered, from counts kept per item. Nothing about the player is kept.
 - **The discussion moves to Nivel's markets.** A night's discussion prompt, twist cards and change-of-mind vote each have a market equivalent: the question, the new information and the price moving.
-- **A workplace theme on Nivel's figures.** Nivel publishes a versioned feed of round 1 items at `/feeds/spot/v1.json`. The game pulls it at build time and the owner reviews it before anything reaches a player.
+- **A workplace theme on Nivel's figures.** Nivel publishes a versioned feed of round 1 items at `/feeds/spot/v1.json`. The game pulls it at build time. The owner decided on 2 October 2026 that entries deal as soon as they are pulled, and the review can still fix or cut any of them (section 8, decision 6).
 - **Players come from Nivel.** A Guess first card on index pages, a `/play` page and deep links take readers into the workplace set. The game links back to the data and the markets.
 
 ## 1. What the game is today
@@ -85,6 +85,7 @@ For The Equal Lens's game team. It was written from a read-only pass over the ga
 | Same word, two people: 4 words, then one prediction | |
 | Name the film: 2 lines | |
 
+- **Decided otherwise on 2 October 2026: a draw from the whole bank from day one** (section 8, decision 4). The case for a weekly set, kept for the record:
 - **Start with a weekly set.** Everyone gets the same items for a week, for three reasons:
   - Answers pile up on a few items, so crowds pass the floor quickly.
   - The owner can check the set as a whole.
@@ -156,7 +157,7 @@ For The Equal Lens's game team. It was written from a read-only pass over the ga
   - Anytime play has no sign-up, so its first screen says it is for adults, 18 and over. It stores only a flag on the device.
   - As on nights, there is no age gate and no date of birth.
 - **Heavy content:**
-  - Figures flagged `heavy` (violence, harassment or coercion in the figure itself) stay out of anytime play. On a night, a host holds the conversation that follows them.
+  - Figures flagged `heavy` (violence, harassment or coercion in the figure itself) were proposed out of anytime play, because on a night a host holds the conversation that follows them. **Decided otherwise on 2 October 2026: everything is dealt, heavy figures included, each opened with rule 6** (section 8, decision 5).
   - Heavy rate lines open with rule 6, as on nights.
   - The helplines are on every screen.
 - **No free text,** so nothing needs moderating.
@@ -311,7 +312,7 @@ One static file at `https://nivel-equal-lens.vercel.app/feeds/spot/v1.json`, wit
   - Prints the new, changed and retired ids.
 - **A `nivel` bank in the review.** `BankKey` gains `nivel`, and `reviewed.ts` reads it through the review like every bank. A fix may replace `question`, `answer` and `discussion`, as for `stat`.
 - **The workplace theme's published part deals from `NIVEL`:** one a night, two in anytime play.
-- **A stricter gate for entries a machine wrote (recommended).** A Nivel entry deals only once it is reviewed ok or fixed.
+- **A stricter gate for entries a machine wrote (proposed; not taken).** A Nivel entry would deal only once it is reviewed ok or fixed. **The owner decided on 2 October 2026 that Nivel entries deal once pulled** (section 8, decision 6).
   - Decision 1 deals unreviewed entries.
   - A feed can change on any deploy, so the owner's sign-off should come first.
 - **Retired entries:** the pull marks them and the reviewer cuts them.
@@ -369,14 +370,14 @@ One static file at `https://nivel-equal-lens.vercel.app/feeds/spot/v1.json`, wit
 | 0. Agree | by 9 October | the owner reads this and settles section 8 | | the decisions are written into the game's knowledge |
 | 1. The feed, and a taste in Nivel | by 16 October | | PARITY-52 feed v1, PARITY-53 `/play` and Guess first | eight items in the feed, and three played on `/play` |
 | 2. The workplace theme on a night | by 23 October, for the Solve demo | pull the feed into a reviewed `nivel` bank; bring the workplace theme to ready | | a host can run a workplace night |
-| 3. Anytime play pilot | November | anytime play; crowd counts and their rules; the weekly set; copy on what is kept and on age | PARITY-53 links switch to the anytime set | two themes playable, and this week's set past the floor |
+| 3. Anytime play pilot | November | anytime play; crowd counts and their rules; the draw rule for a set; copy on what is kept and on age | PARITY-53 links switch to anytime play | two themes playable, and the most dealt items past the floor |
 | 4. Discussion in markets | when markets ship (PARITY-44) | "Take it further" on reveals | PARITY-54 | a Nivel item's market shows its twist cards as new information |
 | 5. Crowd markets | after an abuse check | the abuse check on counts | PARITY-54, later part | the owner signs off |
 
 **BIAS tickets, filed on 2 October 2026** in The Equal Lens's workspace under BIAS-40, each with this plan attached:
 1. BIAS-41 Anytime play: one person, one phone, no host (sections 2.1 to 2.5).
 2. BIAS-42 Crowd counts for anytime play (sections 2.4 and 2.8). Depends on BIAS-37, which deploys the rooms-go-dark rules.
-3. BIAS-43 The weekly set: a draw rule for anytime play (sections 2.2 and 2.7).
+3. BIAS-43 The draw rule for anytime play (sections 2.2 and 2.7; a whole-bank draw, decision 4).
 4. BIAS-44 Pull Nivel's feed into a reviewed `nivel` bank (section 5.3). Depends on PARITY-52.
 5. BIAS-45 Bring the workplace theme to ready (section 4).
 6. BIAS-46 Arrivals from Nivel, and links back to Nivel (sections 6.2 and 6.3).
@@ -384,17 +385,20 @@ One static file at `https://nivel-equal-lens.vercel.app/feeds/spot/v1.json`, wit
 8. BIAS-48 Copy for anytime play: what is kept, and adults only (sections 2.6 and 2.7).
 
 ## 8. Decisions for the game's owner
-1. **Anytime play exists, under that name, at `/?play=<theme>`.** Recommended: yes.
-2. **What it keeps:** per-item counts indefinitely, and nothing about the player. Recommended: yes, with the line in section 2.6.
-3. **The crowd target leaves the player out, with a floor of 30.** Recommended: yes.
-4. **A weekly set before a draw from the whole bank.** Recommended: yes.
-5. **Heavy content:** heavy figures out of anytime play, and heavy rate lines in with rule 6. Recommended: yes.
-6. **Nivel entries deal only once reviewed.** Recommended: yes. This is stricter than decision 1, for entries a machine wrote.
-7. **Database capacity before a public launch:** the Blaze plan with a second instance, or a separate store. Recommended: decide before phase 3.
-8. **Counts of arrivals by source.** Recommended: yes, counts only.
-9. **The share card carries the anytime play link.** Recommended: yes.
-10. **Crowd counts as a market resolution source.** Recommended: not until an abuse check exists.
-11. **Company-level Nivel items.** Recommended: not in v1.
+
+**Decided on 2 October 2026**, each put to the owner one at a time. The answers are recorded in the game's record, `knowledge/product/anytime.md` in the game's repository, which wins where this plan disagrees. Decisions 4, 5 and 6 went against the recommendation below.
+
+1. **Anytime play exists, under that name, at `/?play=<theme>`.** Recommended: yes. **Decided: yes, as recommended.**
+2. **What it keeps:** per-item counts indefinitely, and nothing about the player. Recommended: yes, with the line in section 2.6. **Decided: yes, with the line in section 2.6.**
+3. **The crowd target leaves the player out, with a floor of 30.** Recommended: yes. **Decided: yes, with a floor of 30.**
+4. **A weekly set before a draw from the whole bank.** Recommended: yes. **Decided: no, a draw from the whole bank from day one.**
+5. **Heavy content:** heavy figures out of anytime play, and heavy rate lines in with rule 6. Recommended: yes. **Decided: everything in, heavy figures too, each opened with rule 6.**
+6. **Nivel entries deal only once reviewed.** Recommended: yes. This is stricter than decision 1, for entries a machine wrote. **Decided: no, they deal once pulled; the review can still fix or cut them.**
+7. **Database capacity before a public launch:** the Blaze plan with a second instance, or a separate store. Recommended: decide before phase 3. **Decided: chosen before any public link points at anytime play; until then it holds no open connection.**
+8. **Counts of arrivals by source.** Recommended: yes, counts only. **Decided: yes, counts only.**
+9. **The share card carries the anytime play link.** Recommended: yes. **Decided: yes.**
+10. **Crowd counts as a market resolution source.** Recommended: not until an abuse check exists. **Decided: not until an abuse check exists.**
+11. **Company-level Nivel items.** Recommended: not in v1. **Decided: not in v1.**
 
 ## 9. Risks and limits
 - **Less talk, less change.** A night works because people who know each other argue.
@@ -404,7 +408,7 @@ One static file at `https://nivel-equal-lens.vercel.app/feeds/spot/v1.json`, wit
 - **A crowd is not a survey.** Players choose to play, so every crowd share reads "players' answers, not a survey", never "what Indians think".
 - **One shared database.** Covered in section 2.8: a shared connection limit, and one ruleset for three uses.
 - **Nivel's own figures.** Covered in section 4.3.
-- **Spoilers.** A weekly set's answers can be shared or looked up. Nothing is at stake, so it costs only the player's own surprise.
+- **Spoilers.** An item's answer can be shared or looked up. Nothing is at stake, so it costs only the player's own surprise. A whole-bank draw (decision 4) makes it less likely than a weekly set would have.
 - **Stale figures.** Items carry their period and are retired on a refresh.
 - **The game's own debts come first:**
   - the database rules are not deployed;
