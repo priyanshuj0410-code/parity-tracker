@@ -1,4 +1,4 @@
-// Writes dist/<path>.html for every page, each with its own title, description and link-preview tags.
+// Writes dist/<path>/index.html for every page, each with its own title, description and link-preview tags.
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname } from 'node:path'
 import { pages } from '../node_modules/.prerender/prerender-routes.js'
@@ -22,7 +22,7 @@ for (const p of pages()) {
   html = put(html, /(<meta property="og:description" content=")[^"]*(")/, description)
   html = put(html, /(<meta property="og:url" content=")[^"]*(")/, SITE + p.path)
   html = put(html, /(<link rel="canonical" href=")[^"]*(")/, SITE + p.path)
-  const file = `dist${decodeURIComponent(p.path)}.html`
+  const file = `dist${decodeURIComponent(p.path)}/index.html`
   mkdirSync(dirname(file), { recursive: true })
   writeFileSync(file, html)
   n++

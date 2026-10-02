@@ -28,9 +28,9 @@ The [UX audit](../reviews/ux-audit-2026-10-02.md) (M6) found two problems with `
 4. **Dots travel as underscores.** Static hosts and dev servers treat a final segment with a dot as a file, so `EU-ADS.DE` becomes `/company/EU-ADS_DE`. No ticker contains an underscore (checked against all 675). `src/lib/paths.ts` is the only place that encodes and decodes.
 5. **Prerendered heads, not prerendered bodies.**
    - After `vite build`, an SSR build of `src/prerender-routes.ts` lists every page with its title and description. The lists come from the same data and helpers the app uses.
-   - `scripts/prerender.mjs` writes `dist/<path>.html` (3,401 files) from `dist/index.html`, replacing the title, description, Open Graph title, description and URL, and the canonical link.
+   - `scripts/prerender.mjs` writes `dist/<path>/index.html` (3,401 files) from `dist/index.html`, replacing the title, description, Open Graph title, description and URL, and the canonical link.
    - The body stays the app shell. A body prerender would need hydration that matches the phone layout, which a server cannot know.
-6. **Hosting.** `vercel.json` sets `cleanUrls`, so `/company/TCS` serves `company/TCS.html`, and rewrites everything else to `/index.html`. The service worker's cache name moved to `nivel-v2`.
+6. **Hosting.** Pages use the standard folder layout (`company/TCS/index.html`, `company/TCS/trend/index.html`), which static hosts serve at the bare path. `vercel.json` rewrites any path without a file to `/index.html`, so unknown paths still load the app. The service worker's cache name moved to `nivel-v2`.
 
 ## Consequences
 
