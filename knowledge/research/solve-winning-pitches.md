@@ -114,6 +114,17 @@ Six winning applications were read from their own Solve solution pages on 2 Octo
 5. **Write the one-sentence solution,** and frame the policy window (BRSR Core, CSRD, the 2025 Act).
 6. **For the AI prizes,** claim data science, and claim AI only where it is real.
 
+## 8. Decisions taken since
+On 2 October 2026 the team set the framing:
+- **The problem and the users:** unawareness of bias is the problem, and savers, investors and the stakeholders who influence employment decisions are the users.
+- **The outcome:** awareness, measured before and after.
+- **The organisation:** The Equal Lens is a nonprofit, with no payer and no partner for this work.
+
+**How the winners' pattern applies now:**
+- **A payer:** this does not apply to a grant-funded NGO. Report the cost per person reached instead, as Rocket Learning did with $0.10 per child a year.
+- **A partner:** this does not apply either. The proximity point is answered by testing the design with savers, investors and players.
+- **A measured pilot result:** still essential. It becomes ThriveLink's shape with awareness in place of dollars: one setting, a small group, and the change in awareness before and after, reported plainly.
+
 ## Sources
 - Solve solution pages, read 2 October 2026: [Karya](https://solve.mit.edu/solutions/113283), [Rocket Learning, 2026](https://solve.mit.edu/solutions/113277), [Rocket Learning, earlier application](https://solve.mit.edu/solutions/42354), [Making Space](https://solve.mit.edu/solutions/108937), [Visilant](https://solve.mit.edu/solutions/99660), [ThriveLink](https://solve.mit.edu/solutions/87066), [Onvkuce: Voice Database](https://solve.mit.edu/solutions/100735).
 - The [10th Anniversary Global Challenge](https://solve.mit.edu/a-decade-of-impact/challenges/10-for-10-challenge), with its eligibility, criteria, AI for Humanity Prize and winners.

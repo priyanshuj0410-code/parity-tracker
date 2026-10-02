@@ -16,39 +16,46 @@ plane_issues:
 
 # MIT Solve 2027: Nivel
 
-The application draft for the [2027 Global Economic Prosperity Challenge](https://solve.mit.edu/challenges/2027-global-economic-prosperity-challenge). The wider plan is in [nivel-play-and-markets.md](nivel-play-and-markets.md). Figures come from Nivel's data, collected on 1 October 2026. Items in square brackets are for the team to fill in. The prior art, the evidence and the scoring behind the changes of 2 October are in [solve-innovation-assessment.md](../research/solve-innovation-assessment.md). The shareable version of this page is at https://claude.ai/artifact/NVrvcX23rmJQ1RzStn6Pbg (private until shared from its Share menu).
+The application draft for the [2027 Global Economic Prosperity Challenge](https://solve.mit.edu/challenges/2027-global-economic-prosperity-challenge). The wider plan is in [nivel-play-and-markets.md](nivel-play-and-markets.md). Figures come from Nivel's data, collected on 1 October 2026. Items in square brackets are for the team to fill in. The prior art, the evidence and the scoring behind the changes of 2 October are in [solve-innovation-assessment.md](../research/solve-innovation-assessment.md).
+
+**The team's framing, 2 October 2026:**
+- **The problem** is the one the Saudi study found: people do not see the bias, so they underestimate its effect.
+- **How the work responds:** Nivel's data, the game and the markets give savers and investors a clear picture of the bias, which reaches the people who influence employment decisions and opens jobs and fair pay to women.
+- **Success** is a measured change in awareness of the bias, before and after.
+- **The organisation:** The Equal Lens is a nonprofit. No payer is identified, and this work needs no partner. The shareable version of this page is at https://claude.ai/artifact/NVrvcX23rmJQ1RzStn6Pbg (private until shared from its Share menu).
 
 ## At a glance
 - **Challenge:** 2027 Global Economic Prosperity Challenge
 - **Focus area:** Quality employment pathways, especially for young people and excluded workers
 - **Deadline:** 2 November 2026, 12:00pm EST (10:30pm IST)
 - **Stage:** Pilot. Nivel's data and the Spot the Stereotype game night are both live. Forecasting is in development.
-- **Organisation:** The Equal Lens [for-profit or nonprofit]
+- **Organisation:** The Equal Lens, a nonprofit (NGO)
 
 ## The pitch
 
 ### Solution name
 **Nivel by The Equal Lens.**
-- It shows people how much of the payroll they own through their investments goes to women.
-- It lets them play and forecast their way past the stereotypes and beliefs that hold women back from paid work.
+- It gives savers and investors a clear picture of gender bias in the companies they own: in the data, in a game that tests their assumptions, and in forecasts that meet the facts.
+- Awareness among the people who influence hiring and pay opens jobs to women and closes wage gaps.
 
 ### The problem
-Women's work is held back by a gap that owners cannot see and beliefs nobody checks.
+People who could change who gets hired and paid do not see the bias, so they underestimate how much it holds women back.
 
+- **Unseen beliefs hold the gap in place.**
+  - In Saudi Arabia, most young married men privately supported women working outside the home, but underestimated how many other men agreed.
+  - Correcting that belief made more of them sign their wives up for a job-matching service (Bursztyn, González and Yanagizawa-Drott, 2020).
+  - The pattern is wide: across 60 countries, people in less gender-equal countries underestimate support for women working outside the home.
+  - Misperceptions like these are rarely corrected at scale.
+- **The owners never see the bias in what they own.** Through index funds and pension money, ordinary savers own India's largest companies, yet nobody shows them how the payroll they own is split.
+  - ₹10 lakh in a Nifty 50 fund owns ₹26,968 of payroll a year. ₹5,604 of it goes to women, ₹7,880 short of parity.
 - **The gap is mostly about jobs.** Solve's brief notes that women remain 24% less likely than men to take part in the labour force.
   - In the Nifty 50, India's flagship index, women receive 20.8% of the payroll a fund owns (FY2025-26).
   - 77% of the gap to parity comes from too few women being employed. Only 23% comes from lower pay per woman.
-- **The owners never see it.** Through index funds and pension money, ordinary savers own these companies, yet nobody shows them how the payroll they own is split.
-  - ₹10 lakh in a Nifty 50 fund owns ₹26,968 of payroll a year. ₹5,604 of it goes to women, ₹7,880 short of parity.
 - **Progress is slow.** At the current median pace, a company at the Nifty 50's level would take about 95 years to reach parity. In the FTSE 100, women still earn about 87p for every £1 men earn per hour.
-- **Beliefs hold the gap in place.**
-  - In Saudi Arabia, most young married men privately supported women working outside the home, but underestimated how many other men agreed.
-  - Correcting that belief made more of them sign their wives up for a job-matching service (Bursztyn, González and Yanagizawa-Drott, 2020).
-  - Misperceived norms like this are rarely corrected at scale.
 - **The data exists but is buried.** India's BRSR filings, the UK's gender pay gap reports, Australia's WGEA data, Japan's women's advancement database and the EU's new CSRD statements all use different formats and definitions.
 
 ### The solution
-Three connected parts, all in Nivel: see the gap, play with the stereotypes behind it, and test the beliefs that keep it in place.
+Three connected parts, all in Nivel, each giving savers and investors a clearer picture of the bias: see the gap, play with the stereotypes behind it, and test the beliefs that keep it in place.
 
 **1. See it: the data (live).** A free public site and installable app that turns legally required disclosures into one comparable picture.
 - **Coverage:** women's share of the payroll owned through 7 stock indexes and 675 companies in India, the UK, Australia, Japan and the EU.
@@ -64,6 +71,7 @@ Three connected parts, all in Nivel: see the gap, play with the stereotypes behi
 - **How it scores:** "You get points for prediction and recall, never for opinion." Players are scored on how well they read the room and the facts, so each reveal corrects a misperceived norm in the moment, among friends.
 - **Privacy:** nothing is kept by default. There are no accounts, names never sit beside an answer, and the room only holds counts.
 - **Why it fits:** the data shows where women are missing; the game works on the assumptions about women and work that help keep them out.
+- **Anytime play (planned):** a five-minute version anyone can play alone on the same reviewed questions, with the discussion continuing in Nivel's markets.
 - **A workplace theme built on Nivel:** the game is designed to take new themes beyond Bollywood, such as family and the workplace. A workplace theme would draw on Nivel's figures, for example guessing women's share of the Nifty 50 payroll before the reveal.
 
 **3. Forecast it: prediction markets in Nivel (in development).** Play-money markets, where people forecast with tokens they earn and cannot buy, in three kinds of question:
@@ -71,25 +79,31 @@ Three connected parts, all in Nivel: see the gap, play with the stereotypes behi
 - **Forecast the norm:** "What share of adults say women should work outside the home?", resolved against published surveys.
 - **See your own bias:** after each question resolves, players see how their forecasts about women compared with the facts.
 
-**How this opens jobs to women.** Two short links, each with its own measure:
-- **Owners to employers.** Seeing the payroll they own changes what owners ask companies and funds. Disclosure has moved employers before: Denmark's pay-gap transparency law narrowed its gap by 2 percentage points, and the firms it covered hired more women. Measure: questions to companies and funds that cite Nivel.
-- **Beliefs to households.** Playing and forecasting against the facts corrects the misperceived norms that keep women out of paid work. Measure: what people believe their peers think, before and after, against a comparison group.
+**From awareness to jobs.**
+- **Savers and investors see the bias** in the companies they own, in rupees, and test their assumptions about it in play and forecasting.
+- **Awareness reaches the people who influence employment decisions:**
+  - owners who vote and ask questions;
+  - fund houses and stewardship teams who engage companies;
+  - the employees and managers who play.
+- **Those decisions open jobs and close wage gaps.** Disclosure has moved employers before: Denmark's pay-gap transparency law narrowed its gap by 2 percentage points, and the firms it covered hired more women.
+- **Measure:** the change in awareness of the bias before and after each part of Nivel (see How we will measure it).
 
 ### Who it serves
-- **Women kept out of paid work, and the families whose beliefs decide it.**
+- **Savers and investors,** who own India's listed companies through their savings and can ask them to change. NSE's unique registered investors passed 13 crore in April 2026, and one in four is a woman.
+- **The stakeholders who influence employment decisions:**
+  - fund houses and stewardship teams;
+  - the employees and managers who play Spot the Stereotype;
+  - the journalists who report on companies.
+- **Ultimately, women seeking work and fair pay.**
   - In India in 2025, 40.0% of women aged 15 and over were working or looking for work, and 27.7% in towns.
   - Of the women outside the labour force, 44.4% named child care or running the home as the main reason (Periodic Labour Force Survey 2025).
-  - They are the people the work is for. We are designing the family-facing version of the game with them, through [partner organisation], starting with five interviews in Hindi before submission.
-- **Young urban adults**, who will shape their own households and workplaces, reached through Spot the Stereotype.
-- **Savers and index-fund holders**, who can finally see what they own.
-- **Fund houses, stewardship teams and journalists**, who need comparable, sourced figures.
 
 ### Why now, and why us
 - **The disclosures have only recently become usable:**
   - India made BRSR reporting mandatory for its 1,000 largest listed companies.
   - The EU's CSRD reporting began with 2024.
   - Japan publishes a national database.
-- **The Equal Lens helps people unlearn bias through play.** Spot the Stereotype is its game night for young adults, built on its Bollywood Bias Detective rulebook. Nivel brings the same approach to people's money. Forecasting is 18+ only.
+- **The Equal Lens is a nonprofit that helps people unlearn bias through play.** Spot the Stereotype is its game night for young adults, built on its Bollywood Bias Detective rulebook. Nivel brings the same approach to people's money. Forecasting is 18+ only.
 - **Nivel's data is live,** built by a small team on public disclosures.
 
 ### What makes it new
@@ -114,25 +128,32 @@ Three connected parts, all in Nivel: see the gap, play with the stereotypes behi
 - **Spot the Stereotype is live** at spot-the-stereotype.vercel.app. One game night has run on the Bollywood rounds, with 14 players, after a stress test with sixteen players in four teams.
 - **Next:**
   - Spot the Stereotype reached from Nivel, with a workplace theme built on Nivel's figures.
-  - First evidence before 23 October: Guess first with 20 people on the Nifty 50 figure, and one workplace night with before-and-after questions on what players think their peers believe. [results] This tests the process, not impact.
+  - First awareness measurements before 23 October: Guess first with 20 people on the Nifty 50 figure, and one workplace night, each measuring awareness of the bias before and after. [results] This tests the process, not impact.
   - A forecasting pilot in Nivel, measured with a question before and after.
 
 ### Impact goals
 - **In one year:**
   - [n] monthly readers.
   - Three more data sets: US board seats, Indian mutual fund footprints and more Indian indexes.
-  - A norm-question pilot with [n] adults and a measured shift in stated beliefs.
+  - An awareness pilot with [n] savers, investors and players, showing a measured change in awareness of the bias before and after.
 - **In five years:**
   - A footprint for every Indian equity mutual fund.
   - Gender pay questions raised with the 100 largest listed companies by their investors.
   - Norm questions running in [n] Indian languages.
 
 ### How we will measure it
+- **The main measure: awareness of the bias, before and after.** Each person answers the same short questions before seeing a figure and again after.
+  - **The size of the gap:** "Out of every ₹100 the Nifty 50's companies pay, how much goes to women?" Awareness is how close the guess is to the published figure, 21.
+  - **Where the gap comes from:** how much of it is too few women employed rather than lower pay. The answer is 77%.
+  - **What others believe:** the share of people like them who they think support women working, against the share who actually say so. This is the Saudi study's measure.
+- **The design:**
+  - Answers are paired on the person's own device, and only the change is sent, as counts. There are no names and no accounts.
+  - A comparison group answers twice before seeing any figure, which separates learning from simply answering twice.
+  - A follow-up after four weeks, on the same device, checks whether the change lasts.
+  - About 90 people answering before and after are enough to detect a modest change of 0.3 standard deviations, with 80% power at the 5% level.
 - **Reach:** readers, shares, and fund and company page views.
 - **Use:** questions put to companies or funds that cite Nivel figures.
-- **Beliefs:**
-  - Forecasts on the same norm questions before and after people see the result, compared with a group that does not see it.
-  - Until a behavioural study exists, claims stay limited to stated beliefs.
+- **Claims stay limited** to awareness and stated beliefs until a behavioural study exists.
 - **What the evidence says, including against us:**
   - Correcting a misperceived norm has changed behaviour (Saudi Arabia, 2020), and misperceptions of gender norms are pervasive across 60 countries.
   - One-off, light-touch messages often fail or fade. In Karnataka, neither a video nor a guided conversation raised families' support for women's work (J-PAL).
@@ -140,9 +161,12 @@ Three connected parts, all in Nivel: see the gap, play with the stereotypes behi
   - So the design repeats contact: nights are community events that recur, anytime play and markets bring people back weekly and at each resolution, and the evaluation keeps a comparison group.
 
 ### Business model and sustainability
-- **Nivel stays free** to the public.
-- **Grants and prizes** fund the play and forecasting pilots and new data.
-- **Later: paid data services** for fund houses and researchers. These depend on legal advice on SEBI's ESG rating rules. Nivel shows arithmetic on disclosed data, not ratings.
+- **The Equal Lens is a nonprofit.** Nivel, Spot the Stereotype and the markets are free, and no payer has been identified.
+- **Grants and prizes** fund the awareness pilot, the forecasting build and new data.
+- **Running costs are low:**
+  - Nivel is a static site, so serving another reader costs little more than hosting.
+  - A game night needs one host and a video call.
+  - The yearly data refresh is the main cost.
 
 ### Safeguards and limits
 - **Not investment advice and not an ESG rating.**
@@ -161,7 +185,7 @@ Three connected parts, all in Nivel: see the gap, play with the stereotypes behi
 
 ### How Solve would help
 - **Funding:**
-  - Run and evaluate the play and forecasting pilots.
+  - Run and evaluate the awareness pilot, before and after, with a comparison group.
   - Add US board seats and mutual fund footprints.
 - **Network:**
   - Introductions to fund houses and stewardship groups.
@@ -174,20 +198,19 @@ Three connected parts, all in Nivel: see the gap, play with the stereotypes behi
 |---|---|---|---|---|
 | 1 | 3 to 9 Oct | Create the Solve account and start the application. Confirm the questions and word limits. Collect team bios, city and entity details | Team | PARITY-46 |
 | 1 | 3 to 9 Oct | Evidence brief on stereotypes and misperceived norms. Catalogue of sources forecasts resolve against | Claude | PARITY-42, PARITY-43 |
-| 2 | 10 to 16 Oct | Evaluation design. Safeguarding review. Online Gaming Act check | Claude and team | PARITY-45 |
+| 2 | 10 to 16 Oct | Evaluation design: the awareness questions and the comparison group. Safeguarding review. Online Gaming Act check | Claude and team | PARITY-45 |
 | 2 | 10 to 16 Oct | Design where Spot the Stereotype sits in Nivel and what one forecasting question looks like | Claude | PARITY-41 |
-| 2 | 10 to 16 Oct | Guess first test with 20 people. Five interviews in Hindi through a partner organisation | Team and Claude | PARITY-55 |
-| 3 | 17 to 23 Oct | One workplace night with before-and-after questions, reported as a test of the process | Team | PARITY-55, BIAS-45 |
+| 2 | 10 to 16 Oct | Guess first test with 20 people, measuring awareness before and after. Interviews with five savers and five players | Team and Claude | PARITY-55 |
+| 3 | 17 to 23 Oct | One workplace night measuring awareness before and after, reported as a test of the process | Team | PARITY-55, BIAS-45 |
 | 3 | 17 to 23 Oct | Demo build: Spot the Stereotype reached from Nivel, a sketch of the workplace theme, and a clickable forecasting question. Record the demo video. Evidence brief and evaluation design final by 23 October | Team and Claude | PARITY-42, PARITY-45 |
 | 4 | 24 to 30 Oct | Final answers, team review, submit by 30 October | Team and Claude | PARITY-46 |
 
 The form closes on 2 November at 12:00pm EST. Submitting on 30 October leaves three days of slack.
 
 ## Open items for the team
-- Later: team names, roles and short bios; head office city; legal entity type.
+- Later: team names, roles and short bios; head office city; the NGO's legal form (trust, society or Section 8 company).
 - Later: which optional prizes to enter. Check each prize's criteria and only claim AI use that is real.
 - A one to two minute demo video, if the form asks for one.
-- A partner organisation that works with women and families, for the Hindi interviews and the family-facing version.
 - Reach numbers: a cookieless, aggregate counter for Nivel, or say plainly that there are none.
 - Later: sign-off on the impact goal numbers.
 

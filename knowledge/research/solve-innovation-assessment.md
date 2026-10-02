@@ -196,6 +196,20 @@ The criteria below were read from the 2027 challenge page on 2 October 2026.
 8. **Use the challenge page's exact wording** for the focus area.
 9. **Decide on reach numbers:** either a cookieless aggregate counter for Nivel, or say plainly that there are none.
 
+## 10. Decisions taken after this assessment
+On 2 October 2026 the team set the framing, and the application now follows it:
+- **The problem** is the one the Saudi study found: people do not see the bias, so they underestimate its effect.
+- **The users** are savers, investors and the stakeholders who influence employment decisions. Women seeking work and fair pay are the people it ultimately benefits.
+- **The outcome measured** is a change in awareness of the bias, before and after, with a comparison group and a four-week follow-up.
+- **The organisation:** The Equal Lens is a nonprofit. No payer is identified, and this work needs no partner.
+
+**What this changes:**
+- **Credibility can rise.** Awareness before and after is an outcome the team can measure before 23 October.
+- **Human-Centered Design stays the main risk,** because the users are not the underserved group the challenge names. The answer within this framing has two parts:
+  - show that savers, investors and managers do influence hiring and pay;
+  - show that the design was tested with them.
+- **Section 9 changes:** recommendation 5 no longer involves a partner organisation. The interviews are with savers, investors and players instead.
+
 ## Sources
 - MIT Solve: [2027 Global Economic Prosperity Challenge](https://solve.mit.edu/challenges/2027-global-economic-prosperity-challenge) (criteria read 2 October 2026); [2025 Solver class](https://solve.mit.edu/articles/mit-solve-awards-over-15-million-in-funding-to-tech-based-innovators-addressing-global-challenges); [2026 Solver class](https://capital.com/en-gb/news/mit-solve-awards-1-million-to-10-innovators-marking-a); [2017 Women and Technology Solver teams](https://solve.mit.edu/articles/press-release-mit-solve-announces-2017-women-and-technology-challenge-solver-teams-following-live-pitch-event); [RANI, Myna Mahila Foundation](https://solve.mit.edu/solutions/99633).
 - Competitors: [Equileap Global Report 2023](https://equileap.com/wp-content/uploads/2023/03/Equileap_Global_Report_2023.pdf); [As You Sow, Gender Equality Funds](https://www.asyousow.org/press-releases/gender-lens-investing-sustainability-report-card); SFDR, Commission Delegated Regulation (EU) 2022/1288, Annex I, indicator 12, with an example in [HSBC's PAI methodology](https://www.hsbc.com.mt/content/dam/hsbc/hbmt/docs/insurance/SFDR-PAI-methodology.pdf); [LSEG, gender pay gap and investment strategies](https://www.lseg.com/content/dam/marketing/en_us/documents/gated/reports/gender-pay-gap-and-investment-strategies.pdf); [CFA Institute, Mind the Gender Gap](https://rpc.cfainstitute.org/en/research/reports/2023/mind-gender-gap-indian-public-companies); [Factly on BRSR](https://factly.in/data-latest-brsr-data-indicates-there-are-147-females-to-1000-males-in-key-managerial-personnel-positions); [Gender Pay Gap Bot](https://fortune.com/2022/03/09/twitter-paygapapp-bot-international-womens-day-gender-pay-gap-figure-shaming) (Fortune).

@@ -230,6 +230,7 @@ Each journey runs stage by stage. **Feel** runs from -2 (frustrated) to 2 (delig
 - **The people the work is for are reached only second-hand** (Meera and Rajesh).
   - Needed: Hindi, cards that travel on WhatsApp, a family theme in the game, and a partner organisation working with families.
   - This is the main risk on Solve's Human-Centered Design criterion.
+  - **Decision, 2 October 2026:** the work targets savers, investors and the stakeholders who influence hiring. Women are its beneficiaries, not its users, and no partner is planned. The family-facing ideas above are out of scope for now.
 - **Nivel counts nothing.** There are no analytics, so there is no reach figure. Either decide on a cookieless aggregate counter, or say plainly that there is none.
 - **Earning tokens for markets** needs a design that does not depend on accounts in the game, which has none.
 - **The "ask your fund" step does not exist.** It is the action an owner can take.
@@ -245,7 +246,7 @@ Each journey runs stage by stage. **Feel** runs from -2 (frustrated) to 2 (delig
   - 5 players, including some of the 14 from the first night;
   - 3 hosts;
   - 3 forecasters;
-  - 5 women weighing work or their family members, through a partner organisation and in Hindi.
+  - 5 managers or HR leads, the stakeholders closest to hiring decisions.
   - The scripts are the "Ask in interviews" lines above.
 - **A Guess first test with 20 people on the Nifty 50 figure.** Record the guesses as counts. The guesses are also the first evidence of the misperception the pitch claims.
 - **One workplace night with before-and-after questions** on what players think their peers believe.
