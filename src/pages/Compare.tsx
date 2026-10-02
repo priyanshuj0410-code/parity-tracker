@@ -46,17 +46,17 @@ function Countries() {
     { key: 'e', label: 'Employment parity', render: (r) => <SummaryCell s={r.e} measure="e" />, sort: (r) => r.e?.median ?? null },
     { key: 'w', label: 'Wage parity', render: (r) => <SummaryCell s={r.w} measure="w" />, sort: (r) => r.w?.median ?? null },
     { key: 's', label: 'Implied share of pay', render: (r) => <SummaryCell s={r.s} measure="s" />, sort: (r) => r.s?.median ?? null },
-    { key: 'b', label: 'What is measured', priority: 2, render: (r) => <span className="small">{BASIS[r.code].employment ? `Women's share of ${BASIS[r.code].employment}; ` : 'No workforce split yet; '}{BASIS[r.code].wage}</span> },
+    { key: 'b', label: 'What is measured', priority: 2, wide: true, render: (r) => <span className="small">{BASIS[r.code].employment ? `Women's share of ${BASIS[r.code].employment}; ` : 'No workforce split yet; '}{BASIS[r.code].wage}</span> },
   ]
   type IxRow = { id: string; pts: Point[] }
   const ixRows: IxRow[] = INDEX_ORDER.map((id) => ({ id, pts: indexPoints(id) }))
   const ixCols: Column<IxRow>[] = [
     { key: 'name', label: 'Index', render: (r) => <a href={href('index', r.id)}>{indexes[r.id].name}<span className="sub">{indexes[r.id].market}</span></a>, sort: (r) => indexes[r.id].name, csv: (r) => indexes[r.id].name },
-    { key: 'n', label: 'Companies with data', right: true, render: (r) => `${r.pts.length} of ${indexes[r.id].constituents.length + indexes[r.id].missing.length}`, sort: (r) => r.pts.length },
+    { key: 'n', label: 'Companies with data', short: 'With data', right: true, render: (r) => `${r.pts.length} of ${indexes[r.id].constituents.length + indexes[r.id].missing.length}`, sort: (r) => r.pts.length },
     { key: 'e', label: 'Employment parity', render: (r) => <SummaryCell s={summarise(r.pts.map((p) => p.e))} measure="e" />, sort: (r) => summarise(r.pts.map((p) => p.e))?.median ?? null },
     { key: 'w', label: 'Wage parity', render: (r) => <SummaryCell s={summarise(r.pts.map((p) => p.w))} measure="w" />, sort: (r) => summarise(r.pts.map((p) => p.w))?.median ?? null },
     { key: 's', label: 'Implied share of pay', render: (r) => <SummaryCell s={summarise(r.pts.map((p) => p.s))} measure="s" />, sort: (r) => summarise(r.pts.map((p) => p.s))?.median ?? null },
-    { key: 'h', label: 'Headline share of pay', right: true, render: (r) => { const m = indexMarket(indexes[r.id]); return <>{pct(indexes[r.id].years[m.latest].headline)}<span className="sub">{m.label(m.latest) === 'latest' ? 'share of pay' : `share of pay, ${m.label(m.latest)}`}</span></> } },
+    { key: 'h', label: 'Headline share of pay', short: 'Share of pay', right: true, mobile: 'value', phone: (r) => { const m = indexMarket(indexes[r.id]); return pct(indexes[r.id].years[m.latest].headline) }, render: (r) => { const m = indexMarket(indexes[r.id]); return <>{pct(indexes[r.id].years[m.latest].headline)}<span className="sub">{m.label(m.latest) === 'latest' ? 'share of pay' : `share of pay, ${m.label(m.latest)}`}</span></> } },
   ]
   return (
     <>
@@ -138,7 +138,7 @@ function MapTab({ focus }: { focus?: string }) {
     { key: 'sector', label: 'Sector', render: (p) => p.sector, sort: (p) => p.sector },
     { key: 'e', label: 'Employment parity', render: (p) => <Meter value={p.e} parity={E_PARITY} />, sort: (p) => p.e },
     { key: 'w', label: 'Wage parity', render: (p) => <Meter value={p.w} parity={W_PARITY} max={MAX.w} approx={p.c.country === 'IN'} />, sort: (p) => p.w },
-    { key: 's', label: 'Share of pay', mobile: 'value', render: (p) => <Meter value={p.s} parity={E_PARITY} />, sort: (p) => p.s },
+    { key: 's', label: 'Share of pay', mobile: 'value', phone: (p) => pct(p.s), render: (p) => <Meter value={p.s} parity={E_PARITY} />, sort: (p) => p.s },
   ]
   return (
     <>
@@ -152,7 +152,7 @@ function MapTab({ focus }: { focus?: string }) {
         <Dropdown label="Sector" value={sector} onChange={setSector} options={[{ id: 'all', label: 'All sectors' }, ...SECTORS.map((s) => ({ id: s, label: s }))]} />
       </div>
       <ChartFrame title="Where companies sit on both scales" sub="Each dot is a company. Right of the line: half or more of staff are women. Above the line: women are paid at least as much as men on average."
-        table={<DataTable caption="Companies on the parity map" columns={columns} rows={shown} rowKey={(p) => p.c.symbol} initial={{ key: 'w', dir: -1 }} rowHref={(p) => href('company', p.c.symbol)} rank download="parity-map" summary={`${shown.length} companies`} />}>
+        table={<DataTable caption="Companies on the parity map" columns={columns} rows={shown} rowKey={(p) => p.c.symbol} initial={{ key: 's', dir: -1 }} rowHref={(p) => href('company', p.c.symbol)} rank download="parity-map" summary={`${shown.length} companies`} />}>
         {view === 'one' ? (
           <ParityMap points={plotted} on={on} focus={focus} label="Parity map" />
         ) : (

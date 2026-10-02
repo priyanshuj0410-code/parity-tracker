@@ -5,6 +5,7 @@ description: Visual and writing rules for Nivel (formerly Parity Tracker), deriv
 updated: 2026-10-02
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/ccb18646-56ef-40e7-8091-87a1a83f7f23
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/f8e47e59-45e2-4e07-a743-4773f2b04774
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/eb5a5943-61a5-4130-991f-afea4703a3b8
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/b274889f-1235-4d52-b68c-2fb212171f8a
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/a6405009-0cea-40da-bea8-762ca3d76dbf
@@ -111,7 +112,12 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
   - company cells: logo tile, name link, then ticker and market or industry as a muted sub-line
   - tables flow with the page: no inner scroll box. The header row stays pinned under the site header (`top: 64px`) while the page scrolls, with rounded outer corners on the first and last cells. Long headers wrap.
   - columns carry a priority: priority 2 hides below 1100px wide and priority 3 below 1000px (sparklines, sector, board), so a desktop table never scrolls sideways
-  - **below 900px every data table becomes a stacked list** (PARITY-16): one row per item with rank, the title cell, one key value at the top right, and the other columns as small labelled details underneath. A Sort dropdown, a direction button and an icon-only CSV button sit above it. Nothing scrolls sideways.
+  - **below 900px every data table becomes a stacked list of cards** (PARITY-16, reworked in PARITY-23 after testing on a Pixel 9, 412px wide). Each card:
+    - top row: muted rank, logo tile, the name in `--ink` (Poppins 600, 15px, up to two lines) with a muted subtitle line under it (ticker · market · sector), and one key value at the top right (Poppins 600, 17px) with a data tag only when the figure is not cleanly reported
+    - details under a hairline in a two-column grid: 11px muted labels over 13px values; meters shrink to a 36px track; long text (what is measured, sources, basis) spans both columns
+    - columns choose their phone role: title, value, detail or hidden, and can give a compact phone rendering (the value never carries a meter or a "Reported" tag)
+  - the list bar wraps: a long summary takes its own line, and the Sort dropdown truncates its label so the direction and CSV buttons always stay on screen. Small tables (years, sectors, markets) drop the bar entirely.
+  - every table goes through this component, including chart frames' table views and the markets table, so no table on a phone scrolls sideways
   - the whole row opens the company, with the name link kept for keyboard and screen-reader users
 - **Meter (inline data bar):** the value, then a 52px by 6px `--line` track with a `--s1` fill and a 2px ink tick at parity. Employment parity and share of pay run 0–100% (tick at 50%); wage parity runs 0–140% (tick at 100%). Replaces bare percentages wherever a value has a parity point.
 - **Tabs:** underline tabs for sections that have their own URL (company pages: Overview, Trend, Peers, Data and sources; Compare: Countries, Sectors, Parity map). 14px Poppins 500, `--soft`, active `--violet` with a 2px underline and `aria-current="page"`. They scroll sideways on phones.

@@ -14,8 +14,8 @@ const latest = (c: Company) => c.years[marketOf(c).latest]
 const rankOf = (c: Company) => { const p = pointOf(c.symbol); return p ? percentile(p, 'w') : null }
 
 const columns: Column<Company>[] = [
-  { key: 'name', label: 'Company', render: (c) => <span className="name-cell"><Logo symbol={c.symbol} name={c.name} /><a href={href('company', c.symbol)}>{c.name}<span className="sub">{c.symbol.replace(/^(ASX|TSE|EU)-/, '')} · {marketOf(c).name}</span></a></span>, sort: (c) => c.name, csv: (c) => c.name },
-  { key: 'sector', label: 'Sector', priority: 3, render: (c) => <span title={c.industry}>{sectorOf(c)}</span>, sort: (c) => sectorOf(c) },
+  { key: 'name', label: 'Company', render: (c) => <span className="name-cell"><Logo symbol={c.symbol} name={c.name} /><a href={href('company', c.symbol)}>{c.name}<span className="sub">{c.symbol.replace(/^(ASX|TSE|EU)-/, '')} · {marketOf(c).name}</span></a></span>, phone: (c) => <span className="name-cell"><Logo symbol={c.symbol} name={c.name} /><a href={href('company', c.symbol)}>{c.name}<span className="sub">{c.symbol.replace(/^(ASX|TSE|EU)-/, '')} · {marketOf(c).name} · {sectorOf(c)}</span></a></span>, sort: (c) => c.name, csv: (c) => c.name },
+  { key: 'sector', label: 'Sector', priority: 3, mobile: 'hide', render: (c) => <span title={c.industry}>{sectorOf(c)}</span>, sort: (c) => sectorOf(c) },
   { key: 'e', label: 'Employment parity', render: (c) => <Meter value={pointOf(c.symbol)?.e} parity={E_PARITY} />, sort: (c) => pointOf(c.symbol)?.e ?? null },
   {
     key: 'w', label: 'Wage parity', sort: (c) => pointOf(c.symbol)?.w ?? null,
@@ -26,7 +26,7 @@ const columns: Column<Company>[] = [
     },
   },
   { key: 'rank', label: 'Market percentile', short: 'Percentile', priority: 2, right: true, render: (c) => { const r = rankOf(c); return r == null ? <span className="muted">n/a</span> : ordinal(Math.round(r * 100)) }, sort: (c) => rankOf(c), csv: (c) => { const r = rankOf(c); return r == null ? null : Math.round(r * 100) } },
-  { key: 'h', label: 'Share of pay', right: true, mobile: 'value', render: (c) => <span className="nowrap">{pct(latest(c)?.w)} <DataBadge year={latest(c)} /></span>, sort: (c) => latest(c)?.w ?? null },
+  { key: 'h', label: 'Share of pay', right: true, mobile: 'value', phone: (c) => <>{pct(latest(c)?.w)}<DataBadge year={latest(c)} quiet /></>, render: (c) => <span className="nowrap">{pct(latest(c)?.w)} <DataBadge year={latest(c)} /></span>, sort: (c) => latest(c)?.w ?? null },
   { key: 'chg', label: '1-year change', right: true, render: (c) => <Change value={yoyChange(c)} />, sort: (c) => yoyChange(c) },
 ]
 

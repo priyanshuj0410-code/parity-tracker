@@ -136,10 +136,14 @@ function Trend({ c }: { c: Co }) {
       <section>
         <ChartFrame title="Women's share of pay and of the workforce" sub="From each year's CSRD statement: the unadjusted gap (S1-16) and headcount by gender (S1-6)"
           table={(
-            <div className="table-wrap"><table className="data"><caption className="sr-only">Values by year</caption>
-              <thead><tr><th>Year</th><th className="r">Share of pay</th><th className="r">Women in workforce</th><th className="r">Pay per 100 of men's</th><th className="r">Unadjusted gap</th><th>Data</th></tr></thead>
-              <tbody>{ys.map((k) => <tr key={k}><td>{k}</td><td className="r">{pct(c.years[k].w)}</td><td className="r">{pct(c.years[k].fAll)}</td><td className="r">{pct(payRatio(c, c.years[k]), 0)}</td><td className="r">{pct(c.years[k].gapMean)}</td><td><DataBadge year={c.years[k]} /></td></tr>)}</tbody>
-            </table></div>
+            <DataTable caption="Values by year" bare rows={ys} rowKey={(k) => k} initial={{ key: 'year', dir: 1 }} columns={[
+              { key: 'year', label: 'Year', render: (k) => k, sort: (k) => k },
+              { key: 'w', label: 'Share of pay', right: true, mobile: 'value', render: (k) => pct(c.years[k].w) },
+              { key: 'f', label: 'Women in workforce', right: true, render: (k) => pct(c.years[k].fAll) },
+              { key: 'r', label: "Pay per 100 of men's", right: true, render: (k) => pct(payRatio(c, c.years[k]), 0) },
+              { key: 'g', label: 'Unadjusted gap', right: true, render: (k) => pct(c.years[k].gapMean) },
+              { key: 'd', label: 'Data', render: (k) => <DataBadge year={c.years[k]} /> },
+            ]} />
           )}>
           <LineChart ariaLabel={`${c.name}: women's share of pay and of the workforce, by year`} xs={YEARS} xLabel={fy} fmt={pctTick}
             yMax={Math.max(0.5, Math.ceil(Math.max(0, ...ys.map((k) => Math.max(c.years[k].w ?? 0, c.years[k].fAll ?? 0))) * 10) / 10)}
@@ -167,19 +171,28 @@ function Trend({ c }: { c: Co }) {
   const yMax = Math.max(0.5, Math.ceil(peak * 10) / 10)
   const rows = YEARS.filter((k) => c.years[k])
   const table = uk ? (
-    <div className="table-wrap"><table className="data"><caption className="sr-only">Values by year</caption>
-      <thead><tr><th>Year</th><th className="r">Pay to women</th><th className="r">Workforce</th><th className="r">Top quarter</th><th className="r">Mean gap</th><th className="r">Median gap</th><th className="r">Employers</th><th>Data</th></tr></thead>
-      <tbody>{rows.map((k) => { const v = c.years[k]; return (
-        <tr key={k}><td>{fy(k)}</td><td className="r">{pct(v.w)}</td><td className="r">{pct(v.fAll)}</td><td className="r">{pct(v.topQuartile)}</td><td className="r">{pct(v.gapMean)}</td><td className="r">{pct(v.gapMedian)}</td><td className="r">{v.entityCount}</td><td><DataBadge year={v} /></td></tr>
-      ) })}</tbody>
-    </table></div>
+    <DataTable caption="Values by year" bare rows={rows} rowKey={(k) => k} initial={{ key: 'year', dir: 1 }} columns={[
+      { key: 'year', label: 'Year', render: (k) => fy(k), sort: (k) => k },
+      { key: 'w', label: 'Pay to women', right: true, mobile: 'value', render: (k) => pct(c.years[k].w) },
+      { key: 'f', label: 'Workforce', right: true, render: (k) => pct(c.years[k].fAll) },
+      { key: 't', label: 'Top quarter', right: true, render: (k) => pct(c.years[k].topQuartile) },
+      { key: 'g', label: 'Mean gap', right: true, render: (k) => pct(c.years[k].gapMean) },
+      ...(gb ? [
+        { key: 'gm', label: 'Median gap', right: true, render: (k: string) => pct(c.years[k].gapMedian) },
+        { key: 'e', label: 'Employers', right: true, render: (k: string) => c.years[k].entityCount },
+      ] : []),
+      { key: 'd', label: 'Data', render: (k) => <DataBadge year={c.years[k]} /> },
+    ]} />
   ) : (
-    <div className="table-wrap"><table className="data"><caption className="sr-only">Values by year</caption>
-      <thead><tr><th>Year</th><th className="r">Wages to women</th><th className="r">Permanent staff</th><th className="r">Board</th><th className="r">Payroll</th><th>Data</th><th>Basis</th></tr></thead>
-      <tbody>{rows.map((k) => { const v = c.years[k]; return (
-        <tr key={k}><td>{fy(k)}</td><td className="r">{pct(v.w)}</td><td className="r">{pct(v.fPerm)}</td><td className="r">{v.board ? `${v.boardWomen} of ${v.board}` : 'n/a'}</td><td className="r">{crore(v.payrollCr)}</td><td><DataBadge year={v} /></td><td>{v.boundary || 'n/a'}</td></tr>
-      ) })}</tbody>
-    </table></div>
+    <DataTable caption="Values by year" bare rows={rows} rowKey={(k) => k} initial={{ key: 'year', dir: 1 }} columns={[
+      { key: 'year', label: 'Year', render: (k) => fy(k), sort: (k) => k },
+      { key: 'w', label: 'Wages to women', right: true, mobile: 'value', render: (k) => pct(c.years[k].w) },
+      { key: 'f', label: 'Permanent staff', right: true, render: (k) => pct(c.years[k].fPerm) },
+      { key: 'b', label: 'Board', right: true, render: (k) => { const v = c.years[k]; return v.board ? `${v.boardWomen} of ${v.board}` : 'n/a' } },
+      { key: 'p', label: 'Payroll', right: true, render: (k) => crore(c.years[k].payrollCr) },
+      { key: 'd', label: 'Data', render: (k) => <DataBadge year={c.years[k]} /> },
+      { key: 'basis', label: 'Basis', wide: true, render: (k) => c.years[k].boundary || 'n/a' },
+    ]} />
   )
   return (
     <section>
@@ -209,13 +222,13 @@ function Peers({ c }: { c: Co }) {
     { key: 'name', label: 'Company', render: (p) => <span className="name-cell"><Logo symbol={p.c.symbol} name={p.c.name} /><a href={href('company', p.c.symbol)}>{p.c.name}<span className="sub">{ticker(p.c)} · {p.c.industry}</span></a></span>, sort: (p) => p.c.name, csv: (p) => p.c.name },
     { key: 'e', label: 'Employment parity', render: (p) => <Meter value={p.e} parity={E_PARITY} />, sort: (p) => p.e },
     { key: 'w', label: 'Wage parity', render: (p) => <Meter value={p.w} parity={W_PARITY} max={1.4} approx={p.c.country === 'IN'} />, sort: (p) => p.w },
-    { key: 's', label: 'Share of pay', mobile: 'value', render: (p) => <Meter value={p.s} parity={E_PARITY} />, sort: (p) => p.s },
+    { key: 's', label: 'Share of pay', mobile: 'value', phone: (p) => pct(p.s), render: (p) => <Meter value={p.s} parity={E_PARITY} />, sort: (p) => p.s },
     { key: 'chg', label: 'Change on last year', short: '1-year change', right: true, render: (p) => <Change value={yoyChange(p.c)} />, sort: (p) => yoyChange(p.c) },
   ]
   return (
     <section>
       <p className="small">Ranked against {scope}, with this company highlighted.</p>
-      <DataTable caption={`Peers of ${c.name}`} columns={columns} rows={peers} rowKey={(p) => p.c.symbol} initial={{ key: 'w', dir: -1 }}
+      <DataTable caption={`Peers of ${c.name}`} columns={columns} rows={peers} rowKey={(p) => p.c.symbol} initial={{ key: 's', dir: -1 }}
         rowHref={(p) => href('company', p.c.symbol)} rank current={c.symbol} download={`peers-${ticker(c)}`} summary={`${peers.length} companies`} />
     </section>
   )

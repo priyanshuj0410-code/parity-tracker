@@ -1,4 +1,5 @@
 import { Change } from '../components/Change'
+import { DataTable } from '../components/DataTable'
 import { ParityTrack } from '../components/ParityTrack'
 import { Sparkline } from '../components/Sparkline'
 import { MARKETS, type MarketStatus } from '../data/markets'
@@ -99,25 +100,13 @@ export function Home() {
       <section>
         <h2>Markets</h2>
         <p className="small">We only publish comparable numbers where the law makes companies disclose them. Where it does not, we say so.</p>
-        <div className="table-wrap">
-          <table>
-            <caption className="sr-only">Market coverage</caption>
-            <thead>
-              <tr><th>Market</th><th>Status</th><th>Source</th><th>What companies must disclose</th><th>Indexes</th></tr>
-            </thead>
-            <tbody>
-              {MARKETS.map((m) => (
-                <tr key={m.market}>
-                  <td><strong>{m.market}</strong></td>
-                  <td><span className={`status ${m.status}`}>{STATUS[m.status]}</span></td>
-                  <td>{m.source}</td>
-                  <td>{m.required}</td>
-                  <td>{m.indexes}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <DataTable caption="Market coverage" bare rows={MARKETS} rowKey={(m) => m.market} initial={{ key: 'market', dir: 1 }} columns={[
+          { key: 'market', label: 'Market', render: (m) => <strong>{m.market}</strong> },
+          { key: 'status', label: 'Status', mobile: 'value', render: (m) => <span className={`status ${m.status}`}>{STATUS[m.status]}</span> },
+          { key: 'source', label: 'Source', wide: true, render: (m) => m.source },
+          { key: 'required', label: 'What companies must disclose', wide: true, render: (m) => m.required },
+          { key: 'indexes', label: 'Indexes', wide: true, render: (m) => m.indexes },
+        ]} />
       </section>
 
       <section>

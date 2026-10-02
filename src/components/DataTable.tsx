@@ -12,6 +12,10 @@ export interface Column<T> {
   csv?: (row: T) => number | string | null | undefined
   /** Phones: the row title, the value at the top right, a labelled detail (default), or hidden. */
   mobile?: 'title' | 'value' | 'meta' | 'hide'
+  /** Phones: a compact rendering used instead of render. */
+  phone?: (row: T) => ReactNode
+  /** Phones: a detail that spans the full card width (long text). */
+  wide?: boolean
   /** Desktop: 2 hides the column below 1100px wide, 3 below 1000px. */
   priority?: 2 | 3
 }
@@ -27,6 +31,8 @@ interface Props<T> {
   download?: string
   summary?: ReactNode
   current?: string
+  /** Small tables: no sort or download controls on phones. */
+  bare?: boolean
 }
 
 const cell = (v: unknown) => {
@@ -36,7 +42,7 @@ const cell = (v: unknown) => {
 
 const DOWNLOAD_ICON = <svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19.5h14" /></svg>
 
-export function DataTable<T>({ columns, rows, rowKey, initial, caption, rowHref, rank, download, summary, current }: Props<T>) {
+export function DataTable<T>({ columns, rows, rowKey, initial, caption, rowHref, rank, download, summary, current, bare }: Props<T>) {
   const [sort, setSort] = useState(initial)
   const phone = useMedia(PHONE)
   const sorted = useMemo(() => {
@@ -76,7 +82,7 @@ export function DataTable<T>({ columns, rows, rowKey, initial, caption, rowHref,
     const sortable = columns.filter((c) => c.sort)
     return (
       <div className="table-block">
-        <div className="list-bar">
+        {!bare && <div className="list-bar">
           <span className="meta">{summary}</span>
           <div className="list-tools">
             {sortable.length > 1 && (
@@ -91,7 +97,7 @@ export function DataTable<T>({ columns, rows, rowKey, initial, caption, rowHref,
             </button>
             {download && <button type="button" className="btn-icon" onClick={save} aria-label="Download as CSV">{DOWNLOAD_ICON}</button>}
           </div>
-        </div>
+        </div>}
         <ol className="mlist" aria-label={caption}>
           {sorted.map((r, i) => {
             const k = rowKey(r)
@@ -99,12 +105,12 @@ export function DataTable<T>({ columns, rows, rowKey, initial, caption, rowHref,
               <li key={k} className={[rowHref && 'link', current === k && 'current'].filter(Boolean).join(' ') || undefined} onClick={(e) => open(e, r)}>
                 <div className="mrow-top">
                   {rank && <span className="mrank">{i + 1}</span>}
-                  <div className="mrow-title">{title?.render(r)}</div>
-                  {value && <div className="mrow-value">{value.render(r)}</div>}
+                  <div className="mrow-title">{title && (title.phone ?? title.render)(r)}</div>
+                  {value && <div className="mrow-value">{(value.phone ?? value.render)(r)}</div>}
                 </div>
                 {metas.length > 0 && (
                   <dl className="mrow-meta">
-                    {metas.map((c) => <div key={c.key}><dt>{c.short ?? c.label}</dt><dd>{c.render(r)}</dd></div>)}
+                    {metas.map((c) => <div key={c.key} className={c.wide ? 'wide' : undefined}><dt>{c.short ?? c.label}</dt><dd>{(c.phone ?? c.render)(r)}</dd></div>)}
                   </dl>
                 )}
               </li>
