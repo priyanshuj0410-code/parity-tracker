@@ -88,6 +88,23 @@ A company is eligible only if every test it faces holds.
   - The results are reported with and without those periods.
 - **Benchmarks:** the Nifty 50 and the Sensex, as total return indexes where available and otherwise as price indexes, on the same month-end dates. The report says which was used.
 
+## Data rules, set on 2 October 2026 before any result
+These were found while collecting the data, before any portfolio or return was computed.
+- **Equity:**
+  - Year-end total equity comes from the balance sheet where the filing tags it.
+  - Annual results filed before about 2023, and some banks' later ones, carry no machine-readable balance sheet. For those, equity is paid-up equity capital plus reserves excluding revaluation reserves, as the results report them. Where both exist, the two agree.
+- **Average equity:** where the earlier year-end equity is unavailable, the latest year-end alone is used.
+- **Borrowings:** where no balance sheet is filed, test 8 (debt to equity) cannot be applied, so test 9 (interest cover) stands alone.
+- **Market capitalisation in 2022 and 2023:** NSE's archive has no market capitalisation file for those dates.
+  - It is calculated as the month-end close times shares outstanding.
+  - Shares are taken from the September 2024 file, adjusted for splits and bonus issues in between.
+  - New issues of shares in between are not captured.
+- **Free float:** public shareholding from the latest quarterly shareholding pattern on or before the quarter ended June of the rebalance year.
+- **Benchmarks:**
+  - Neither niftyindices.com nor BSE serves its total return index to automated requests.
+  - Total returns are therefore proxied by the largest growth-option ETF on NSE tracking each index. Those returns are net of the ETF's small fee.
+  - The Nifty 50 price return uses NSE's own index close.
+
 ## Reported, whatever it shows
 - Cumulative and annualised return, and each period's return.
 - Annualised volatility from monthly returns.
