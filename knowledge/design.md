@@ -23,6 +23,7 @@ plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/c3ec5678-d63b-4dd8-b080-607f10ae9c50
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/997c6dda-88ad-486d-8634-571ca6978989
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/5e3c90ab-26c8-4dca-9e8b-eff1cd6ecc37
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/9c902b7a-2193-4304-a208-7fcd1fdf3a69
 ---
 
 # Nivel design system
@@ -92,6 +93,7 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
 - Hero numbers use Poppins 600 with proportional figures. Tables use tabular figures.
 - Headings are sentence case. Two-tone headlines use ink for the first half and `.accent` (violet) for the second.
 - Headings use Poppins 600, never 700, with −0.01em tracking: h1 26–36px, h2 20px. This matches the restrained weights of investing apps (audit 2026-10).
+- **12px floor everywhere (PARITY-28):** no text is smaller than 12px on any screen. That covers chart axes and reference labels, badges, scale ticks, tooltips, the quadrant labels, formula labels and monogram letters. Phones had the floor first (PARITY-24); desktop followed.
 
 ## 4. Layout
 - Max content width 1120px, 16px side gutter on phones, 24px from 720px up.
@@ -108,6 +110,7 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
 - **Footer:** the Nivel mark, one line ("Built with The Equal Lens from companies' own legally required gender pay disclosures, collected 1 October 2026. Not investment advice."), then Report a correction and Install the app. The trademark note lives on Method.
 - **Corrections:** "Report a correction" opens an email to priyanshu.jain@theequallens.com, from the footer, the Method page's Corrections section and every company's Sources tab. The subject names the company.
 - **Page change:** a 180ms opacity fade on the new page's content, off under reduced motion.
+- **Loading (PARITY-28):** until the code and data arrive, the page shows the Nivel mark (48px, a slow pulse that is off under reduced motion) over "Loading Nivel" in `--soft`. If loading fails, the same spot says "Nivel could not load" with a reload link. See [decisions/0004](decisions/0004-data-as-separate-files.md).
 - **Skip link and focus:** "Skip to content" is the first focusable element (violet pill, shown on focus). After every route change the page title updates ("TCS · Calculations · Nivel"), a polite live region announces it, and focus moves to the page's h1 without scrolling.
 - **Card grids** use `auto-fill`, so a market with one index keeps a normal-width card.
 

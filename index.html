@@ -40,7 +40,13 @@
     <title>Nivel · The Equal Lens</title>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"><div id="boot" class="boot" role="status"><img src="/favicon.svg" alt="" width="48" height="48" /><span>Loading Nivel</span></div></div>
+    <script>
+      addEventListener('error', function () {
+        var boot = document.getElementById('boot')
+        if (boot) boot.innerHTML = '<span>Nivel could not load. ' + (navigator.onLine ? 'Please' : 'Check your connection, then') + ' <a href="">reload the page</a>.</span>'
+      })
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
