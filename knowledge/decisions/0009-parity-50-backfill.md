@@ -29,6 +29,9 @@ plane_issues:
   - Coverage checked before any return: 323 Nifty 500 companies have fiscal 2022-23 figures, 78 start at 2023-24, 59 later, and 41 have none.
 - **Free float:** the latest shareholding pattern on or before 30 June of year Y. NSE's history starts at September 2021, so for the 2021 rebuild most companies use their September 2021 pattern.
 - **Market capitalisation:** NSE's file on the rebuild date, as in 0008. A company not listed on that date is not in the universe that year.
+  - **Clarified before any backfilled return was computed:** NSE publishes no market-capitalisation file before September 2024.
+  - So for the backfilled rebuilds, market capitalisation is the closing price on the date times the shares outstanding in September 2024, adjusted for splits and bonus issues in between.
+  - Shares issued or bought back in between are not reflected.
 
 ## Rules applied
 - **Bar, eligibility, selection and weights:** as in 0008, with the stand-in figures. The bar is the Nifty 50's own women's share of the payroll owned at that date's weights.
