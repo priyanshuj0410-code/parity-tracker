@@ -43,7 +43,7 @@ plane_issues:
 
 ## Steps
 1. **F-1 Legal review:** the three questions above. The team and counsel own it, and it blocks launch, not building.
-2. **F-2 Method note:** attribution, coverage floor and benchmark choice, recorded as a decision record.
+2. **F-2 Method note:** attribution, coverage floor and benchmark choice, recorded in [decision 0010](../decisions/0010-fund-footprint-method.md) (proposed).
 3. **F-3 Fund portfolio pipeline:** the 10 largest fund houses' equity schemes, monthly, matched by ISIN.
 4. **F-4 Fund pages:** footprint, coverage, top contributors, and comparison with the benchmark.
 5. **F-5 Portfolio upload:** in-browser CAS parsing that keeps nothing.

@@ -21,6 +21,7 @@ The app was renamed from Parity Tracker to Nivel on 2 October 2026 ([decisions/0
 - [decisions/0002-app-name-shortlist.md](decisions/0002-app-name-shortlist.md): the N-name shortlist and the choice of Nivel
 - [decisions/0003-path-urls-and-prerendered-pages.md](decisions/0003-path-urls-and-prerendered-pages.md): plain path URLs with one prerendered HTML file per page, so shared links preview their own page
 - [decisions/0004-data-as-separate-files.md](decisions/0004-data-as-separate-files.md): company and index data load as hashed JSON files alongside the code, not inside it
+- [decisions/0010-fund-footprint-method.md](decisions/0010-fund-footprint-method.md): fund footprints: attribution by market cap, a 60% coverage floor, comparison only with each fund's Tier 1 benchmark, and no ranking
 - [plans/us-indexes.md](plans/us-indexes.md): adding the S&P 500 and Dow as a limited-data market, measured by women's share of board seats
 - [plans/fund-footprints.md](plans/fund-footprints.md): women's share of the payroll a mutual fund or personal portfolio owns
 - [plans/nivel-play-and-markets.md](plans/nivel-play-and-markets.md): Nivel's play side (Spot the Stereotype) and its prediction markets on a shared engine
@@ -38,6 +39,7 @@ The app was renamed from Parity Tracker to Nivel on 2 October 2026 ([decisions/0
 - [decisions/0007-parity-50.md](decisions/0007-parity-50.md): pre-registered rules for the Parity 50, a 50-stock large-cap portfolio sized for a model portfolio such as a smallcase
 - [research/parity-50-results.md](research/parity-50-results.md): Parity 50 backtest against the Nifty 50, its concentration in Infosys, the gap list, and the data correction made after the first run
 - [decisions/0008-parity-50-v2.md](decisions/0008-parity-50-v2.md): Parity 50 version 2, where every holding pays women at least the Nifty 50's own share
+- [decisions/0009-parity-50-backfill.md](decisions/0009-parity-50-backfill.md): the stand-in figures that extend the Parity 50 and Nifty 50 comparison back to September 2021
 - [research/parity-50-v2-results.md](research/parity-50-v2-results.md): version 2 results, what the bar keeps out, and the version shown on Nivel as a simulation
 - [reviews/design-audit-2026-10.md](reviews/design-audit-2026-10.md): design audit against Kite, Coin and Groww, with before and after screenshots
 - [reviews/ux-audit-2026-10-02.md](reviews/ux-audit-2026-10-02.md): ship-readiness audit against Nielsen's heuristics, Apple HIG, Material 3, Gestalt and WCAG 2.2 AA, with a reusable checker
