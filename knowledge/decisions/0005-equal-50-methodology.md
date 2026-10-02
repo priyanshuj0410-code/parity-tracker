@@ -104,6 +104,13 @@ These were found while collecting the data, before any portfolio or return was c
   - Neither niftyindices.com nor BSE serves its total return index to automated requests.
   - Total returns are therefore proxied by the largest growth-option ETF on NSE tracking each index. Those returns are net of the ETF's small fee.
   - The Nifty 50 price return uses NSE's own index close.
+  - **Nifty 50 total return:** the SBI Nifty 50 ETF (SETFNIF50).
+  - **Sensex total return:** the ICICI Prudential BSE Sensex ETF (ISIN INF346A01034).
+    - It is followed by its ISIN, because its NSE symbol changed from ICICISENSX to SENSEXIETF in December 2023.
+    - UTI's Sensex ETF gives the same four-year growth to within 0.1%.
+    - No Sensex price index could be fetched: BSE refused automated requests.
+- **Revenue test (7):** where the fiscal year two years back is not available by the rebalance date, the latest year is compared with the year before it.
+- **Missing results:** a company without audited annual results for the latest two fiscal years, broadcast by the rebalance date, is not eligible.
 
 ## Reported, whatever it shows
 - Cumulative and annualised return, and each period's return.
