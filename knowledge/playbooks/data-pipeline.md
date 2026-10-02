@@ -11,6 +11,7 @@ plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/3ddee1dc-99b4-4f03-83c8-55cdf3f78b30
   - https://app.plane.so/claude-pri/projects/18017c30-d8f6-436a-b4ca-a743d5317720/issues/3f4b5bd3-f746-4845-847f-e2e7400b79b4
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/f4ecafb2-e14b-40cc-b5d5-9ac2384f4f9b
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/3e2cafdb-a457-426b-89bc-ce3a1d7b8740
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/9e814581-34cc-49dc-a1ea-75698f44c744
 ---
 
@@ -151,6 +152,14 @@ Run after `merge_markets.py`, from the repo root: `python3 pipeline/shared_scale
 - Each exchange's own labels are matched by rule (NSE industries, UK report sectors, GICS for ASX and Euro Stoxx, Nikkei's 36 groups). The script fails if any label is unmatched.
 - Nikkei groups that mix sectors are split by company in `OVERRIDES` (for example Sony and Panasonic to Consumer Discretionary, Hitachi and FANUC to Industrials, Nintendo to Communication Services).
 - See [../decisions/0001-comparable-parity-measures.md](../decisions/0001-comparable-parity-measures.md) for how sectors and the shared scales are used.
+
+## Spot the Stereotype feed (PARITY-52)
+The build turns the site's data into `/feeds/spot/v1.json` for the game ([contract](../plans/spot-the-stereotype-anytime-and-nivel.md#5-the-nivel-feed)). After any data refresh:
+1. `pnpm build`. If the feed's items changed, it stops and lists them as new, changed or retired.
+2. Read each listed item: the answer, the question's wording and the coverage in its rule.
+3. `SPOT_FEED_WRITE=1 pnpm build` records them in `src/feeds/spot-v1.json`. Commit that file with the data.
+
+An item whose reported figures fall below 90% of the payroll drops out and is kept as retired; the build warns which ones it left out.
 
 ## Logos (PARITY-14)
 Scripts are in `pipeline/logos/`. Output is `public/logos/{safe}.png` (64×64, safe = symbol with characters outside `A-Za-z0-9_-` replaced by `_`) and `src/data/logos.json` (symbol → file). The app falls back to initials when a symbol has no file.

@@ -3,7 +3,7 @@ type: plan
 title: Spot the Stereotype anytime play and the Nivel connection
 description: Plan for The Equal Lens's game team. A one-person mode of Spot the Stereotype on the same reviewed banks without the discussion steps, Nivel's prediction markets as the place the discussion continues, a workplace theme fed by Nivel's figures through a versioned feed, and the entry points that bring Nivel's readers to play.
 status: draft
-updated: 2026-10-02
+updated: 2026-10-03
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/a7d95186-1e6e-4db7-a8ea-2e8f2b947b04
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/3e2cafdb-a457-426b-89bc-ce3a1d7b8740
@@ -218,12 +218,20 @@ From Nivel's data collected on 1 October 2026. Questions are drafts for the game
 |---|---|---|---|
 | `nv-in-nifty50-payshare-2025-26` | If you own a Nifty 50 index fund, you own a slice of each company's wage bill. Out of every ₹100 of that wage bill in 2025-26, how many rupees went to women? | 21 | **Source:** Nivel by The Equal Lens, from the companies' BRSR filings. **Rule:** Nivel's arithmetic, weighting each company by how much of it the index holds. 49 of the 50 companies have figures; 46 reported them directly, covering 93% of the payroll, and the other three are Nivel's estimates. It counts all pay, so fewer women employed and lower pay per woman are mixed together |
 | `nv-in-nifty50-gapsplit-2025-26` | In 2025-26, women got about a fifth of the wage bill a Nifty 50 index fund holds, against half at parity. Nivel splits that shortfall into two causes: fewer women employed, and less pay for each woman employed. Out of every 100 rupees of the shortfall, how many come from fewer women employed? | 77 | **Rule:** Nivel's split of the gap to parity. It does not compare pay for the same job |
-| `nv-in-nifty50-it-2025-26` | The Nifty 50 includes four IT companies. Out of every ₹100 they paid their staff in 2025-26, how many rupees went to women? | 26 | **Pair:** the index's five automobile companies paid women ₹6 of every ₹100 |
-| `nv-in-nifty50-auto-2025-26` | The Nifty 50 includes five automobile and auto parts companies. Out of every ₹100 they paid their staff in 2025-26, how many rupees went to women? | 6 | **Pair:** the index's four IT companies paid women ₹26 |
+| `nv-in-nifty50-health-2025-26` | The Nifty 50 includes five healthcare companies. Out of every ₹100 of their wage bill that a Nifty 50 index fund owns, how many rupees went to women in 2025-26? | 25 | **Rule:** as for the index; all five reported directly. **Pair:** metals and mining |
+| `nv-in-nifty50-metals-2025-26` | The Nifty 50 includes four metals and mining companies. Out of every ₹100 of their wage bill that a Nifty 50 index fund owns, how many rupees went to women in 2025-26? | 7 | **Rule:** as for the index; all four reported directly. **Pair:** healthcare |
 | `nv-gb-ftse100-pence-2025` | In 2025, 80 FTSE 100 companies reported their UK gender pay gaps. Taking the average company, for every £1 a man earned an hour, how many pence did a woman earn? | 87 | **Source:** the UK government's gender pay gap service, averaged by Nivel. **Rule:** UK staff only and mean hourly pay. Each company counts equally, and it compares all men with all women, not the same job |
 | `nv-gb-ftse100-topquarter-2025` | In 2025, 80 FTSE 100 companies reported who sits in each quarter of their UK pay scale. Out of every 100 people in the best-paid quarter, how many were women? | 33 | **Pair:** women were 41 of every 100 UK staff overall |
 | `nv-au-asx200-topquarter-2024-25` | 146 ASX 200 companies report their staff to Australia's Workplace Gender Equality Agency. Out of every 100 people in their best-paid quarter of jobs in 2024-25, how many were women? | 34 | **Pair:** women were 44 of every 100 Australian staff overall |
-| `nv-jp-nikkei225-managers` | Japanese employers report to a government database how many of their managers are women. Taking the average Nikkei 225 company that reports it, out of every 100 managers, how many are women? | 11 | **Source:** Japan's Ministry of Health, Labour and Welfare database, mostly 2025 figures. **Rule:** each employer's own definition of a manager |
+| `nv-jp-nikkei225-managers-2025` | 152 Nikkei 225 companies report to a Japanese government database how many of their managers are women. In the average company's latest report, mostly for 2025, out of every 100 managers, how many were women? | 11 | **Source:** Japan's Ministry of Health, Labour and Welfare database, mostly 2025 figures. **Rule:** each employer's own definition of a manager |
+
+**Changes in the shipped feed (PARITY-52, 3 October 2026).** The feed holds the final wording; the game's review edits it from there.
+- **IT and autos are out.** They miss the 90% bar in section 5.2: Tech Mahindra's and Mahindra & Mahindra's figures are estimates, so reported figures cover 89% and 58% of their payroll. Healthcare and metals and mining, both fully reported, are the contrasting pair instead.
+- **Sector questions say "the wage bill an index fund owns".** Nivel weights sectors by the slice an index fund owns, not by what the companies paid in total.
+- **The gap split no longer gives away the pay share item's answer** ("about a fifth").
+- **UK questions say "in the average company",** as every company counts equally. **The Australian question says each company is weighted by its wage bill**, which gives 34; counting people instead would give 37.
+- **Japan's id carries its period,** 2025, the year 143 of the 152 reports start.
+- **Pairs are ids** in `nivel.pair`, so neither item's reveal gives away the other's answer. The UK and Australian staff-overall figures sit in `source.rule`.
 
 ### 4.3 Writing rules for Nivel items
 - **The stats bank's rules apply in full:**
@@ -269,19 +277,17 @@ One static file at `https://nivel-equal-lens.vercel.app/feeds/spot/v1.json`, wit
       "discussion": "Is the gap about what women are paid, or about who gets hired?",
       "source": {
         "line": "Nivel by The Equal Lens, from the companies' BRSR filings, 2025-26.",
-        "rule": "Nivel's arithmetic, weighting each company by how much of it the index holds. 46 of 49 companies reported directly, 93% of the payroll. It mixes fewer women employed with lower pay per woman."
+        "rule": "Nivel's arithmetic, weighting each company by how much of it the index holds. 46 of 49 companies reported directly, 93% of the payroll. It mixes fewer women employed with lower pay per woman, and does not compare pay for the same job."
       },
       "cite": {
         "from": "https://nivel-equal-lens.vercel.app/index/nifty50",
-        "saw": "Women's share of pay (payroll you own) 20.8%, FY2025-26"
+        "saw": "Women's share of pay (payroll you own) · FY26: 20.8%"
       },
       "nivel": {
         "exact": 20.78,
         "period": "2025-26",
         "market": "IN",
         "status": "current",
-        "pair": "nv-in-nifty50-auto-2025-26",
-        "replaces": "nv-in-nifty50-payshare-2024-25",
         "data": "https://nivel-equal-lens.vercel.app/index/nifty50",
         "markets": []
       }
@@ -291,6 +297,8 @@ One static file at `https://nivel-equal-lens.vercel.app/feeds/spot/v1.json`, wit
 ```
 
 ### 5.2 What Nivel promises (PARITY-52)
+**Shipped.** `src/feeds/spot.ts` builds the items and checks them; the Vite build publishes `feeds/spot/v1.json` and `v1.schema.json`, and `vercel.json` sets the hour's cache and open CORS. Every item ever published is kept in `src/feeds/spot-v1.json`, so a new, changed or retired item stops the build until someone reads it and records it with `SPOT_FEED_WRITE=1 pnpm build`. The game's own `parseFeed` read the first build with no problems.
+
 - **Regenerated on every Nivel deploy,** from the same data files the site uses, with `generatedAt` and `dataAsOf` at the top.
 - **An hour's cache and open CORS,** so a script or the review page can fetch it.
 - **The version is in the path.** A breaking change becomes v2 at a new path, and v1 stays until the game moves.
