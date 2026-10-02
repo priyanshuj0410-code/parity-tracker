@@ -16,11 +16,13 @@ import { Home } from './pages/Home'
 import { IndexPage } from './pages/IndexPage'
 import { Method } from './pages/Method'
 import { NotFound } from './pages/NotFound'
+import { SimulationPage } from './pages/SimulationPage'
 
 function Page({ route }: { route: string[] }) {
   const [head, arg, sub] = route
   if (!head) return <Home />
   if (head === 'index' && arg) return <IndexPage id={arg} tab={sub} />
+  if (head === 'simulation' && arg) return <SimulationPage id={arg} />
   if (head === 'company' && arg) return <Company key={arg} symbol={arg} tab={sub} />
   if (head === 'companies') return <Companies />
   if (head === 'compare') return <Compare tab={arg} focus={sub} />
@@ -34,7 +36,7 @@ const onConnection = (cb: () => void) => {
   return () => { window.removeEventListener('online', cb); window.removeEventListener('offline', cb) }
 }
 
-const SECTION: Record<string, string> = { index: '', company: 'companies', companies: 'companies', compare: 'compare', method: 'method' }
+const SECTION: Record<string, string> = { index: '', simulation: '', company: 'companies', companies: 'companies', compare: 'compare', method: 'method' }
 
 export default function Root() {
   const route = useRoute()
@@ -83,7 +85,7 @@ export default function Root() {
       <footer className="site-footer">
         <div className="wrap">
           <img src={mark} alt="" width="276" height="317" />
-          <span>Built with The Equal Lens from companies' own legally required gender pay disclosures, collected {SOURCE_DATE}. Not investment advice.</span>
+          <span>By The Equal Lens, from companies' own gender pay filings, collected {SOURCE_DATE}. Not investment advice.</span>
           <span className="footer-links"><a className="go" href={correctionHref()}>Report a correction</a><InstallLink /></span>
         </div>
       </footer>

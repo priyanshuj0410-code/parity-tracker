@@ -61,22 +61,22 @@ function Overview({ c, pt }: { c: Co; pt?: Point }) {
       <section>
         <div className="section-head">
           <h2>On the shared scales</h2>
-          {!offMap && <a className="go small" href={href('compare', 'map', c.symbol)}>See it on the parity map</a>}
+          {!offMap && <a className="go small" href={href('compare', 'map', c.symbol)}>Parity map</a>}
         </div>
         <div className="grid g3">
           <ScaleCard label="Employment parity" value={pt?.e} parity={E_PARITY} max={1}
-            basis={b.employment ? `Women's share of ${b.employment}. Parity is 50%.` : 'Workforce split not collected yet.'} rank={standing(pt, 'e')} />
+            basis={b.employment ? `Women's share of ${b.employment}. Parity is 50%.` : 'No workforce split yet.'} rank={standing(pt, 'e')} />
           <ScaleCard label="Wage parity" value={pt?.w} parity={W_PARITY} max={1.4} empty={pt?.wRaw != null ? 'Not comparable' : 'n/a'}
             basis={pt?.wRaw != null
-              ? `Our derivation gives ${pct(pt.wRaw, 0)}, outside the plausible 30–130%. The wage total and the permanent headcount cover different staff, so it is left out of rankings.`
+              ? `Derived ${pct(pt.wRaw, 0)} is outside 30–130%, so it is not ranked: wages and headcount cover different staff.`
               : `Women's average pay as a share of men's${b.approx ? ', approximate' : ''}. Parity is 100%.`} rank={standing(pt, 'w')} />
           <ScaleCard label="Women's share of pay" value={pt?.s} parity={E_PARITY} max={1}
             basis="Implied by the two measures. Parity is 50%." rank={standing(pt, 's')} />
         </div>
-        {offMap && <EmptyState art="offMap" title="Not on the parity map">The map places companies by employment parity and wage parity, so it needs both. {offMap}</EmptyState>}
+        {offMap && <EmptyState art="offMap" title="Not on the parity map">The map needs both employment and wage parity. {offMap}</EmptyState>}
         <p className="small muted" style={{ marginTop: 10 }}>
-          {pt ? `From the ${m.label(pt.year) === 'latest' ? 'latest' : m.label(pt.year)} disclosure. ` : 'No reported figures to place on the shared scales. '}
-          Wage basis: {b.wage}. Rankings compare companies {inMarket(c.country)} only, so differences between markets' rules do not distort them.
+          {pt ? `${m.label(pt.year) === 'latest' ? 'Latest' : m.label(pt.year)} disclosure. ` : 'No reported figures yet. '}
+          Wage basis: {b.wage}. Ranked {inMarket(c.country)} only.
         </p>
       </section>
 
@@ -135,14 +135,14 @@ function Trend({ c }: { c: Co }) {
   const uk = c.country !== 'IN'
   const gb = c.country === 'GB'
   if (c.country === 'JP') {
-    return <section><EmptyState art="notEnough" title="One snapshot so far">Japan's database holds one snapshot, mostly covering FY2025. The trend starts with next year's disclosures.</EmptyState></section>
+    return <section><EmptyState art="notEnough" title="One snapshot so far">Mostly FY25. The trend starts next year.</EmptyState></section>
   }
   if (c.country === 'EU') {
     const ys = YEARS.filter((k) => c.years[k])
-    if (ys.length < 2) return <section><EmptyState art="notEnough" title="One year so far">{c.name} has one verified CSRD statement{ys[0] ? `, for ${ys[0]}` : ''}. The trend starts when the next one is out.</EmptyState></section>
+    if (ys.length < 2) return <section><EmptyState art="notEnough" title="One year so far">One CSRD statement{ys[0] ? `, for ${ys[0]}` : ''}. The trend starts with the next.</EmptyState></section>
     return (
       <section>
-        <ChartFrame level={2} title="Women's share of pay and of the workforce" sub="From each year's CSRD statement: the unadjusted gap (S1-16) and headcount by gender (S1-6)"
+        <ChartFrame level={2} title="Women's share of pay and of the workforce" sub="From CSRD statements: pay gap (S1-16), headcount by gender (S1-6)"
           table={(
             <DataTable caption="Values by year" bare rows={ys} rowKey={(k) => k} initial={{ key: 'year', dir: 1 }} columns={[
               { key: 'year', label: 'Year', render: (k) => k, sort: (k) => k },
@@ -161,7 +161,7 @@ function Trend({ c }: { c: Co }) {
               { id: 'f', label: m.workforceLabel, short: 'Staff', color: 'var(--s2)', points: YEARS.map((k) => ({ x: k, y: c.years[k]?.fAll ?? null })) },
             ]} />
         </ChartFrame>
-        <p className="small muted" style={{ marginTop: 10 }}>2024 was the first CSRD reporting year, so the trend is short.</p>
+        <p className="small muted" style={{ marginTop: 10 }}>CSRD reporting began in 2024.</p>
       </section>
     )
   }
@@ -178,7 +178,7 @@ function Trend({ c }: { c: Co }) {
   const peak = Math.max(0, ...series.flatMap((s) => s.points.map((pt) => pt.y ?? 0)))
   const yMax = Math.max(0.5, Math.ceil(peak * 10) / 10)
   const rows = YEARS.filter((k) => c.years[k])
-  if (rows.length < 2) return <section><EmptyState art="notEnough" title="One year so far">{c.name} has one year of figures{rows[0] ? `, for ${fy(rows[0])}` : ''}. The trend starts with its next report.</EmptyState></section>
+  if (rows.length < 2) return <section><EmptyState art="notEnough" title="One year so far">One year of figures{rows[0] ? `, for ${fy(rows[0])}` : ''}. The trend starts with the next report.</EmptyState></section>
   const table = uk ? (
     <DataTable caption="Values by year" bare rows={rows} rowKey={(k) => k} initial={{ key: 'year', dir: 1 }} columns={[
       { key: 'year', label: 'Year', render: (k) => fy(k), sort: (k) => k },
@@ -211,10 +211,10 @@ function Trend({ c }: { c: Co }) {
           reference={{ y: 0.5, label: 'Parity 50%' }} series={series} />
       </ChartFrame>
       <p className="small muted" style={{ marginTop: 10 }}>{gb
-        ? 'Pay share is derived from each UK employer\'s mean hourly pay gap and the share of women in its workforce, combined across the group\'s UK employers by size band.'
+        ? 'Derived from each UK employer\'s mean hourly pay gap and share of women, combined by size band.'
         : uk
-          ? `Pay share is derived from the group's mean full-time-equivalent pay gap and its share of women. ${fy(m.prev)} uses the ${fy(m.latest)} workforce share because the earlier release is not archived, so it is shown hollow.`
-          : `Hollow points are estimates from median pay, not reported wage totals, and are not joined to the line. Wage data starts in ${fy('2022-23')}, when the field entered the filing format.`}</p>
+          ? `Derived from the group's full-time-equivalent pay gap and share of women. ${fy(m.prev)} (hollow) uses ${fy(m.latest)} workforce shares.`
+          : `Hollow points: estimated from median pay. Wage data starts in ${fy('2022-23')}.`}</p>
     </section>
   )
 }
@@ -254,9 +254,9 @@ function Sources({ c }: { c: Co }) {
       <section>
         <ul className="tight">
           <li><strong>Source:</strong> {gb
-            ? 'the UK government\'s gender pay gap service. Employers with 250 or more UK staff report each year, using a snapshot of pay in April.'
-            : <>the Workplace Gender Equality Agency's employer gender pay gaps, {fy(m.latest)} release. Employers with 100 or more Australian staff report, and corporate groups report combined results. <a href="https://www.wgea.gov.au/data-statistics/data-explorer" target="_blank" rel="noreferrer">WGEA Data Explorer</a></>}</li>
-          {m.years.filter((k) => c.years[k]?.basisChange).map((k) => <li key={k}><strong>{fy(k)}:</strong> the group's reporting employers or their size bands changed from the year before, so this year is left out of like-for-like comparisons.</li>)}
+            ? 'UK gender pay gap service. Employers with 250+ UK staff, April pay snapshot.'
+            : <>WGEA employer gender pay gaps, {fy(m.latest)} release. Employers with 100+ Australian staff; groups report combined. <a href="https://www.wgea.gov.au/data-statistics/data-explorer" target="_blank" rel="noreferrer">WGEA Data Explorer</a></>}</li>
+          {m.years.filter((k) => c.years[k]?.basisChange).map((k) => <li key={k}><strong>{fy(k)}:</strong> reporting employers changed, so not compared like for like.</li>)}
         </ul>
         {c.entities && c.entities.length > 0 && (
           <>
@@ -266,7 +266,7 @@ function Sources({ c }: { c: Co }) {
                 <li key={e.name}>{e.name} ({gb ? `${e.size} staff` : e.size}){gb && e.link && /^https?:\/\//.test(e.link) ? <> · <a href={e.link} target="_blank" rel="noreferrer">employer's report</a></> : null}</li>
               ))}
             </ul>
-            <p className="small muted">Employers are matched to the listed group by name. If one is missing or wrongly included, <a href={correctionHref(`${c.name} employers`)}>report a correction</a>.</p>
+            <p className="small muted">Matched by name. Wrong match? <a href={correctionHref(`${c.name} employers`)}>Report a correction</a>.</p>
           </>
         )}
       </section>
@@ -277,7 +277,7 @@ function Sources({ c }: { c: Co }) {
     <section>
       <ul className="tight">
         <li><strong>Index weight basis:</strong> payroll of {crore(c.payrollWeightCr)} ({c.payrollWeightBasis ?? 'not available'}).</li>
-        {notes.map((k) => <li key={k}><strong>{fy(k)}:</strong> {c.years[k].note}{c.years[k].basisChange ? '; reporting basis changed from the year before, so this year is left out of like-for-like comparisons' : ''}.</li>)}
+        {notes.map((k) => <li key={k}><strong>{fy(k)}:</strong> {c.years[k].note}{c.years[k].basisChange ? '; basis changed, so not compared like for like' : ''}.</li>)}
       </ul>
       <h2 className="h-sub">Source filings</h2>
       <ul className="tight filings">
@@ -310,16 +310,16 @@ export function Company({ symbol, tab }: { symbol: string; tab?: string }) {
             <p className="meta">{c.exchange}: {ticker(c)} · {c.industry}{c.marketCapCr != null && <> · market cap {crore(c.marketCapCr)}</>}</p>
           </div>
         </div>
-        <p className="meta member-of">In {c.indexes.map((id, i) => <span key={id}>{i > 0 && (i === c.indexes.length - 1 ? ' and ' : ', ')}<a className="go" href={href('index', id)}>{indexName(id)}</a></span>)}</p>
+        <p className="meta member-of">{c.indexes.map((id, i) => <span key={id}>{i > 0 && ' · '}<a className="go" href={href('index', id)}>{indexName(id)}</a></span>)}</p>
         {hasData && <Tabs label="Company sections" current={current} items={TABS.map(([id, label]) => ({ id, label, href: id === 'overview' ? href('company', c.symbol) : href('company', c.symbol, id) }))} />}
       </section>
       {!hasData ? (
         <section>{isExcluded(c)
-          ? <EmptyState art="excluded" title="Figure excluded">{c.noDataReason}. Nivel compares unadjusted, company-wide figures only, so this one is left out.</EmptyState>
-          : <EmptyState art="reports" title="No gender pay report to show">{c.noDataReason ?? 'No BRSR filing is available for this company yet. Recent listings file their first report after their first full financial year.'}</EmptyState>}</section>
+          ? <EmptyState art="excluded" title="Figure excluded">{c.noDataReason}. Nivel uses unadjusted, company-wide figures only.</EmptyState>
+          : <EmptyState art="reports" title="No gender pay report to show">{c.noDataReason ?? 'No BRSR filing yet. New listings file after their first full year.'}</EmptyState>}</section>
       ) : current === 'trend' ? <Trend c={c} />
         : current === 'peers' ? <Peers c={c} />
-          : current === 'sources' ? <><Sources c={c} /><p className="small muted correction">Figures checked against the filings on {SOURCE_DATE}. Spotted an error? <a className="go" href={correctionHref(c.name)}>Report a correction</a></p></>
+          : current === 'sources' ? <><Sources c={c} /><p className="small muted correction">Checked against the filings on {SOURCE_DATE}. <a className="go" href={correctionHref(c.name)}>Report a correction</a></p></>
             : current === 'calculations' ? <Calculations c={c} pt={pt} />
             : <Overview c={c} pt={pt} />}
     </>

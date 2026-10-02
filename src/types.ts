@@ -111,3 +111,64 @@ export interface IndexData {
   years: Record<string, IndexYear>
   yoy: Record<string, Yoy>
 }
+
+export interface SimHolding { symbol: string; sector: string; w: number; e: number | null; sim: number; parent: number }
+
+/** A member of the real index that the simulation leaves out: below the bar, or without usable figures. */
+export interface SimLeft { symbol: string; sector: string; w: number | null; parent: number; reason: 'below' | 'noData' }
+
+export interface SimReturns { cumulative: number; annualised: number; volatility: number; maxDrawdown: number }
+
+export interface SimVersus { sim: SimReturns; parent: SimReturns; trackingError: number; beta: number; active: number }
+
+/** A fictional index shown as a simulation (pipeline/equal50/export_parity50.py). Every holding clears a bar set at the real index's own level. */
+export interface Simulation {
+  id: string
+  name: string
+  parent: string
+  version: number
+  asOf: string
+  dataYear: string
+  bar: number
+  eligible: number
+  at25: number
+  headline: {
+    payroll: number
+    parentPayroll: number
+    pay: number
+    parentPay: number
+    staff: number
+    parentStaff: number
+    lowest: { symbol: string; w: number }
+    parentLowest: { symbol: string; w: number }
+  }
+  years: { year: string; bar: number; eligible: number; payroll: number; parentPayroll: number }[]
+  out: { companies: number; weight: number; kept: number; activeShare: number; sectors: { sector: string; weight: number }[] }
+  sectors: { sector: string; sim: number; parent: number }[]
+  holdings: SimHolding[]
+  left: SimLeft[]
+  performance: {
+    months: string[]
+    /** Rebuilds before this month use figures published later (knowledge/decisions/0009-parity-50-backfill.md). */
+    backfillUntil: string
+    sim: number[]
+    parent: number[]
+    etf: number[]
+    five: SimVersus
+    backfill: SimVersus
+    etfStats: { full: SimReturns; backfill: SimReturns; live: SimReturns }
+    backfillYears: { year: string; bar: number; eligible: number; laterFigures: number; pay: number; parentPay: number }[]
+    stats: {
+      sim: SimReturns
+      parent: SimReturns
+      trackingError: number
+      beta: number
+      active: number
+      year1: { index: number; parent: number }
+      year2: { index: number; parent: number }
+      nifty50Etf: number
+      sensexEtf: number
+    }
+  }
+  nearParity: { count: number; of: number }
+}

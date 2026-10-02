@@ -1,26 +1,32 @@
 import companiesUrl from '../data/companies.json?url'
 import indexesUrl from '../data/indexes.json?url'
-import type { Company, CompanyYear, IndexData } from '../types'
+import simulationsUrl from '../data/simulations.json?url'
+import type { Company, CompanyYear, IndexData, Simulation } from '../types'
 
 /**
  * The data ships as its own hashed files, fetched alongside the code (index.html preloads them), so it parses
  * as JSON and stays cached across code-only deploys. The build-time page writer reads the files directly.
  */
-async function load(): Promise<[unknown, unknown]> {
-  if (import.meta.env.SSR) return [(await import('../data/companies.json')).default, (await import('../data/indexes.json')).default]
+async function load(): Promise<[unknown, unknown, unknown]> {
+  if (import.meta.env.SSR) {
+    return [(await import('../data/companies.json')).default, (await import('../data/indexes.json')).default, (await import('../data/simulations.json')).default]
+  }
   const get = async (url: string) => {
     const res = await fetch(url)
     if (!res.ok) throw new Error(`${url} returned ${res.status}`)
     return res.json()
   }
-  return Promise.all([get(companiesUrl), get(indexesUrl)])
+  return Promise.all([get(companiesUrl), get(indexesUrl), get(simulationsUrl)])
 }
 
-const [companiesJson, indexesJson] = await load()
+const [companiesJson, indexesJson, simulationsJson] = await load()
 export const companies = companiesJson as Record<string, Company>
 export const indexes = indexesJson as Record<string, IndexData>
+/** Fictional indexes, kept apart from the real ones so they never enter the index strip, search or comparisons. */
+export const simulations = simulationsJson as Record<string, Simulation>
+export const simulationOf = (parent: string): Simulation | undefined => Object.values(simulations).find((s) => s.parent === parent)
 
-export const INDEX_ORDER = ['nifty50', 'sensex', 'niftynext50', 'ftse100', 'asx200', 'nikkei225', 'eurostoxx50']
+export const INDEX_ORDER = ['nifty50', 'sensex', 'niftynext50', 'nifty500', 'niftymidcap150', 'niftysmallcap250', 'ftse100', 'asx200', 'nikkei225', 'eurostoxx50']
 export const SOURCE_DATE = '1 October 2026'
 
 export interface Market {
@@ -47,7 +53,7 @@ export const MARKET: Record<string, Market> = {
     wageLabel: "Women's share of pay",
     workforceLabel: 'Employment parity (permanent staff)',
     headlineLabel: "Women's share of pay (payroll you own)",
-    intro: 'Company BRSR filings give total wages paid to women, so the index figure weights each company by its payroll.',
+    intro: 'From company BRSR filings. Each company counts by its payroll.',
     payPhrase: (r) => `₹${Math.round(r * 100)} for every ₹100 paid to men`,
     coverage: (n) => `${n} companies covered`,
     parity: 0.5,
@@ -59,7 +65,7 @@ export const MARKET: Record<string, Market> = {
     wageLabel: "Women's share of pay (hourly, UK staff)",
     workforceLabel: 'Employment parity (UK staff)',
     headlineLabel: "Women's share of pay (average company, UK staff)",
-    intro: 'UK gender pay gap reports cover UK staff only and give hourly pay with no payroll totals, so each company counts equally and the measure differs from India\'s.',
+    intro: 'From UK gender pay gap reports: hourly pay, UK staff. Each company counts equally.',
     payPhrase: (r) => `${Math.round(r * 100)}p for every £1 men earn per hour`,
     coverage: (n) => `${n} companies with UK gender pay gap reports`,
     parity: 0.5,
@@ -71,7 +77,7 @@ export const MARKET: Record<string, Market> = {
     wageLabel: "Women's share of pay (full-time equivalent, Australian staff)",
     workforceLabel: 'Employment parity (Australian staff)',
     headlineLabel: "Women's share of pay (payroll you own, Australian staff)",
-    intro: 'WGEA reports cover Australian staff and give full-time-equivalent pay with exact group headcounts, so the index figure weights each company by its Australian payroll.',
+    intro: 'From WGEA reports: full-time-equivalent pay, Australian staff. Each company counts by its Australian payroll.',
     payPhrase: (r) => `${Math.round(r * 100)}c for every $1 men earn (full-time equivalent)`,
     coverage: (n) => `${n} companies with WGEA reports`,
     parity: 0.5,
@@ -83,7 +89,7 @@ export const MARKET: Record<string, Market> = {
     wageLabel: "Women's share of pay",
     workforceLabel: 'Employment parity (regular staff)',
     headlineLabel: "Women's share of pay (average company)",
-    intro: 'Japanese employers disclose women\'s average pay as a share of men\'s and women\'s share of regular staff. Together they give women\'s share of pay, on the same 50% scale as other markets. Each company counts equally. One snapshot so far, mostly FY2025.',
+    intro: 'From each employer\'s pay ratio and share of women in regular staff. Each company counts equally. One snapshot so far, mostly FY25.',
     payPhrase: (r) => `¥${Math.round(r * 100)} for every ¥100 men earn`,
     coverage: (n) => `${n} companies with a pay ratio and a workforce split`,
     parity: 0.5,
@@ -95,7 +101,7 @@ export const MARKET: Record<string, Market> = {
     wageLabel: "Women's share of pay",
     workforceLabel: 'Employment parity (employees)',
     headlineLabel: "Women's share of pay (average company)",
-    intro: 'EU companies report an unadjusted gender pay gap (ESRS S1-16) and headcount by gender (S1-6) under CSRD. Together they give women\'s share of pay, on the same 50% scale as other markets. Each company counts equally, read from its own sustainability statement.',
+    intro: 'From each company\'s CSRD pay gap and headcount by gender. Each company counts equally.',
     payPhrase: (r) => `€${Math.round(r * 100)} for every €100 men earn`,
     coverage: (n) => `${n} companies with a pay gap and a workforce split`,
     parity: 0.5,

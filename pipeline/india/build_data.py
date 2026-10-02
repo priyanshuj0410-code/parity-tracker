@@ -5,13 +5,23 @@ for r in csv.reader(open('mcap30092026.csv')):
     if len(r)>9 and r[2].strip()=='EQ':
         try: mcap[r[1].strip()]=float(r[9])
         except: pass
+import glob, os
+HERE=os.path.dirname(os.path.abspath(__file__))
 info={}
 idx_members={'nifty50':[], 'niftynext50':[], 'sensex':[]}
 for f,k in (('n50.csv','nifty50'),('nn50.csv','niftynext50')):
-    for r in csv.DictReader(open(f)):
+    for r in csv.DictReader(open(os.path.join(HERE,f))):
         info[r['Symbol']]={'name':r['Company Name'],'industry':r['Industry'],'isin':r['ISIN Code']}
         idx_members[k].append(r['Symbol'])
-idx_members['sensex']=[l.strip() for l in open('sensex.txt') if l.strip()]
+idx_members['sensex']=[l.strip() for l in open(os.path.join(HERE,'sensex.txt')) if l.strip()]
+# Nifty index constituent lists from niftyindices.com (pipeline/india/indexes/ind_<id>list.csv saved as ind_<id>.csv)
+for f in sorted(glob.glob(os.path.join(HERE,'indexes','ind_*.csv'))):
+    k=os.path.basename(f)[4:-4]
+    rows=list(csv.DictReader(open(f)))
+    for r in rows:
+        if r['Symbol'].strip() not in mcap: continue  # stale or placeholder symbols (MOTHERSUMI, DUMMYHEG) that no longer trade
+        info.setdefault(r['Symbol'].strip(),{'name':r['Company Name'].strip(),'industry':r['Industry'].strip(),'isin':r['ISIN Code'].strip()})
+    idx_members[k]=[r['Symbol'].strip() for r in rows]
 YEARS=['2021-22','2022-23','2023-24','2024-25','2025-26']
 def rd(x,n=4): return None if x is None else round(x,n)
 NOTES=[('from next year filing (prior-year column); ','Taken from the prior-year column of the next filing. '),
@@ -37,6 +47,13 @@ for s,i in info.items():
         r=ys.get(y)
         if not r: continue
         r=dict(r)
+        w0=r.get('w')
+        if w0 is not None and not (0<w0<=0.9):
+            m=re.search(r'restated next year to ([0-9.]+)',r.get('note') or '')
+            if m and 0<float(m.group(1))<=0.9:
+                r.update(w=float(m.group(1)),note=f"The filing's value was implausible; restated in the next filing to {float(m.group(1))*100:.1f}%")
+            else:
+                r.update(w=None,kind=None,dq=4,note=f"Implausible wage share in the filing ({w0:.3g}), left out")
         if r.get('kind')=='estimated':
             ok=r['W'] and r['N'] and 1.5e5<=r['W']/r['N']<=7.5e6 and r['w'] and 0<r['w']<1
             if not ok: r.update(w=None,kind=None,W=None,dq=4,note='no usable wage data')
@@ -48,6 +65,13 @@ for s,i in info.items():
         indexes=[k for k,v in idx_members.items() if s in v],
         marketCapCr=round(mcap[s]/1e7) if s in mcap else None,publicFloatPct=shp.get(s,{}).get('public'),
         years=years,filings={f"{int(k)-1}-{k[2:]}":v for k,v in sorted(fl.items())})
+import statistics
+for s_,c in companies.items():
+    vals={y:v['w'] for y,v in c['years'].items() if v.get('w') is not None}
+    for y,w in list(vals.items()):
+        others=[v for k,v in vals.items() if k!=y]
+        if len(others)>=2 and abs(w-statistics.median(others))>0.15:
+            c['years'][y].update(w=None,wKind=None,dq=4,note='Moved more than 15 points from the company\'s other years, left out until confirmed')
 def plausible(v):
     return v and v.get('payrollCr') and v.get('headcount') and 1.5e5 <= v['payrollCr']*1e7/v['headcount'] <= 7.5e6
 for s,c in companies.items():
@@ -95,7 +119,18 @@ def index_calc(members):
         h0,h1=h(y0),h(y1)
         if h0 and h1: yoy[f"{y0}>{y1}"]=dict(**{'from':rd(h0),'to':rd(h1)},change=rd(h1-h0),companies=len(both))
     return weights,res,yoy
-NAMES={'nifty50':('Nifty 50','India','NSE'),'niftynext50':('Nifty Next 50','India','NSE'),'sensex':('BSE Sensex','India','BSE')}
+NAMES={'nifty50':('Nifty 50','India','NSE'),'niftynext50':('Nifty Next 50','India','NSE'),'sensex':('BSE Sensex','India','BSE'),
+ 'nifty100':('Nifty 100','India','NSE'),'nifty200':('Nifty 200','India','NSE'),'nifty500':('Nifty 500','India','NSE'),
+ 'niftymidcap150':('Nifty Midcap 150','India','NSE'),'niftysmallcap250':('Nifty Smallcap 250','India','NSE'),
+ 'niftymidcap100':('Nifty Midcap 100','India','NSE'),'niftysmallcap100':('Nifty Smallcap 100','India','NSE'),
+ 'niftylargemidcap250':('Nifty LargeMidcap 250','India','NSE'),'niftymidsmallcap400':('Nifty MidSmallcap 400','India','NSE'),
+ 'niftybank':('Nifty Bank','India','NSE'),'niftyit':('Nifty IT','India','NSE'),'niftyfmcg':('Nifty FMCG','India','NSE'),
+ 'niftypharma':('Nifty Pharma','India','NSE'),'niftyauto':('Nifty Auto','India','NSE'),'niftyfinance':('Nifty Financial Services','India','NSE'),
+ 'niftypsubank':('Nifty PSU Bank','India','NSE'),'niftymetal':('Nifty Metal','India','NSE'),'niftyenergy':('Nifty Energy','India','NSE'),
+ 'niftyrealty':('Nifty Realty','India','NSE'),'niftycpse':('Nifty CPSE','India','NSE'),'niftypse':('Nifty PSE','India','NSE'),
+ 'niftyhealthcare':('Nifty Healthcare','India','NSE'),'niftyconsumerdurables':('Nifty Consumer Durables','India','NSE'),
+ 'niftyoilgas':('Nifty Oil & Gas','India','NSE'),'niftyinfra':('Nifty Infrastructure','India','NSE'),'niftycommodities':('Nifty Commodities','India','NSE'),
+ 'niftymedia':('Nifty Media','India','NSE'),'niftymnc':('Nifty MNC','India','NSE'),'niftyquality30':('Nifty100 Quality 30','India','NSE')}
 indexes={}
 for k,mem in idx_members.items():
     wts,res,yoy=index_calc(mem)
@@ -104,6 +139,13 @@ for k,mem in idx_members.items():
         constituents=[dict(symbol=s,weight=rd(w,5)) for s,w in sorted(wts.items(),key=lambda x:-x[1])],
         missing=[s for s in mem if s not in wts],years=res,yoy=yoy)
     print(k,len(wts),{y:(v['headline'],v['companiesCovered'],v['reportedPayrollShare']) for y,v in res.items()}); print('   yoy',yoy)
+RENAME={'BBOX':'NSE-BBOX'}  # NSE symbols that clash with another market's (BBOX is also Tritax Big Box in the FTSE 100)
+for a_,b_ in RENAME.items():
+    if a_ in companies:
+        c=companies.pop(a_); c['symbol']=b_; companies[b_]=c
+for ix in indexes.values():
+    for c in ix['constituents']: c['symbol']=RENAME.get(c['symbol'],c['symbol'])
+    ix['missing']=[RENAME.get(x,x) for x in ix['missing']]
 json.dump(companies,open('out/companies.json','w'),separators=(',',':'))
 json.dump(indexes,open('out/indexes.json','w'),separators=(',',':'))
 # company YoY

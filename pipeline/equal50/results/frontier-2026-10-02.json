@@ -1,0 +1,383 @@
+{
+ "nifty50": {
+  "sectors within 0 pts, stocks up to 3x market weight": {
+   "S": {
+    "max": 0.2598906536991976,
+    "activeShareAt": {
+     "0.25": 0.171,
+     "0.3": null,
+     "0.35": null,
+     "0.5": null
+    }
+   },
+   "W": {
+    "max": 0.7895522991273987,
+    "activeShareAt": {
+     "0.9": null,
+     "1.0": null
+    }
+   },
+   "E": {
+    "max": 0.3409592638562956,
+    "activeShareAt": {
+     "0.3": 0.074,
+     "0.5": null
+    }
+   }
+  },
+  "sectors within 0 pts, stocks up to 5x market weight": {
+   "S": {
+    "max": 0.26284376871128023,
+    "activeShareAt": {
+     "0.25": 0.157,
+     "0.3": null,
+     "0.35": null,
+     "0.5": null
+    }
+   },
+   "W": {
+    "max": 0.8186727005031756,
+    "activeShareAt": {
+     "0.9": null,
+     "1.0": null
+    }
+   },
+   "E": {
+    "max": 0.35301865398540555,
+    "activeShareAt": {
+     "0.3": 0.067,
+     "0.5": null
+    }
+   }
+  },
+  "sectors within 2 pts, stocks up to 5x market weight": {
+   "S": {
+    "max": 0.2749854515367748,
+    "activeShareAt": {
+     "0.25": 0.085,
+     "0.3": null,
+     "0.35": null,
+     "0.5": null
+    }
+   },
+   "W": {
+    "max": 0.8648489048201606,
+    "activeShareAt": {
+     "0.9": null,
+     "1.0": null
+    }
+   },
+   "E": {
+    "max": 0.37118576132271863,
+    "activeShareAt": {
+     "0.3": 0.038,
+     "0.5": null
+    }
+   }
+  },
+  "sectors within 5 pts, stocks up to 5x market weight": {
+   "S": {
+    "max": 0.28541739708885316,
+    "activeShareAt": {
+     "0.25": 0.068,
+     "0.3": null,
+     "0.35": null,
+     "0.5": null
+    }
+   },
+   "W": {
+    "max": 0.9499092068020294,
+    "activeShareAt": {
+     "0.9": 0.259,
+     "1.0": null
+    }
+   },
+   "E": {
+    "max": 0.38428199414020314,
+    "activeShareAt": {
+     "0.3": 0.038,
+     "0.5": null
+    }
+   }
+  },
+  "sectors within 5 pts, stocks up to 10x market weight": {
+   "S": {
+    "max": 0.2913742901169155,
+    "activeShareAt": {
+     "0.25": 0.068,
+     "0.3": null,
+     "0.35": null,
+     "0.5": null
+    }
+   },
+   "W": {
+    "max": 1.0148805347045786,
+    "activeShareAt": {
+     "0.9": 0.182,
+     "1.0": 0.566
+    }
+   },
+   "E": {
+    "max": 0.4004925045032569,
+    "activeShareAt": {
+     "0.3": 0.038,
+     "0.5": null
+    }
+   }
+  }
+ },
+ "nifty100": {
+  "sectors within 0 pts, stocks up to 3x market weight": {
+   "S": {
+    "max": 0.2620084571255048,
+    "activeShareAt": {
+     "0.25": 0.162,
+     "0.3": null,
+     "0.35": null,
+     "0.5": null
+    }
+   },
+   "W": {
+    "max": 0.8321918625344066,
+    "activeShareAt": {
+     "0.9": null,
+     "1.0": null
+    }
+   },
+   "E": {
+    "max": 0.34043354477719495,
+    "activeShareAt": {
+     "0.3": 0.082,
+     "0.5": null
+    }
+   }
+  },
+  "sectors within 0 pts, stocks up to 5x market weight": {
+   "S": {
+    "max": 0.2669162574169552,
+    "activeShareAt": {
+     "0.25": 0.144,
+     "0.3": null,
+     "0.35": null,
+     "0.5": null
+    }
+   },
+   "W": {
+    "max": 0.8704252678314683,
+    "activeShareAt": {
+     "0.9": null,
+     "1.0": null
+    }
+   },
+   "E": {
+    "max": 0.35727062308279905,
+    "activeShareAt": {
+     "0.3": 0.067,
+     "0.5": null
+    }
+   }
+  },
+  "sectors within 2 pts, stocks up to 5x market weight": {
+   "S": {
+    "max": 0.278768581219087,
+    "activeShareAt": {
+     "0.25": 0.087,
+     "0.3": null,
+     "0.35": null,
+     "0.5": null
+    }
+   },
+   "W": {
+    "max": 0.9177182393608682,
+    "activeShareAt": {
+     "0.9": 0.35,
+     "1.0": null
+    }
+   },
+   "E": {
+    "max": 0.372965727642198,
+    "activeShareAt": {
+     "0.3": 0.04,
+     "0.5": null
+    }
+   }
+  },
+  "sectors within 5 pts, stocks up to 5x market weight": {
+   "S": {
+    "max": 0.2864851198656032,
+    "activeShareAt": {
+     "0.25": 0.072,
+     "0.3": null,
+     "0.35": null,
+     "0.5": null
+    }
+   },
+   "W": {
+    "max": 1.0477319174080721,
+    "activeShareAt": {
+     "0.9": 0.085,
+     "1.0": 0.34
+    }
+   },
+   "E": {
+    "max": 0.38416222771463593,
+    "activeShareAt": {
+     "0.3": 0.04,
+     "0.5": null
+    }
+   }
+  },
+  "sectors within 5 pts, stocks up to 10x market weight": {
+   "S": {
+    "max": 0.29326613831465864,
+    "activeShareAt": {
+     "0.25": 0.072,
+     "0.3": null,
+     "0.35": null,
+     "0.5": null
+    }
+   },
+   "W": {
+    "max": 1.1472140446114947,
+    "activeShareAt": {
+     "0.9": 0.067,
+     "1.0": 0.182
+    }
+   },
+   "E": {
+    "max": 0.4128822710488799,
+    "activeShareAt": {
+     "0.3": 0.035,
+     "0.5": null
+    }
+   }
+  }
+ },
+ "nifty500": {
+  "sectors within 0 pts, stocks up to 3x market weight": {
+   "S": {
+    "max": 0.27571309964469726,
+    "activeShareAt": {
+     "0.25": 0.122,
+     "0.3": null,
+     "0.35": null,
+     "0.5": null
+    }
+   },
+   "W": {
+    "max": 1.138075412320744,
+    "activeShareAt": {
+     "0.9": 0.006,
+     "1.0": 0.061
+    }
+   },
+   "E": {
+    "max": 0.36154779461080433,
+    "activeShareAt": {
+     "0.3": 0.086,
+     "0.5": null
+    }
+   }
+  },
+  "sectors within 0 pts, stocks up to 5x market weight": {
+   "S": {
+    "max": 0.2919737762224963,
+    "activeShareAt": {
+     "0.25": 0.09,
+     "0.3": null,
+     "0.35": null,
+     "0.5": null
+    }
+   },
+   "W": {
+    "max": 1.4352281646928968,
+    "activeShareAt": {
+     "0.9": 0.001,
+     "1.0": 0.023
+    }
+   },
+   "E": {
+    "max": 0.3934246229448121,
+    "activeShareAt": {
+     "0.3": 0.07,
+     "0.5": null
+    }
+   }
+  },
+  "sectors within 2 pts, stocks up to 5x market weight": {
+   "S": {
+    "max": 0.3069732157831825,
+    "activeShareAt": {
+     "0.25": 0.066,
+     "0.3": 0.496,
+     "0.35": null,
+     "0.5": null
+    }
+   },
+   "W": {
+    "max": 1.6044328807980897,
+    "activeShareAt": {
+     "0.9": 0.001,
+     "1.0": 0.012
+    }
+   },
+   "E": {
+    "max": 0.4242665330336849,
+    "activeShareAt": {
+     "0.3": 0.038,
+     "0.5": null
+    }
+   }
+  },
+  "sectors within 5 pts, stocks up to 5x market weight": {
+   "S": {
+    "max": 0.3205523928142804,
+    "activeShareAt": {
+     "0.25": 0.058,
+     "0.3": 0.445,
+     "0.35": null,
+     "0.5": null
+    }
+   },
+   "W": {
+    "max": 1.741791554262702,
+    "activeShareAt": {
+     "0.9": 0.001,
+     "1.0": 0.012
+    }
+   },
+   "E": {
+    "max": 0.4411138698056165,
+    "activeShareAt": {
+     "0.3": 0.038,
+     "0.5": null
+    }
+   }
+  },
+  "sectors within 5 pts, stocks up to 10x market weight": {
+   "S": {
+    "max": 0.38754963344189264,
+    "activeShareAt": {
+     "0.25": 0.034,
+     "0.3": 0.213,
+     "0.35": 0.501,
+     "0.5": null
+    }
+   },
+   "W": {
+    "max": 1.9999999989004738,
+    "activeShareAt": {
+     "0.9": 0.001,
+     "1.0": 0.003
+    }
+   },
+   "E": {
+    "max": 0.5477132575364962,
+    "activeShareAt": {
+     "0.3": 0.022,
+     "0.5": 0.544
+    }
+   }
+  }
+ }
+}

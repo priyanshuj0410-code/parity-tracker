@@ -1,0 +1,466 @@
+{
+ "INDHOTEL": [
+  {
+   "subject": "Rights 1:9 @ Premium Rs 149/-",
+   "exDate": "2021-11-11",
+   "prevClose": 215.3,
+   "open": 214.0,
+   "close": 207.9,
+   "kind": "factor",
+   "issuePrice": 150.0,
+   "terp": 208.77,
+   "factor": 1.031278440388945
+  }
+ ],
+ "GMRAIRPORT": [
+  {
+   "subject": "Demerger",
+   "exDate": "2022-01-11",
+   "prevClose": 48.45,
+   "open": 43.75,
+   "close": 44.85,
+   "kind": "spin",
+   "dummy": 4.7,
+   "spins": [
+    [
+     "GMRP&UI",
+     0.1
+    ]
+   ]
+  }
+ ],
+ "MOTHERSON": [
+  {
+   "subject": "Demerger",
+   "exDate": "2022-01-14",
+   "prevClose": 234.8,
+   "open": 194.95,
+   "close": 185.55,
+   "kind": "spin",
+   "dummy": 39.85,
+   "spins": [
+    [
+     "MSUMI",
+     1.0
+    ]
+   ]
+  }
+ ],
+ "WOCKPHARMA": [
+  {
+   "subject": "Rights 3:10@ Premium Rs 220 Per Share",
+   "exDate": "2022-03-08",
+   "prevClose": 340.25,
+   "open": 313.0,
+   "close": 308.2,
+   "kind": "factor",
+   "issuePrice": 225.0,
+   "terp": 313.6538,
+   "factor": 1.084794604537094
+  }
+ ],
+ "BEML": [
+  {
+   "subject": "Demerger",
+   "exDate": "2022-09-08",
+   "prevClose": 1838.95,
+   "open": 1464.0,
+   "close": 1537.2,
+   "kind": "spin",
+   "dummy": 374.95,
+   "spins": [
+    [
+     "BLAL",
+     1.0
+    ]
+   ]
+  }
+ ],
+ "SUZLON": [
+  {
+   "subject": "Rights 5:21 @ Premium Rs 3/-",
+   "exDate": "2022-10-03",
+   "prevClose": 8.7,
+   "open": 7.6,
+   "close": 7.9,
+   "kind": "factor",
+   "issuePrice": 5.0,
+   "terp": 7.9885,
+   "factor": 1.0890707751564757
+  }
+ ],
+ "AARTIIND": [
+  {
+   "subject": "Demerger",
+   "exDate": "2022-10-19",
+   "prevClose": 744.9,
+   "open": 650.1,
+   "close": 683.35,
+   "kind": "spin",
+   "dummy": 94.8,
+   "spins": [
+    [
+     "AARTIPHARM",
+     0.25
+    ]
+   ]
+  }
+ ],
+ "NMDC": [
+  {
+   "subject": "Demerger",
+   "exDate": "2022-10-27",
+   "prevClose": 130.75,
+   "open": 92.25,
+   "close": 104.3,
+   "kind": "spin",
+   "dummy": 38.5,
+   "spins": [
+    [
+     "NSLNISP",
+     1.0
+    ]
+   ]
+  }
+ ],
+ "CGCL": [
+  {
+   "subject": "Rights 11:64 @ Premium Rs 473/-",
+   "exDate": "2023-02-17",
+   "prevClose": 752.45,
+   "open": 700.1,
+   "close": 703.55,
+   "kind": "factor",
+   "issuePrice": 474.0,
+   "terp": 711.6107,
+   "factor": 1.0573899960277904
+  }
+ ],
+ "SCI": [
+  {
+   "subject": "Demerger",
+   "exDate": "2023-03-31",
+   "prevClose": 120.65,
+   "open": 93.6,
+   "close": 93.6,
+   "kind": "spin",
+   "dummy": 27.05,
+   "spins": [
+    [
+     "SCILAL",
+     1.0
+    ]
+   ]
+  }
+ ],
+ "PNBHOUSING": [
+  {
+   "subject": "Rights 29:54@ Premium Rs 265/-",
+   "exDate": "2023-04-05",
+   "prevClose": 540.9,
+   "open": 447.05,
+   "close": 463.15,
+   "kind": "factor",
+   "issuePrice": 275.0,
+   "terp": 447.9952,
+   "factor": 1.2073790595854086
+  }
+ ],
+ "RELIANCE": [
+  {
+   "subject": "Demerger",
+   "exDate": "2023-07-20",
+   "prevClose": 2841.85,
+   "open": 2580.0,
+   "close": 2619.85,
+   "kind": "spin",
+   "dummy": 261.85,
+   "spins": [
+    [
+     "JIOFIN",
+     1.0
+    ]
+   ]
+  }
+ ],
+ "PPLPHARMA": [
+  {
+   "subject": "Rights 5:46 @ Premium Rs 71/-",
+   "exDate": "2023-08-02",
+   "prevClose": 106.45,
+   "open": 103.5,
+   "close": 102.95,
+   "kind": "factor",
+   "issuePrice": 81.0,
+   "terp": 103.9549,
+   "factor": 1.0240017352924533
+  }
+ ],
+ "GRASIM": [
+  {
+   "subject": "Rights 6:179 @ Premium Rs 1810/-",
+   "exDate": "2024-01-10",
+   "prevClose": 2064.05,
+   "open": 2058.8,
+   "close": 2068.55,
+   "kind": "factor",
+   "issuePrice": 1812.0,
+   "terp": 2055.8754,
+   "factor": 1.0039762110938735
+  }
+ ],
+ "SAMMAANCAP": [
+  {
+   "subject": "Rights 1:2 @ Premium Rs 148/-",
+   "exDate": "2024-02-01",
+   "prevClose": 222.5,
+   "open": 196.0,
+   "close": 193.9,
+   "kind": "factor",
+   "issuePrice": 150.0,
+   "terp": 198.3333,
+   "factor": 1.1218487394957983
+  }
+ ],
+ "IIFL": [
+  {
+   "subject": "Rights 1:9 @ Premium Rs 298/-",
+   "exDate": "2024-04-23",
+   "prevClose": 420.4,
+   "open": 408.9,
+   "close": 410.2,
+   "kind": "factor",
+   "issuePrice": 300.0,
+   "terp": 408.36,
+   "factor": 1.0294837888137918
+  }
+ ],
+ "SOBHA": [
+  {
+   "subject": "Rights 6:47 @ Premium Rs 1641/-",
+   "exDate": "2024-06-19",
+   "prevClose": 2159.7,
+   "open": 2075.75,
+   "close": 2018.65,
+   "kind": "factor",
+   "issuePrice": 1651.0,
+   "terp": 2102.1113,
+   "factor": 1.0273956372703454
+  }
+ ],
+ "TATACONSUM": [
+  {
+   "subject": "Rights 1:26 @ Premium Rs 817/-",
+   "exDate": "2024-07-26",
+   "prevClose": 1223.6,
+   "open": 1216.05,
+   "close": 1213.65,
+   "kind": "factor",
+   "issuePrice": 818.0,
+   "terp": 1208.5778,
+   "factor": 1.0124296694002133
+  }
+ ],
+ "UPL": [
+  {
+   "subject": "Rights 1:8 @ Premium Rs 358/-",
+   "exDate": "2024-11-26",
+   "prevClose": 568.55,
+   "open": 545.0,
+   "close": 551.75,
+   "kind": "factor",
+   "issuePrice": 360.0,
+   "terp": 545.3778,
+   "factor": 1.0424883872545025
+  }
+ ],
+ "ITC": [
+  {
+   "subject": "Demerger",
+   "exDate": "2025-01-06",
+   "prevClose": 481.6,
+   "open": 455.6,
+   "close": 442.65,
+   "kind": "spin",
+   "dummy": 26.0,
+   "spins": [
+    [
+     "ITCHOTELS",
+     0.1
+    ]
+   ]
+  }
+ ],
+ "THANGAMAYL": [
+  {
+   "subject": "Rights 2:15 @ Premium Rs 1390/-",
+   "exDate": "2025-02-11",
+   "prevClose": 1904.5,
+   "open": 1839.0,
+   "close": 1809.3,
+   "kind": "factor",
+   "issuePrice": 1400.0,
+   "terp": 1845.1471,
+   "factor": 1.0321670518849126
+  }
+ ],
+ "SIEMENS": [
+  {
+   "subject": "Demerger",
+   "exDate": "2025-04-07",
+   "prevClose": 4928.15,
+   "open": 2450.0,
+   "close": 2812.45,
+   "kind": "spin",
+   "dummy": 2478.15,
+   "spins": [
+    [
+     "ENRIN",
+     1.0
+    ]
+   ]
+  }
+ ],
+ "STLTECH": [
+  {
+   "subject": "Demerger",
+   "exDate": "2025-04-24",
+   "prevClose": 86.97,
+   "open": 61.11,
+   "close": 65.05,
+   "kind": "spin",
+   "dummy": 25.86,
+   "spins": [
+    [
+     "STLNETWORK",
+     1.0
+    ]
+   ]
+  }
+ ],
+ "M&MFIN": [
+  {
+   "subject": "Rights 1:8 @ Premium Rs 192/-",
+   "exDate": "2025-05-14",
+   "prevClose": 256.3,
+   "open": 252.3,
+   "close": 259.65,
+   "kind": "factor",
+   "issuePrice": 194.0,
+   "terp": 249.3778,
+   "factor": 1.0277579754054535
+  }
+ ],
+ "INOXWIND": [
+  {
+   "subject": "Rights 5:78 @ Premium Rs 110/-",
+   "exDate": "2025-07-29",
+   "prevClose": 157.25,
+   "open": 155.0,
+   "close": 156.3,
+   "kind": "factor",
+   "issuePrice": 120.0,
+   "terp": 155.006,
+   "factor": 1.014476701255295
+  }
+ ],
+ "TVSMOTOR": [
+  {
+   "subject": "Scheme Of Arrangement - Bonus Ncrps 4:1",
+   "exDate": "2025-08-25",
+   "prevClose": 3294.6,
+   "open": 3310.0,
+   "close": 3284.7,
+   "kind": "div",
+   "amount": 40.0,
+   "note": "bonus preference shares at their face value of Rs 10"
+  }
+ ],
+ "TMPV": [
+  {
+   "subject": "Demerger",
+   "exDate": "2025-10-14",
+   "prevClose": 660.75,
+   "open": 400.0,
+   "close": 395.45,
+   "kind": "spin",
+   "dummy": 260.75,
+   "spins": [
+    [
+     "TMCV",
+     1.0
+    ]
+   ]
+  }
+ ],
+ "ADANIENT": [
+  {
+   "subject": "Rights 3:25 @ Premium Rs 1799/-",
+   "exDate": "2025-11-17",
+   "prevClose": 2516.8,
+   "open": 2460.0,
+   "close": 2462.0,
+   "kind": "factor",
+   "issuePrice": 1800.0,
+   "terp": 2440.0,
+   "factor": 1.0314754098360657
+  }
+ ],
+ "HINDUNILVR": [
+  {
+   "subject": "Demerger",
+   "exDate": "2025-12-05",
+   "prevClose": 2462.2,
+   "open": 2422.0,
+   "close": 2338.6,
+   "kind": "spin",
+   "dummy": 40.2,
+   "spins": [
+    [
+     "KWIL",
+     1.0
+    ]
+   ]
+  }
+ ],
+ "VEDL": [
+  {
+   "subject": "Demerger",
+   "exDate": "2026-04-30",
+   "prevClose": 773.6,
+   "open": 289.5,
+   "close": 271.55,
+   "kind": "spin",
+   "dummy": 484.1,
+   "spins": [
+    [
+     "VAML",
+     1.0
+    ],
+    [
+     "VEDPOWER",
+     1.0
+    ],
+    [
+     "VISL",
+     1.0
+    ],
+    [
+     "VOGL",
+     1.0
+    ]
+   ]
+  }
+ ],
+ "HEGAM": [
+  {
+   "subject": "Demerger",
+   "exDate": "2026-09-07",
+   "prevClose": 728.25,
+   "open": 260.0,
+   "close": 272.2,
+   "kind": "spin",
+   "dummy": 468.25
+  }
+ ]
+}
