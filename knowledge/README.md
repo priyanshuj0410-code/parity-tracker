@@ -24,6 +24,8 @@ The app was renamed from Parity Tracker to Nivel on 2 October 2026 ([decisions/0
 - [plans/us-indexes.md](plans/us-indexes.md): adding the S&P 500 and Dow as a limited-data market, measured by women's share of board seats
 - [plans/fund-footprints.md](plans/fund-footprints.md): women's share of the payroll a mutual fund or personal portfolio owns
 - [plans/thoth-norm-markets.md](plans/thoth-norm-markets.md): linking Nivel with Thoth's play-money markets on gender norms, for MIT Solve
+- [decisions/0005-equal-50-methodology.md](decisions/0005-equal-50-methodology.md): the pre-registered rules for the illustrative Equal 50 index
+- [research/equal-50-results.md](research/equal-50-results.md): Equal 50 results against the Nifty 50 and Sensex, sensitivities and limits
 - [reviews/design-audit-2026-10.md](reviews/design-audit-2026-10.md): design audit against Kite, Coin and Groww, with before and after screenshots
 - [reviews/ux-audit-2026-10-02.md](reviews/ux-audit-2026-10-02.md): ship-readiness audit against Nielsen's heuristics, Apple HIG, Material 3, Gestalt and WCAG 2.2 AA, with a reusable checker
 
