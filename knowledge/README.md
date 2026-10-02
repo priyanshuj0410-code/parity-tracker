@@ -26,6 +26,8 @@ The app was renamed from Parity Tracker to Nivel on 2 October 2026 ([decisions/0
 - [plans/thoth-norm-markets.md](plans/thoth-norm-markets.md): linking Nivel with Thoth's play-money markets on gender norms, for MIT Solve
 - [decisions/0005-equal-50-methodology.md](decisions/0005-equal-50-methodology.md): the pre-registered rules for the illustrative Equal 50 index
 - [research/equal-50-results.md](research/equal-50-results.md): Equal 50 results against the Nifty 50 and Sensex, sensitivities and limits
+- [decisions/0006-parity-aligned-nifty-500.md](decisions/0006-parity-aligned-nifty-500.md): pre-registered rules for the Parity-Aligned Nifty 500, an index that represents the market and tilts towards parity
+- [research/parity-aligned-nifty-500-results.md](research/parity-aligned-nifty-500-results.md): why exact parity cannot represent the market, and the Parity-Aligned Nifty 500 backtest
 - [reviews/design-audit-2026-10.md](reviews/design-audit-2026-10.md): design audit against Kite, Coin and Groww, with before and after screenshots
 - [reviews/ux-audit-2026-10-02.md](reviews/ux-audit-2026-10-02.md): ship-readiness audit against Nielsen's heuristics, Apple HIG, Material 3, Gestalt and WCAG 2.2 AA, with a reusable checker
 

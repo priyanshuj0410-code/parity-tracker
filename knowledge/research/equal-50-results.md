@@ -16,6 +16,7 @@ plane_issues:
 - **Where it may appear:** not on Nivel until the legal review (PARITY-35) covers SEBI's index provider, ESG rating and investment adviser rules.
 - **Rules:** those in [0005-equal-50-methodology.md](../decisions/0005-equal-50-methodology.md), committed before any return data was collected (commits 7bfdba5, bfad9d6 and 242546b on 2 October 2026), and not changed after.
 - **Reproducing it:** code and data steps are in `pipeline/equal50/`, and the full output is `pipeline/equal50/results/result-2026-10-02.json`.
+- **Superseded as the proposal:** the [Parity-Aligned Nifty 500](parity-aligned-nifty-500-results.md) represents the market (tracking error about 1%) instead of picking 50 companies, and is the index to propose.
 
 ## In one minute
 - **Returns:**
