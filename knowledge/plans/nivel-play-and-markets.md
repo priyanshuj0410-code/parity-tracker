@@ -6,6 +6,7 @@ status: planned
 updated: 2026-10-02
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/66905658-70ce-4e96-a7c0-effb34139826
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/a7d95186-1e6e-4db7-a8ea-2e8f2b947b04
   - https://app.plane.so/claude-pri/projects/18017c30-d8f6-436a-b4ca-a743d5317720/issues/d3d482ab-c1bf-43df-9a9b-3ea19e3d3564
 ---
 
@@ -38,6 +39,7 @@ plane_issues:
   - Nivel links to game nights.
   - A **workplace theme** draws on Nivel's figures. For example, women's share of the Nifty 50 payroll is guessed cold in the published-figure format, then revealed.
   - The theme is built in the game's own project, not from here.
+  - **Anytime play,** a one-person mode without the discussion steps, sends its discussion to Nivel's markets. Nivel feeds the game fresh figures through `/feeds/spot/v1.json`, and readers reach the game from Guess first and a `/play` page. The full plan for the game team is [spot-the-stereotype-anytime-and-nivel.md](spot-the-stereotype-anytime-and-nivel.md) (PARITY-52 to 54).
 - **Safeguarding:** if young people play, The Equal Lens's child-safety rules apply. The play side never connects to markets or tokens for anyone under 18.
 
 ## Forecasting: prediction markets in Nivel
