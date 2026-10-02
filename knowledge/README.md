@@ -40,6 +40,7 @@ The app was renamed from Parity Tracker to Nivel on 2 October 2026 ([decisions/0
 - [decisions/0008-parity-50-v2.md](decisions/0008-parity-50-v2.md): Parity 50 version 2, where every holding pays women at least the Nifty 50's own share
 - [research/parity-50-v2-results.md](research/parity-50-v2-results.md): version 2 results, what the bar keeps out, and the version shown on Nivel as a simulation
 - [reviews/design-audit-2026-10.md](reviews/design-audit-2026-10.md): design audit against Kite, Coin and Groww, with before and after screenshots
+- [reviews/legal-review-2026-10.md](reviews/legal-review-2026-10.md): the SEBI, NSE, DPDP and FCRA rules Nivel touches, what changed, and twelve questions for counsel
 - [reviews/ux-audit-2026-10-02.md](reviews/ux-audit-2026-10-02.md): ship-readiness audit against Nielsen's heuristics, Apple HIG, Material 3, Gestalt and WCAG 2.2 AA, with a reusable checker
 
 Research history (the first tests that led to this app) lives in the Thoth repo under `knowledge/research/`.

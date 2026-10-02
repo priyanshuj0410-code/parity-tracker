@@ -146,8 +146,8 @@ export function Method() {
       </section>
 
       <section>
-        <h2>Logos</h2>
-        <p className="small">Logos are trademarks of their owners, shown only to identify each company. Without a clear icon, we show initials.</p>
+        <h2>Names and logos</h2>
+        <p className="small">Index names and logos belong to their owners and are used only to identify them. Nivel is not affiliated with any of them. Without a clear icon, we show initials.</p>
       </section>
 
       <section>

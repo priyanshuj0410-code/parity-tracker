@@ -2,8 +2,9 @@
 type: runbook
 title: India data pipeline
 description: How the India dataset (BRSR filings for every Nifty 500 company, footprints for the Nifty and BSE indexes, and the index funds and ETFs that track them) is fetched, cleaned and turned into the app's JSON, and how to refresh it.
-updated: 2026-10-02
+updated: 2026-10-03
 plane_issues:
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/d0a4b836-049d-4e53-98d6-9bdf266cd884
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/aa1e98d8-d58d-4a3e-8d0b-eccea0459975
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/16062d26-a8a8-4072-9fa6-3be0a36b4e5e
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/8ff4741b-d95e-4f6d-a59b-a80a0ce8056d
@@ -19,6 +20,8 @@ plane_issues:
 Scripts are in `pipeline/india/` (Python 3 standard library plus `curl`). The output is `src/data/companies.json` and `src/data/indexes.json`. Display rules are in [../design.md](../design.md).
 
 ## Refresh steps
+**On hold for NSE steps.** NSE's website terms need its written consent for scripted collection. Do not run any step that calls `nseindia.com` until consent or a licence is recorded here ([legal review](../reviews/legal-review-2026-10.md#3-nse-data-and-index-names), [PARITY-66](https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/d0a4b836-049d-4e53-98d6-9bdf266cd884)).
+
 Run these in a scratch folder with the scripts copied in.
 
 1. **Constituents:**

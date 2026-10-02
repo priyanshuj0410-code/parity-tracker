@@ -6,6 +6,7 @@ status: planned
 updated: 2026-10-02
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/4ebffad3-e9ba-4398-b3ee-32a958b04bcd
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/c08a5bb0-7bff-4ea0-8ced-6553033f6ecc
 ---
 
 # Fund and portfolio footprints
@@ -37,6 +38,7 @@ plane_issues:
 - No accounts are needed. Clear copy says what is read and that nothing leaves the device.
 
 ## Legal questions (before launch)
+Researched in the [legal review](../reviews/legal-review-2026-10.md) (questions 3, 5, 10 and 11), awaiting counsel.
 - **SEBI's ESG Rating Provider rules (2023):** a fund-level gender figure must not look like a rating. Present it as arithmetic on disclosed data, with no scores, grades or stars. Legal advice is needed on where the line sits.
 - **Investment adviser rules:** no buy, sell or switch suggestions, and "not investment advice" on every fund page.
 - **Digital Personal Data Protection Act, 2023:** the CAS contains personal data, so processing stays on the device with no storage and plain consent copy. Confirm with counsel.
