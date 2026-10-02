@@ -65,6 +65,15 @@ export const POINTS: Point[] = Object.values(companies).map(build).filter((p): p
 const BY_SYMBOL = new Map(POINTS.map((p) => [p.c.symbol, p]))
 export const pointOf = (symbol: string): Point | undefined => BY_SYMBOL.get(symbol)
 
+/** Why a company is missing from the parity map, which needs both scales, or null when it is on the map. */
+export function offMapReason(symbol: string): string | null {
+  const p = pointOf(symbol)
+  if (p && p.e != null && p.w != null) return null
+  if (p?.wRaw != null) return 'Its wage figure falls outside the plausible range, so it cannot be compared.'
+  if (!p || p.w == null) return 'It does not report a pay comparison we can use.'
+  return 'It does not report a workforce split.'
+}
+
 export function quantile(sorted: number[], q: number): number {
   if (!sorted.length) return NaN
   const i = (sorted.length - 1) * q

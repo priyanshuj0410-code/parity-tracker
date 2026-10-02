@@ -12,8 +12,8 @@ import { ParityTrack } from '../components/ParityTrack'
 import { DataTable, type Column } from '../components/DataTable'
 import { EmptyState } from '../components/EmptyState'
 import { Tabs } from '../components/Tabs'
-import { BASIS, E_PARITY, POINTS, W_PARITY, inMarket, marketName, pointOf, sectorOf, standing, type Point } from '../lib/compare'
-import { SOURCE_DATE, boardShare, companies, euYear, indexName, marketOf, payRatio, shareChange, workforce, yoyChange } from '../lib/data'
+import { BASIS, E_PARITY, POINTS, W_PARITY, inMarket, marketName, offMapReason, pointOf, sectorOf, standing, type Point } from '../lib/compare'
+import { SOURCE_DATE, boardShare, companies, euYear, indexName, isExcluded, marketOf, payRatio, shareChange, workforce, yoyChange } from '../lib/data'
 import { crore, pct, pctTick } from '../lib/format'
 import { correctionHref } from '../lib/contact'
 import { href, usePageTitle } from '../lib/router'
@@ -55,12 +55,13 @@ function Overview({ c, pt }: { c: Co; pt?: Point }) {
   const p = prevKey ? c.years[prevKey] : undefined
   const ratio = payRatio(c, y)
   const bs = boardShare(y)
+  const offMap = offMapReason(c.symbol)
   return (
     <>
       <section>
         <div className="section-head">
           <h2>On the shared scales</h2>
-          {pt?.e != null && <a className="go small" href={href('compare', 'map', c.symbol)}>See it on the parity map</a>}
+          {!offMap && <a className="go small" href={href('compare', 'map', c.symbol)}>See it on the parity map</a>}
         </div>
         <div className="grid g3">
           <ScaleCard label="Employment parity" value={pt?.e} parity={E_PARITY} max={1}
@@ -72,6 +73,7 @@ function Overview({ c, pt }: { c: Co; pt?: Point }) {
           <ScaleCard label="Women's share of pay" value={pt?.s} parity={E_PARITY} max={1}
             basis="Implied by the two measures. Parity is 50%." rank={standing(pt, 's')} />
         </div>
+        {offMap && <EmptyState art="offMap" title="Not on the parity map">The map places companies by employment parity and wage parity, so it needs both. {offMap}</EmptyState>}
         <p className="small muted" style={{ marginTop: 10 }}>
           {pt ? `From the ${m.label(pt.year) === 'latest' ? 'latest' : m.label(pt.year)} disclosure. ` : 'No reported figures to place on the shared scales. '}
           Wage basis: {b.wage}. Rankings compare companies {inMarket(c.country)} only, so differences between markets' rules do not distort them.
@@ -312,7 +314,9 @@ export function Company({ symbol, tab }: { symbol: string; tab?: string }) {
         {hasData && <Tabs label="Company sections" current={current} items={TABS.map(([id, label]) => ({ id, label, href: id === 'overview' ? href('company', c.symbol) : href('company', c.symbol, id) }))} />}
       </section>
       {!hasData ? (
-        <section><EmptyState art="reports" title="No gender pay report to show">{c.noDataReason ?? 'No BRSR filing is available for this company yet. Recent listings file their first report after their first full financial year.'}</EmptyState></section>
+        <section>{isExcluded(c)
+          ? <EmptyState art="excluded" title="Figure excluded">{c.noDataReason}. Nivel compares unadjusted, company-wide figures only, so this one is left out.</EmptyState>
+          : <EmptyState art="reports" title="No gender pay report to show">{c.noDataReason ?? 'No BRSR filing is available for this company yet. Recent listings file their first report after their first full financial year.'}</EmptyState>}</section>
       ) : current === 'trend' ? <Trend c={c} />
         : current === 'peers' ? <Peers c={c} />
           : current === 'sources' ? <><Sources c={c} /><p className="small muted correction">Figures checked against the filings on {SOURCE_DATE}. Spotted an error? <a className="go" href={correctionHref(c.name)}>Report a correction</a></p></>

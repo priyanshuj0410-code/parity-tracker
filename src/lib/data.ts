@@ -91,6 +91,9 @@ export const euYear = (c: Company): string => (c.years[MARKET.EU.latest] ? MARKE
 export const marketOf = (c: Company): Market => MARKET[c.country] ?? MARKET.IN
 export const indexMarket = (ix: IndexData): Market => MARKET[ix.country] ?? MARKET.IN
 
+/** A figure the company does publish but that our rules leave out (adjusted, partial or not material), as against one we could not find. */
+export const isExcluded = (c: Company): boolean => /adjusted|not material|only for|per country|job-category/i.test(c.noDataReason ?? '')
+
 export function workforce(c: Company, y?: CompanyYear): number | null {
   if (!y) return null
   return c.country === 'IN' || c.country === 'JP' ? y.fPerm : y.fAll
