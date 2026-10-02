@@ -11,7 +11,7 @@ import { DataTable, type Column } from '../components/DataTable'
 import { EmptyState } from '../components/EmptyState'
 import { Tabs } from '../components/Tabs'
 import { indexPoints, summarise } from '../lib/compare'
-import { boardShare, companies, indexMarket, indexes, payRatio, workforce, yoyChange } from '../lib/data'
+import { boardShare, companies, indexMarket, indexes, payRatio, simulationOf, workforce, yoyChange } from '../lib/data'
 import { inr, pct, pctTick } from '../lib/format'
 import { href, usePageTitle } from '../lib/router'
 import { INDEX_TABS } from '../lib/tabs'
@@ -84,6 +84,7 @@ export function IndexPage({ id, tab }: { id: string; tab?: string }) {
   const pts = indexPoints(ix.id)
   const sE = summarise(pts.map((p) => p.e))
   const sW = summarise(pts.map((p) => p.w))
+  const sim = simulationOf(ix.id)
 
   return (
     <>
@@ -187,6 +188,20 @@ export function IndexPage({ id, tab }: { id: string; tab?: string }) {
         </ChartFrame>
         <p className="small muted" style={{ marginTop: 10 }}>{TREND_NOTE[ix.country]}</p>
       </section>
+      )}
+
+      {sim && (
+        <section>
+          <a className="card sim-card link-card" href={href('simulation', sim.id)}>
+            <span className="badge sim">Simulation</span>
+            <h3>An index where every company clears the bar</h3>
+            <p className="small">
+              The {sim.name} holds only companies that pay women at least the {ix.name}'s own share, {pct(sim.bar)}.
+              {' '}{sim.out.companies} of the {ix.name}'s 50 companies do not make it in. It is fictional.
+            </p>
+            <span className="link-more">Open the simulation</span>
+          </a>
+        </section>
       )}
       </>}
 

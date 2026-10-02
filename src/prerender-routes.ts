@@ -1,5 +1,5 @@
 import { BASIS, marketName, pointOf } from './lib/compare'
-import { INDEX_ORDER, companies, indexMarket, indexes, marketOf } from './lib/data'
+import { INDEX_ORDER, companies, indexMarket, indexes, marketOf, simulations } from './lib/data'
 import { pct } from './lib/format'
 import { href } from './lib/paths'
 import { COMPANY_TABS, COMPARE_TABS, INDEX_TABS } from './lib/tabs'
@@ -31,6 +31,14 @@ export function pages(): PageMeta[] {
     for (const [t, label] of INDEX_TABS) {
       out.push({ path: t === 'overview' ? href('index', id) : href('index', id, t), title: t === 'overview' ? ix.name : `${ix.name} · ${label}`, description })
     }
+  }
+  for (const s of Object.values(simulations)) {
+    const parent = indexes[s.parent].name
+    out.push({
+      path: href('simulation', s.id),
+      title: `${s.name}, a simulation`,
+      description: `A fictional index of the 50 largest Nifty 500 companies that pay women at least the ${parent}'s own share of wages, ${pct(s.bar)}. Its lowest holding pays women ${pct(s.headline.lowest.w)}; the ${parent}'s pays ${pct(s.headline.parentLowest.w)}. Not investable, not investment advice.`,
+    })
   }
   for (const c of Object.values(companies)) {
     const m = marketOf(c)

@@ -11,7 +11,9 @@ Run in the India scratch folder (the one holding `company_years.json`, `meta_all
 5. `python3 events.py`: values each demerger, rights issue and bonus preference issue between October 2024 and September 2026 from NSE's ex-date bhavcopy, into `events.json`. Demerged companies and their ratios are in `spin_map.json`; `python3 events.py find` lists newly listed companies after each demerger, to check that map. `build_e50.py` needs `events.json`.
 6. `python3 build_e50.py build`: portfolios, backtest, sensitivities and the labelled hindsight run, into `result.json`.
 7. `python3 pa500.py`: the Parity-Aligned Nifty 500 (decision 0006), into `pa500_result.json`. `python3 parity_frontier.py`: the parity reachable at each level of active share, into `frontier.json`.
-8. `INDIA_DIR=<repo>/pipeline/india python3 parity50.py`: the Parity 50 (decision 0007), into `parity50_result.json`. It reads the Nifty 100 and Nifty 50 lists from `INDIA_DIR`.
+8. `INDIA_DIR=<repo>/pipeline/india python3 parity50.py`: the Parity 50, version 1 (decision 0007), into `parity50_result.json`. It reads the Nifty 100 and Nifty 50 lists from `INDIA_DIR`.
+9. `INDIA_DIR=<repo>/pipeline/india python3 parity50_v2.py`: the Parity 50, version 2 (decision 0008), into `parity50_v2_result.json`.
+10. `INDIA_DIR=<repo>/pipeline/india python3 export_parity50.py <repo>/src/data/simulations.json`: the version 2 data that Nivel shows as a simulation.
 
 Copies of the outputs are in `results/`. Returns follow renamed companies by ISIN, and value demerged shares at NSE's ex-date price discovery until they list.
 

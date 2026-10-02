@@ -1,24 +1,30 @@
 import companiesUrl from '../data/companies.json?url'
 import indexesUrl from '../data/indexes.json?url'
-import type { Company, CompanyYear, IndexData } from '../types'
+import simulationsUrl from '../data/simulations.json?url'
+import type { Company, CompanyYear, IndexData, Simulation } from '../types'
 
 /**
  * The data ships as its own hashed files, fetched alongside the code (index.html preloads them), so it parses
  * as JSON and stays cached across code-only deploys. The build-time page writer reads the files directly.
  */
-async function load(): Promise<[unknown, unknown]> {
-  if (import.meta.env.SSR) return [(await import('../data/companies.json')).default, (await import('../data/indexes.json')).default]
+async function load(): Promise<[unknown, unknown, unknown]> {
+  if (import.meta.env.SSR) {
+    return [(await import('../data/companies.json')).default, (await import('../data/indexes.json')).default, (await import('../data/simulations.json')).default]
+  }
   const get = async (url: string) => {
     const res = await fetch(url)
     if (!res.ok) throw new Error(`${url} returned ${res.status}`)
     return res.json()
   }
-  return Promise.all([get(companiesUrl), get(indexesUrl)])
+  return Promise.all([get(companiesUrl), get(indexesUrl), get(simulationsUrl)])
 }
 
-const [companiesJson, indexesJson] = await load()
+const [companiesJson, indexesJson, simulationsJson] = await load()
 export const companies = companiesJson as Record<string, Company>
 export const indexes = indexesJson as Record<string, IndexData>
+/** Fictional indexes, kept apart from the real ones so they never enter the index strip, search or comparisons. */
+export const simulations = simulationsJson as Record<string, Simulation>
+export const simulationOf = (parent: string): Simulation | undefined => Object.values(simulations).find((s) => s.parent === parent)
 
 export const INDEX_ORDER = ['nifty50', 'sensex', 'niftynext50', 'nifty500', 'niftymidcap150', 'niftysmallcap250', 'ftse100', 'asx200', 'nikkei225', 'eurostoxx50']
 export const SOURCE_DATE = '1 October 2026'
