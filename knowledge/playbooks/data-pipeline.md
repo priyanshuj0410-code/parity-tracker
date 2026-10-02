@@ -1,7 +1,7 @@
 ---
 type: runbook
 title: India data pipeline
-description: How the India dataset (BRSR filings for the Nifty 50, Nifty Next 50 and Sensex) is fetched, cleaned and turned into the app's JSON, and how to refresh it.
+description: How the India dataset (BRSR filings for every Nifty 500 company, footprints for the Nifty and BSE indexes, and the index funds and ETFs that track them) is fetched, cleaned and turned into the app's JSON, and how to refresh it.
 updated: 2026-10-02
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/aa1e98d8-d58d-4a3e-8d0b-eccea0459975
@@ -11,6 +11,7 @@ plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/3ddee1dc-99b4-4f03-83c8-55cdf3f78b30
   - https://app.plane.so/claude-pri/projects/18017c30-d8f6-436a-b4ca-a743d5317720/issues/3f4b5bd3-f746-4845-847f-e2e7400b79b4
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/f4ecafb2-e14b-40cc-b5d5-9ac2384f4f9b
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/9e814581-34cc-49dc-a1ea-75698f44c744
 ---
 
 # India data pipeline
@@ -23,7 +24,13 @@ Run these in a scratch folder with the scripts copied in.
 1. **Constituents:**
    - Download `ind_nifty50list.csv` and `ind_niftynext50list.csv` from `https://nsearchives.nseindia.com/content/indices/`, saved as `n50.csv` and `nn50.csv`.
    - Update `sensex.txt` by hand from the BSE Index Services notice (formerly Asia Index). Reviews are semi-annual: announced in May and November, effective in June and December. Notices are at `https://beta.bseindia.com/downloads/UploadDocs/Notices/{no}/{no}.pdf`; fetch them with a browser user agent, because the site returns 403 to plain clients. Check the BSE SENSEX row itself, since news previews are often wrong. In June 2026 analysts expected Trent out and Hindalco in, but nothing changed.
-   - Build the symbol list: `(tail -n +2 n50.csv; tail -n +2 nn50.csv) | cut -d, -f3 | sort -u > syms_nse.txt`
+   - **Nifty index lists (since 2 October 2026):**
+     - Download `https://www.niftyindices.com/IndexConstituent/ind_{id}list.csv` for each index in `pipeline/india/indexes/`, saved there as `ind_{id}.csv`.
+     - 29 lists download cleanly: the Nifty 100, 200 and 500; Midcap 100 and 150; Smallcap 100 and 250; LargeMidcap 250; MidSmallcap 400; and 19 sector and theme indexes.
+     - Some names (Private Bank, India Consumption, Alpha 50 and others) return an HTML page instead of a list. Drop any file whose first line is not the `Company Name,...` header.
+     - `build_data.py` reads every list there: membership and footprint for each index, and name, industry and ISIN for each company.
+   - Build the symbol list from the Nifty 500 plus the Sensex: `(tail -n +2 indexes/ind_nifty500.csv | cut -d, -f3; cat sensex.txt) | sort -u > syms_nse.txt`
+   - The first run for the Nifty 500 fetched 401 new companies in about 40 minutes.
 2. **Filings:** `python3 fetch_all.py syms_nse.txt`
    - Calls NSE `api/corporate-bussiness-sustainabilitiy` with `from_date`/`to_date`.
    - Keeps the latest submission per financial year.
@@ -35,6 +42,15 @@ Run these in a scratch folder with the scripts copied in.
    - Update the file name in `build_data.py`.
 5. **Extract:** `python3 extract_all.py` writes `company_years.json` with one record per company-year.
 6. **Build:** `python3 build_data.py` writes `out/companies.json` and `out/indexes.json`. Copy both into `src/data/`.
+7. **Index funds and ETFs** (`pipeline/funds/`):
+   - Download AMFI's scheme list from `https://portal.amfiindia.com/spages/NAVAll.txt`. The `www.amfiindia.com` address now redirects there.
+   - `python3 parse_amfi.py NAVAll.txt amfi_schemes.json` turns it into one row per scheme plan, with category and fund house. On 2 October 2026: 14,366 plans, 3,386 schemes, 55 fund houses.
+   - `python3 map_passive.py` matches each passive equity scheme to the index it tracks, by name.
+     - Rules run from the specific to the general. BSE indexes, variant indexes (equal weight, momentum, quality, value and others) and debt, gold or overseas schemes are excluded.
+     - Unmatched schemes are listed for review.
+   - `python3 build_funds.py passive_map.json ../src/data/indexes.json out/funds.json` writes the app's fund list.
+     - Each fund points at its index.
+     - Active funds need each fund house's monthly portfolio file (PARITY-37) and are not in this list.
 
 ## Cleaning rules (in code)
 - **Units:** payroll per head must be ₹1.5 lakh to ₹75 lakh. Values that only fit after ×1e7 (crore) or ×1e5 (lakh) are rescaled (`dq` 2).

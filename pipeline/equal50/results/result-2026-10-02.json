@@ -1,0 +1,3002 @@
+{
+ "methodology": "knowledge/decisions/0005-equal-50-methodology.md",
+ "built": "2026-10-02T22:09:35",
+ "mainSummary": {
+  "totalReturn": {
+   "cumulative": -0.10843067938379214,
+   "annualised": -0.05577051485552098,
+   "volatility": 0.1799357428260603,
+   "maxDrawdown": -0.18665709287530552,
+   "months": 24
+  },
+  "priceReturn": {
+   "cumulative": -0.13458119973066895,
+   "annualised": -0.06972111693894123,
+   "volatility": 0.1793533211401466,
+   "maxDrawdown": -0.19104424584009472,
+   "months": 24
+  },
+  "vsNifty50TR": {
+   "trackingError": 0.06868579588633021,
+   "beta": 1.155695639294666,
+   "months": 24,
+   "benchmarkSamePeriod": {
+    "cumulative": -0.10313325506310556,
+    "annualised": -0.05296951213971235,
+    "volatility": 0.14522892935754234,
+    "maxDrawdown": -0.1456057685442994,
+    "months": 24
+   },
+   "excessAnnualised": -0.0028010027158086315
+  },
+  "vsNifty50PR": {
+   "trackingError": 0.06812058659925546,
+   "beta": 1.1374900142705457,
+   "months": 24,
+   "benchmarkSamePeriod": {
+    "cumulative": -0.12360693274340051,
+    "annualised": -0.06384132367605566,
+    "volatility": 0.1469363759207808,
+    "maxDrawdown": -0.14775244772058116,
+    "months": 24
+   },
+   "excessAnnualised": -0.005879793262885569
+  },
+  "vsSensexTR": {
+   "trackingError": 0.07139427698114507,
+   "beta": 1.1575991057611748,
+   "months": 24,
+   "benchmarkSamePeriod": {
+    "cumulative": -0.12102613685327812,
+    "annualised": -0.062463940348574165,
+    "volatility": 0.14402053474801027,
+    "maxDrawdown": -0.16062043981835816,
+    "months": 24
+   },
+   "excessAnnualised": 0.0066934254930531845
+  },
+  "periods": {
+   "Oct 2024 to Sep 2025": {
+    "index": -0.08460913236399836,
+    "nifty50TR": -0.036322277663633495,
+    "sensexTR": -0.037266297436759466
+   },
+   "Oct 2025 to Sep 2026": {
+    "index": -0.02602336101660363,
+    "nifty50TR": -0.0693291707911372,
+    "sensexTR": -0.08700208499350492
+   }
+  }
+ },
+ "benchmarks": {
+  "nifty50TR": {
+   "cumulative": 0.38302687411598324,
+   "annualised": 0.08444530980240561,
+   "volatility": 0.13104343534409343,
+   "maxDrawdown": -0.1456057685442994,
+   "months": 48
+  },
+  "nifty50PR": {
+   "cumulative": 0.32327055430595464,
+   "annualised": 0.0725367009222293,
+   "volatility": 0.13304686196378335,
+   "maxDrawdown": -0.14775244772058094,
+   "months": 48
+  },
+  "sensexTR": {
+   "cumulative": 0.322198684709752,
+   "annualised": 0.0723194420923059,
+   "volatility": 0.1286966831628805,
+   "maxDrawdown": -0.16062043981835827,
+   "months": 48
+  },
+  "source": {
+   "nifty50TR": "SBI Nifty 50 ETF (SETFNIF50) month-end closes, NSE",
+   "nifty50PR": "NSE Nifty 50 index close",
+   "sensexTR": "ICICI Prudential BSE Sensex ETF, ISIN INF346A01034 (ICICISENSX, then SENSEXIETF), NSE"
+  }
+ },
+ "sensitivities": [
+  {
+   "label": "Equal weights",
+   "summary": {
+    "totalReturn": {
+     "cumulative": 0.019885220416562488,
+     "annualised": 0.00989366787625845,
+     "volatility": 0.2049674306734072,
+     "maxDrawdown": -0.1760168863037742,
+     "months": 24
+    },
+    "priceReturn": {
+     "cumulative": -0.004363978370233612,
+     "annualised": -0.002184374932038713,
+     "volatility": 0.20457187330638862,
+     "maxDrawdown": -0.1785851155579502,
+     "months": 24
+    },
+    "vsNifty50TR": {
+     "trackingError": 0.10094490704868175,
+     "beta": 1.2543764313261205,
+     "months": 24,
+     "benchmarkSamePeriod": {
+      "cumulative": -0.10313325506310556,
+      "annualised": -0.05296951213971235,
+      "volatility": 0.14522892935754234,
+      "maxDrawdown": -0.1456057685442994,
+      "months": 24
+     },
+     "excessAnnualised": 0.0628631800159708
+    },
+    "vsNifty50PR": {
+     "trackingError": 0.10120094688716347,
+     "beta": 1.231995891501965,
+     "months": 24,
+     "benchmarkSamePeriod": {
+      "cumulative": -0.12360693274340051,
+      "annualised": -0.06384132367605566,
+      "volatility": 0.1469363759207808,
+      "maxDrawdown": -0.14775244772058116,
+      "months": 24
+     },
+     "excessAnnualised": 0.06165694874401695
+    },
+    "vsSensexTR": {
+     "trackingError": 0.1008903836637292,
+     "beta": 1.267353906261882,
+     "months": 24,
+     "benchmarkSamePeriod": {
+      "cumulative": -0.12102613685327812,
+      "annualised": -0.062463940348574165,
+      "volatility": 0.14402053474801027,
+      "maxDrawdown": -0.16062043981835816,
+      "months": 24
+     },
+     "excessAnnualised": 0.07235760822483261
+    },
+    "periods": {
+     "Oct 2024 to Sep 2025": {
+      "index": -0.03841029205635882,
+      "nifty50TR": -0.036322277663633495,
+      "sensexTR": -0.037266297436759466
+     },
+     "Oct 2025 to Sep 2026": {
+      "index": 0.06062410193385559,
+      "nifty50TR": -0.0693291707911372,
+      "sensexTR": -0.08700208499350492
+     }
+    }
+   },
+   "held": {
+    "2022": 0,
+    "2023": 0,
+    "2024": 50,
+    "2025": 50,
+    "2026": 50
+   }
+  },
+  {
+   "label": "Parity score only, no fundamentals screens",
+   "summary": {
+    "totalReturn": {
+     "cumulative": -0.11326977776223579,
+     "annualised": -0.05833646017393013,
+     "volatility": 0.17676171025464701,
+     "maxDrawdown": -0.18301182132586846,
+     "months": 24
+    },
+    "priceReturn": {
+     "cumulative": -0.13687580698666468,
+     "annualised": -0.07095522550668454,
+     "volatility": 0.17580781213397897,
+     "maxDrawdown": -0.19082841331176426,
+     "months": 24
+    },
+    "vsNifty50TR": {
+     "trackingError": 0.08682246839577921,
+     "beta": 1.0619947958300566,
+     "months": 24,
+     "benchmarkSamePeriod": {
+      "cumulative": -0.10313325506310556,
+      "annualised": -0.05296951213971235,
+      "volatility": 0.14522892935754234,
+      "maxDrawdown": -0.1456057685442994,
+      "months": 24
+     },
+     "excessAnnualised": -0.005366948034217778
+    },
+    "vsNifty50PR": {
+     "trackingError": 0.08629277237202612,
+     "beta": 1.0433445991725108,
+     "months": 24,
+     "benchmarkSamePeriod": {
+      "cumulative": -0.12360693274340051,
+      "annualised": -0.06384132367605566,
+      "volatility": 0.1469363759207808,
+      "maxDrawdown": -0.14775244772058116,
+      "months": 24
+     },
+     "excessAnnualised": -0.007113901830628877
+    },
+    "vsSensexTR": {
+     "trackingError": 0.08755851043121468,
+     "beta": 1.068371100551168,
+     "months": 24,
+     "benchmarkSamePeriod": {
+      "cumulative": -0.12102613685327812,
+      "annualised": -0.062463940348574165,
+      "volatility": 0.14402053474801027,
+      "maxDrawdown": -0.16062043981835816,
+      "months": 24
+     },
+     "excessAnnualised": 0.004127480174644038
+    },
+    "periods": {
+     "Oct 2024 to Sep 2025": {
+      "index": -0.056064943271891154,
+      "nifty50TR": -0.036322277663633495,
+      "sensexTR": -0.037266297436759466
+     },
+     "Oct 2025 to Sep 2026": {
+      "index": -0.06060251082169754,
+      "nifty50TR": -0.0693291707911372,
+      "sensexTR": -0.08700208499350492
+     }
+    }
+   },
+   "held": {
+    "2022": 0,
+    "2023": 0,
+    "2024": 50,
+    "2025": 50,
+    "2026": 50
+   }
+  },
+  {
+   "label": "No industry cap",
+   "summary": {
+    "totalReturn": {
+     "cumulative": -0.10424985738963544,
+     "annualised": -0.05355922392874235,
+     "volatility": 0.16946124063748205,
+     "maxDrawdown": -0.15862988117328713,
+     "months": 24
+    },
+    "priceReturn": {
+     "cumulative": -0.12624547141090203,
+     "annualised": -0.06525162284757191,
+     "volatility": 0.16911249066566122,
+     "maxDrawdown": -0.16486072233126436,
+     "months": 24
+    },
+    "vsNifty50TR": {
+     "trackingError": 0.06902076483491158,
+     "beta": 1.0678427816409617,
+     "months": 24,
+     "benchmarkSamePeriod": {
+      "cumulative": -0.10313325506310556,
+      "annualised": -0.05296951213971235,
+      "volatility": 0.14522892935754234,
+      "maxDrawdown": -0.1456057685442994,
+      "months": 24
+     },
+     "excessAnnualised": -0.0005897117890300008
+    },
+    "vsNifty50PR": {
+     "trackingError": 0.06937034854413808,
+     "beta": 1.050867538174208,
+     "months": 24,
+     "benchmarkSamePeriod": {
+      "cumulative": -0.12360693274340051,
+      "annualised": -0.06384132367605566,
+      "volatility": 0.1469363759207808,
+      "maxDrawdown": -0.14775244772058116,
+      "months": 24
+     },
+     "excessAnnualised": -0.0014102991715162494
+    },
+    "vsSensexTR": {
+     "trackingError": 0.07021276556909116,
+     "beta": 1.0734108997228982,
+     "months": 24,
+     "benchmarkSamePeriod": {
+      "cumulative": -0.12102613685327812,
+      "annualised": -0.062463940348574165,
+      "volatility": 0.14402053474801027,
+      "maxDrawdown": -0.16062043981835816,
+      "months": 24
+     },
+     "excessAnnualised": 0.008904716419831815
+    },
+    "periods": {
+     "Oct 2024 to Sep 2025": {
+      "index": -0.048612444605776295,
+      "nifty50TR": -0.036322277663633495,
+      "sensexTR": -0.037266297436759466
+     },
+     "Oct 2025 to Sep 2026": {
+      "index": -0.05848028226604762,
+      "nifty50TR": -0.0693291707911372,
+      "sensexTR": -0.08700208499350492
+     }
+    }
+   },
+   "held": {
+    "2022": 0,
+    "2023": 0,
+    "2024": 50,
+    "2025": 50,
+    "2026": 50
+   }
+  }
+ ],
+ "hindsight": {
+  "summary": {
+   "totalReturn": {
+    "cumulative": 0.25679852393976277,
+    "annualised": 0.07916674523964806,
+    "volatility": 0.16951583859995387,
+    "maxDrawdown": -0.19178090632542255,
+    "months": 36
+   },
+   "priceReturn": {
+    "cumulative": 0.20497122614625396,
+    "annualised": 0.06412396860602088,
+    "volatility": 0.16933347849190866,
+    "maxDrawdown": -0.19619061038618668,
+    "months": 36
+   },
+   "vsNifty50TR": {
+    "trackingError": 0.06806078407606445,
+    "beta": 1.118564074059901,
+    "months": 36,
+    "benchmarkSamePeriod": {
+     "cumulative": 0.1918576304241837,
+     "annualised": 0.06024962390416855,
+     "volatility": 0.13958262203215757,
+     "maxDrawdown": -0.1456057685442993,
+     "months": 36
+    },
+    "excessAnnualised": 0.018917121335479514
+   },
+   "vsNifty50PR": {
+    "trackingError": 0.06752552914693913,
+    "beta": 1.1033434769303145,
+    "months": 36,
+    "benchmarkSamePeriod": {
+     "cumulative": 0.15185377553046875,
+     "annualised": 0.04825220204289837,
+     "volatility": 0.14136389048746084,
+     "maxDrawdown": -0.14775244772058094,
+     "months": 36
+    },
+    "excessAnnualised": 0.015871766563122502
+   },
+   "vsSensexTR": {
+    "trackingError": 0.07310772769251903,
+    "beta": 1.1142052394384732,
+    "months": 36,
+    "benchmarkSamePeriod": {
+     "cumulative": 0.13974816712545346,
+     "annualised": 0.044566998443074546,
+     "volatility": 0.13799124128489162,
+     "maxDrawdown": -0.16062043981835838,
+     "months": 36
+    },
+    "excessAnnualised": 0.034599746796573516
+   },
+   "periods": {
+    "Oct 2023 to Sep 2024": {
+     "index": 0.4096475673603561,
+     "nifty50TR": 0.32891272549975636,
+     "sensexTR": 0.2966803848355182
+    },
+    "Oct 2024 to Sep 2025": {
+     "index": -0.08460913236399836,
+     "nifty50TR": -0.036322277663633495,
+     "sensexTR": -0.037266297436759466
+    },
+    "Oct 2025 to Sep 2026": {
+     "index": -0.02602336101660363,
+     "nifty50TR": -0.0693291707911372,
+     "sensexTR": -0.08700208499350492
+    }
+   }
+  },
+  "years": {
+   "2022": {
+    "held": 0,
+    "eligible": 0
+   },
+   "2023": {
+    "held": 50,
+    "eligible": 118
+   },
+   "2024": {
+    "held": 50,
+    "eligible": 117
+   },
+   "2025": {
+    "held": 50,
+    "eligible": 146
+   },
+   "2026": {
+    "held": 50,
+    "eligible": 175
+   }
+  },
+  "constituents2023": [
+   {
+    "symbol": "FEDERALBNK",
+    "name": "Federal Bank Ltd.",
+    "industry": "Financial Services",
+    "weight": 0.02532,
+    "E": 0.4102,
+    "W": 0.8597,
+    "P": 0.8398,
+    "freeFloatCr": 36104,
+    "roe": 0.1535,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "IOB",
+    "name": "Indian Overseas Bank",
+    "industry": "Financial Services",
+    "weight": 0.00224,
+    "E": 0.3598,
+    "W": 0.9353,
+    "P": 0.8204,
+    "freeFloatCr": 3199,
+    "roe": 0.1038,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "LICHSGFIN",
+    "name": "LIC Housing Finance Ltd.",
+    "industry": "Financial Services",
+    "weight": 0.00981,
+    "E": 0.3255,
+    "W": 0.9371,
+    "P": 0.7811,
+    "freeFloatCr": 13987,
+    "roe": 0.1063,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "IDBI",
+    "name": "IDBI Bank Ltd.",
+    "industry": "Financial Services",
+    "weight": 0.00282,
+    "E": 0.3263,
+    "W": 0.9071,
+    "P": 0.7693,
+    "freeFloatCr": 4024,
+    "roe": 0.1021,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "CANBK",
+    "name": "Canara Bank",
+    "industry": "Financial Services",
+    "weight": 0.01774,
+    "E": 0.3165,
+    "W": 0.9325,
+    "P": 0.7683,
+    "freeFloatCr": 25303,
+    "roe": 0.1637,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "FSL",
+    "name": "Firstsource Solutions Ltd.",
+    "industry": "Services",
+    "weight": 0.00363,
+    "E": 0.3463,
+    "W": 0.8321,
+    "P": 0.7592,
+    "freeFloatCr": 5171,
+    "roe": 0.1605,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "TATAELXSI",
+    "name": "Tata Elxsi Ltd.",
+    "industry": "Information Technology",
+    "weight": 0.0177,
+    "E": 0.3603,
+    "W": 0.7327,
+    "P": 0.7266,
+    "freeFloatCr": 25241,
+    "roe": 0.4097,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "RAINBOW",
+    "name": "Rainbow Childrens Medicare Ltd.",
+    "industry": "Healthcare",
+    "weight": 0.00367,
+    "E": 0.5806,
+    "W": 0.6254,
+    "P": 0.7243,
+    "freeFloatCr": 5239,
+    "roe": 0.362,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "INDIANB",
+    "name": "Indian Bank",
+    "industry": "Financial Services",
+    "weight": 0.00806,
+    "E": 0.2943,
+    "W": 0.8874,
+    "P": 0.7228,
+    "freeFloatCr": 11490,
+    "roe": 0.2388,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "KPITTECH",
+    "name": "KPIT Technologies Ltd.",
+    "industry": "Information Technology",
+    "weight": 0.01312,
+    "E": 0.2933,
+    "W": 0.885,
+    "P": 0.7205,
+    "freeFloatCr": 18711,
+    "roe": 0.2573,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "INFY",
+    "name": "Infosys Ltd.",
+    "industry": "Information Technology",
+    "weight": 0.08,
+    "E": 0.3944,
+    "W": 0.6375,
+    "P": 0.7091,
+    "freeFloatCr": 505066,
+    "roe": 0.3197,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "ECLERX",
+    "name": "eClerx Services Ltd.",
+    "industry": "Services",
+    "weight": 0.00269,
+    "E": 0.3561,
+    "W": 0.7,
+    "P": 0.706,
+    "freeFloatCr": 3835,
+    "roe": 0.2977,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "OFSS",
+    "name": "Oracle Financial Services Software Ltd.",
+    "industry": "Information Technology",
+    "weight": 0.00678,
+    "E": 0.3314,
+    "W": 0.7365,
+    "P": 0.6986,
+    "freeFloatCr": 9664,
+    "roe": 0.2481,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "MPHASIS",
+    "name": "MphasiS Ltd.",
+    "industry": "Information Technology",
+    "weight": 0.014,
+    "E": 0.3549,
+    "W": 0.6714,
+    "P": 0.6903,
+    "freeFloatCr": 19971,
+    "roe": 0.4033,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "BANKBARODA",
+    "name": "Bank of Baroda",
+    "industry": "Financial Services",
+    "weight": 0.02795,
+    "E": 0.2623,
+    "W": 0.9042,
+    "P": 0.6887,
+    "freeFloatCr": 39864,
+    "roe": 0.159,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "SBIN",
+    "name": "State Bank of India",
+    "industry": "Financial Services",
+    "weight": 0.08,
+    "E": 0.2694,
+    "W": 0.8779,
+    "P": 0.6878,
+    "freeFloatCr": 227188,
+    "roe": 0.1844,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "PERSISTENT",
+    "name": "Persistent Systems Ltd.",
+    "industry": "Information Technology",
+    "weight": 0.02107,
+    "E": 0.308,
+    "W": 0.741,
+    "P": 0.6756,
+    "freeFloatCr": 30052,
+    "roe": 0.2512,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "NH",
+    "name": "Narayana Hrudayalaya Ltd.",
+    "industry": "Healthcare",
+    "weight": 0.00553,
+    "E": 0.6,
+    "W": 0.5682,
+    "P": 0.6742,
+    "freeFloatCr": 7880,
+    "roe": 0.5191,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "TCS",
+    "name": "Tata Consultancy Services Ltd.",
+    "industry": "Information Technology",
+    "weight": 0.08,
+    "E": 0.3578,
+    "W": 0.6333,
+    "P": 0.6732,
+    "freeFloatCr": 353640,
+    "roe": 0.4676,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "ICICIBANK",
+    "name": "ICICI Bank Ltd.",
+    "industry": "Financial Services",
+    "weight": 0.08,
+    "E": 0.323,
+    "W": 0.6954,
+    "P": 0.6703,
+    "freeFloatCr": 670679,
+    "roe": 0.1785,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "ZENSARTECH",
+    "name": "Zensar Technolgies Ltd.",
+    "industry": "Information Technology",
+    "weight": 0.00418,
+    "E": 0.3131,
+    "W": 0.7105,
+    "P": 0.667,
+    "freeFloatCr": 5960,
+    "roe": 0.1157,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "LTTS",
+    "name": "L&T Technology Services Ltd.",
+    "industry": "Information Technology",
+    "weight": 0.0089,
+    "E": 0.2226,
+    "W": 1.0199,
+    "P": 0.6607,
+    "freeFloatCr": 12689,
+    "roe": 0.2567,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "DMART",
+    "name": "Avenue Supermarts Ltd.",
+    "industry": "Consumer Services",
+    "weight": 0.04252,
+    "E": 0.254,
+    "W": 1.1823,
+    "P": 0.6555,
+    "freeFloatCr": 60633,
+    "roe": 0.1599,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "TITAN",
+    "name": "Titan Company Ltd.",
+    "industry": "Consumer Durables",
+    "weight": 0.08,
+    "E": 0.2565,
+    "W": 0.8055,
+    "P": 0.6429,
+    "freeFloatCr": 131666,
+    "roe": 0.3073,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "SBICARD",
+    "name": "SBI Cards and Payment Services Ltd.",
+    "industry": "Financial Services",
+    "weight": 0.01638,
+    "E": 0.2677,
+    "W": 0.7613,
+    "P": 0.6385,
+    "freeFloatCr": 23357,
+    "roe": 0.2298,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "POLYMED",
+    "name": "Poly Medicure Ltd.",
+    "industry": "Healthcare",
+    "weight": 0.00456,
+    "E": 0.4219,
+    "W": 0.4806,
+    "P": 0.6368,
+    "freeFloatCr": 6499,
+    "roe": 0.1539,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "BEL",
+    "name": "Bharat Electronics Ltd.",
+    "industry": "Capital Goods",
+    "weight": 0.03464,
+    "E": 0.2255,
+    "W": 0.8842,
+    "P": 0.6315,
+    "freeFloatCr": 49395,
+    "roe": 0.2283,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "BSOFT",
+    "name": "Birlasoft Ltd.",
+    "industry": "Information Technology",
+    "weight": 0.00552,
+    "E": 0.2564,
+    "W": 0.7612,
+    "P": 0.6248,
+    "freeFloatCr": 7866,
+    "roe": 0.1318,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "OBEROIRLTY",
+    "name": "Oberoi Realty Ltd.",
+    "industry": "Realty",
+    "weight": 0.00951,
+    "E": 0.1954,
+    "W": 0.9892,
+    "P": 0.6217,
+    "freeFloatCr": 13557,
+    "roe": 0.1683,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "CUMMINSIND",
+    "name": "Cummins India Ltd.",
+    "industry": "Capital Goods",
+    "weight": 0.01616,
+    "E": 0.2132,
+    "W": 0.8749,
+    "P": 0.6108,
+    "freeFloatCr": 23041,
+    "roe": 0.2253,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "LALPATHLAB",
+    "name": "Dr. Lal Path Labs Ltd.",
+    "industry": "Healthcare",
+    "weight": 0.00659,
+    "E": 0.2236,
+    "W": 1.2107,
+    "P": 0.6077,
+    "freeFloatCr": 9399,
+    "roe": 0.1505,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "DRREDDY",
+    "name": "Dr. Reddy's Laboratories Ltd.",
+    "industry": "Healthcare",
+    "weight": 0.04779,
+    "E": 0.1897,
+    "W": 1.2519,
+    "P": 0.5505,
+    "freeFloatCr": 68151,
+    "roe": 0.2121,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "TRIDENT",
+    "name": "Trident Ltd.",
+    "industry": "Textiles",
+    "weight": 0.00344,
+    "E": 0.1815,
+    "W": 0.8048,
+    "P": 0.5404,
+    "freeFloatCr": 4904,
+    "roe": 0.1875,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "MSUMI",
+    "name": "Motherson Sumi Wiring India Ltd.",
+    "industry": "Automobile and Auto Components",
+    "weight": 0.00765,
+    "E": 0.2143,
+    "W": 1.5064,
+    "P": 0.5334,
+    "freeFloatCr": 10905,
+    "roe": 0.3528,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "JUBLFOOD",
+    "name": "Jubilant Foodworks Ltd.",
+    "industry": "Consumer Services",
+    "weight": 0.01428,
+    "E": 0.1626,
+    "W": 1.1655,
+    "P": 0.5282,
+    "freeFloatCr": 20360,
+    "roe": 0.1774,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "GABRIEL",
+    "name": "Gabriel India Ltd.",
+    "industry": "Automobile and Auto Components",
+    "weight": 0.0015,
+    "E": 0.1732,
+    "W": 0.731,
+    "P": 0.5032,
+    "freeFloatCr": 2136,
+    "roe": 0.1617,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "MARICO",
+    "name": "Marico Ltd.",
+    "industry": "Fast Moving Consumer Goods",
+    "weight": 0.02064,
+    "E": 0.1633,
+    "W": 1.3006,
+    "P": 0.5012,
+    "freeFloatCr": 29437,
+    "roe": 0.3643,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "CONCOR",
+    "name": "Container Corporation of India Ltd.",
+    "industry": "Services",
+    "weight": 0.01383,
+    "E": 0.1227,
+    "W": 0.9489,
+    "P": 0.4826,
+    "freeFloatCr": 19724,
+    "roe": 0.1068,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "EMAMILTD",
+    "name": "Emami Ltd.",
+    "industry": "Fast Moving Consumer Goods",
+    "weight": 0.0075,
+    "E": 0.1314,
+    "W": 0.8786,
+    "P": 0.4805,
+    "freeFloatCr": 10689,
+    "roe": 0.2921,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "ENGINERSIN",
+    "name": "Engineers India Ltd.",
+    "industry": "Construction",
+    "weight": 0.00283,
+    "E": 0.1167,
+    "W": 0.9548,
+    "P": 0.4721,
+    "freeFloatCr": 4034,
+    "roe": 0.1856,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "GLAND",
+    "name": "Gland Pharma Ltd.",
+    "industry": "Healthcare",
+    "weight": 0.00816,
+    "E": 0.1272,
+    "W": 0.8106,
+    "P": 0.454,
+    "freeFloatCr": 11630,
+    "roe": 0.1033,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "CIPLA",
+    "name": "Cipla Ltd.",
+    "industry": "Healthcare",
+    "weight": 0.04469,
+    "E": 0.1431,
+    "W": 1.3933,
+    "P": 0.4532,
+    "freeFloatCr": 63728,
+    "roe": 0.1266,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "GLAXO",
+    "name": "Glaxosmithkline Pharmaceuticals Ltd.",
+    "industry": "Healthcare",
+    "weight": 0.0046,
+    "E": 0.1144,
+    "W": 1.116,
+    "P": 0.4528,
+    "freeFloatCr": 6557,
+    "roe": 0.6392,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "WHIRLPOOL",
+    "name": "Whirlpool of India Ltd.",
+    "industry": "Consumer Durables",
+    "weight": 0.00361,
+    "E": 0.1048,
+    "W": 1.0246,
+    "P": 0.4522,
+    "freeFloatCr": 5154,
+    "roe": 0.1201,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "CAPLIPOINT",
+    "name": "Caplin Point Laboratories Ltd.",
+    "industry": "Healthcare",
+    "weight": 0.00161,
+    "E": 0.1876,
+    "W": 0.5268,
+    "P": 0.4445,
+    "freeFloatCr": 2301,
+    "roe": 0.397,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "NHPC",
+    "name": "NHPC Ltd.",
+    "industry": "Power",
+    "weight": 0.0108,
+    "E": 0.1114,
+    "W": 0.8705,
+    "P": 0.4404,
+    "freeFloatCr": 15407,
+    "roe": 0.1083,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "HAL",
+    "name": "Hindustan Aeronautics Ltd.",
+    "industry": "Capital Goods",
+    "weight": 0.02564,
+    "E": 0.088,
+    "W": 0.9553,
+    "P": 0.4099,
+    "freeFloatCr": 36570,
+    "roe": 0.4875,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "RITES",
+    "name": "RITES Ltd.",
+    "industry": "Construction",
+    "weight": 0.00231,
+    "E": 0.0982,
+    "W": 0.8489,
+    "P": 0.4084,
+    "freeFloatCr": 3290,
+    "roe": 0.3812,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "IRCTC",
+    "name": "Indian Railway Catering And Tourism Corporation Ltd.",
+    "industry": "Consumer Services",
+    "weight": 0.01436,
+    "E": 0.0841,
+    "W": 1.0364,
+    "P": 0.4028,
+    "freeFloatCr": 20480,
+    "roe": 0.4612,
+    "mcapSource": "shares from Sep 2024"
+   },
+   {
+    "symbol": "DIVISLAB",
+    "name": "Divi's Laboratories Ltd.",
+    "industry": "Healthcare",
+    "weight": 0.03369,
+    "E": 0.1366,
+    "W": 0.5863,
+    "P": 0.4002,
+    "freeFloatCr": 48047,
+    "roe": 0.1489,
+    "mcapSource": "shares from Sep 2024"
+   }
+  ]
+ },
+ "portfolios": {
+  "2024": {
+   "eligible": 117,
+   "held": 50,
+   "excludedFor": {
+    "return on equity": 69,
+    "annual results missing": 48,
+    "profit": 44,
+    "interest cover": 34,
+    "debt": 23,
+    "revenue": 20,
+    "equity missing": 1
+   },
+   "footprint": 0.2573766517365676,
+   "constituents": [
+    {
+     "symbol": "APOLLOHOSP",
+     "name": "Apollo Hospitals Enterprise Ltd.",
+     "industry": "Healthcare",
+     "weight": 0.02563,
+     "E": 0.3754,
+     "W": 1.0201,
+     "P": 0.8579,
+     "freeFloatCr": 73152,
+     "roe": 0.1369,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "FEDERALBNK",
+     "name": "Federal Bank Ltd.",
+     "industry": "Financial Services",
+     "weight": 0.01691,
+     "E": 0.4171,
+     "W": 0.8525,
+     "P": 0.8433,
+     "freeFloatCr": 48252,
+     "roe": 0.1481,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "IOB",
+     "name": "Indian Overseas Bank",
+     "industry": "Financial Services",
+     "weight": 0.00138,
+     "E": 0.3626,
+     "W": 0.928,
+     "P": 0.8203,
+     "freeFloatCr": 3950,
+     "roe": 0.1114,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "LICHSGFIN",
+     "name": "LIC Housing Finance Ltd.",
+     "industry": "Financial Services",
+     "weight": 0.00699,
+     "E": 0.3278,
+     "W": 0.9376,
+     "P": 0.784,
+     "freeFloatCr": 19954,
+     "roe": 0.1622,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "FSL",
+     "name": "Firstsource Solutions Ltd.",
+     "industry": "Services",
+     "weight": 0.00342,
+     "E": 0.352,
+     "W": 0.8624,
+     "P": 0.7792,
+     "freeFloatCr": 9766,
+     "roe": 0.1457,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "TRENT",
+     "name": "Trent Ltd.",
+     "industry": "Consumer Services",
+     "weight": 0.05943,
+     "E": 0.351,
+     "W": 0.8553,
+     "P": 0.7748,
+     "freeFloatCr": 169613,
+     "roe": 0.4463,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "IDBI",
+     "name": "IDBI Bank Ltd.",
+     "industry": "Financial Services",
+     "weight": 0.00174,
+     "E": 0.327,
+     "W": 0.9033,
+     "P": 0.7686,
+     "freeFloatCr": 4959,
+     "roe": 0.1292,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "CANBK",
+     "name": "Canara Bank",
+     "industry": "Financial Services",
+     "weight": 0.01312,
+     "E": 0.3175,
+     "W": 0.9231,
+     "P": 0.7656,
+     "freeFloatCr": 37435,
+     "roe": 0.2458,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "RAINBOW",
+     "name": "Rainbow Childrens Medicare Ltd.",
+     "industry": "Healthcare",
+     "weight": 0.0025,
+     "E": 0.5779,
+     "W": 0.6661,
+     "P": 0.7499,
+     "freeFloatCr": 7125,
+     "roe": 0.1872,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "DMART",
+     "name": "Avenue Supermarts Ltd.",
+     "industry": "Consumer Services",
+     "weight": 0.02946,
+     "E": 0.2768,
+     "W": 1.0194,
+     "P": 0.7369,
+     "freeFloatCr": 84069,
+     "roe": 0.1459,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "VIJAYA",
+     "name": "Vijaya Diagnostic Centre Ltd.",
+     "industry": "Healthcare",
+     "weight": 0.00159,
+     "E": 0.4082,
+     "W": 0.6538,
+     "P": 0.7306,
+     "freeFloatCr": 4536,
+     "roe": 0.1977,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "BANKINDIA",
+     "name": "Bank of India",
+     "industry": "Financial Services",
+     "weight": 0.0047,
+     "E": 0.291,
+     "W": 0.9055,
+     "P": 0.726,
+     "freeFloatCr": 13404,
+     "roe": 0.1028,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "INDIANB",
+     "name": "Indian Bank",
+     "industry": "Financial Services",
+     "weight": 0.00647,
+     "E": 0.2959,
+     "W": 0.8865,
+     "P": 0.7244,
+     "freeFloatCr": 18466,
+     "roe": 0.1569,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "TATAELXSI",
+     "name": "Tata Elxsi Ltd.",
+     "industry": "Information Technology",
+     "weight": 0.00945,
+     "E": 0.3601,
+     "W": 0.7187,
+     "P": 0.7194,
+     "freeFloatCr": 26977,
+     "roe": 0.3451,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "KPITTECH",
+     "name": "KPIT Technologies Ltd.",
+     "industry": "Information Technology",
+     "weight": 0.00931,
+     "E": 0.3168,
+     "W": 0.8013,
+     "P": 0.7125,
+     "freeFloatCr": 26560,
+     "roe": 0.3131,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "INFY",
+     "name": "Infosys Ltd.",
+     "industry": "Information Technology",
+     "weight": 0.08,
+     "E": 0.3927,
+     "W": 0.644,
+     "P": 0.7112,
+     "freeFloatCr": 662893,
+     "roe": 0.3208,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "UNIONBANK",
+     "name": "Union Bank of India",
+     "industry": "Financial Services",
+     "weight": 0.00829,
+     "E": 0.2914,
+     "W": 0.858,
+     "P": 0.7071,
+     "freeFloatCr": 23654,
+     "roe": 0.1676,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "WIPRO",
+     "name": "Wipro Ltd.",
+     "industry": "Information Technology",
+     "weight": 0.02687,
+     "E": 0.3665,
+     "W": 0.6727,
+     "P": 0.7022,
+     "freeFloatCr": 76675,
+     "roe": 0.1451,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "SBIN",
+     "name": "State Bank of India",
+     "industry": "Financial Services",
+     "weight": 0.08,
+     "E": 0.273,
+     "W": 0.8719,
+     "P": 0.6899,
+     "freeFloatCr": 298566,
+     "roe": 0.1789,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "ECLERX",
+     "name": "eClerx Services Ltd.",
+     "industry": "Services",
+     "weight": 0.00226,
+     "E": 0.3853,
+     "W": 0.6172,
+     "P": 0.6897,
+     "freeFloatCr": 6444,
+     "roe": 0.2582,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "BANKBARODA",
+     "name": "Bank of Baroda",
+     "industry": "Financial Services",
+     "weight": 0.01618,
+     "E": 0.2638,
+     "W": 0.8987,
+     "P": 0.6886,
+     "freeFloatCr": 46171,
+     "roe": 0.1674,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "OFSS",
+     "name": "Oracle Financial Services Software Ltd.",
+     "industry": "Information Technology",
+     "weight": 0.0095,
+     "E": 0.3232,
+     "W": 0.7328,
+     "P": 0.6882,
+     "freeFloatCr": 27126,
+     "roe": 0.2898,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "MPHASIS",
+     "name": "MphasiS Ltd.",
+     "industry": "Information Technology",
+     "weight": 0.0119,
+     "E": 0.3577,
+     "W": 0.6549,
+     "P": 0.6845,
+     "freeFloatCr": 33970,
+     "roe": 0.1859,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "NH",
+     "name": "Narayana Hrudayalaya Ltd.",
+     "industry": "Healthcare",
+     "weight": 0.00318,
+     "E": 0.5933,
+     "W": 0.5745,
+     "P": 0.6836,
+     "freeFloatCr": 9084,
+     "roe": 0.3148,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "TCS",
+     "name": "Tata Consultancy Services Ltd.",
+     "industry": "Information Technology",
+     "weight": 0.08,
+     "E": 0.3559,
+     "W": 0.6391,
+     "P": 0.6745,
+     "freeFloatCr": 435979,
+     "roe": 0.5075,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "OBEROIRLTY",
+     "name": "Oberoi Realty Ltd.",
+     "industry": "Realty",
+     "weight": 0.00779,
+     "E": 0.2187,
+     "W": 0.9639,
+     "P": 0.6493,
+     "freeFloatCr": 22223,
+     "roe": 0.1478,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "TITAN",
+     "name": "Titan Company Ltd.",
+     "industry": "Consumer Durables",
+     "weight": 0.05593,
+     "E": 0.2918,
+     "W": 0.716,
+     "P": 0.6465,
+     "freeFloatCr": 159626,
+     "roe": 0.3291,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "LTTS",
+     "name": "L&T Technology Services Ltd.",
+     "industry": "Information Technology",
+     "weight": 0.00521,
+     "E": 0.2125,
+     "W": 1.0268,
+     "P": 0.6434,
+     "freeFloatCr": 14882,
+     "roe": 0.2537,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "KAYNES",
+     "name": "Kaynes Technology India Ltd.",
+     "industry": "Capital Goods",
+     "weight": 0.00513,
+     "E": 0.2642,
+     "W": 1.2926,
+     "P": 0.6394,
+     "freeFloatCr": 14646,
+     "roe": 0.1062,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "EIHOTEL",
+     "name": "EIH Ltd.",
+     "industry": "Consumer Services",
+     "weight": 0.00557,
+     "E": 0.2113,
+     "W": 0.9499,
+     "P": 0.6336,
+     "freeFloatCr": 15890,
+     "roe": 0.1748,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "CUMMINSIND",
+     "name": "Cummins India Ltd.",
+     "industry": "Capital Goods",
+     "weight": 0.01811,
+     "E": 0.2105,
+     "W": 0.9459,
+     "P": 0.6311,
+     "freeFloatCr": 51697,
+     "roe": 0.2782,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "BEL",
+     "name": "Bharat Electronics Ltd.",
+     "industry": "Capital Goods",
+     "weight": 0.03568,
+     "E": 0.2247,
+     "W": 0.8803,
+     "P": 0.629,
+     "freeFloatCr": 101825,
+     "roe": 0.264,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "BSOFT",
+     "name": "Birlasoft Ltd.",
+     "industry": "Information Technology",
+     "weight": 0.00344,
+     "E": 0.2463,
+     "W": 0.7984,
+     "P": 0.6271,
+     "freeFloatCr": 9827,
+     "roe": 0.2271,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "MEDANTA",
+     "name": "Global Health Ltd.",
+     "industry": "Healthcare",
+     "weight": 0.00644,
+     "E": 0.5183,
+     "W": 0.4007,
+     "P": 0.6213,
+     "freeFloatCr": 18387,
+     "roe": 0.1793,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "COFORGE",
+     "name": "Coforge Ltd.",
+     "industry": "Information Technology",
+     "weight": 0.0164,
+     "E": 0.2522,
+     "W": 0.7653,
+     "P": 0.6213,
+     "freeFloatCr": 46795,
+     "roe": 0.2409,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "INDHOTEL",
+     "name": "Indian Hotels Co. Ltd.",
+     "industry": "Consumer Services",
+     "weight": 0.02113,
+     "E": 0.1854,
+     "W": 1.1108,
+     "P": 0.5777,
+     "freeFloatCr": 60310,
+     "roe": 0.1444,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "LODHA",
+     "name": "Lodha Developers Ltd.",
+     "industry": "Realty",
+     "weight": 0.012,
+     "E": 0.1827,
+     "W": 0.8034,
+     "P": 0.5418,
+     "freeFloatCr": 34239,
+     "roe": 0.1028,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "WELSPUNLIV",
+     "name": "Welspun Living Ltd.",
+     "industry": "Textiles",
+     "weight": 0.00157,
+     "E": 0.2749,
+     "W": 0.5273,
+     "P": 0.5384,
+     "freeFloatCr": 4472,
+     "roe": 0.1583,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "MSUMI",
+     "name": "Motherson Sumi Wiring India Ltd.",
+     "industry": "Automobile and Auto Components",
+     "weight": 0.00422,
+     "E": 0.2043,
+     "W": 1.6449,
+     "P": 0.4984,
+     "freeFloatCr": 12050,
+     "roe": 0.4245,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "EMAMILTD",
+     "name": "Emami Ltd.",
+     "industry": "Fast Moving Consumer Goods",
+     "weight": 0.00529,
+     "E": 0.1329,
+     "W": 0.8866,
+     "P": 0.4854,
+     "freeFloatCr": 15104,
+     "roe": 0.3047,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "CONCOR",
+     "name": "Container Corporation of India Ltd.",
+     "industry": "Services",
+     "weight": 0.00886,
+     "E": 0.121,
+     "W": 0.9556,
+     "P": 0.481,
+     "freeFloatCr": 25290,
+     "roe": 0.1094,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "CIPLA",
+     "name": "Cipla Ltd.",
+     "industry": "Healthcare",
+     "weight": 0.03234,
+     "E": 0.1528,
+     "W": 1.3324,
+     "P": 0.4788,
+     "freeFloatCr": 92289,
+     "roe": 0.1645,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "ENGINERSIN",
+     "name": "Engineers India Ltd.",
+     "industry": "Construction",
+     "weight": 0.00203,
+     "E": 0.1159,
+     "W": 0.9747,
+     "P": 0.4753,
+     "freeFloatCr": 5792,
+     "roe": 0.2112,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "CAPLIPOINT",
+     "name": "Caplin Point Laboratories Ltd.",
+     "industry": "Healthcare",
+     "weight": 0.00149,
+     "E": 0.1947,
+     "W": 0.5381,
+     "P": 0.4577,
+     "freeFloatCr": 4247,
+     "roe": 0.2179,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "KALYANKJIL",
+     "name": "Kalyan Jewellers India Ltd.",
+     "industry": "Consumer Durables",
+     "weight": 0.0104,
+     "E": 0.1919,
+     "W": 0.5128,
+     "P": 0.4436,
+     "freeFloatCr": 29678,
+     "roe": 0.1527,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "HINDUNILVR",
+     "name": "Hindustan Unilever Ltd.",
+     "industry": "Fast Moving Consumer Goods",
+     "weight": 0.08,
+     "E": 0.1523,
+     "W": 1.566,
+     "P": 0.441,
+     "freeFloatCr": 264825,
+     "roe": 0.2025,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "COCHINSHIP",
+     "name": "Cochin Shipyard Ltd.",
+     "industry": "Capital Goods",
+     "weight": 0.00435,
+     "E": 0.0994,
+     "W": 1.0848,
+     "P": 0.4281,
+     "freeFloatCr": 12426,
+     "roe": 0.1661,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "HAL",
+     "name": "Hindustan Aeronautics Ltd.",
+     "industry": "Capital Goods",
+     "weight": 0.02938,
+     "E": 0.0905,
+     "W": 0.992,
+     "P": 0.4238,
+     "freeFloatCr": 83844,
+     "roe": 0.2892,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "IOC",
+     "name": "Indian Oil Corporation Ltd.",
+     "industry": "Oil Gas & Consumable Fuels",
+     "weight": 0.04323,
+     "E": 0.0899,
+     "W": 0.9958,
+     "P": 0.4231,
+     "freeFloatCr": 123381,
+     "roe": 0.2583,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "SUNPHARMA",
+     "name": "Sun Pharmaceutical Industries Ltd.",
+     "industry": "Healthcare",
+     "weight": 0.07373,
+     "E": 0.0832,
+     "W": 1.0154,
+     "P": 0.4048,
+     "freeFloatCr": 210430,
+     "roe": 0.1601,
+     "mcapSource": "file"
+    }
+   ]
+  },
+  "2025": {
+   "eligible": 146,
+   "held": 50,
+   "excludedFor": {
+    "return on equity": 76,
+    "annual results missing": 65,
+    "profit": 40,
+    "interest cover": 39,
+    "revenue": 34,
+    "debt": 22,
+    "equity missing": 1
+   },
+   "footprint": 0.26633528680706087,
+   "constituents": [
+    {
+     "symbol": "FEDERALBNK",
+     "name": "Federal Bank Ltd.",
+     "industry": "Financial Services",
+     "weight": 0.0278,
+     "E": 0.423,
+     "W": 0.8629,
+     "P": 0.8545,
+     "freeFloatCr": 47466,
+     "roe": 0.1266,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "IOB",
+     "name": "Indian Overseas Bank",
+     "industry": "Financial Services",
+     "weight": 0.0024,
+     "E": 0.3643,
+     "W": 0.8996,
+     "P": 0.8096,
+     "freeFloatCr": 4104,
+     "roe": 0.1136,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "DOMS",
+     "name": "DOMS Industries Ltd.",
+     "industry": "Fast Moving Consumer Goods",
+     "weight": 0.00262,
+     "E": 0.5245,
+     "W": 0.6881,
+     "P": 0.809,
+     "freeFloatCr": 4468,
+     "roe": 0.2227,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "APOLLOHOSP",
+     "name": "Apollo Hospitals Enterprise Ltd.",
+     "industry": "Healthcare",
+     "weight": 0.04409,
+     "E": 0.5129,
+     "W": 0.6712,
+     "P": 0.8086,
+     "freeFloatCr": 75274,
+     "roe": 0.1909,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "RAINBOW",
+     "name": "Rainbow Childrens Medicare Ltd.",
+     "industry": "Healthcare",
+     "weight": 0.00405,
+     "E": 0.5705,
+     "W": 0.7549,
+     "P": 0.8053,
+     "freeFloatCr": 6906,
+     "roe": 0.1785,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "FSL",
+     "name": "Firstsource Solutions Ltd.",
+     "industry": "Services",
+     "weight": 0.0061,
+     "E": 0.3791,
+     "W": 0.8309,
+     "P": 0.7937,
+     "freeFloatCr": 10416,
+     "roe": 0.1525,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "LICHSGFIN",
+     "name": "LIC Housing Finance Ltd.",
+     "industry": "Financial Services",
+     "weight": 0.00997,
+     "E": 0.324,
+     "W": 0.9403,
+     "P": 0.7806,
+     "freeFloatCr": 17019,
+     "roe": 0.1605,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "TRENT",
+     "name": "Trent Ltd.",
+     "industry": "Consumer Services",
+     "weight": 0.06135,
+     "E": 0.3531,
+     "W": 0.8599,
+     "P": 0.7793,
+     "freeFloatCr": 104739,
+     "roe": 0.3246,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "IDBI",
+     "name": "IDBI Bank Ltd.",
+     "industry": "Financial Services",
+     "weight": 0.00305,
+     "E": 0.3386,
+     "W": 0.87,
+     "P": 0.7676,
+     "freeFloatCr": 5200,
+     "roe": 0.1347,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "CANBK",
+     "name": "Canara Bank",
+     "industry": "Financial Services",
+     "weight": 0.02437,
+     "E": 0.32,
+     "W": 0.912,
+     "P": 0.764,
+     "freeFloatCr": 41597,
+     "roe": 0.1755,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "DMART",
+     "name": "Avenue Supermarts Ltd.",
+     "industry": "Consumer Services",
+     "weight": 0.04324,
+     "E": 0.2898,
+     "W": 1.0274,
+     "P": 0.7511,
+     "freeFloatCr": 73827,
+     "roe": 0.135,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "INDIANB",
+     "name": "Indian Bank",
+     "industry": "Financial Services",
+     "weight": 0.01549,
+     "E": 0.298,
+     "W": 0.8988,
+     "P": 0.7319,
+     "freeFloatCr": 26452,
+     "roe": 0.1669,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "NH",
+     "name": "Narayana Hrudayalaya Ltd.",
+     "industry": "Healthcare",
+     "weight": 0.00739,
+     "E": 0.5803,
+     "W": 0.6367,
+     "P": 0.731,
+     "freeFloatCr": 12617,
+     "roe": 0.2427,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "TATAELXSI",
+     "name": "Tata Elxsi Ltd.",
+     "industry": "Information Technology",
+     "weight": 0.0107,
+     "E": 0.3505,
+     "W": 0.7549,
+     "P": 0.7275,
+     "freeFloatCr": 18263,
+     "roe": 0.2926,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "BANKINDIA",
+     "name": "Bank of India",
+     "industry": "Financial Services",
+     "weight": 0.00876,
+     "E": 0.2937,
+     "W": 0.8961,
+     "P": 0.7255,
+     "freeFloatCr": 14956,
+     "roe": 0.1233,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "MAHABANK",
+     "name": "Bank of Maharashtra",
+     "industry": "Financial Services",
+     "weight": 0.00515,
+     "E": 0.2802,
+     "W": 0.9302,
+     "P": 0.722,
+     "freeFloatCr": 8784,
+     "roe": 0.2273,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "UNIONBANK",
+     "name": "Union Bank of India",
+     "industry": "Financial Services",
+     "weight": 0.01563,
+     "E": 0.2921,
+     "W": 0.8609,
+     "P": 0.7091,
+     "freeFloatCr": 26687,
+     "roe": 0.1696,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "INFY",
+     "name": "Infosys Ltd.",
+     "industry": "Information Technology",
+     "weight": 0.08,
+     "E": 0.3904,
+     "W": 0.6397,
+     "P": 0.7068,
+     "freeFloatCr": 510032,
+     "roe": 0.2905,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "OFSS",
+     "name": "Oracle Financial Services Software Ltd.",
+     "industry": "Information Technology",
+     "weight": 0.01174,
+     "E": 0.3218,
+     "W": 0.7566,
+     "P": 0.6979,
+     "freeFloatCr": 20040,
+     "roe": 0.2934,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "SBIN",
+     "name": "State Bank of India",
+     "industry": "Financial Services",
+     "weight": 0.08,
+     "E": 0.2785,
+     "W": 0.8731,
+     "P": 0.6973,
+     "freeFloatCr": 342907,
+     "roe": 0.1689,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "THANGAMAYL",
+     "name": "Thangamayil Jewellery Ltd.",
+     "industry": "Consumer Durables",
+     "weight": 0.00141,
+     "E": 0.3966,
+     "W": 0.6091,
+     "P": 0.6951,
+     "freeFloatCr": 2408,
+     "roe": 0.1488,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "MPHASIS",
+     "name": "MphasiS Ltd.",
+     "industry": "Information Technology",
+     "weight": 0.01772,
+     "E": 0.3514,
+     "W": 0.6675,
+     "P": 0.685,
+     "freeFloatCr": 30251,
+     "roe": 0.1848,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "KAYNES",
+     "name": "Kaynes Technology India Ltd.",
+     "industry": "Capital Goods",
+     "weight": 0.01287,
+     "E": 0.3274,
+     "W": 0.6771,
+     "P": 0.6659,
+     "freeFloatCr": 21972,
+     "roe": 0.1104,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "TCS",
+     "name": "Tata Consultancy Services Ltd.",
+     "industry": "Information Technology",
+     "weight": 0.08,
+     "E": 0.352,
+     "W": 0.6072,
+     "P": 0.6538,
+     "freeFloatCr": 295017,
+     "roe": 0.5242,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "MAXHEALTH",
+     "name": "Max Healthcare Institute Ltd.",
+     "industry": "Healthcare",
+     "weight": 0.04841,
+     "E": 0.4692,
+     "W": 0.4464,
+     "P": 0.6472,
+     "freeFloatCr": 82647,
+     "roe": 0.121,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "MEDANTA",
+     "name": "Global Health Ltd.",
+     "industry": "Healthcare",
+     "weight": 0.01385,
+     "E": 0.5169,
+     "W": 0.4313,
+     "P": 0.6456,
+     "freeFloatCr": 23639,
+     "roe": 0.153,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "BSOFT",
+     "name": "Birlasoft Ltd.",
+     "industry": "Information Technology",
+     "weight": 0.00342,
+     "E": 0.249,
+     "W": 0.8147,
+     "P": 0.637,
+     "freeFloatCr": 5836,
+     "roe": 0.1585,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "WELSPUNLIV",
+     "name": "Welspun Living Ltd.",
+     "industry": "Textiles",
+     "weight": 0.00215,
+     "E": 0.2915,
+     "W": 0.6927,
+     "P": 0.6355,
+     "freeFloatCr": 3673,
+     "roe": 0.1369,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "EIHOTEL",
+     "name": "EIH Ltd.",
+     "industry": "Consumer Services",
+     "weight": 0.00885,
+     "E": 0.2309,
+     "W": 0.8704,
+     "P": 0.634,
+     "freeFloatCr": 15113,
+     "roe": 0.1729,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "BEL",
+     "name": "Bharat Electronics Ltd.",
+     "industry": "Capital Goods",
+     "weight": 0.08,
+     "E": 0.2289,
+     "W": 0.8721,
+     "P": 0.6318,
+     "freeFloatCr": 144273,
+     "roe": 0.2932,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "CUMMINSIND",
+     "name": "Cummins India Ltd.",
+     "industry": "Capital Goods",
+     "weight": 0.03124,
+     "E": 0.2162,
+     "W": 0.8995,
+     "P": 0.6236,
+     "freeFloatCr": 53333,
+     "roe": 0.2822,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "TBOTEK",
+     "name": "TBO Tek Ltd.",
+     "industry": "Consumer Services",
+     "weight": 0.0052,
+     "E": 0.2428,
+     "W": 0.7844,
+     "P": 0.6171,
+     "freeFloatCr": 8872,
+     "roe": 0.2643,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "MARICO",
+     "name": "Marico Ltd.",
+     "industry": "Fast Moving Consumer Goods",
+     "weight": 0.02166,
+     "E": 0.1897,
+     "W": 1.0438,
+     "P": 0.603,
+     "freeFloatCr": 36977,
+     "roe": 0.4173,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "INDHOTEL",
+     "name": "Indian Hotels Co. Ltd.",
+     "industry": "Consumer Services",
+     "weight": 0.03716,
+     "E": 0.1971,
+     "W": 1.1249,
+     "P": 0.592,
+     "freeFloatCr": 63445,
+     "roe": 0.185,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "LTTS",
+     "name": "L&T Technology Services Ltd.",
+     "industry": "Information Technology",
+     "weight": 0.00674,
+     "E": 0.2014,
+     "W": 0.8622,
+     "P": 0.5893,
+     "freeFloatCr": 11514,
+     "roe": 0.2221,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "REDINGTON",
+     "name": "Redington Ltd.",
+     "industry": "Services",
+     "weight": 0.01298,
+     "E": 0.1903,
+     "W": 0.912,
+     "P": 0.5891,
+     "freeFloatCr": 22158,
+     "roe": 0.1973,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "CYIENT",
+     "name": "Cyient Ltd.",
+     "industry": "Information Technology",
+     "weight": 0.00567,
+     "E": 0.2499,
+     "W": 0.6515,
+     "P": 0.5707,
+     "freeFloatCr": 9682,
+     "roe": 0.1287,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "LODHA",
+     "name": "Lodha Developers Ltd.",
+     "industry": "Realty",
+     "weight": 0.01867,
+     "E": 0.1883,
+     "W": 0.8476,
+     "P": 0.5649,
+     "freeFloatCr": 31867,
+     "roe": 0.1469,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "CIPLA",
+     "name": "Cipla Ltd.",
+     "industry": "Healthcare",
+     "weight": 0.05037,
+     "E": 0.1587,
+     "W": 1.0106,
+     "P": 0.5604,
+     "freeFloatCr": 85984,
+     "roe": 0.1821,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "OBEROIRLTY",
+     "name": "Oberoi Realty Ltd.",
+     "industry": "Realty",
+     "weight": 0.01088,
+     "E": 0.2245,
+     "W": 0.6908,
+     "P": 0.5569,
+     "freeFloatCr": 18581,
+     "roe": 0.1505,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "SCHNEIDER",
+     "name": "Schneider Electric Infrastructure Ltd.",
+     "industry": "Capital Goods",
+     "weight": 0.00287,
+     "E": 0.1658,
+     "W": 0.9196,
+     "P": 0.5522,
+     "freeFloatCr": 4905,
+     "roe": 0.6244,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "HONAUT",
+     "name": "Honeywell Automation India Ltd.",
+     "industry": "Capital Goods",
+     "weight": 0.00467,
+     "E": 0.1678,
+     "W": 0.7486,
+     "P": 0.5013,
+     "freeFloatCr": 7978,
+     "roe": 0.137,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "TATATECH",
+     "name": "Tata Technologies Ltd.",
+     "industry": "Information Technology",
+     "weight": 0.00712,
+     "E": 0.1589,
+     "W": 0.7793,
+     "P": 0.4976,
+     "freeFloatCr": 12163,
+     "roe": 0.1991,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "SYRMA",
+     "name": "Syrma SGS Technology Ltd.",
+     "industry": "Capital Goods",
+     "weight": 0.00463,
+     "E": 0.2049,
+     "W": 1.6721,
+     "P": 0.4951,
+     "freeFloatCr": 7903,
+     "roe": 0.1097,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "KALYANKJIL",
+     "name": "Kalyan Jewellers India Ltd.",
+     "industry": "Consumer Durables",
+     "weight": 0.01022,
+     "E": 0.1997,
+     "W": 0.5929,
+     "P": 0.4866,
+     "freeFloatCr": 17441,
+     "roe": 0.159,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "CONCOR",
+     "name": "Container Corporation of India Ltd.",
+     "industry": "Services",
+     "weight": 0.0106,
+     "E": 0.1251,
+     "W": 0.9255,
+     "P": 0.4812,
+     "freeFloatCr": 18101,
+     "roe": 0.1065,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "EMAMILTD",
+     "name": "Emami Ltd.",
+     "industry": "Fast Moving Consumer Goods",
+     "weight": 0.00621,
+     "E": 0.1234,
+     "W": 0.9176,
+     "P": 0.4759,
+     "freeFloatCr": 10610,
+     "roe": 0.3137,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "POLYMED",
+     "name": "Poly Medicure Ltd.",
+     "industry": "Healthcare",
+     "weight": 0.00434,
+     "E": 0.4207,
+     "W": 0.264,
+     "P": 0.4713,
+     "freeFloatCr": 7414,
+     "roe": 0.1599,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "UBL",
+     "name": "United Breweries Ltd.",
+     "industry": "Fast Moving Consumer Goods",
+     "weight": 0.00814,
+     "E": 0.133,
+     "W": 1.198,
+     "P": 0.4711,
+     "freeFloatCr": 13889,
+     "roe": 0.1034,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "BDL",
+     "name": "Bharat Dynamics Ltd.",
+     "industry": "Capital Goods",
+     "weight": 0.00804,
+     "E": 0.1247,
+     "W": 0.8687,
+     "P": 0.4655,
+     "freeFloatCr": 13722,
+     "roe": 0.1438,
+     "mcapSource": "file"
+    }
+   ]
+  },
+  "2026": {
+   "eligible": 175,
+   "held": 50,
+   "excludedFor": {
+    "return on equity": 74,
+    "annual results missing": 73,
+    "profit": 44,
+    "interest cover": 33,
+    "debt": 22,
+    "revenue": 20,
+    "equity missing": 8
+   },
+   "footprint": 0.2759235664269057,
+   "constituents": [
+    {
+     "symbol": "DOMS",
+     "name": "DOMS Industries Ltd.",
+     "industry": "Fast Moving Consumer Goods",
+     "weight": 0.00187,
+     "E": 0.5328,
+     "W": 0.7787,
+     "P": 0.8529,
+     "freeFloatCr": 4681,
+     "roe": 0.2071,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "FEDERALBNK",
+     "name": "Federal Bank Ltd.",
+     "industry": "Financial Services",
+     "weight": 0.03137,
+     "E": 0.4149,
+     "W": 0.844,
+     "P": 0.8368,
+     "freeFloatCr": 78511,
+     "roe": 0.1171,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "SAGILITY",
+     "name": "Sagility Ltd.",
+     "industry": "Information Technology",
+     "weight": 0.00391,
+     "E": 0.6123,
+     "W": 1.1112,
+     "P": 0.8353,
+     "freeFloatCr": 9777,
+     "roe": 0.1028,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "TRENT",
+     "name": "Trent Ltd.",
+     "industry": "Consumer Services",
+     "weight": 0.03518,
+     "E": 0.3736,
+     "W": 0.9169,
+     "P": 0.8277,
+     "freeFloatCr": 88058,
+     "roe": 0.2763,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "IKS",
+     "name": "Inventurus Knowledge Solutions Ltd.",
+     "industry": "Information Technology",
+     "weight": 0.00408,
+     "E": 0.4183,
+     "W": 0.7997,
+     "P": 0.818,
+     "freeFloatCr": 10209,
+     "roe": 0.3144,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "IOB",
+     "name": "Indian Overseas Bank",
+     "industry": "Financial Services",
+     "weight": 0.0018,
+     "E": 0.371,
+     "W": 0.896,
+     "P": 0.8153,
+     "freeFloatCr": 4507,
+     "roe": 0.1505,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "IGIL",
+     "name": "International Gemological Institute Ltd.",
+     "industry": "Services",
+     "weight": 0.00128,
+     "E": 0.3714,
+     "W": 0.8678,
+     "P": 0.8028,
+     "freeFloatCr": 3201,
+     "roe": 0.478,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "APOLLOHOSP",
+     "name": "Apollo Hospitals Enterprise Ltd.",
+     "industry": "Healthcare",
+     "weight": 0.03376,
+     "E": 0.5115,
+     "W": 0.6498,
+     "P": 0.7968,
+     "freeFloatCr": 84510,
+     "roe": 0.2195,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "LICHSGFIN",
+     "name": "LIC Housing Finance Ltd.",
+     "industry": "Financial Services",
+     "weight": 0.00638,
+     "E": 0.3234,
+     "W": 0.9307,
+     "P": 0.7759,
+     "freeFloatCr": 15970,
+     "roe": 0.1441,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "DMART",
+     "name": "Avenue Supermarts Ltd.",
+     "industry": "Consumer Services",
+     "weight": 0.02528,
+     "E": 0.3012,
+     "W": 0.9959,
+     "P": 0.7745,
+     "freeFloatCr": 63276,
+     "roe": 0.1295,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "THANGAMAYL",
+     "name": "Thangamayil Jewellery Ltd.",
+     "industry": "Consumer Durables",
+     "weight": 0.00241,
+     "E": 0.3884,
+     "W": 0.7588,
+     "P": 0.7678,
+     "freeFloatCr": 6040,
+     "roe": 0.2793,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "IDBI",
+     "name": "IDBI Bank Ltd.",
+     "industry": "Financial Services",
+     "weight": 0.00187,
+     "E": 0.3519,
+     "W": 0.826,
+     "P": 0.7624,
+     "freeFloatCr": 4676,
+     "roe": 0.1415,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "CANBK",
+     "name": "Canara Bank",
+     "industry": "Financial Services",
+     "weight": 0.01605,
+     "E": 0.3251,
+     "W": 0.8936,
+     "P": 0.7622,
+     "freeFloatCr": 40162,
+     "roe": 0.1699,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "RAINBOW",
+     "name": "Rainbow Childrens Medicare Ltd.",
+     "industry": "Healthcare",
+     "weight": 0.00267,
+     "E": 0.5798,
+     "W": 0.6795,
+     "P": 0.7557,
+     "freeFloatCr": 6672,
+     "roe": 0.1786,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "FORTIS",
+     "name": "Fortis Healthcare Ltd.",
+     "industry": "Healthcare",
+     "weight": 0.01599,
+     "E": 0.5462,
+     "W": 0.6271,
+     "P": 0.7544,
+     "freeFloatCr": 40012,
+     "roe": 0.1108,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "MAHABANK",
+     "name": "Bank of Maharashtra",
+     "industry": "Financial Services",
+     "weight": 0.00644,
+     "E": 0.2923,
+     "W": 0.9165,
+     "P": 0.7319,
+     "freeFloatCr": 16117,
+     "roe": 0.2267,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "INDIANB",
+     "name": "Indian Bank",
+     "industry": "Financial Services",
+     "weight": 0.01135,
+     "E": 0.3036,
+     "W": 0.8807,
+     "P": 0.7312,
+     "freeFloatCr": 28397,
+     "roe": 0.1512,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "BANKINDIA",
+     "name": "Bank of India",
+     "industry": "Financial Services",
+     "weight": 0.00631,
+     "E": 0.299,
+     "W": 0.8934,
+     "P": 0.7309,
+     "freeFloatCr": 15784,
+     "roe": 0.1182,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "KPITTECH",
+     "name": "KPIT Technologies Ltd.",
+     "industry": "Information Technology",
+     "weight": 0.00332,
+     "E": 0.3062,
+     "W": 0.8485,
+     "P": 0.7208,
+     "freeFloatCr": 8316,
+     "roe": 0.1975,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "TATAELXSI",
+     "name": "Tata Elxsi Ltd.",
+     "industry": "Information Technology",
+     "weight": 0.00431,
+     "E": 0.3393,
+     "W": 0.7628,
+     "P": 0.7195,
+     "freeFloatCr": 10797,
+     "roe": 0.213,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "SBIN",
+     "name": "State Bank of India",
+     "industry": "Financial Services",
+     "weight": 0.08,
+     "E": 0.2867,
+     "W": 0.8884,
+     "P": 0.7137,
+     "freeFloatCr": 394399,
+     "roe": 0.1521,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "UNIONBANK",
+     "name": "Union Bank of India",
+     "industry": "Financial Services",
+     "weight": 0.01316,
+     "E": 0.2947,
+     "W": 0.8575,
+     "P": 0.711,
+     "freeFloatCr": 32947,
+     "roe": 0.1519,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "INFY",
+     "name": "Infosys Ltd.",
+     "industry": "Information Technology",
+     "weight": 0.08,
+     "E": 0.3945,
+     "W": 0.6314,
+     "P": 0.7058,
+     "freeFloatCr": 346828,
+     "roe": 0.3121,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "OFSS",
+     "name": "Oracle Financial Services Software Ltd.",
+     "industry": "Information Technology",
+     "weight": 0.0102,
+     "E": 0.3311,
+     "W": 0.7221,
+     "P": 0.6915,
+     "freeFloatCr": 25540,
+     "roe": 0.3261,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "MPHASIS",
+     "name": "MphasiS Ltd.",
+     "industry": "Information Technology",
+     "weight": 0.01142,
+     "E": 0.3479,
+     "W": 0.6629,
+     "P": 0.6792,
+     "freeFloatCr": 28575,
+     "roe": 0.1829,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "GODREJPROP",
+     "name": "Godrej Properties Ltd.",
+     "industry": "Realty",
+     "weight": 0.00947,
+     "E": 0.379,
+     "W": 0.6,
+     "P": 0.6744,
+     "freeFloatCr": 23713,
+     "roe": 0.1015,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "UNITDSPR",
+     "name": "United Spirits Ltd.",
+     "industry": "Fast Moving Consumer Goods",
+     "weight": 0.01705,
+     "E": 0.2248,
+     "W": 0.9999,
+     "P": 0.6705,
+     "freeFloatCr": 42673,
+     "roe": 0.2155,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "TITAN",
+     "name": "Titan Company Ltd.",
+     "industry": "Consumer Durables",
+     "weight": 0.07655,
+     "E": 0.3037,
+     "W": 0.734,
+     "P": 0.6677,
+     "freeFloatCr": 191601,
+     "roe": 0.3713,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "ZENSARTECH",
+     "name": "Zensar Technolgies Ltd.",
+     "industry": "Information Technology",
+     "weight": 0.00194,
+     "E": 0.3016,
+     "W": 0.7323,
+     "P": 0.6646,
+     "freeFloatCr": 4866,
+     "roe": 0.1763,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "TCS",
+     "name": "Tata Consultancy Services Ltd.",
+     "industry": "Information Technology",
+     "weight": 0.08,
+     "E": 0.3517,
+     "W": 0.6107,
+     "P": 0.6554,
+     "freeFloatCr": 209445,
+     "roe": 0.4872,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "WIPRO",
+     "name": "Wipro Ltd.",
+     "industry": "Information Technology",
+     "weight": 0.01712,
+     "E": 0.3781,
+     "W": 0.5679,
+     "P": 0.6553,
+     "freeFloatCr": 42845,
+     "roe": 0.1549,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "BEL",
+     "name": "Bharat Electronics Ltd.",
+     "industry": "Capital Goods",
+     "weight": 0.05541,
+     "E": 0.2151,
+     "W": 1.0097,
+     "P": 0.6527,
+     "freeFloatCr": 138684,
+     "roe": 0.2758,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "BLS",
+     "name": "BLS International Services Ltd.",
+     "industry": "Consumer Services",
+     "weight": 0.00106,
+     "E": 0.3223,
+     "W": 0.6603,
+     "P": 0.6524,
+     "freeFloatCr": 2657,
+     "roe": 0.3274,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "MEDANTA",
+     "name": "Global Health Ltd.",
+     "industry": "Healthcare",
+     "weight": 0.00981,
+     "E": 0.5079,
+     "W": 0.4309,
+     "P": 0.6512,
+     "freeFloatCr": 24557,
+     "roe": 0.1515,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "MAXHEALTH",
+     "name": "Max Healthcare Institute Ltd.",
+     "industry": "Healthcare",
+     "weight": 0.02758,
+     "E": 0.478,
+     "W": 0.4347,
+     "P": 0.6446,
+     "freeFloatCr": 69041,
+     "roe": 0.1433,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "CUMMINSIND",
+     "name": "Cummins India Ltd.",
+     "industry": "Capital Goods",
+     "weight": 0.02583,
+     "E": 0.229,
+     "W": 0.89,
+     "P": 0.6384,
+     "freeFloatCr": 64654,
+     "roe": 0.2945,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "OBEROIRLTY",
+     "name": "Oberoi Realty Ltd.",
+     "industry": "Realty",
+     "weight": 0.00828,
+     "E": 0.235,
+     "W": 0.8472,
+     "P": 0.631,
+     "freeFloatCr": 20737,
+     "roe": 0.1491,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "NYKAA",
+     "name": "FSN E-Commerce Ventures Ltd.",
+     "industry": "Consumer Services",
+     "weight": 0.01755,
+     "E": 0.3294,
+     "W": 0.5913,
+     "P": 0.6241,
+     "freeFloatCr": 43922,
+     "roe": 0.1456,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "REDINGTON",
+     "name": "Redington Ltd.",
+     "industry": "Services",
+     "weight": 0.01271,
+     "E": 0.2113,
+     "W": 1.0882,
+     "P": 0.6231,
+     "freeFloatCr": 31818,
+     "roe": 0.1578,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "TBOTEK",
+     "name": "TBO Tek Ltd.",
+     "industry": "Consumer Services",
+     "weight": 0.00395,
+     "E": 0.2316,
+     "W": 0.8293,
+     "P": 0.6198,
+     "freeFloatCr": 9893,
+     "roe": 0.178,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "MARICO",
+     "name": "Marico Ltd.",
+     "industry": "Fast Moving Consumer Goods",
+     "weight": 0.0167,
+     "E": 0.1977,
+     "W": 1.0294,
+     "P": 0.6197,
+     "freeFloatCr": 41808,
+     "roe": 0.4305,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "BHARTIARTL",
+     "name": "Bharti Airtel Ltd.",
+     "industry": "Telecommunication",
+     "weight": 0.08,
+     "E": 0.2094,
+     "W": 0.9168,
+     "P": 0.6196,
+     "freeFloatCr": 547022,
+     "roe": 0.2032,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "GODREJCP",
+     "name": "Godrej Consumer Products Ltd.",
+     "industry": "Fast Moving Consumer Goods",
+     "weight": 0.01632,
+     "E": 0.2029,
+     "W": 1.0775,
+     "P": 0.6136,
+     "freeFloatCr": 40838,
+     "roe": 0.151,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "INDHOTEL",
+     "name": "Indian Hotels Co. Ltd.",
+     "industry": "Consumer Services",
+     "weight": 0.02564,
+     "E": 0.204,
+     "W": 1.1582,
+     "P": 0.5935,
+     "freeFloatCr": 64181,
+     "roe": 0.1722,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "LODHA",
+     "name": "Lodha Developers Ltd.",
+     "industry": "Realty",
+     "weight": 0.01345,
+     "E": 0.1842,
+     "W": 0.9047,
+     "P": 0.5772,
+     "freeFloatCr": 33676,
+     "roe": 0.1577,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "EIHOTEL",
+     "name": "EIH Ltd.",
+     "industry": "Consumer Services",
+     "weight": 0.00505,
+     "E": 0.2457,
+     "W": 0.6628,
+     "P": 0.5707,
+     "freeFloatCr": 12644,
+     "roe": 0.1272,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "BRIGADE",
+     "name": "Brigade Enterprises Ltd.",
+     "industry": "Realty",
+     "weight": 0.00442,
+     "E": 0.1957,
+     "W": 0.8294,
+     "P": 0.5698,
+     "freeFloatCr": 11054,
+     "roe": 0.1034,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "DRREDDY",
+     "name": "Dr. Reddy's Laboratories Ltd.",
+     "industry": "Healthcare",
+     "weight": 0.03008,
+     "E": 0.2049,
+     "W": 1.2975,
+     "P": 0.5621,
+     "freeFloatCr": 75293,
+     "roe": 0.1175,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "SCHNEIDER",
+     "name": "Schneider Electric Infrastructure Ltd.",
+     "industry": "Capital Goods",
+     "weight": 0.00287,
+     "E": 0.1866,
+     "W": 0.8319,
+     "P": 0.5572,
+     "freeFloatCr": 7193,
+     "roe": 0.3181,
+     "mcapSource": "file"
+    },
+    {
+     "symbol": "CIPLA",
+     "name": "Cipla Ltd.",
+     "industry": "Healthcare",
+     "weight": 0.03075,
+     "E": 0.1685,
+     "W": 1.1175,
+     "P": 0.5492,
+     "freeFloatCr": 76975,
+     "roe": 0.1182,
+     "mcapSource": "file"
+    }
+   ]
+  }
+ },
+ "monthly": [
+  {
+   "month": "2024-10",
+   "tr": -0.05829945762507871,
+   "pr": -0.059457879804803146
+  },
+  {
+   "month": "2024-11",
+   "tr": 0.020762741899625223,
+   "pr": 0.019847948478311072
+  },
+  {
+   "month": "2024-12",
+   "tr": -0.002486396899588077,
+   "pr": -0.002486396899588077
+  },
+  {
+   "month": "2025-01",
+   "tr": -0.0426721002147705,
+   "pr": -0.04483732903081003
+  },
+  {
+   "month": "2025-02",
+   "tr": -0.11395350786056453,
+   "pr": -0.11485397281836099
+  },
+  {
+   "month": "2025-03",
+   "tr": 0.072476236939443,
+   "pr": 0.07220899629177976
+  },
+  {
+   "month": "2025-04",
+   "tr": 0.02196823646916414,
+   "pr": 0.02196823646916414
+  },
+  {
+   "month": "2025-05",
+   "tr": 0.0404905819174409,
+   "pr": 0.03729016951329681
+  },
+  {
+   "month": "2025-06",
+   "tr": 0.03144227886704968,
+   "pr": 0.028032460302461128
+  },
+  {
+   "month": "2025-07",
+   "tr": -0.04118219931860488,
+   "pr": -0.043245396024355856
+  },
+  {
+   "month": "2025-08",
+   "tr": 0.0012441238394435153,
+   "pr": -0.00014786648206623672
+  },
+  {
+   "month": "2025-09",
+   "tr": -0.0033362459024232523,
+   "pr": -0.003368228642715505
+  },
+  {
+   "month": "2025-10",
+   "tr": 0.04462912165088668,
+   "pr": 0.0429258362913032
+  },
+  {
+   "month": "2025-11",
+   "tr": 0.0035491113312676845,
+   "pr": 0.003257687541902072
+  },
+  {
+   "month": "2025-12",
+   "tr": -0.012365128827423884,
+   "pr": -0.012365128827423884
+  },
+  {
+   "month": "2026-01",
+   "tr": -0.012025905906594655,
+   "pr": -0.013658254831380256
+  },
+  {
+   "month": "2026-02",
+   "tr": 0.0033088698577189977,
+   "pr": 0.0028942592642693414
+  },
+  {
+   "month": "2026-03",
+   "tr": -0.11876163353695009,
+   "pr": -0.11913792087292416
+  },
+  {
+   "month": "2026-04",
+   "tr": 0.09538549657308378,
+   "pr": 0.09538549657308378
+  },
+  {
+   "month": "2026-05",
+   "tr": -0.010411547126589264,
+   "pr": -0.013703514769262676
+  },
+  {
+   "month": "2026-06",
+   "tr": 0.03944839829670484,
+   "pr": 0.03580436195664829
+  },
+  {
+   "month": "2026-07",
+   "tr": 0.027647099879771493,
+   "pr": 0.025366783842055714
+  },
+  {
+   "month": "2026-08",
+   "tr": 0.005643407576482703,
+   "pr": 0.005039466200259163
+  },
+  {
+   "month": "2026-09",
+   "tr": -0.07516297431346954,
+   "pr": -0.07521840813045053
+  }
+ ]
+}
