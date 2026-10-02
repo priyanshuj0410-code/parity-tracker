@@ -12,11 +12,11 @@ export function EuGlance({ c }: { c: Company }) {
   const p = key === m.latest ? c.years[m.prev] : undefined
   const source = c.entities?.[0]
   return (
-        <div className="grid g4">
+        <div className="grid g4 tiles">
           <div className="card">
             <div className="tile-label">Women's share of pay</div>
             <div className="tile-value">{pct(y.w)}</div>
-            <div className="tile-context"><DataBadge year={y} /> <Change hideMissing value={p?.w != null && y.w != null ? y.w - p.w : null} /></div>
+            <div className="tile-context"><DataBadge year={y} quiet /> <Change hideMissing value={p?.w != null && y.w != null ? y.w - p.w : null} /></div>
             {y.w != null && <ParityTrack value={y.w} parity={0.5} />}
           </div>
           <div className="card">

@@ -6,6 +6,8 @@ export const SECTOR = sectorsJson as Record<string, string>
 export const SECTORS = [...new Set(Object.values(SECTOR))].sort()
 export const sectorOf = (c: Company): string => SECTOR[c.symbol] ?? c.industry
 
+/** India's derived wage parity outside this range comes from mismatched staff bases, not pay. */
+export const W_PLAUSIBLE = [0.3, 1.3] as const
 export const E_PARITY = 0.5
 export const W_PARITY = 1
 
@@ -38,6 +40,8 @@ export interface Point {
   w: number | null
   s: number | null
   sector: string
+  /** India only: a derived wage parity outside the plausible range, kept for display but left out of comparisons. */
+  wRaw?: number
 }
 
 function build(c: Company): Point | null {
@@ -48,6 +52,10 @@ function build(c: Company): Point | null {
     const e = employmentParity(c, y)
     const w = wageParity(c, y)
     if (w == null) continue
+    if (c.country === 'IN') {
+      const ok = w >= W_PLAUSIBLE[0] && w <= W_PLAUSIBLE[1]
+      return { c, year, e, w: ok ? w : null, s: y.w, sector: sectorOf(c), wRaw: ok ? undefined : w }
+    }
     return { c, year, e, w, s: impliedShare(e, w), sector: sectorOf(c) }
   }
   return null

@@ -1,10 +1,7 @@
 import { Eq, Frac, Step, Steps } from '../components/Formula'
 import { MARKET, SOURCE_DATE, companies, indexes } from '../lib/data'
 import { inr, pct } from '../lib/format'
-import type { ReactNode } from 'react'
 
-const Op = ({ children }: { children: ReactNode }) => <span className="op">{children}</span>
-const Ans = ({ children }: { children: ReactNode }) => <span className="ans">{children}</span>
 
 const EXAMPLE_OF: [string, string, string, string, string][] = [
   ['GB', 'TSCO', 'mean hourly pay gap and the pay quarters', 'Mean hourly pay gap, UK staff', "E: average of women's share in the four pay quarters"],
@@ -71,19 +68,19 @@ export function Method() {
         <Steps>
           <Step n={1} title="Your slice of each company">
             <p>An index fund holds every company in proportion to its free-float market value, so your slice of a company is your holding divided by its value.</p>
-            <Eq><span>slice</span><Op>=</Op><Frac top="your holding in the company" bottom="the company's market value" /></Eq>
+            <Eq lhs="slice" answer={false} steps={[<Frac key="1" top="your holding in the company" bottom="the company's market value" />]} />
           </Step>
           <Step n={2} title="The payroll you own" resultLabel="A year, per ₹10 lakh" result={inr(ny.ownedPayroll ?? 0)}>
             <p>Each company's yearly wage bill, times your slice of it, added up across the index.</p>
-            <Eq><span>payroll you own</span><Op>=</Op><span>Σ slice × company payroll</span><Op>=</Op><Ans>{inr(ny.ownedPayroll ?? 0)}</Ans></Eq>
+            <Eq lhs="payroll you own" steps={['Σ slice × company payroll', inr(ny.ownedPayroll ?? 0)]} />
           </Step>
           <Step n={3} title="How much of it goes to women" resultLabel="Parity is 50%" result={pct(ny.headline)}>
             <p>Every company reports women's share of its wages. Applied to the payroll you own, that gives the wages paid to women.</p>
-            <Eq><span>women's share</span><Op>=</Op><Frac top="wages paid to women" bottom="payroll you own" /><Op>=</Op><Frac top={inr(ny.womenWages ?? 0)} bottom={inr(ny.ownedPayroll ?? 0)} /><Op>=</Op><Ans>{pct(ny.headline)}</Ans></Eq>
+            <Eq lhs="women's share" steps={[<Frac key="1" top="wages paid to women" bottom="payroll you own" />, <Frac key="2" top={inr(ny.womenWages ?? 0)} bottom={inr(ny.ownedPayroll ?? 0)} />, pct(ny.headline)]} />
           </Step>
           <Step n={4} title="The gap to parity" resultLabel="A year, per ₹10 lakh" result={inr(ny.gap ?? 0)}>
             <p>At parity, half the payroll you own would go to women.</p>
-            <Eq><span>gap</span><Op>=</Op><span>50% × {inr(ny.ownedPayroll ?? 0)}</span><Op>−</Op><span>{inr(ny.womenWages ?? 0)}</span><Op>=</Op><Ans>{inr(ny.gap ?? 0)}</Ans></Eq>
+            <Eq lhs="gap" steps={[`50% × ${inr(ny.ownedPayroll ?? 0)} − ${inr(ny.womenWages ?? 0)}`, inr(ny.gap ?? 0)]} />
             {ny.representationShare != null && ny.payShare != null && <p>{pct(ny.representationShare, 0)} of that gap is too few women employed, and {pct(ny.payShare, 0)} is women paid less on average.</p>}
           </Step>
         </Steps>
@@ -99,9 +96,9 @@ export function Method() {
           </Step>
           {EXAMPLES.map((x) => (
             <Step key={x.code} n={x.code} title={`${MARKET[x.code].name}: ${x.inputs}`} resultLabel={x.name} result={pct(x.s)}>
-              <Eq label={x.wNote}><span>W</span><Op>=</Op>{x.code === 'JP' ? <span>{pct(x.w)}</span> : <><span>100%</span><Op>−</Op><span>{pct(x.gap)}</span><Op>=</Op><span>{pct(x.w)}</span></>}</Eq>
-              <Eq label={x.eNote}><span>E</span><Op>=</Op><span>{pct(x.e)}</span></Eq>
-              <Eq label="Women's share of pay"><span>S</span><Op>=</Op><Frac top="E × W" bottom="E × W + (100% − E)" /><Op>=</Op><Frac top={`${pct(x.e)} × ${pct(x.w)}`} bottom={`${pct(x.e)} × ${pct(x.w)} + ${pct(1 - x.e)}`} /><Op>=</Op><Ans>{pct(x.s)}</Ans></Eq>
+              <Eq label={x.wNote} lhs="W" answer={false} steps={x.code === 'JP' ? [pct(x.w)] : [`100% − ${pct(x.gap)}`, pct(x.w)]} />
+              <Eq label={x.eNote} lhs="E" answer={false} steps={[pct(x.e)]} />
+              <Eq label="Women's share of pay" lhs="S" steps={[<Frac key="1" top="E × W" bottom="E × W + (100% − E)" />, <Frac key="2" top={`${pct(x.e)} × ${pct(x.w)}`} bottom={`${pct(x.e)} × ${pct(x.w)} + ${pct(1 - x.e)}`} />, pct(x.s)]} />
             </Step>
           ))}
         </Steps>
@@ -136,7 +133,7 @@ export function Method() {
         <p>Each market's law asks for different numbers, so a headline from one market cannot be read against another's. We convert what every company reports into two shared measures.</p>
         <ul className="tight">
           <li><strong>Employment parity (E):</strong> women's share of staff. Parity is 50%. India: permanent staff. UK and Australia: all staff in that country. Japan: regular staff, from the same government database. EU: employees by headcount, from ESRS S1-6.</li>
-          <li><strong>Wage parity (W):</strong> women's average pay as a share of men's. Parity is 100%. UK: mean hourly pay. Australia: mean full-time-equivalent pay. Japan: mean annual pay of all workers. EU: the unadjusted gap as each company defines it. India: derived from the wage share and the share of permanent staff, so it is approximate.</li>
+          <li><strong>Wage parity (W):</strong> women's average pay as a share of men's. Parity is 100%. UK: mean hourly pay. Australia: mean full-time-equivalent pay. Japan: mean annual pay of all workers. EU: the unadjusted gap as each company defines it. India: derived from the wage share and the share of permanent staff, so it is approximate. Where that derivation lands outside 30–130%, the wage total and the permanent headcount clearly cover different staff, so the company is marked not comparable and left out of wage rankings and the parity map (its share of pay is unaffected).</li>
           <li><strong>Women's share of pay:</strong> implied by the two, E×W ÷ (E×W + 1 − E). This is the headline for Japan and the EU. For India it equals the reported share, and for the UK and Australia it closely matches the employer-level calculation.</li>
           <li><strong>Market percentile:</strong> where a company's wage parity sits among companies in its own market. Percentiles compare fairly across markets because each company is measured on its own market's basis.</li>
           <li><strong>Sectors:</strong> each exchange's own labels are mapped to 11 shared, GICS-style sectors. Nikkei groups that mix sectors (electric machinery, precision instruments, services) are split company by company.</li>

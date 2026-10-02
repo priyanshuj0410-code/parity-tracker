@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ChartFrame } from '../components/ChartFrame'
 import { Dropdown } from '../components/Dropdown'
+import { MarketPicker } from '../components/MarketPicker'
 import { Logo } from '../components/Logo'
 import { Meter } from '../components/Meter'
 import { ParityMap } from '../components/ParityMap'
@@ -12,6 +13,7 @@ import { BASIS, COMPARE_MARKETS, E_PARITY, MEASURE, POINTS, SECTORS, W_PARITY, i
 import { INDEX_ORDER, indexMarket, indexes } from '../lib/data'
 import { pct } from '../lib/format'
 import { href } from '../lib/router'
+import { PHONE, useMedia } from '../lib/useMedia'
 
 const TABS = [
   { id: 'countries', label: 'Countries', href: href('compare', 'countries') },
@@ -22,6 +24,7 @@ const MAX: Record<Measure, number> = { e: 1, w: 1.4, s: 1 }
 const MEASURES: { id: Measure; label: string }[] = [{ id: 'w', label: 'Wage parity' }, { id: 'e', label: 'Employment parity' }, { id: 's', label: 'Share of pay' }]
 const MAP_MARKETS = COMPARE_MARKETS
 
+const med = (s: Summary | null) => (s && s.n >= 3 ? pct(s.median) : <span className="muted">n/a</span>)
 const iqr = (s: Summary) => `middle half ${Math.round(s.q1 * 100)}–${pct(s.q3, 0)}`
 
 function SummaryCell({ s, measure, min = 3, n = false }: { s: Summary | null; measure: Measure; min?: number; n?: boolean }) {
@@ -43,20 +46,20 @@ function Countries() {
   }))
   const columns: Column<Row>[] = [
     { key: 'm', label: 'Market', render: (r) => <><strong>{marketName(r.code)}</strong><span className="sub">{r.w?.n ?? 0} companies</span></>, sort: (r) => marketName(r.code), csv: (r) => marketName(r.code) },
-    { key: 'e', label: 'Employment parity', render: (r) => <SummaryCell s={r.e} measure="e" />, sort: (r) => r.e?.median ?? null },
-    { key: 'w', label: 'Wage parity', render: (r) => <SummaryCell s={r.w} measure="w" />, sort: (r) => r.w?.median ?? null },
-    { key: 's', label: 'Implied share of pay', render: (r) => <SummaryCell s={r.s} measure="s" />, sort: (r) => r.s?.median ?? null },
-    { key: 'b', label: 'What is measured', priority: 2, render: (r) => <span className="small">{BASIS[r.code].employment ? `Women's share of ${BASIS[r.code].employment}; ` : 'No workforce split yet; '}{BASIS[r.code].wage}</span> },
+    { key: 'e', label: 'Employment parity', phone: (r) => med(r.e), render: (r) => <SummaryCell s={r.e} measure="e" />, sort: (r) => r.e?.median ?? null },
+    { key: 'w', label: 'Wage parity', phone: (r) => med(r.w), render: (r) => <SummaryCell s={r.w} measure="w" />, sort: (r) => r.w?.median ?? null },
+    { key: 's', label: 'Implied share of pay', short: 'Share of pay', phone: (r) => med(r.s), render: (r) => <SummaryCell s={r.s} measure="s" />, sort: (r) => r.s?.median ?? null },
+    { key: 'b', label: 'What is measured', priority: 2, mobile: 'hide', render: (r) => <span className="small">{BASIS[r.code].employment ? `Women's share of ${BASIS[r.code].employment}; ` : 'No workforce split yet; '}{BASIS[r.code].wage}</span> },
   ]
   type IxRow = { id: string; pts: Point[] }
   const ixRows: IxRow[] = INDEX_ORDER.map((id) => ({ id, pts: indexPoints(id) }))
   const ixCols: Column<IxRow>[] = [
     { key: 'name', label: 'Index', render: (r) => <a href={href('index', r.id)}>{indexes[r.id].name}<span className="sub">{indexes[r.id].market}</span></a>, sort: (r) => indexes[r.id].name, csv: (r) => indexes[r.id].name },
-    { key: 'n', label: 'Companies with data', right: true, render: (r) => `${r.pts.length} of ${indexes[r.id].constituents.length + indexes[r.id].missing.length}`, sort: (r) => r.pts.length },
-    { key: 'e', label: 'Employment parity', render: (r) => <SummaryCell s={summarise(r.pts.map((p) => p.e))} measure="e" />, sort: (r) => summarise(r.pts.map((p) => p.e))?.median ?? null },
-    { key: 'w', label: 'Wage parity', render: (r) => <SummaryCell s={summarise(r.pts.map((p) => p.w))} measure="w" />, sort: (r) => summarise(r.pts.map((p) => p.w))?.median ?? null },
-    { key: 's', label: 'Implied share of pay', render: (r) => <SummaryCell s={summarise(r.pts.map((p) => p.s))} measure="s" />, sort: (r) => summarise(r.pts.map((p) => p.s))?.median ?? null },
-    { key: 'h', label: 'Headline share of pay', right: true, render: (r) => { const m = indexMarket(indexes[r.id]); return <>{pct(indexes[r.id].years[m.latest].headline)}<span className="sub">{m.label(m.latest) === 'latest' ? 'share of pay' : `share of pay, ${m.label(m.latest)}`}</span></> } },
+    { key: 'n', label: 'Companies with data', short: 'With data', right: true, mobile: 'second', render: (r) => `${r.pts.length} of ${indexes[r.id].constituents.length + indexes[r.id].missing.length}`, sort: (r) => r.pts.length },
+    { key: 'e', label: 'Employment parity', phone: (r) => med(summarise(r.pts.map((p) => p.e))), render: (r) => <SummaryCell s={summarise(r.pts.map((p) => p.e))} measure="e" />, sort: (r) => summarise(r.pts.map((p) => p.e))?.median ?? null },
+    { key: 'w', label: 'Wage parity', phone: (r) => med(summarise(r.pts.map((p) => p.w))), render: (r) => <SummaryCell s={summarise(r.pts.map((p) => p.w))} measure="w" />, sort: (r) => summarise(r.pts.map((p) => p.w))?.median ?? null },
+    { key: 's', label: 'Implied share of pay', short: 'Implied share', phone: (r) => med(summarise(r.pts.map((p) => p.s))), render: (r) => <SummaryCell s={summarise(r.pts.map((p) => p.s))} measure="s" />, sort: (r) => summarise(r.pts.map((p) => p.s))?.median ?? null },
+    { key: 'h', label: 'Headline share of pay', short: 'Share of pay', right: true, mobile: 'value', phone: (r) => { const m = indexMarket(indexes[r.id]); return pct(indexes[r.id].years[m.latest].headline) }, render: (r) => { const m = indexMarket(indexes[r.id]); return <>{pct(indexes[r.id].years[m.latest].headline)}<span className="sub">{m.label(m.latest) === 'latest' ? 'share of pay' : `share of pay, ${m.label(m.latest)}`}</span></> } },
   ]
   return (
     <>
@@ -70,26 +73,70 @@ function Countries() {
       </div>
       <div className="grid g2" style={{ marginTop: 24 }}>
         <ChartFrame title="Employment parity by market" sub="Women's share of staff, median company"
-          table={<DataTable caption="Employment parity by market" columns={columns.filter((c) => c.key !== 'w' && c.key !== 's')} rows={rows} rowKey={(r) => r.code} initial={{ key: 'e', dir: -1 }} />}>
+          table={<DataTable caption="Employment parity by market" summary={`${rows.length} markets`} columns={columns.filter((c) => c.key !== 'w' && c.key !== 's')} rows={rows} rowKey={(r) => r.code} initial={{ key: 'e', dir: -1 }} />}>
           <RangeDots label="Employment parity by market" rows={ranges('e')} parity={E_PARITY} max={1} />
         </ChartFrame>
         <ChartFrame title="Wage parity by market" sub="Women's average pay as a share of men's, median company"
-          table={<DataTable caption="Wage parity by market" columns={columns.filter((c) => c.key !== 'e' && c.key !== 's')} rows={rows} rowKey={(r) => r.code} initial={{ key: 'w', dir: -1 }} />}>
+          table={<DataTable caption="Wage parity by market" summary={`${rows.length} markets`} columns={columns.filter((c) => c.key !== 'e' && c.key !== 's')} rows={rows} rowKey={(r) => r.code} initial={{ key: 'w', dir: -1 }} />}>
           <RangeDots label="Wage parity by market" rows={ranges('w')} parity={W_PARITY} max={MAX.w} />
         </ChartFrame>
       </div>
       <h2 style={{ marginTop: 40 }}>Markets side by side</h2>
-      <DataTable caption="Markets on the shared scales" columns={columns} rows={rows} rowKey={(r) => r.code} initial={{ key: 'w', dir: -1 }} download="parity-by-market" summary="Median company in each market, latest reported year" />
+      <p className="small muted">The median company in each market, from its latest reported year.</p>
+      <DataTable caption="Markets on the shared scales" columns={columns} rows={rows} rowKey={(r) => r.code} initial={{ key: 'w', dir: -1 }} download="parity-by-market" summary={`${rows.length} markets`} />
       <h2 style={{ marginTop: 40 }}>Every index on the same scales</h2>
-      <DataTable caption="Indexes on the shared scales" columns={ixCols} rows={ixRows} rowKey={(r) => r.id} initial={{ key: 'w', dir: -1 }} rowHref={(r) => href('index', r.id)} download="parity-by-index" summary="Median constituent company. Each index's own headline is shown for reference only." />
+      <p className="small muted">The median constituent company. Each index's own headline is shown for reference.</p>
+      <DataTable caption="Indexes on the shared scales" columns={ixCols} rows={ixRows} rowKey={(r) => r.id} initial={{ key: 'w', dir: -1 }} rowHref={(r) => href('index', r.id)} download="parity-by-index" summary={`${ixRows.length} indexes`} />
       <p className="small muted" style={{ marginTop: 10 }}>Every index headline is now women's share of pay, so the last column reads on one 50% scale. India's wage parity is derived from the wage share and the share of permanent staff, so it is approximate. Japan's workforce split is regular staff only.</p>
     </>
+  )
+}
+
+const SHORT_SECTOR: Record<string, string> = {
+  'Communication Services': 'Communication', 'Consumer Discretionary': 'Discretionary', 'Consumer Staples': 'Staples', 'Information Technology': 'Technology',
+}
+const SHORT_MARKET: Record<string, string> = { IN: 'IN', GB: 'UK', AU: 'AU', JP: 'JP', EU: 'EU' }
+
+/** Phones: every sector against every market in one compact grid. Tap a market to sort by it. */
+function SectorGrid({ measure, cell }: { measure: Measure; cell: (code: string, sector: string) => Summary | null }) {
+  const [by, setBy] = useState('IN')
+  const val = (code: string, s: string) => { const x = cell(code, s); return x && x.n >= 3 ? x.median : null }
+  const rows = [...SECTORS].sort((a, b) => (val(by, b) ?? -1) - (val(by, a) ?? -1))
+  return (
+    <div className="sgrid-wrap">
+      <table className="sgrid">
+        <caption className="sr-only">{MEASURE[measure].short} by sector and market, median company, percent</caption>
+        <thead>
+          <tr>
+            <th scope="col">Sector</th>
+            {COMPARE_MARKETS.map((code) => (
+              <th key={code} scope="col" aria-sort={by === code ? 'descending' : undefined} className={by === code ? 'on' : undefined}>
+                <button type="button" onClick={() => setBy(code)} aria-label={`Sort by ${marketName(code)}`}>{SHORT_MARKET[code]}</button>
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((s) => (
+            <tr key={s}>
+              <th scope="row">{SHORT_SECTOR[s] ?? s}</th>
+              {COMPARE_MARKETS.map((code) => {
+                const v = val(code, s)
+                return <td key={code} className={by === code ? 'on' : undefined}>{v == null ? <span className="muted" aria-label="no data">·</span> : Math.round(v * 100)}</td>
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p className="small muted">Median company, in percent. A dot means fewer than three companies. Tap a market to sort.</p>
+    </div>
   )
 }
 
 function Sectors() {
   const [measure, setMeasure] = useState<Measure>('w')
   const [market, setMarket] = useState('IN')
+  const phone = useMedia(PHONE)
   const cell = (code: string, sector: string) => summarise(marketPoints(code).filter((p) => p.sector === sector).map((p) => p[measure]))
   const rows: RangeRow[] = SECTORS.map((s) => ({ key: s, label: s, s: cell(market, s) }))
     .sort((a, b) => (b.s && b.s.n >= 3 ? b.s.median : -1) - (a.s && a.s.n >= 3 ? a.s.median : -1))
@@ -98,7 +145,7 @@ function Sectors() {
   const mcols: Column<MRow>[] = [
     { key: 'sector', label: 'Sector', render: (r) => <strong>{r.sector}</strong>, sort: (r) => r.sector, csv: (r) => r.sector },
     ...COMPARE_MARKETS.map((code): Column<MRow> => ({
-      key: code, label: marketName(code),
+      key: code, label: marketName(code), mobile: code === 'IN' ? 'value' : undefined, phone: (r) => med(cell(code, r.sector)),
       render: (r) => <SummaryCell s={cell(code, r.sector)} measure={measure} n />,
       sort: (r) => { const s = cell(code, r.sector); return s && s.n >= 3 ? s.median : null },
     })),
@@ -110,15 +157,18 @@ function Sectors() {
         <span className="small muted">{MEASURE[measure].label}. {MEASURE[measure].note}</span>
       </div>
       <ChartFrame title={`${MEASURE[measure].short} by sector, ${marketName(market)}`} sub="Median company in each sector, with the middle half of companies. Sectors with fewer than three companies are not plotted."
-        controls={<div className="pills compact" role="group" aria-label="Market">{COMPARE_MARKETS.map((c) => <button key={c} type="button" className={market === c ? 'pill on' : 'pill'} aria-pressed={market === c} onClick={() => setMarket(c)}>{marketName(c)}</button>)}</div>}
-        table={<DataTable caption="Sectors" columns={[mcols[0], mcols.find((c) => c.key === market)!]} rows={SECTORS.map((sector) => ({ sector }))} rowKey={(r) => r.sector} initial={{ key: market, dir: -1 }} />}>
+        controls={<MarketPicker label="Market" value={market} onChange={setMarket} options={COMPARE_MARKETS.map((c) => ({ id: c, label: marketName(c) }))} />}
+        table={<DataTable caption="Sectors" columns={[mcols[0], mcols.find((c) => c.key === market)!]} rows={SECTORS.map((sector) => ({ sector }))} rowKey={(r) => r.sector} initial={{ key: market, dir: -1 }} summary={`${SECTORS.length} sectors`} />}>
         {empty
           ? <p className="small muted">{marketName(market)} companies do not report a workforce split in the data we hold, so this measure is not available. Try wage parity.</p>
           : <RangeDots label={`${MEASURE[measure].short} by sector`} rows={rows} parity={MEASURE[measure].parity} max={MAX[measure]} />}
       </ChartFrame>
       <h2 style={{ marginTop: 40 }}>Every sector in every market</h2>
-      <DataTable caption="Sectors by market" columns={mcols} rows={SECTORS.map((sector) => ({ sector }))} rowKey={(r) => r.sector} initial={{ key: 'sector', dir: 1 }}
-        download={`sectors-${measure}`} summary={`${MEASURE[measure].short}, median company. Sectors follow a shared 11-sector scheme mapped from each exchange's own labels.`} />
+      <p className="small muted">{MEASURE[measure].short}, median company. Sectors follow a shared 11-sector scheme mapped from each exchange's own labels.</p>
+      {phone
+        ? <SectorGrid measure={measure} cell={cell} />
+        : <DataTable caption="Sectors by market" columns={mcols} rows={SECTORS.map((sector) => ({ sector }))} rowKey={(r) => r.sector} initial={{ key: 'sector', dir: 1 }}
+            download={`sectors-${measure}`} summary={`${SECTORS.length} sectors`} />}
       {measure !== 'e' && <p className="small muted" style={{ marginTop: 10 }}>India's wage parity is derived from the wage share and the share of permanent staff, so treat Indian sector figures as approximate.</p>}
     </>
   )
@@ -136,23 +186,22 @@ function MapTab({ focus }: { focus?: string }) {
   const columns: Column<Point>[] = [
     { key: 'name', label: 'Company', render: (p) => <span className="name-cell"><Logo symbol={p.c.symbol} name={p.c.name} /><a href={href('company', p.c.symbol)}>{p.c.name}<span className="sub">{marketName(p.c.country)}</span></a></span>, sort: (p) => p.c.name, csv: (p) => p.c.name },
     { key: 'sector', label: 'Sector', render: (p) => p.sector, sort: (p) => p.sector },
-    { key: 'e', label: 'Employment parity', render: (p) => <Meter value={p.e} parity={E_PARITY} />, sort: (p) => p.e },
-    { key: 'w', label: 'Wage parity', render: (p) => <Meter value={p.w} parity={W_PARITY} max={MAX.w} approx={p.c.country === 'IN'} />, sort: (p) => p.w },
-    { key: 's', label: 'Share of pay', mobile: 'value', render: (p) => <Meter value={p.s} parity={E_PARITY} />, sort: (p) => p.s },
+    { key: 'e', label: 'Employment parity', phone: (p) => pct(p.e), render: (p) => <Meter value={p.e} parity={E_PARITY} />, sort: (p) => p.e },
+    { key: 'w', label: 'Wage parity', phone: (p) => p.w == null ? 'n/a' : `${p.c.country === 'IN' ? '≈' : ''}${pct(p.w)}`, render: (p) => <Meter value={p.w} parity={W_PARITY} max={MAX.w} approx={p.c.country === 'IN'} />, sort: (p) => p.w },
+    { key: 's', label: 'Share of pay', mobile: 'value', phone: (p) => pct(p.s), render: (p) => <Meter value={p.s} parity={E_PARITY} />, sort: (p) => p.s },
   ]
   return (
     <>
       <div className="toolbar">
         <Segmented label="Layout" value={view} onChange={setView} options={[{ id: 'one', label: 'One map' }, { id: 'facets', label: 'By market' }]} />
         {view === 'one' && (
-          <div className="pills compact" role="group" aria-label="Highlight a market">
-            {['all', ...MAP_MARKETS].map((c) => <button key={c} type="button" className={market === c ? 'pill on' : 'pill'} aria-pressed={market === c} onClick={() => setMarket(c)}>{c === 'all' ? 'All markets' : marketName(c)}</button>)}
-          </div>
+          <MarketPicker label="Highlight a market" value={market} onChange={setMarket}
+            options={['all', ...MAP_MARKETS].map((c) => ({ id: c, label: c === 'all' ? 'All markets' : marketName(c) }))} />
         )}
         <Dropdown label="Sector" value={sector} onChange={setSector} options={[{ id: 'all', label: 'All sectors' }, ...SECTORS.map((s) => ({ id: s, label: s }))]} />
       </div>
       <ChartFrame title="Where companies sit on both scales" sub="Each dot is a company. Right of the line: half or more of staff are women. Above the line: women are paid at least as much as men on average."
-        table={<DataTable caption="Companies on the parity map" columns={columns} rows={shown} rowKey={(p) => p.c.symbol} initial={{ key: 'w', dir: -1 }} rowHref={(p) => href('company', p.c.symbol)} rank download="parity-map" summary={`${shown.length} companies`} />}>
+        table={<DataTable caption="Companies on the parity map" columns={columns} rows={shown} rowKey={(p) => p.c.symbol} initial={{ key: 's', dir: -1 }} rowHref={(p) => href('company', p.c.symbol)} rank download="parity-map" summary={`${shown.length} companies`} />}>
         {view === 'one' ? (
           <ParityMap points={plotted} on={on} focus={focus} label="Parity map" />
         ) : (
