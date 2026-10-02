@@ -20,7 +20,7 @@ The application draft for the [2027 Global Economic Prosperity Challenge](https:
 - **Challenge:** 2027 Global Economic Prosperity Challenge
 - **Focus area:** Quality Employment and Economic Opportunity
 - **Deadline:** 2 November 2026, 12:00pm EST (10:30pm IST)
-- **Stage:** Pilot. Nivel's data is live, Spot the Stereotype is [Team: live or in use where], and forecasting is in development.
+- **Stage:** Pilot. Nivel's data and the Spot the Stereotype game night are both live. Forecasting is in development.
 - **Organisation:** The Equal Lens [for-profit or nonprofit]
 
 ## The pitch
@@ -56,9 +56,12 @@ Three connected parts, all in Nivel: see the gap, play with the stereotypes behi
   - These make companies comparable across countries.
 - **Traceability:** every figure links to its source filing and is worked out step by step. Gaps and estimates are labelled, never hidden.
 
-**2. Play it: Spot the Stereotype.** The Equal Lens's game for noticing and questioning stereotypes becomes Nivel's play side.
-- [Team: how the game plays, who it is for, and its reach so far]
-- **Why it fits:** the data shows where women are missing, and the game works on the assumptions about women and work that help keep them out.
+**2. Play it: Spot the Stereotype (live).** The Equal Lens's game night becomes Nivel's play side.
+- **How it runs:** a 75-minute online night for urban Indians aged 20 to 35. A host runs it on a video call, and each team answers on its own phone.
+- **What the rounds ask:** players finish famous film lines, guess published figures, and rate lines before predicting how the room will rate them. They also judge whether a trait is treated as a good thing in a hero, a heroine, both or neither, and then rewrite a line to keep the romance without the stereotype.
+- **How it scores:** "You get points for prediction and recall, never for opinion." Players are scored on how well they read the room and the facts, so each reveal corrects a misperceived norm in the moment, among friends.
+- **Privacy:** nothing is kept by default. There are no accounts, names never sit beside an answer, and the room only holds counts.
+- **Why it fits:** the data shows where women are missing; the game works on the assumptions about women and work that help keep them out. A proposed Nivel round would have players guess a published figure, such as women's share of the Nifty 50 payroll, before the reveal.
 
 **3. Forecast it: prediction markets in Nivel (in development).** Play-money markets, where people forecast with tokens they earn and cannot buy, in three kinds of question:
 - **Forecast the data:** "Will the Nifty 50's women's share of pay rise next year?", resolved on Nivel's next refresh, alongside questions on official labour statistics.
@@ -78,7 +81,7 @@ Seeing the numbers changes what owners ask companies and funds. Playing and fore
   - India made BRSR reporting mandatory for its 1,000 largest listed companies.
   - The EU's CSRD reporting began with 2024.
   - Japan publishes a national database.
-- **The Equal Lens helps people unlearn bias through play.** Spot the Stereotype is its own game, and Nivel brings that approach to adults and their money. Forecasting is 18+ only.
+- **The Equal Lens helps people unlearn bias through play.** Spot the Stereotype is its game night for young adults, built on its Bollywood Bias Detective rulebook. Nivel brings the same approach to people's money. Forecasting is 18+ only.
 - **Nivel's data is live,** built by a small team on public disclosures.
 
 ### What makes it new
@@ -90,9 +93,9 @@ Seeing the numbers changes what owners ask companies and funds. Playing and fore
 - **Nivel is public** (October 2026), after a ship-readiness audit.
   - It covers 675 companies across 3,401 shareable pages.
   - Automated accessibility testing found 0 violations.
-- **Spot the Stereotype:** [Team: where it has been played, and with how many people]
+- **Spot the Stereotype is live** at spot-the-stereotype.vercel.app, and has been stress-tested with sixteen players in four teams. [Team: game nights run and players so far]
 - **Next:**
-  - Spot the Stereotype inside Nivel.
+  - Spot the Stereotype reached from Nivel, plus a proposed Nivel round built on its figures.
   - A forecasting pilot in Nivel, measured with a question before and after.
 
 ### Impact goals
@@ -142,7 +145,7 @@ Seeing the numbers changes what owners ask companies and funds. Playing and fore
 
 | Week | Dates | Work | Owner | Ticket |
 |---|---|---|---|---|
-| 1 | 3 to 9 Oct | Create the Solve account and start the application. Confirm the questions and word limits. Collect team bios, city and entity details, and a description of Spot the Stereotype with its reach | Team | PARITY-46 |
+| 1 | 3 to 9 Oct | Create the Solve account and start the application. Confirm the questions and word limits. Collect team bios, city and entity details, and Spot the Stereotype's nights and players so far | Team | PARITY-46 |
 | 1 | 3 to 9 Oct | Evidence brief on stereotypes and misperceived norms. Catalogue of sources forecasts resolve against | Claude | PARITY-42, PARITY-43 |
 | 2 | 10 to 16 Oct | Evaluation design. Safeguarding review. Online Gaming Act check | Claude and team | PARITY-45 |
 | 2 | 10 to 16 Oct | Design where Spot the Stereotype sits in Nivel and what one forecasting question looks like | Claude | PARITY-41 |
@@ -153,7 +156,7 @@ The form closes on 2 November at 12:00pm EST. Submitting on 30 October leaves th
 
 ## Open items for the team
 - Team names, roles and short bios; head office city; legal entity type.
-- Spot the Stereotype: how it plays, who it is for, the game assets, and how many people have played it. Any Equal Lens programme reach figures.
+- Spot the Stereotype: game nights run and players so far, and whether a Nivel round fits the rulebook. Any Equal Lens programme reach figures.
 - Which optional prizes to enter. Check each prize's criteria and only claim AI use that is real.
 - A one to two minute demo video, if the form asks for one.
 - Sign-off on the impact goal numbers.
@@ -162,3 +165,4 @@ The form closes on 2 November at 12:00pm EST. Submitting on 30 October leaves th
 - MIT Solve, [2027 Global Economic Prosperity Challenge](https://solve.mit.edu/challenges/2027-global-economic-prosperity-challenge).
 - Bursztyn, González and Yanagizawa-Drott (2020), "Misperceived Social Norms: Women Working Outside the Home in Saudi Arabia", American Economic Review.
 - Nivel, [nivel-equal-lens.vercel.app](https://nivel-equal-lens.vercel.app): index and company figures, data collected 1 October 2026.
+- The Equal Lens, [Spot the Stereotype](https://spot-the-stereotype.vercel.app): the companion app and the Bollywood Bias Detective rulebook v3.1.

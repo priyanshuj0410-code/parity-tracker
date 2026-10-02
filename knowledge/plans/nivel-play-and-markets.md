@@ -20,9 +20,21 @@ plane_issues:
   - Thoth, for people who come for the news.
 
 ## Play: Spot the Stereotype
-- The Equal Lens's game for noticing and questioning stereotypes becomes Nivel's play side.
-- **From the team:** how it plays, who it is for, the assets, and its reach so far. Nothing here assumes its rules.
-- **The data gives the game context:** the pages show where women are missing, and the game works on the assumptions behind those gaps.
+- **What it is:** The Equal Lens's live game night, built on its Bollywood Bias Detective rulebook (v3.1), becomes Nivel's play side. It is live at spot-the-stereotype.vercel.app, from its own repository, which this plan only reads.
+- **How it runs:** 75 minutes, online, for urban Indians aged 20 to 35. A host runs it from one console on a video call, a shared stage shows the question, and each team answers on its own phone. "The talking is the game."
+- **Formats:**
+  - Finish a famous line.
+  - Guess a published figure.
+  - Rate lines, then predict the room.
+  - Count how many films do something.
+  - Judge whether a trait is treated as praise in a hero, a heroine, both or neither, then wager on the room.
+  - Name the film and year.
+  - Rewrite a line to keep the romance, which is deliberately unscored.
+- **The scoring rule:** "points for prediction and recall, never for opinion". This is the misperceived-norms mechanism, played live among friends.
+- **Privacy:** it keeps nothing by default. No accounts, names never beside answers, and counts only.
+- **With Nivel:**
+  - Nivel links to game nights.
+  - A proposed Nivel round would use the published-figure format with Nivel's numbers, for example women's share of the Nifty 50 payroll, guessed cold and then revealed. It needs the owner's agreement and the rulebook's fit check.
 - **Safeguarding:** if young people play, The Equal Lens's child-safety rules apply. The play side never connects to markets or tokens for anyone under 18.
 
 ## Forecasting: prediction markets in Nivel
