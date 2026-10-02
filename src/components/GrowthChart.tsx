@@ -17,6 +17,8 @@ interface Props {
   xLabel: (month: string) => string
   ariaLabel: string
   start?: number
+  /** Index of the month valued at `start`; the tooltip shows change since then only after it. */
+  base?: number
   height?: number
   /** A shaded band from the first month to `until`, for a stretch built from data published later. */
   shade?: { until: string; label: string }
@@ -43,7 +45,7 @@ const since = (v: number, start: number) => {
 }
 
 /** Monthly value of ₹100 invested at the start. Markers only at the end and the hovered month, as monthly lines would drown in dots. */
-export function GrowthChart({ series, months, xLabel, ariaLabel, start = 100, height = 260, shade }: Props) {
+export function GrowthChart({ series, months, xLabel, ariaLabel, start = 100, base = 0, height = 260, shade }: Props) {
   const [ref, width] = useWidth<HTMLDivElement>()
   const [hover, setHover] = useState<number | null>(null)
   const all = series.flatMap((s) => s.values).concat(start)
@@ -125,7 +127,7 @@ export function GrowthChart({ series, months, xLabel, ariaLabel, start = 100, he
               <i style={{ background: s.color }} />
               <span className="tt-label">{s.short}</span>
               <span className="tt-val">{money(s.values[hover])}</span>
-              {hover > 0 && <span className={s.values[hover] >= start ? 'tt-d up' : 'tt-d down'}>{since(s.values[hover], start)}</span>}
+              {hover > base && <span className={s.values[hover] >= start ? 'tt-d up' : 'tt-d down'}>{since(s.values[hover], start)}</span>}
             </div>
           ))}
         </div>

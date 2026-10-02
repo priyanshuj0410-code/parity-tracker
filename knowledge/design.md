@@ -228,7 +228,7 @@ Validated with the dataviz `validate_palette.js` using `--pairs all`, because co
   - Below 720px each row stacks: the name above a full-width bar.
 - **Growth of ₹100 (PARITY-63, PARITY-64):** monthly lines from ₹100.
   - **Y axis:** fitted to the data on a round step (5, 10, 20, 25 or 50) giving 2–4 intervals, so a 2% gap is visible. It is money, not a share, so the 0–50% rule does not apply.
-  - **Start line:** the start value is an unlabelled reference line; the axis already shows ₹100.
+  - **Start line:** ₹100 is an unlabelled reference line; the axis already shows it. When early years are backfilled, ₹100 sits at the first month of real-time data, the backfilled years grow into it, and the tooltip shows change only after it (the owner's call, PARITY-64).
   - **Markers:** only at the end and at the hovered month.
   - **Month labels:** every 6, 12 or 24 months, whichever keeps them at least 64px apart.
   - **Checked against** Monarch Money's portfolio-versus-benchmark chart on Lazyweb.

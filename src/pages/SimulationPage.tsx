@@ -66,6 +66,10 @@ export function SimulationPage({ id }: { id: string }) {
   const bfill = p.backfill
   const etf = p.etfStats
   const backfilled = (k: string) => k <= p.backfillUntil && k !== p.months[0]
+  // ₹100 sits where real-time data begins; the backfilled years grow into it.
+  const baseAt = p.months.indexOf(p.backfillUntil)
+  const indexed = (vs: number[]) => vs.map((v) => (v / vs[baseAt]) * 100)
+  const lines = { sim: indexed(p.sim), parent: indexed(p.parent), etf: indexed(p.etf) }
   const biggest = sim.left[0]
   const outSectors = sim.out.sectors
 
@@ -166,22 +170,22 @@ export function SimulationPage({ id }: { id: string }) {
 
       <section>
         <h2>What it would have delivered</h2>
-        <p>₹100 invested in {monthLabel(first)}, dividends reinvested. Shaded years use figures published later: none existed before mid-2024.</p>
-        <ChartFrame title="Growth of ₹100" sub={`${monthLabel(first)} to ${monthLabel(last)}, month-end values`}
+        <p>Indexed to ₹100 in {monthLabel(p.backfillUntil)}, when real-time data begins. Dividends reinvested. Shaded years are backfilled with figures published later.</p>
+        <ChartFrame title="Growth of ₹100" sub={`${monthLabel(first)} to ${monthLabel(last)}, ₹100 in ${monthLabel(p.backfillUntil)}`}
           table={(
             <DataTable caption="Growth of ₹100" bare rows={p.months} rowKey={(k) => k} initial={{ key: 'month', dir: 1 }} columns={[
               { key: 'month', label: 'Month', render: (k) => <>{monthLabel(k)}{backfilled(k) && <span className="sub">backfilled</span>}</>, sort: (k) => k },
-              { key: 'sim', label: sim.name, right: true, mobile: 'value', render: (k) => `₹${p.sim[p.months.indexOf(k)].toFixed(1)}`, sort: (k) => p.sim[p.months.indexOf(k)] },
-              { key: 'parent', label: `${parent.name}, rebuilt`, right: true, render: (k) => `₹${p.parent[p.months.indexOf(k)].toFixed(1)}`, sort: (k) => p.parent[p.months.indexOf(k)] },
-              { key: 'etf', label: 'Index fund', right: true, render: (k) => `₹${p.etf[p.months.indexOf(k)].toFixed(1)}`, sort: (k) => p.etf[p.months.indexOf(k)] },
+              { key: 'sim', label: sim.name, right: true, mobile: 'value', render: (k) => `₹${lines.sim[p.months.indexOf(k)].toFixed(1)}`, sort: (k) => lines.sim[p.months.indexOf(k)] },
+              { key: 'parent', label: `${parent.name}, rebuilt`, right: true, render: (k) => `₹${lines.parent[p.months.indexOf(k)].toFixed(1)}`, sort: (k) => lines.parent[p.months.indexOf(k)] },
+              { key: 'etf', label: 'Index fund', right: true, render: (k) => `₹${lines.etf[p.months.indexOf(k)].toFixed(1)}`, sort: (k) => lines.etf[p.months.indexOf(k)] },
             ]} />
           )}>
-          <GrowthChart months={p.months} xLabel={monthLabel} shade={{ until: p.backfillUntil, label: 'Backfilled' }}
-            ariaLabel={`Growth of ₹100 in the ${sim.name}, the ${parent.name} rebuilt the same way, and a ${parent.name} index fund, ${monthLabel(first)} to ${monthLabel(last)}`}
+          <GrowthChart months={p.months} xLabel={monthLabel} base={baseAt} shade={{ until: p.backfillUntil, label: 'Backfilled' }}
+            ariaLabel={`Growth of ₹100 in the ${sim.name}, the ${parent.name} rebuilt the same way, and a ${parent.name} index fund, indexed to ₹100 in ${monthLabel(p.backfillUntil)}`}
             series={[
-              { id: 'sim', label: sim.name, short: sim.name, color: 'var(--s1)', dashed: true, values: p.sim },
-              { id: 'parent', label: `${parent.name}, rebuilt`, short: parent.name, color: 'var(--s2)', values: p.parent },
-              { id: 'etf', label: 'Index fund', short: 'Index fund', color: 'var(--s3)', values: p.etf },
+              { id: 'sim', label: sim.name, short: sim.name, color: 'var(--s1)', dashed: true, values: lines.sim },
+              { id: 'parent', label: `${parent.name}, rebuilt`, short: parent.name, color: 'var(--s2)', values: lines.parent },
+              { id: 'etf', label: 'Index fund', short: 'Index fund', color: 'var(--s3)', values: lines.etf },
             ]} />
         </ChartFrame>
         <div style={{ marginTop: 16 }}>
