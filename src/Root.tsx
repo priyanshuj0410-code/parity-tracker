@@ -1,5 +1,7 @@
 import logoReversed from './assets/logo-reversed.svg'
 import logo from './assets/logo.svg'
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import { ErrorBoundary } from './components/ErrorBoundary'
 import { InstallLink, InstallPrompt } from './components/InstallPrompt'
 import { MarketStrip } from './components/MarketStrip'
 import { SiteSearch } from './components/SiteSearch'
@@ -26,14 +28,35 @@ function Page({ route }: { route: string[] }) {
   return <NotFound />
 }
 
+const onConnection = (cb: () => void) => {
+  window.addEventListener('online', cb)
+  window.addEventListener('offline', cb)
+  return () => { window.removeEventListener('online', cb); window.removeEventListener('offline', cb) }
+}
+
 const SECTION: Record<string, string> = { index: '', company: 'companies', companies: 'companies', compare: 'compare', method: 'method' }
 
 export default function Root() {
   const route = useRoute()
   const section = SECTION[route[0] ?? ''] ?? ''
   const at = (name: string) => (section === name ? 'on' : undefined)
+  const online = useSyncExternalStore(onConnection, () => navigator.onLine)
+  const [announce, setAnnounce] = useState('')
+  const first = useRef(true)
+  const where = route.join('/')
+  useEffect(() => {
+    if (first.current) { first.current = false; return }
+    const t = window.setTimeout(() => {
+      setAnnounce(document.title)
+      const h1 = document.querySelector<HTMLElement>('main h1')
+      if (h1) { h1.tabIndex = -1; h1.focus({ preventScroll: true }) }
+    }, 60)
+    return () => window.clearTimeout(t)
+  }, [where])
   return (
     <>
+      <a className="skip-link" href="#content" onClick={(e) => { e.preventDefault(); document.getElementById('content')?.focus() }}>Skip to content</a>
+      <p className="sr-only" aria-live="polite" aria-atomic="true">{announce}</p>
       <header className="site-header">
         <div className="wrap header-row">
           <a className="brand" href={href('')} aria-label="Nivel by The Equal Lens, home">
@@ -52,9 +75,10 @@ export default function Root() {
           </div>
         </div>
       </header>
+      {!online && <p className="offline-bar" role="status">Offline. Showing data collected {SOURCE_DATE}.</p>}
       <MarketStrip current={route[0] === 'index' ? route[1] : undefined} />
-      <main className="wrap">
-        <Page route={route} />
+      <main id="content" tabIndex={-1} className="wrap">
+        <ErrorBoundary key={where}><Page route={route} /></ErrorBoundary>
       </main>
       <footer className="site-footer">
         <div className="wrap">

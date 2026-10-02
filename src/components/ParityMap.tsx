@@ -1,7 +1,7 @@
 import { useState, type PointerEvent } from 'react'
 import { BASIS, E_PARITY, W_PARITY, marketName, type Point } from '../lib/compare'
 import { pct } from '../lib/format'
-import { href } from '../lib/router'
+import { href, navigate } from '../lib/router'
 import { useWidth } from '../lib/useWidth'
 import { Logo } from './Logo'
 
@@ -106,7 +106,7 @@ export function ParityMap({ points, on, label, focus, height = 480, compact = fa
         )}
         <rect x={M.l} y={M.t} width={iw} height={ih} fill="transparent" style={{ cursor: hover ? 'pointer' : 'default' }}
           onPointerMove={pick} onPointerDown={pick} onPointerLeave={() => setHover(null)}
-          onClick={() => { if (hover) window.location.hash = href('company', hover.c.symbol) }} />
+          onClick={() => { if (hover) navigate(href('company', hover.c.symbol)) }} />
       </svg>
       {narrow && (
         <div className="quad-key" aria-hidden="true">
@@ -120,9 +120,9 @@ export function ParityMap({ points, on, label, focus, height = 480, compact = fa
         <div className="tooltip map-tip" style={{ left: Math.max(0, Math.min(w - 240, hx > w / 2 ? hx - 252 : hx + 14)), top: Math.max(0, Math.min(hy - 40, H - 170)) }}>
           <div className="tt-head"><Logo symbol={hover.c.symbol} name={hover.c.name} size={24} /><strong>{hover.c.name}</strong></div>
           <div className="tt-sub">{marketName(hover.c.country)} · {hover.sector}</div>
-          <div className="tt-row"><span className="tt-label">Women's share of {BASIS[hover.c.country].employment}</span><span className="tt-val">{pct(hover.e)}</span></div>
-          <div className="tt-row"><span className="tt-label">Women's pay per 100 of men's</span><span className="tt-val">{pct(hover.w)}{BASIS[hover.c.country].approx ? ' approx.' : ''}</span></div>
-          <div className="tt-row"><span className="tt-label">Implied share of pay</span><span className="tt-val">{pct(hover.s)}</span></div>
+          <div className="tt-row"><span className="tt-label">Employment parity ({BASIS[hover.c.country].employment})</span><span className="tt-val">{pct(hover.e)}</span></div>
+          <div className="tt-row"><span className="tt-label">Wage parity</span><span className="tt-val">{pct(hover.w)}{BASIS[hover.c.country].approx ? ' approx.' : ''}</span></div>
+          <div className="tt-row"><span className="tt-label">Share of pay</span><span className="tt-val">{pct(hover.s)}</span></div>
           <div className="tt-sub">Click to open</div>
         </div>
       )}

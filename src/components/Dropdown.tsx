@@ -1,13 +1,17 @@
-import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react'
+import { useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
 
 export interface DropdownOption<T extends string> { id: T; label: string }
 
-export function Dropdown<T extends string>({ label, value, options, onChange, prefix }: {
+export function Dropdown<T extends string>({ label, value, options, onChange, prefix, trigger, triggerClass = 'dd-btn', align }: {
   label: string
   value: T
   options: DropdownOption<T>[]
   onChange: (v: T) => void
   prefix?: string
+  /** An icon in place of the value and chevron. */
+  trigger?: ReactNode
+  triggerClass?: string
+  align?: 'end'
 }) {
   const [open, setOpen] = useState(false)
   const [active, setActive] = useState(0)
@@ -37,16 +41,20 @@ export function Dropdown<T extends string>({ label, value, options, onChange, pr
 
   return (
     <div className="dd" ref={root}>
-      <button type="button" className={open ? 'dd-btn open' : 'dd-btn'} aria-haspopup="listbox" aria-expanded={open} aria-controls={id}
+      <button type="button" className={open ? `${triggerClass} open` : triggerClass} aria-haspopup="listbox" aria-expanded={open} aria-controls={id}
         aria-label={`${label}: ${current.label}`}
         onClick={() => (open ? setOpen(false) : show())}
         onKeyDown={(e) => { if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); show() } }}>
-        {prefix && <span className="dd-prefix">{prefix}</span>}
-        <span className="dd-value">{current.label}</span>
-        <svg className="dd-chev" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        {trigger ?? (
+          <>
+            {prefix && <span className="dd-prefix">{prefix}</span>}
+            <span className="dd-value">{current.label}</span>
+            <svg className="dd-chev" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          </>
+        )}
       </button>
       {open && (
-        <ul className="dd-menu" role="listbox" id={id} ref={list} tabIndex={-1} aria-label={label}
+        <ul className={align === 'end' ? 'dd-menu end' : 'dd-menu'} role="listbox" id={id} ref={list} tabIndex={-1} aria-label={label}
           aria-activedescendant={`${id}-${active}`} onKeyDown={onListKey}>
           {options.map((o, i) => (
             <li key={o.id} id={`${id}-${i}`} role="option" aria-selected={o.id === value}

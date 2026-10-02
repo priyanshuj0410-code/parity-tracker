@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { DataBadge, ShareFigure } from '../components/Badge'
 import { Change } from '../components/Change'
 import { Logo } from '../components/Logo'
@@ -7,7 +7,7 @@ import { DataTable, type Column } from '../components/DataTable'
 import { E_PARITY, W_PARITY, percentile, pointOf, sectorOf } from '../lib/compare'
 import { INDEX_ORDER, companies, indexes, marketOf, yoyChange } from '../lib/data'
 import { ordinal, pct } from '../lib/format'
-import { href } from '../lib/router'
+import { href, usePageTitle, useQueryState } from '../lib/router'
 import type { Company } from '../types'
 
 const latest = (c: Company) => c.years[marketOf(c).latest]
@@ -32,8 +32,9 @@ const makeColumns = (mixed: boolean): Column<Company>[] => [
 ]
 
 export function Companies() {
-  const [q, setQ] = useState('')
-  const [ix, setIx] = useState(INDEX_ORDER[0])
+  const [q, setQ] = useQueryState<string>('q', '')
+  const [ix, setIx] = useQueryState('index', INDEX_ORDER[0], ['all', ...INDEX_ORDER])
+  usePageTitle(ix === 'all' ? 'Companies' : `Companies · ${indexes[ix].name}`)
   const columns = useMemo(() => makeColumns(ix === 'all'), [ix])
   const rows = useMemo(() => {
     const needle = q.trim().toLowerCase()
@@ -54,10 +55,10 @@ export function Companies() {
           <li><strong>Wage parity:</strong> women's average pay as a share of men's. Parity is 100%.</li>
           <li><strong>Market percentile:</strong> where wage parity ranks among companies in the same market, which compares fairly across markets.</li>
         </ul>
-        <a className="small" href={href('compare')}>How we compare</a>
+        <a className="go small" href={href('compare')}>How we compare</a>
       </details>
       <div className="controls">
-        <input type="search" placeholder="Search by name, symbol or sector" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Search companies" />
+        <input type="search" placeholder="Filter by name, ticker or sector" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Filter companies" />
       </div>
       <div className="pills scroller" role="group" aria-label="Filter by index">
         {['all', ...INDEX_ORDER].map((id) => (
@@ -66,9 +67,19 @@ export function Companies() {
           </button>
         ))}
       </div>
-      <DataTable key={ix} caption="Companies" columns={columns} rows={rows} rowKey={(c) => c.symbol} rank
+      <p className="sr-only" aria-live="polite">{rows.length === 1 ? '1 company' : `${rows.length} companies`}</p>
+      <DataTable key={ix} caption="Companies" columns={columns} rows={rows} rowKey={(c) => c.symbol} rank urlState limit={30}
         initial={ix === 'all' ? { key: 'name', dir: 1 } : { key: 'h', dir: -1 }} rowHref={(c) => href('company', c.symbol)}
-        summary={`${rows.length} companies`} download={`companies-${ix}`} />
+        summary={rows.length === 1 ? '1 company' : `${rows.length} companies`} download={`companies-${ix}`}
+        empty={<>
+          <p><strong>No companies match “{q.trim()}”{ix === 'all' ? '' : ` in the ${indexes[ix].name}`}.</strong></p>
+          <p className="small muted">Try a ticker such as TCS, a sector such as banks, or search all indexes.</p>
+          <p className="actions-row">
+            <button type="button" className="btn-quiet" onClick={() => setQ('')}>Clear search</button>
+            {ix !== 'all' && <button type="button" className="btn-quiet" onClick={() => setIx('all')}>Search all indexes</button>}
+          </p>
+        </>} />
+      {rows.length > 0 && <p className="small muted key-note">≈ means estimated or derived rather than reported. pp means percentage points.</p>}
     </section>
   )
 }

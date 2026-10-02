@@ -14,10 +14,12 @@ function check(route, f) {
   R.hOverflow = d.documentElement.scrollWidth - d.documentElement.clientWidth
   const vis = (e) => { const r = e.getBoundingClientRect(); const cs = w.getComputedStyle(e); return r.width > 0 && r.height > 0 && cs.visibility !== 'hidden' && cs.display !== 'none' }
   const els = [...d.querySelectorAll('a[href], button, input, select, summary, [role=option], [tabindex]:not([tabindex="-1"])')].filter(vis)
-  const box = els.map((e) => { const r = e.getBoundingClientRect(); return { n: (e.getAttribute('aria-label') || e.textContent || e.getAttribute('placeholder') || e.tagName).replace(/\s+/g, ' ').trim().slice(0, 28), w: Math.round(r.width), h: Math.round(r.height) } })
+  const slop = (e) => { const a = w.getComputedStyle(e, '::after'); return a.content !== 'none' && a.position === 'absolute' ? [parseFloat(a.width) || 0, parseFloat(a.height) || 0] : [0, 0] }
+  const box = els.map((e) => { const r = e.getBoundingClientRect(); const [sw, sh] = slop(e); return { n: (e.getAttribute('aria-label') || e.textContent || e.getAttribute('placeholder') || e.tagName).replace(/\s+/g, ' ').trim().slice(0, 28), w: Math.round(Math.max(r.width, sw)), h: Math.round(Math.max(r.height, sh)) } })
   R.targets = box.length
   R.under24 = box.filter((b) => b.w < 24 || b.h < 24)
   R.under44 = box.filter((b) => b.w < 44 || b.h < 44).length
+  R.under44Names = box.filter((b) => b.w < 44 || b.h < 44).map((b) => `${b.n} ${b.w}x${b.h}`)
   R.under48 = box.filter((b) => b.w < 48 || b.h < 48).length
   R.noName = els.filter((e) => !((e.getAttribute('aria-label') || '').trim() || e.textContent.trim() || e.getAttribute('title') || e.getAttribute('placeholder'))).map((e) => e.outerHTML.slice(0, 90))
   R.h1 = d.querySelectorAll('h1').length
@@ -26,7 +28,7 @@ function check(route, f) {
   const fails = []; let small = 0
   for (const e of texts) {
     const cs = w.getComputedStyle(e); const fs = parseFloat(cs.fontSize); const fw = +cs.fontWeight || 400
-    if (fs < 12) small++
+    if (fs < 12) { small++; (R.smallNames = R.smallNames || []).push(`${e.textContent.trim().slice(0, 24)} ${fs}px .${String(e.className).slice(0, 24)}`) }
     const fg = parse(cs.color); if (!fg) continue
     const cr = ratio(fg, bgOf(e, w)); const large = fs >= 24 || (fs >= 18.66 && fw >= 700)
     if (cr < (large ? 3 : 4.5)) fails.push({ t: e.textContent.replace(/\s+/g, ' ').trim().slice(0, 24), cr: Math.round(cr * 100) / 100, fs, cls: String(e.className).slice(0, 24), color: cs.color })

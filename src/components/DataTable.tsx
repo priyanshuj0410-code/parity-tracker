@@ -1,4 +1,5 @@
 import { useMemo, useState, type ReactNode } from 'react'
+import { navigate, query, setQuery } from '../lib/router'
 import { PHONE, useMedia } from '../lib/useMedia'
 import { Dropdown } from './Dropdown'
 
@@ -20,11 +21,13 @@ export interface Column<T> {
   priority?: 2 | 3
 }
 
+type Sort = { key: string; dir: 1 | -1 }
+
 interface Props<T> {
   columns: Column<T>[]
   rows: T[]
   rowKey: (row: T) => string
-  initial: { key: string; dir: 1 | -1 }
+  initial: Sort
   caption: string
   rowHref?: (row: T) => string
   rank?: boolean
@@ -33,6 +36,12 @@ interface Props<T> {
   current?: string
   /** Small tables: shown as detail cards on phones, with no sort or download controls. */
   bare?: boolean
+  /** The page's main list: its sort and expansion live in the URL, so Back and shared links keep them. */
+  urlState?: boolean
+  /** Phones: show this many rows, then a Show all button. */
+  limit?: number
+  /** Shown instead of the table when there are no rows. */
+  empty?: ReactNode
 }
 
 const cell = (v: unknown) => {
@@ -42,8 +51,21 @@ const cell = (v: unknown) => {
 
 const DOWNLOAD_ICON = <svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19.5h14" /></svg>
 
-export function DataTable<T>({ columns, rows, rowKey, initial, caption, rowHref, rank, download, summary, current, bare }: Props<T>) {
-  const [sort, setSort] = useState(initial)
+export function DataTable<T>({ columns, rows, rowKey, initial, caption, rowHref, rank, download, summary, current, bare, urlState, limit, empty }: Props<T>) {
+  const [sort, setSortState] = useState<Sort>(() => {
+    const s = urlState ? query().get('sort') : null
+    const key = s?.replace(/^-/, '')
+    return s && key && columns.some((c) => c.key === key && c.sort) ? { key, dir: s.startsWith('-') ? -1 : 1 } : initial
+  })
+  const [all, setAll] = useState(() => !!urlState && query().get('all') === '1')
+  const setSort = (next: Sort) => {
+    setSortState(next)
+    if (urlState) setQuery({ sort: next.key === initial.key && next.dir === initial.dir ? null : `${next.dir === -1 ? '-' : ''}${next.key}` })
+  }
+  const showAll = () => {
+    setAll(true)
+    if (urlState) setQuery({ all: '1' })
+  }
   const phone = useMedia(PHONE)
   const sorted = useMemo(() => {
     const col = columns.find((c) => c.key === sort.key)
@@ -71,8 +93,10 @@ export function DataTable<T>({ columns, rows, rowKey, initial, caption, rowHref,
     URL.revokeObjectURL(url)
   }
   const open = (e: { target: EventTarget }, r: T) => {
-    if (rowHref && !(e.target as HTMLElement).closest('a, button')) window.location.assign(rowHref(r))
+    if (rowHref && !(e.target as HTMLElement).closest('a, button')) navigate(rowHref(r))
   }
+
+  if (rows.length === 0 && empty) return <div className="table-block"><div className="empty-state">{empty}</div></div>
 
   if (phone) {
     const role = (c: Column<T>, i: number) => c.mobile ?? (i === 0 ? 'title' : 'meta')
@@ -87,6 +111,7 @@ export function DataTable<T>({ columns, rows, rowKey, initial, caption, rowHref,
       const second = primary === value ? columns.find((c) => c.mobile === 'second') : undefined
       const metrics = sortable.filter((c) => c !== title && c.mobile !== 'hide')
       const options = [...metrics, ...sortable.filter((c) => !metrics.includes(c))]
+      const cut = limit && !all && sorted.length > limit ? limit : 0
       return (
         <div className="table-block">
           <div className="mtable">
@@ -95,9 +120,9 @@ export function DataTable<T>({ columns, rows, rowKey, initial, caption, rowHref,
               <div className="list-tools">
                 {metrics.length > 1
                   ? <Dropdown label="Show and sort by" value={sort.key} options={options.map((c) => ({ id: c.key, label: c === title ? 'Name, A to Z' : c.short ?? c.label }))}
-                      onChange={(k) => setSort((s) => ({ key: k, dir: k === s.key ? s.dir : k === title?.key ? 1 : -1 }))} />
+                      onChange={(k) => setSort({ key: k, dir: k === sort.key ? sort.dir : k === title?.key ? 1 : -1 })} />
                   : primary && <span className="mtable-metric">{primary.short ?? primary.label}</span>}
-                <button type="button" className="btn-icon" onClick={() => setSort((s) => ({ ...s, dir: s.dir === 1 ? -1 : 1 }))}
+                <button type="button" className="btn-icon" onClick={() => setSort({ ...sort, dir: sort.dir === 1 ? -1 : 1 })}
                   aria-label={sort.dir === 1 ? 'Sorted ascending. Switch to descending.' : 'Sorted descending. Switch to ascending.'}>
                   <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     {sort.dir === -1 ? <path d="M12 5v14m0 0-5-5m5 5 5-5" /> : <path d="M12 19V5m0 0-5 5m5-5 5 5" />}
@@ -106,7 +131,7 @@ export function DataTable<T>({ columns, rows, rowKey, initial, caption, rowHref,
               </div>
             </div>
             <ul className="mrows" aria-label={caption}>
-              {sorted.map((r) => {
+              {(cut ? sorted.slice(0, cut) : sorted).map((r) => {
                 const k = rowKey(r)
                 const line = second ? (second.phone ?? second.render)(r) : null
                 return (
@@ -122,6 +147,7 @@ export function DataTable<T>({ columns, rows, rowKey, initial, caption, rowHref,
                 )
               })}
             </ul>
+            {cut > 0 && <button type="button" className="mtable-more" onClick={showAll}>Show all {sorted.length}</button>}
           </div>
         </div>
       )

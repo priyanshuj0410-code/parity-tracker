@@ -11,7 +11,7 @@ function useInstallable() {
   return { prompt, ios, available: !standalone() && (prompt || ios) }
 }
 
-/** Shown once per device, a few seconds into the first visit where the app can be installed. */
+/** Shown once per device, a moment after the reader opens a second page, so it never interrupts the first read. */
 export function InstallPrompt() {
   const { prompt, available } = useInstallable()
   const [open, setOpen] = useState(false)
@@ -19,8 +19,13 @@ export function InstallPrompt() {
 
   useEffect(() => {
     if (!available || seen()) return
-    const t = window.setTimeout(() => { markSeen(); setOpen(true) }, 8000)
-    return () => window.clearTimeout(t)
+    let t = 0
+    const onNav = () => {
+      window.removeEventListener('hashchange', onNav)
+      t = window.setTimeout(() => { markSeen(); setOpen(true) }, 3000)
+    }
+    window.addEventListener('hashchange', onNav)
+    return () => { window.removeEventListener('hashchange', onNav); window.clearTimeout(t) }
   }, [available])
 
   if (!open) return null
@@ -40,9 +45,6 @@ export function InstallPrompt() {
           <button type="button" className="btn-quiet" onClick={() => setOpen(false)}>{steps ? 'Done' : 'Not now'}</button>
         </div>
       </div>
-      <button type="button" className="install-x" aria-label="Close" onClick={() => setOpen(false)}>
-        <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="m3 3 8 8M11 3l-8 8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>
-      </button>
     </div>
   )
 }

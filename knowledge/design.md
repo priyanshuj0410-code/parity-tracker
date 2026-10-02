@@ -20,6 +20,7 @@ plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/407a23e9-92e6-433a-964d-89201b51fcd9
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/16062d26-a8a8-4072-9fa6-3be0a36b4e5e
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/6b573de9-f46f-4610-8561-02b11b0e395d
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/c3ec5678-d63b-4dd8-b080-607f10ae9c50
 ---
 
 # Nivel design system
@@ -43,23 +44,25 @@ Source: The Equal Lens brand package (`equal-lens` skill, `references/brand.md` 
 | `--card` | `#FFFFFF` | Card surface |
 | `--ink` | `#221436` | Primary text, hero numbers |
 | `--body` | `#574B70` | Running text |
-| `--soft` | `#7F65A4` | Secondary text, captions |
-| `--muted` | `#9286AE` | Tertiary labels, axis text |
+| `--soft` | `#6E5695` | Secondary text, captions (6.1 on card, 5.5 on tint) |
+| `--muted` | `#736893` | Tertiary labels, axis text (5.1 on card, 4.5 on tint) |
 | `--violet` | `#553286` | Headings, links, accent half of headlines |
 | `--violet-deep` | `#42266B` | Hover on links and buttons |
 | `--mist` | `#E7E0F1` | Hairline rules, chart gridlines |
 | `--line` | `#E7DEF4` | Card borders |
 | `--tint` | `#F4F0FA` | Chips, table header fill, selected row |
 | `--good` | `#0F6E56` | Text for increases (teal deep) |
-| `--bad` | `#C2553F` | Text for decreases (coral deep) |
-| `--sun-deep` | `#B97F0E` | Estimated or flagged data labels |
+| `--bad` | `#A9442F` | Text for decreases (coral deep, 5.3 on tint) |
+| `--sun-deep` | `#8A5D00` | Estimated or flagged data labels (5.1 on tint) |
 | `--good-bg` / `--bad-bg` | `#E5F3EE` / `#FBEAE5` | Change-chip fills (dark: `#133227` / `#3A1D17`) |
-| `--bad-ink` | `#A9442F` | Text on `--bad-bg` (5.1:1; `--bad` is only 3.9:1 there). Dark: `#FF8A6E` |
+| `--bad-ink` | `#A9442F` | Text on `--bad-bg` (5.1:1). Dark: `#FF8A6E` |
+
+Every light text token passes WCAG AA (4.5:1) on card, paper and tint. The 2026-10 audit found the earlier `--muted` and `--soft` at 3.0 to 4.4 (PARITY-24); check any new text colour against all three surfaces before adding it.
 | `--dot-dim` | violet-grey at 28% | Context dots on the parity map (dark: 22%) |
 
 ### Dark theme (PARITY-10)
 **Switching:**
-- The theme follows the device (`prefers-color-scheme`) unless the header toggle sets `data-theme="light"` or `"dark"` on `<html>`.
+- The theme follows the device (`prefers-color-scheme`) unless the header theme menu (System, Light, Dark, with a check on the current choice) sets `data-theme="light"` or `"dark"` on `<html>`.
 - The choice persists in `localStorage` (`pt-theme`).
 - A pre-paint script in `index.html` applies it before first render, so there's no flash.
 - `?theme=dark` or `?theme=light` in the URL forces a theme, for screenshots and shared links.
@@ -92,11 +95,13 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
 - Max content width 1120px, 16px side gutter on phones, 24px from 720px up.
 - Cards: white, 1px `--line` border, 12px radius, no shadow.
 - Sections are separated by a 1px `--mist` rule and 40px spacing.
-- **Header (PARITY-17):** white and sticky, 64px. Left: the eQ mark (30px) and a two-line brand, "Nivel" (Poppins 600, 19px) over "by The Equal Lens" (10.5px, `--soft`). Then the main nav (Indexes, Companies, Compare, Method) as underline tabs. Right: global search (38px field, at most 340px, with a ⌘K hint) and the theme toggle as a borderless 40px icon button. No install button. Below 900px the header is 56px: brand on the left, a search icon and the theme toggle on the right, and the nav moves to the bottom tab bar.
-- **Bottom tab bar (below 900px):** four items with 22px line icons and 11px labels: Indexes (chart), Companies (buildings), Compare (balance scale), Method (info). Fixed, white, hairline top border, padded for the home indicator (`safe-area-inset-bottom`). The active item is violet with `aria-current`.
-- **Search sheet (below 900px):** the search icon opens a full-screen sheet: a 44px field (16px text, so iOS does not zoom) with a Cancel link, then up to 20 results as tall rows with logo or monogram. The page behind stops scrolling while it is open.
-- **Page head:** breadcrumb, title (with a 52px logo tile on company pages), chips, then section tabs. The first section after the page head has no top rule.
-- **Index strip:** a white bar under the header on every page, scrolling horizontally. Each item shows name, headline value and like-for-like change. The current index is highlighted with a tint.
+- **Header (PARITY-17):** white and sticky, 64px. Left: the eQ mark (30px) and a two-line brand, "Nivel" (Poppins 600, 19px) over "by The Equal Lens" (12px, `--soft`). Then the main nav (Indexes, Companies, Compare, Method) as underline tabs. Right: global search (38px field, at most 340px, with a ⌘K hint) and the theme menu: a borderless 40px icon button (44px on phones) that opens a small right-aligned menu. No install button. Below 900px the header is 56px: brand on the left, a search icon and the theme toggle on the right, and the nav moves to the bottom tab bar.
+- **Bottom tab bar (below 900px):** four items with 22px line icons and 12px labels: Indexes (chart), Companies (buildings), Compare (balance scale), Method (info). Fixed, white, hairline top border, padded for the home indicator (`safe-area-inset-bottom`). The active item has a Material-style indicator pill (`--mist`, 62 by 30px, behind the icon), a bold violet label and `aria-current`, so the state never rests on colour alone.
+- **Search sheet (below 900px):** the search icon opens a full-screen sheet: a 44px field (16px text, so iOS does not zoom) with a Cancel link, then up to 20 results as tall rows with logo or monogram. The page behind stops scrolling while it is open. The sheet renders in a portal on `<body>` so nothing (the tab bar included) can paint over it. No matches repeats the query and suggests a ticker, here and in the desktop dropdown.
+- **Page head:** breadcrumb, title (with a 52px logo tile on company pages), a meta line ("In Nifty 50 and Sensex", plain links, not chips), then section tabs. The first section after the page head has no top rule.
+- **Index strip:** a white bar under the header on every page, scrolling horizontally. Each item shows name, headline value and like-for-like change. The current index is highlighted with a tint. The right edge fades on every width to show the strip scrolls, with 34px of end padding so the last index can scroll clear of the fade. On phones the items are 44px tall.
+- **Offline bar:** when the device is offline, a slim tint bar under the header says "Offline. Showing data collected 1 October 2026." (`role="status"`).
+- **Skip link and focus:** "Skip to content" is the first focusable element (violet pill, shown on focus). After every route change the page title updates ("TCS · Calculations · Nivel"), a polite live region announces it, and focus moves to the page's h1 without scrolling.
 - **Card grids** use `auto-fill`, so a market with one index keeps a normal-width card.
 
 ## 5. Components
@@ -119,16 +124,23 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
   - the Sort dropdown truncates its label so the direction button always stays on screen. Small tables (years, sectors, markets) drop the bar entirely.
   - every table goes through this component, including chart frames' table views and the markets table, so no table on a phone scrolls sideways
   - the whole row opens the company, with the name link kept for keyboard and screen-reader users
+  - **list state lives in the URL** (PARITY-24): a page's main list keeps its sort (`sort=-e`), its index filter (`index=all`), its search (`q=`) and Show all (`all=1`) in the hash query, written with `replaceState` so it adds no history entries. Back returns to the same list, in the same order, at the same scroll position, and the URL can be shared. Compare's filters and the map's Chart or Table choice work the same way.
+  - **Show all:** on phones a long list shows its first 20 (index pages) or 30 (Companies, parity map) rows, then a full-width "Show all 225" row button.
+  - **empty state:** a filtered list with no rows says what was searched, suggests a ticker or sector, and offers Clear search (and Search all indexes when one index is selected). Never "0 companies" over an empty card.
+  - a one-line key sits under long lists: "≈ means estimated or derived rather than reported. pp means percentage points.
 - **Meter (inline data bar):** the value, then a 52px by 6px `--line` track with a `--s1` fill and a 2px ink tick at parity. Employment parity and share of pay run 0–100% (tick at 50%); wage parity runs 0–140% (tick at 100%). Replaces bare percentages wherever a value has a parity point.
-- **Tabs:** underline tabs for sections that have their own URL (company pages: Overview, Trend, Peers, Data and sources; Compare: Countries, Sectors, Parity map). 14px Poppins 500, `--soft`, active `--violet` with a 2px underline and `aria-current="page"`. They scroll sideways on phones.
-- **Segmented control:** for switching views in place (Chart or Table, One map or By market, the measure). A `--tint` well with 3px padding; the selected option is a white raised pill. Buttons carry `aria-pressed`.
+- **Tabs:** underline tabs for sections that have their own URL (company pages: Overview, Trend, Peers, Data and sources; Compare: Countries, Sectors, Parity map). 14px Poppins 500, `--soft`, active `--violet` with a 2px underline and `aria-current="page"`. They scroll sideways on phones, where each tab is 44px tall.
+- **Segmented control:** for switching views in place (Chart or Table, One map or By market, the measure). A `--tint` well with 3px padding; the selected option is a white raised pill. Buttons carry `aria-pressed`. Below 400px the options share the width and long labels wrap, so a three-option switch fits a 320px screen.
+- **Touch targets (PARITY-24):** on phones every control has a 44px hit area. Small controls (pills, dropdown buttons, segmented options, the sort direction button, quiet buttons) keep their visual size and get an invisible 44px `::after` hit area; header icons are 44px; section tabs and menu options are 44px tall; standalone links (`.go`) get a 44px row. On desktop nothing interactive is under 24px, sortable headers included. Links inside sentences are exempt (WCAG 2.5.8).
+- **Empty and error states:** an empty list explains itself and offers a way out (see Tables). A page that throws shows "Something went wrong", says the figures are not affected, and offers Reload and Go to indexes; the error boundary is keyed by route, so the next page renders normally. The 404 page offers Find a company and Go to indexes.
 - **Chart frame:** every chart sits in a card with a title, a one-line subtitle and a Chart / Table segmented control at the top right, so every chart has a table view one click away. Extra controls (market pills) sit beside the toggle.
 - **Chart frame on phones:** the title (15px) and a two-line subtitle sit beside the Chart / Table switch; filters (market, sector) go in their own row under the title, and a market filter becomes one dropdown instead of a row of pills (`MarketPicker`). A table view's list header names its single column instead of offering a one-option dropdown.
 - **Scale card (company overview):** label, big value, the basis in one muted line, a parity track with its own scale (0%, parity, maximum), and the market percentile in violet ("Higher than 66% of companies in the UK").
 - **Reported tiles:** "as reported" shows only figures a company actually reports (no derived ratios), as a two-column grid on phones (24px values), with a data tag only when a figure is not cleanly reported.
 - **Link card:** a card that is one link, with a title, one sentence and a violet "Open →".
-- **Install popover (PARITY-18):** never a permanent button. Once per device, 8 seconds into the first visit where the browser can install the app (or on iOS Safari), a card appears bottom-right (above the tab bar on phones): the app icon, "Install Nivel", one line, and Install (or Show me how on iOS) plus Not now. It is marked seen as soon as it appears, so it never returns; after that a quiet "Install the app" link in the footer is the only route.
-- **Dropdown (PARITY-19):** replaces native selects. A 32px pill button with an optional muted prefix ("Sort") and a chevron that flips when open; the menu is a card (12px radius, shadow) with 8px-radius options, `--tint` for the active option, violet text and a check for the selected one. Full keyboard support (arrows, Home, End, Enter, Escape) with listbox semantics.
+- **Share image (`public/og.png`, PARITY-24):** 1200 by 630 on `--paper`: the eQ mark with the two-line brand, the two-tone Home headline (Poppins 600, 62px), one Nunito Sans line, and the seven index names as white pills along the bottom. No figures, so it never goes stale. Rendered from HTML with headless Chrome.
+- **Install popover (PARITY-18, timing changed in PARITY-24):** never a permanent button. Once per device, 3 seconds after the reader opens a second page, where the browser can install the app (or on iOS Safari), a card appears bottom-right (above the tab bar on phones): the app icon, "Install Nivel", one line, and Install (or Show me how on iOS) plus Not now. There is no separate close button: Not now is the one way out. It is marked seen as soon as it appears, so it never returns; after that a quiet "Install the app" link in the footer is the only route.
+- **Dropdown (PARITY-19):** replaces native selects. It also takes an icon trigger and a right-aligned menu, used for the theme menu. A 32px pill button with an optional muted prefix ("Sort") and a chevron that flips when open; the menu is a card (12px radius, shadow) with 8px-radius options, `--tint` for the active option, violet text and a check for the selected one. Full keyboard support (arrows, Home, End, Enter, Escape) with listbox semantics.
 - **Worked steps (PARITY-21, PARITY-22, reworked in PARITY-23):** calculations are numbered cards, never monospace blocks. The header row holds the number badge, the title and the result (20px, with a small label such as "Parity is 50%"), so the answer is visible before the working. The working is a derivation: the left-hand side, then each "= step" as its own unit, with real fractions and the final answer in violet. On desktop the steps run on one line; on phones each "= step" is its own line, so an operator never dangles at a line end and the answer never wraps alone. Reported inputs above the steps are small tiles: label, big value, a muted note.
 - **Index card:** name, headline value, sparkline (right of the value), change since last year, parity track, coverage line.
 - **Global search:**
@@ -186,3 +198,4 @@ Validated with the dataviz `validate_palette.js` using `--pairs all`, because co
 - Bold leads a point. Numbers come with the finding attached.
 - State limitations before the reader finds them. Show the unflattering rows: missing companies, estimated values, broken filings.
 - This is not an ESG rating and not investment advice. Say so on the method page.
+- **One name per measure (PARITY-24):** "Women's share of pay" (short "Share of pay"), "Employment parity" and "Wage parity", from `MEASURE` in `src/lib/compare.ts`. Each market's basis goes in brackets or a subtitle ("Employment parity (permanent staff)"), never in a new name. Figures a company reports are labelled in the filing's own words ("Women in regular staff"), because they are inputs, not our measures.

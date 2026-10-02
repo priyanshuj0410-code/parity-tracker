@@ -1,4 +1,5 @@
 import { Eq, Frac, Step, Steps } from '../components/Formula'
+import { usePageTitle } from '../lib/router'
 import { MARKET, SOURCE_DATE, companies, indexes } from '../lib/data'
 import { inr, pct } from '../lib/format'
 
@@ -19,6 +20,7 @@ const EXAMPLES = EXAMPLE_OF.flatMap(([code, symbol, inputs, wNote, eNote]) => {
 })
 
 export function Method() {
+  usePageTitle('Method')
   const IN = MARKET.IN
   const GB = MARKET.GB
   const LATEST = IN.latest

@@ -14,7 +14,7 @@ import { Tabs } from '../components/Tabs'
 import { BASIS, E_PARITY, POINTS, W_PARITY, inMarket, marketName, pointOf, sectorOf, standing, type Point } from '../lib/compare'
 import { boardShare, companies, euYear, indexName, marketOf, payRatio, shareChange, workforce, yoyChange } from '../lib/data'
 import { crore, pct, pctTick } from '../lib/format'
-import { href } from '../lib/router'
+import { href, usePageTitle } from '../lib/router'
 import type { Company as Co } from '../types'
 import { NotFound } from './NotFound'
 
@@ -57,7 +57,7 @@ function Overview({ c, pt }: { c: Co; pt?: Point }) {
       <section>
         <div className="section-head">
           <h2>On the shared scales</h2>
-          {pt?.e != null && <a className="small" href={href('compare', 'map', c.symbol)}>See it on the parity map</a>}
+          {pt?.e != null && <a className="go small" href={href('compare', 'map', c.symbol)}>See it on the parity map</a>}
         </div>
         <div className="grid g3">
           <ScaleCard label="Employment parity" value={pt?.e} parity={E_PARITY} max={1}
@@ -109,7 +109,7 @@ function Overview({ c, pt }: { c: Co; pt?: Point }) {
             )}
             {uk && (
               <div className="card">
-                <div className="tile-label">Women's average pay</div>
+                <div className="tile-label">Wage parity</div>
                 <div className="tile-value">{ratio == null ? 'n/a' : gb ? `${Math.round(ratio * 100)}p` : `${Math.round(ratio * 100)}c`}</div>
                 <div className="tile-context muted">{gb
                   ? `per £1 men earn per hour (mean). Median hourly gap ${pct(y?.gapMedian)}.`
@@ -136,13 +136,13 @@ function Trend({ c }: { c: Co }) {
     const ys = YEARS.filter((k) => c.years[k])
     return (
       <section>
-        <ChartFrame title="Women's share of pay and of the workforce" sub="From each year's CSRD statement: the unadjusted gap (S1-16) and headcount by gender (S1-6)"
+        <ChartFrame level={2} title="Women's share of pay and of the workforce" sub="From each year's CSRD statement: the unadjusted gap (S1-16) and headcount by gender (S1-6)"
           table={(
             <DataTable caption="Values by year" bare rows={ys} rowKey={(k) => k} initial={{ key: 'year', dir: 1 }} columns={[
               { key: 'year', label: 'Year', render: (k) => k, sort: (k) => k },
               { key: 'w', label: 'Share of pay', right: true, mobile: 'value', render: (k) => pct(c.years[k].w) },
-              { key: 'f', label: 'Women in workforce', right: true, render: (k) => pct(c.years[k].fAll) },
-              { key: 'r', label: "Pay per 100 of men's", right: true, render: (k) => pct(payRatio(c, c.years[k]), 0) },
+              { key: 'f', label: m.workforceLabel, right: true, render: (k) => pct(c.years[k].fAll) },
+              { key: 'r', label: 'Wage parity', right: true, render: (k) => pct(payRatio(c, c.years[k]), 0) },
               { key: 'g', label: 'Unadjusted gap', right: true, render: (k) => pct(c.years[k].gapMean) },
               { key: 'd', label: 'Data', render: (k) => <DataBadge year={c.years[k]} /> },
             ]} />
@@ -161,10 +161,10 @@ function Trend({ c }: { c: Co }) {
   }
   const series: Series[] = [
     {
-      id: 'w', label: m.wageLabel, short: uk ? 'Pay' : 'Wages', color: 'var(--s1)',
+      id: 'w', label: m.wageLabel, short: 'Pay', color: 'var(--s1)',
       points: YEARS.map((k) => ({ x: k, y: c.years[k]?.w ?? null, hollow: c.years[k]?.wKind === 'estimated', note: c.years[k]?.basisChange ? 'reporting basis changed' : undefined })),
     },
-    { id: 'f', label: m.workforceLabel, short: uk ? 'Workforce' : 'Staff', color: 'var(--s2)', points: YEARS.map((k) => ({ x: k, y: workforce(c, c.years[k]) })) },
+    { id: 'f', label: m.workforceLabel, short: 'Staff', color: 'var(--s2)', points: YEARS.map((k) => ({ x: k, y: workforce(c, c.years[k]) })) },
     uk
       ? { id: 't', label: 'Women in the top pay quarter', short: 'Top', color: 'var(--s3)', points: YEARS.map((k) => ({ x: k, y: c.years[k]?.topQuartile ?? null })) }
       : { id: 'b', label: 'Women on the board', short: 'Board', color: 'var(--s3)', points: YEARS.map((k) => ({ x: k, y: boardShare(c.years[k]) })) },
@@ -175,7 +175,7 @@ function Trend({ c }: { c: Co }) {
   const table = uk ? (
     <DataTable caption="Values by year" bare rows={rows} rowKey={(k) => k} initial={{ key: 'year', dir: 1 }} columns={[
       { key: 'year', label: 'Year', render: (k) => fy(k), sort: (k) => k },
-      { key: 'w', label: 'Pay to women', right: true, mobile: 'value', render: (k) => pct(c.years[k].w) },
+      { key: 'w', label: m.wageLabel, short: 'Share of pay', right: true, mobile: 'value', render: (k) => pct(c.years[k].w) },
       { key: 'f', label: 'Workforce', right: true, render: (k) => pct(c.years[k].fAll) },
       { key: 't', label: 'Top quarter', right: true, render: (k) => pct(c.years[k].topQuartile) },
       { key: 'g', label: 'Mean gap', right: true, render: (k) => pct(c.years[k].gapMean) },
@@ -198,7 +198,7 @@ function Trend({ c }: { c: Co }) {
   )
   return (
     <section>
-      <ChartFrame title="Trajectory" sub={series.map((s) => s.label).join(', ')} table={table}>
+      <ChartFrame level={2} title="Trajectory" sub={series.map((s) => s.label).join(', ')} table={table}>
         <LineChart ariaLabel={`${c.name}: ${series.map((s) => s.label.toLowerCase()).join(', ')}, by year`}
           xs={YEARS} xLabel={fy} fmt={pctTick} yMax={yMax}
           reference={{ y: 0.5, label: 'Parity 50%' }} series={series} />
@@ -231,7 +231,7 @@ function Peers({ c }: { c: Co }) {
     <section>
       <p className="small">Ranked against {scope}, with this company highlighted.</p>
       <DataTable caption={`Peers of ${c.name}`} columns={columns} rows={peers} rowKey={(p) => p.c.symbol} initial={{ key: 's', dir: -1 }}
-        rowHref={(p) => href('company', p.c.symbol)} rank current={c.symbol} download={`peers-${ticker(c)}`} summary={`${peers.length} companies`} />
+        rowHref={(p) => href('company', p.c.symbol)} urlState rank current={c.symbol} download={`peers-${ticker(c)}`} summary={`${peers.length} companies`} />
     </section>
   )
 }
@@ -253,7 +253,7 @@ function Sources({ c }: { c: Co }) {
         </ul>
         {c.entities && c.entities.length > 0 && (
           <>
-            <h3 style={{ marginTop: 20 }}>{gb ? 'UK employers counted' : 'WGEA reporting entity'} ({gb ? c.entitiesYear : fy(c.entitiesYear ?? m.latest)})</h3>
+            <h2 className="h-sub">{gb ? 'UK employers counted' : 'WGEA reporting entity'} ({gb ? c.entitiesYear : fy(c.entitiesYear ?? m.latest)})</h2>
             <ul className="tight">
               {c.entities.map((e) => (
                 <li key={e.name}>{e.name} ({gb ? `${e.size} staff` : e.size}){gb && e.link && /^https?:\/\//.test(e.link) ? <> · <a href={e.link} target="_blank" rel="noreferrer">employer's report</a></> : null}</li>
@@ -272,8 +272,8 @@ function Sources({ c }: { c: Co }) {
         <li><strong>Index weight basis:</strong> payroll of {crore(c.payrollWeightCr)} ({c.payrollWeightBasis ?? 'not available'}).</li>
         {notes.map((k) => <li key={k}><strong>{fy(k)}:</strong> {c.years[k].note}{c.years[k].basisChange ? '; reporting basis changed from the year before, so this year is left out of like-for-like comparisons' : ''}.</li>)}
       </ul>
-      <h3 style={{ marginTop: 20 }}>Source filings</h3>
-      <ul className="tight">
+      <h2 className="h-sub">Source filings</h2>
+      <ul className="tight filings">
         {Object.entries(c.filings).reverse().map(([k, f]) => (
           <li key={k}>{fy(k)} BRSR, filed {f.submitted}: <a href={f.xbrl} target="_blank" rel="noreferrer">XBRL</a> · <a href={f.pdf} target="_blank" rel="noreferrer">PDF</a></li>
         ))}
@@ -284,6 +284,8 @@ function Sources({ c }: { c: Co }) {
 
 export function Company({ symbol, tab }: { symbol: string; tab?: string }) {
   const c = companies[symbol]
+  const tabLabel = tab && tab !== 'overview' ? TABS.find(([id]) => id === tab)?.[1] : undefined
+  usePageTitle(!c ? 'Page not found' : tabLabel ? `${c.name} · ${tabLabel}` : c.name)
   if (!c) return <NotFound />
   const m = marketOf(c)
   const sector = sectorOf(c)
@@ -293,7 +295,7 @@ export function Company({ symbol, tab }: { symbol: string; tab?: string }) {
   return (
     <>
       <section className="page-head">
-        <div className="meta"><a href={href('companies')}>Companies</a> / {marketName(c.country)} / {sector}</div>
+        <div className="meta crumbs"><a href={href('companies')}>Companies</a> / {marketName(c.country)} / {sector}</div>
         <div className="title-row">
           <Logo symbol={c.symbol} name={c.name} size={52} />
           <div>
@@ -301,7 +303,7 @@ export function Company({ symbol, tab }: { symbol: string; tab?: string }) {
             <p className="meta">{c.exchange}: {ticker(c)} · {c.industry}{c.marketCapCr != null && <> · market cap {crore(c.marketCapCr)}</>}</p>
           </div>
         </div>
-        <div className="chips">{c.indexes.map((id) => <a key={id} className="chip" href={href('index', id)}>{indexName(id)}</a>)}</div>
+        <p className="meta member-of">In {c.indexes.map((id, i) => <span key={id}>{i > 0 && (i === c.indexes.length - 1 ? ' and ' : ', ')}<a className="go" href={href('index', id)}>{indexName(id)}</a></span>)}</p>
         {hasData && <Tabs label="Company sections" current={current} items={TABS.map(([id, label]) => ({ id, label, href: href('company', c.symbol, id) }))} />}
       </section>
       {!hasData ? (

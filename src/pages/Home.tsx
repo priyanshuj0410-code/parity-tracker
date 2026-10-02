@@ -5,7 +5,7 @@ import { Sparkline } from '../components/Sparkline'
 import { MARKETS, type MarketStatus } from '../data/markets'
 import { INDEX_ORDER, MARKET, companies, indexes, yoyChange, type Market } from '../lib/data'
 import { pct } from '../lib/format'
-import { href } from '../lib/router'
+import { href, usePageTitle } from '../lib/router'
 
 const STATUS: Record<MarketStatus, string> = { live: 'Live', planned: 'Planned', limited: 'Limited data' }
 const PACE_INDEX: Record<string, string> = { IN: 'nifty50', GB: 'ftse100', AU: 'asx200', JP: 'nikkei225', EU: 'eurostoxx50' }
@@ -33,6 +33,7 @@ function Pace({ m }: { m: Market }) {
 }
 
 export function Home() {
+  usePageTitle('')
   return (
     <>
       <section>
@@ -116,7 +117,7 @@ export function Home() {
           <li><strong>Like for like</strong> changes only compare companies that reported in both years on the same basis.</li>
           <li><strong>Every number links back</strong> to the company's filing. Estimated or rescaled values carry a badge.</li>
         </ul>
-        <p><a href={href('method')}>Method and limitations</a></p>
+        <p><a className="go" href={href('method')}>Method and limitations</a></p>
       </section>
     </>
   )
