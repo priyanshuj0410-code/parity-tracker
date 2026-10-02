@@ -5,13 +5,22 @@ for r in csv.reader(open('mcap30092026.csv')):
     if len(r)>9 and r[2].strip()=='EQ':
         try: mcap[r[1].strip()]=float(r[9])
         except: pass
+import glob, os
+HERE=os.path.dirname(os.path.abspath(__file__))
 info={}
 idx_members={'nifty50':[], 'niftynext50':[], 'sensex':[]}
 for f,k in (('n50.csv','nifty50'),('nn50.csv','niftynext50')):
-    for r in csv.DictReader(open(f)):
+    for r in csv.DictReader(open(os.path.join(HERE,f))):
         info[r['Symbol']]={'name':r['Company Name'],'industry':r['Industry'],'isin':r['ISIN Code']}
         idx_members[k].append(r['Symbol'])
-idx_members['sensex']=[l.strip() for l in open('sensex.txt') if l.strip()]
+idx_members['sensex']=[l.strip() for l in open(os.path.join(HERE,'sensex.txt')) if l.strip()]
+# Nifty index constituent lists from niftyindices.com (pipeline/india/indexes/ind_<id>list.csv saved as ind_<id>.csv)
+for f in sorted(glob.glob(os.path.join(HERE,'indexes','ind_*.csv'))):
+    k=os.path.basename(f)[4:-4]
+    rows=list(csv.DictReader(open(f)))
+    for r in rows:
+        info.setdefault(r['Symbol'].strip(),{'name':r['Company Name'].strip(),'industry':r['Industry'].strip(),'isin':r['ISIN Code'].strip()})
+    idx_members[k]=[r['Symbol'].strip() for r in rows]
 YEARS=['2021-22','2022-23','2023-24','2024-25','2025-26']
 def rd(x,n=4): return None if x is None else round(x,n)
 NOTES=[('from next year filing (prior-year column); ','Taken from the prior-year column of the next filing. '),
@@ -95,7 +104,18 @@ def index_calc(members):
         h0,h1=h(y0),h(y1)
         if h0 and h1: yoy[f"{y0}>{y1}"]=dict(**{'from':rd(h0),'to':rd(h1)},change=rd(h1-h0),companies=len(both))
     return weights,res,yoy
-NAMES={'nifty50':('Nifty 50','India','NSE'),'niftynext50':('Nifty Next 50','India','NSE'),'sensex':('BSE Sensex','India','BSE')}
+NAMES={'nifty50':('Nifty 50','India','NSE'),'niftynext50':('Nifty Next 50','India','NSE'),'sensex':('BSE Sensex','India','BSE'),
+ 'nifty100':('Nifty 100','India','NSE'),'nifty200':('Nifty 200','India','NSE'),'nifty500':('Nifty 500','India','NSE'),
+ 'niftymidcap150':('Nifty Midcap 150','India','NSE'),'niftysmallcap250':('Nifty Smallcap 250','India','NSE'),
+ 'niftymidcap100':('Nifty Midcap 100','India','NSE'),'niftysmallcap100':('Nifty Smallcap 100','India','NSE'),
+ 'niftylargemidcap250':('Nifty LargeMidcap 250','India','NSE'),'niftymidsmallcap400':('Nifty MidSmallcap 400','India','NSE'),
+ 'niftybank':('Nifty Bank','India','NSE'),'niftyit':('Nifty IT','India','NSE'),'niftyfmcg':('Nifty FMCG','India','NSE'),
+ 'niftypharma':('Nifty Pharma','India','NSE'),'niftyauto':('Nifty Auto','India','NSE'),'niftyfinance':('Nifty Financial Services','India','NSE'),
+ 'niftypsubank':('Nifty PSU Bank','India','NSE'),'niftymetal':('Nifty Metal','India','NSE'),'niftyenergy':('Nifty Energy','India','NSE'),
+ 'niftyrealty':('Nifty Realty','India','NSE'),'niftycpse':('Nifty CPSE','India','NSE'),'niftypse':('Nifty PSE','India','NSE'),
+ 'niftyhealthcare':('Nifty Healthcare','India','NSE'),'niftyconsumerdurables':('Nifty Consumer Durables','India','NSE'),
+ 'niftyoilgas':('Nifty Oil & Gas','India','NSE'),'niftyinfra':('Nifty Infrastructure','India','NSE'),'niftycommodities':('Nifty Commodities','India','NSE'),
+ 'niftymedia':('Nifty Media','India','NSE'),'niftymnc':('Nifty MNC','India','NSE'),'niftyquality30':('Nifty100 Quality 30','India','NSE')}
 indexes={}
 for k,mem in idx_members.items():
     wts,res,yoy=index_calc(mem)
