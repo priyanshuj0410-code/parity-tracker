@@ -8,14 +8,14 @@
     "discussion": "Is the gap about what women are paid, or about who gets hired?",
     "source": {
       "line": "Nivel by The Equal Lens, from the companies' BRSR filings, 2025-26.",
-      "rule": "Nivel's arithmetic, weighting each company by how much of it the index holds. 46 of 49 companies reported directly, 93% of the payroll. It mixes fewer women employed with lower pay per woman, and does not compare pay for the same job."
+      "rule": "Nivel's arithmetic, weighting each company by how much of it the index holds. 47 of 50 companies reported directly, 93% of the payroll. It mixes fewer women employed with lower pay per woman, and does not compare pay for the same job."
     },
     "cite": {
       "from": "https://nivel-equal-lens.vercel.app/index/nifty50",
       "saw": "Women's share of pay (payroll you own) · FY26: 20.8%"
     },
     "nivel": {
-      "exact": 20.78,
+      "exact": 20.79,
       "period": "2025-26",
       "market": "IN",
       "status": "current",
@@ -32,14 +32,14 @@
     "discussion": "Which is harder to change: who gets hired, or what they are paid?",
     "source": {
       "line": "Nivel by The Equal Lens, from the companies' BRSR filings, 2025-26.",
-      "rule": "Nivel's split of the gap to half the wage bill, using permanent staff and weighting each company by how much of it the index holds. 46 of 49 companies reported directly, 93% of the payroll. It does not compare pay for the same job."
+      "rule": "Nivel's split of the gap to half the wage bill, using permanent staff and weighting each company by how much of it the index holds. 47 of 50 companies reported directly, 93% of the payroll. It does not compare pay for the same job."
     },
     "cite": {
       "from": "https://nivel-equal-lens.vercel.app/index/nifty50",
       "saw": "77% too few women employed, 23% women paid less on average (FY26)"
     },
     "nivel": {
-      "exact": 77.24,
+      "exact": 77.18,
       "period": "2025-26",
       "market": "IN",
       "status": "current",

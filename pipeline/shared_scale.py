@@ -74,10 +74,12 @@ def recompute(ix_id, years):
 
 
 recompute('nikkei225', ['latest'])
+recompute('topix500', ['latest'])
 recompute('eurostoxx50', ['2024', '2025'])
+recompute('stoxx600eu100', ['2024', '2025'])
 json.dump(companies, open(C_PATH, 'w'), separators=(',', ':'))
 json.dump(indexes, open(I_PATH, 'w'), separators=(',', ':'))
-for ix_id in ('nikkei225', 'eurostoxx50'):
+for ix_id in ('nikkei225', 'topix500', 'eurostoxx50', 'stoxx600eu100'):
     ix = indexes[ix_id]
     print(ix_id, {k: {f: v[f] for f in ('headline', 'companiesCovered', 'payRatio', 'payRatioCompanies', 'workforce')} for k, v in ix['years'].items()}, ix['yoy'])
 print('EU workforce years set:', set_years)

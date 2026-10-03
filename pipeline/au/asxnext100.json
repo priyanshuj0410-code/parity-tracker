@@ -1,0 +1,602 @@
+[
+{
+"code": "DPM",
+"name": "DPM Metals",
+"sector": "Materials",
+"marketCap": 14606131169.0
+},
+{
+"code": "ATM",
+"name": "Antam",
+"sector": "Materials",
+"marketCap": 5384351385.0
+},
+{
+"code": "MP1",
+"name": "Megaport",
+"sector": "Software & Services",
+"marketCap": 4818800018.0
+},
+{
+"code": "XYZ",
+"name": "Block",
+"sector": "Financial Services",
+"marketCap": 4098863512.0
+},
+{
+"code": "SRL",
+"name": "Sunrise Energy Metals",
+"sector": "Materials",
+"marketCap": 3657857541.0
+},
+{
+"code": "SX2",
+"name": "Southern Cross Gold Consolidated",
+"sector": "Materials",
+"marketCap": 3173860006.0
+},
+{
+"code": "TEA",
+"name": "Tasmea",
+"sector": "Capital Goods",
+"marketCap": 3032497605.0
+},
+{
+"code": "DDR",
+"name": "Dicker Data",
+"sector": "Technology Hardware & Equipment",
+"marketCap": 2805479243.0
+},
+{
+"code": "NEU",
+"name": "Neuren Pharmaceuticals",
+"sector": "Pharmaceuticals, Biotechnology & Life Sciences",
+"marketCap": 2553227877.0
+},
+{
+"code": "SRG",
+"name": "SRG Global",
+"sector": "Capital Goods",
+"marketCap": 2520801544.0
+},
+{
+"code": "MGH",
+"name": "Maas Group Holdings",
+"sector": "Capital Goods",
+"marketCap": 2511266240.0
+},
+{
+"code": "GYG",
+"name": "Guzman Y Gomez",
+"sector": "Consumer Services",
+"marketCap": 2491578716.0
+},
+{
+"code": "PYC",
+"name": "PYC Therapeutics",
+"sector": "Pharmaceuticals, Biotechnology & Life Sciences",
+"marketCap": 2468611222.0
+},
+{
+"code": "MAH",
+"name": "Macmahon Holdings",
+"sector": "Materials",
+"marketCap": 2392034258.0
+},
+{
+"code": "EQR",
+"name": "EQ Resources",
+"sector": "Materials",
+"marketCap": 2308490612.0
+},
+{
+"code": "ORE",
+"name": "Orezone Gold",
+"sector": "Materials",
+"marketCap": 2285493679.0
+},
+{
+"code": "MI6",
+"name": "Minerals 260",
+"sector": "Materials",
+"marketCap": 2103933676.0
+},
+{
+"code": "DTL",
+"name": "Data#3",
+"sector": "Software & Services",
+"marketCap": 1959964687.0
+},
+{
+"code": "BNZ",
+"name": "Benz Mining",
+"sector": "Materials",
+"marketCap": 1948801575.0
+},
+{
+"code": "GNP",
+"name": "GenusPlus Group",
+"sector": "Capital Goods",
+"marketCap": 1928065105.0
+},
+{
+"code": "INA",
+"name": "Ingenia Communities Group",
+"sector": "Equity Real Estate Investment Trusts (REITs)",
+"marketCap": 1907489676.0
+},
+{
+"code": "DMP",
+"name": "Domino's Pizza Enterprises",
+"sector": "Consumer Services",
+"marketCap": 1892094914.0
+},
+{
+"code": "MLX",
+"name": "Metals X",
+"sector": "Materials",
+"marketCap": 1870286145.0
+},
+{
+"code": "BCI",
+"name": "BCI Minerals",
+"sector": "Materials",
+"marketCap": 1822861363.0
+},
+{
+"code": "GLF",
+"name": "Gemlife Communities Group",
+"sector": "Real Estate Management & Development",
+"marketCap": 1737918271.0
+},
+{
+"code": "TBN",
+"name": "Tamboran Resources",
+"sector": "Energy",
+"marketCap": 1608160276.0
+},
+{
+"code": "SIQ",
+"name": "Smartgroup",
+"sector": "Commercial & Professional Services",
+"marketCap": 1542057698.0
+},
+{
+"code": "SNL",
+"name": "Supply Network",
+"sector": "Consumer Discretionary Distribution & Retail",
+"marketCap": 1528794398.0
+},
+{
+"code": "SXE",
+"name": "Southern Cross Electrical Engineering",
+"sector": "Capital Goods",
+"marketCap": 1514683612.0
+},
+{
+"code": "GNC",
+"name": "GrainCorp",
+"sector": "Consumer Staples Distribution & Retail",
+"marketCap": 1478452246.0
+},
+{
+"code": "SSM",
+"name": "Service Stream",
+"sector": "Capital Goods",
+"marketCap": 1465620822.0
+},
+{
+"code": "GOZ",
+"name": "Growthpoint Properties Australia",
+"sector": "Equity Real Estate Investment Trusts (REITs)",
+"marketCap": 1460167924.0
+},
+{
+"code": "NGI",
+"name": "Navigator Global Investments",
+"sector": "Financial Services",
+"marketCap": 1458373712.0
+},
+{
+"code": "GNG",
+"name": "GR Engineering Services",
+"sector": "Materials",
+"marketCap": 1451596398.0
+},
+{
+"code": "SKG",
+"name": "Storage King Group",
+"sector": "Equity Real Estate Investment Trusts (REITs)",
+"marketCap": 1425801714.0
+},
+{
+"code": "DVP",
+"name": "Develop Global",
+"sector": "Materials",
+"marketCap": 1425537252.0
+},
+{
+"code": "FFM",
+"name": "Firefly Metals",
+"sector": "Materials",
+"marketCap": 1418089946.0
+},
+{
+"code": "WPR",
+"name": "Waypoint REIT",
+"sector": "Equity Real Estate Investment Trusts (REITs)",
+"marketCap": 1391046655.0
+},
+{
+"code": "BVS",
+"name": "Bravura Solutions",
+"sector": "Software & Services",
+"marketCap": 1385246923.0
+},
+{
+"code": "ELD",
+"name": "Elders",
+"sector": "Food, Beverage & Tobacco",
+"marketCap": 1363474531.0
+},
+{
+"code": "MAQ",
+"name": "Macquarie Technology Group",
+"sector": "Software & Services",
+"marketCap": 1360853050.0
+},
+{
+"code": "HLI",
+"name": "Helia Group",
+"sector": "Financial Services",
+"marketCap": 1345886169.0
+},
+{
+"code": "MAD",
+"name": "Mader Group",
+"sector": "Commercial & Professional Services",
+"marketCap": 1330639701.0
+},
+{
+"code": "CBO",
+"name": "Cobram Estate Olives",
+"sector": "Food, Beverage & Tobacco",
+"marketCap": 1326251599.0
+},
+{
+"code": "SLC",
+"name": "Superloop",
+"sector": "Telecommunication Services",
+"marketCap": 1298299220.0
+},
+{
+"code": "KCN",
+"name": "Kingsgate Consolidated",
+"sector": "Materials",
+"marketCap": 1292083669.0
+},
+{
+"code": "ABB",
+"name": "Aussie Broadband",
+"sector": "Telecommunication Services",
+"marketCap": 1280734144.0
+},
+{
+"code": "FDC",
+"name": "FDC Consolidated Holdings",
+"sector": "Capital Goods",
+"marketCap": 1278953415.0
+},
+{
+"code": "MMS",
+"name": "McMillan Shakespeare",
+"sector": "Commercial & Professional Services",
+"marketCap": 1268895897.0
+},
+{
+"code": "HMC",
+"name": "HMC Capital",
+"sector": "Financial Services",
+"marketCap": 1241973350.0
+},
+{
+"code": "SKS",
+"name": "SKS Technologies Group",
+"sector": "Capital Goods",
+"marketCap": 1224874325.0
+},
+{
+"code": "CCL",
+"name": "Cuscal",
+"sector": "Financial Services",
+"marketCap": 1222853228.0
+},
+{
+"code": "NUF",
+"name": "Nufarm",
+"sector": "Materials",
+"marketCap": 1221939073.0
+},
+{
+"code": "WEB",
+"name": "WebBeds Group",
+"sector": "Consumer Services",
+"marketCap": 1212999148.0
+},
+{
+"code": "CNI",
+"name": "Centuria Capital Group",
+"sector": "Equity Real Estate Investment Trusts (REITs)",
+"marketCap": 1194108370.0
+},
+{
+"code": "NCK",
+"name": "Nick Scali",
+"sector": "Consumer Discretionary Distribution & Retail",
+"marketCap": 1178613032.0
+},
+{
+"code": "SLX",
+"name": "Silex Systems",
+"sector": "Capital Goods",
+"marketCap": 1168066001.0
+},
+{
+"code": "PNR",
+"name": "Pantoro Gold",
+"sector": "Materials",
+"marketCap": 1149694800.0
+},
+{
+"code": "KLS",
+"name": "Kelsian Group",
+"sector": "Transportation",
+"marketCap": 1120154874.0
+},
+{
+"code": "MC2",
+"name": "Marimaca Copper",
+"sector": "Materials",
+"marketCap": 1115422747.0
+},
+{
+"code": "UOS",
+"name": "United Overseas Australia",
+"sector": "Real Estate Management & Development",
+"marketCap": 1095461551.0
+},
+{
+"code": "NEC",
+"name": "Nine Entertainment Co. Holdings",
+"sector": "Media & Entertainment",
+"marketCap": 1078318244.0
+},
+{
+"code": "AVR",
+"name": "Anteris Technologies Global",
+"sector": "Health Care Equipment & Services",
+"marketCap": 1074377588.0
+},
+{
+"code": "AIZ",
+"name": "Air New Zealand",
+"sector": "Transportation",
+"marketCap": 1067075502.0
+},
+{
+"code": "KAR",
+"name": "Karoon Energy",
+"sector": "Energy",
+"marketCap": 1056908438.0
+},
+{
+"code": "ELS",
+"name": "Elsight",
+"sector": "Technology Hardware & Equipment",
+"marketCap": 1048449062.0
+},
+{
+"code": "ARU",
+"name": "Arafura Rare Earths",
+"sector": "Materials",
+"marketCap": 1032526274.0
+},
+{
+"code": "CXO",
+"name": "Core Lithium",
+"sector": "Materials",
+"marketCap": 1019592524.0
+},
+{
+"code": "ELV",
+"name": "Elevra Lithium",
+"sector": "Materials",
+"marketCap": 1018584152.0
+},
+{
+"code": "PWH",
+"name": "PWR Holdings",
+"sector": "Automobiles & Components",
+"marketCap": 1009764185.0
+},
+{
+"code": "CAT",
+"name": "Catapult Sports",
+"sector": "Software & Services",
+"marketCap": 1004802189.0
+},
+{
+"code": "JDO",
+"name": "Judo Capital Holdings",
+"sector": "Banks",
+"marketCap": 1004506494.0
+},
+{
+"code": "IRE",
+"name": "IRESS",
+"sector": "Software & Services",
+"marketCap": 1001191581.0
+},
+{
+"code": "FPR",
+"name": "FleetPartners Group",
+"sector": "Financial Services",
+"marketCap": 995524882.0
+},
+{
+"code": "BRE",
+"name": "Brazilian Rare Earths",
+"sector": "Materials",
+"marketCap": 988630303.0
+},
+{
+"code": "SBM",
+"name": "St Barbara",
+"sector": "Materials",
+"marketCap": 980845945.0
+},
+{
+"code": "LFG",
+"name": "Liberty Financial Group",
+"sector": "Financial Services",
+"marketCap": 974556000.0
+},
+{
+"code": "APZ",
+"name": "Aspen Group",
+"sector": "Equity Real Estate Investment Trusts (REITs)",
+"marketCap": 974245435.0
+},
+{
+"code": "HGH",
+"name": "Heartland Group Holdings",
+"sector": "Banks",
+"marketCap": 968837149.0
+},
+{
+"code": "MAF",
+"name": "MA Financial Group",
+"sector": "Financial Services",
+"marketCap": 947054045.0
+},
+{
+"code": "CCP",
+"name": "Credit Corp Group",
+"sector": "Financial Services",
+"marketCap": 942725956.0
+},
+{
+"code": "RIC",
+"name": "Ridley",
+"sector": "Food, Beverage & Tobacco",
+"marketCap": 940881216.0
+},
+{
+"code": "RPL",
+"name": "Regal Partners",
+"sector": "Financial Services",
+"marketCap": 940551276.0
+},
+{
+"code": "CKF",
+"name": "Collins Foods",
+"sector": "Consumer Services",
+"marketCap": 938050257.0
+},
+{
+"code": "LYL",
+"name": "Lycopodium",
+"sector": "Capital Goods",
+"marketCap": 930716093.0
+},
+{
+"code": "TCG",
+"name": "Turaco Gold",
+"sector": "Materials",
+"marketCap": 929216128.0
+},
+{
+"code": "WIA",
+"name": "WIA Gold",
+"sector": "Materials",
+"marketCap": 918478377.0
+},
+{
+"code": "WBT",
+"name": "Weebit Nano",
+"sector": "Semiconductors & Semiconductor Equipment",
+"marketCap": 900573785.0
+},
+{
+"code": "QRI",
+"name": "Qualitas Real Estate Income Fund",
+"sector": "Financial Services",
+"marketCap": 896198170.0
+},
+{
+"code": "WGN",
+"name": "Wagners Holding Company",
+"sector": "Materials",
+"marketCap": 891470038.0
+},
+{
+"code": "CMW",
+"name": "Cromwell Property Group",
+"sector": "Equity Real Estate Investment Trusts (REITs)",
+"marketCap": 877320344.0
+},
+{
+"code": "OML",
+"name": "oOh!media",
+"sector": "Media & Entertainment",
+"marketCap": 876831525.0
+},
+{
+"code": "CVL",
+"name": "Civmec",
+"sector": "Capital Goods",
+"marketCap": 872857188.0
+},
+{
+"code": "NAN",
+"name": "Nanosonics",
+"sector": "Health Care Equipment & Services",
+"marketCap": 858611110.0
+},
+{
+"code": "IPH",
+"name": "IPH",
+"sector": "Commercial & Professional Services",
+"marketCap": 857593220.0
+},
+{
+"code": "SGLLV",
+"name": "Ricegrowers",
+"sector": "Food, Beverage & Tobacco",
+"marketCap": 855215752.0
+},
+{
+"code": "A4N",
+"name": "Alpha HPA",
+"sector": "Materials",
+"marketCap": 849417889.0
+},
+{
+"code": "IPX",
+"name": "IperionX",
+"sector": "Materials",
+"marketCap": 836774777.0
+},
+{
+"code": "MYS",
+"name": "MyState",
+"sector": "Banks",
+"marketCap": 834836996.0
+},
+{
+"code": "ARF",
+"name": "Arena REIT",
+"sector": "Equity Real Estate Investment Trusts (REITs)",
+"marketCap": 829632182.0
+}
+]
