@@ -4,6 +4,7 @@
  * nivel-pipeline); unsigned calls read only what the security rules make public (channels, releases, blobs).
  */
 import { execFileSync } from 'node:child_process'
+import { createHash } from 'node:crypto'
 
 export const PROJECT = process.env.FIREBASE_PROJECT ?? 'nivel-equal-lens'
 export const DATABASE = process.env.FIRESTORE_DATABASE ?? 'default'
@@ -98,8 +99,39 @@ export async function where(collection, field, value) {
 }
 
 /**
+ * A release's frozen files ({ path: text }) and logo PNGs ({ file: Buffer }). Blobs are content-addressed,
+ * so each is checked against its id.
+ */
+export async function readRelease(id, { signed = true } = {}) {
+  const meta = await get(`releases/${id}`, { signed })
+  if (!meta) throw new Error(`No release ${id}`)
+  const ids = [...new Set([...Object.values(meta.files), ...Object.values(meta.logos)].flat())]
+  const docs = await getMany(ids.map((b) => `blobs/${b}`), { signed })
+  const blobs = new Map(ids.map((b, i) => {
+    if (!docs[i] || blobId(docs[i].data) !== b) throw new Error(`Release ${id}: blob ${b} is missing or damaged`)
+    return [b, docs[i].data]
+  }))
+  const text = (parts) => parts.map((b) => blobs.get(b)).join('')
+  const files = Object.fromEntries(Object.entries(meta.files).map(([path, parts]) => [path, text(parts)]))
+  const logos = {}
+  for (const parts of Object.values(meta.logos)) {
+    for (const [file, b64] of Object.entries(JSON.parse(text(parts)))) logos[file] = Buffer.from(b64, 'base64')
+  }
+  return { meta, files, logos }
+}
+
+export const blobId = (text) => createHash('sha256').update(text).digest('hex').slice(0, 40)
+
+function toWrite(w) {
+  if (w.delete) return { delete: `${ROOT}/${w.delete}` }
+  if (w.update) return { update: { name: `${ROOT}/${w.update}`, fields: encodeFields(w.data) }, updateMask: { fieldPaths: Object.keys(w.data) } }
+  return { update: { name: `${ROOT}/${w.set}`, fields: encodeFields(w.data) } }
+}
+
+/**
  * Apply writes atomically per batch of up to 500: { set: "collection/id", data } replaces a document,
- * { delete: "collection/id" } removes one. Returns the number of writes.
+ * { update: "collection/id", data } changes only the fields given, { delete: "collection/id" } removes one.
+ * Returns the number of writes.
  */
 export async function commit(writes) {
   let batch = [], bytes = 0
@@ -109,7 +141,7 @@ export async function commit(writes) {
     bytes = 0
   }
   for (const w of writes) {
-    const write = w.delete ? { delete: `${ROOT}/${w.delete}` } : { update: { name: `${ROOT}/${w.set}`, fields: encodeFields(w.data) } }
+    const write = toWrite(w)
     const size = JSON.stringify(write).length
     if (batch.length === MAX_WRITES || bytes + size > MAX_BYTES) await flush()
     batch.push(write)

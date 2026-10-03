@@ -8,11 +8,18 @@
  *   logos <dir> <logos.json>                                  sync the logo PNGs and the symbol-to-file map
  *   seed <data dir> <logos dir> <spot feed> <markets.json>    load everything from local files (first load, or a restore)
  *   verify <data dir> <logos dir> <spot feed>                 check Firestore's records match local files exactly
+ *
+ *   publish [--collected=YYYY-MM-DD] [--approve-feed] [--no-preview] [--ref=origin/main]
+ *                                                             freeze the records into a staging release, report, preview
+ *   promote [release]                                         take the staged (or named) release live
+ *   rollback                                                  return to the release live before
+ *   status                                                    the live and staged releases
  */
 import { createHash } from 'node:crypto'
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { commit, get, getMany, list, where } from './firestore.mjs'
+import { promote, publish, rollback, status } from './release.mjs'
 
 const RECORDS = ['markets', 'indexes', 'datasets', 'feeds']
 const DATASETS = ['funds', 'simulations']
@@ -143,6 +150,7 @@ async function verify(dataDir, logosDir, feedPath) {
 
 const [cmd, ...args] = process.argv.slice(2)
 const flags = new Set(args.filter((a) => a.startsWith('--')))
+const option = (name) => args.find((a) => a.startsWith(`--${name}=`))?.split('=')[1]
 const pos = args.filter((a) => !a.startsWith('--'))
 const commands = {
   load: () => load(pos[0], readJson(pos[1]), indexList(readJson(pos[2])), { force: flags.has('--force') }),
@@ -160,6 +168,10 @@ const commands = {
   logos: () => logos(pos[0], readJson(pos[1])),
   seed: () => seed(...pos.slice(0, 4)),
   verify: () => verify(...pos.slice(0, 3)),
+  publish: () => publish({ collected: option('collected'), approveFeed: flags.has('--approve-feed'), preview: !flags.has('--no-preview'), ref: option('ref') }),
+  promote: () => promote(pos[0]),
+  rollback,
+  status,
 }
 if (!commands[cmd]) {
   console.error(readFileSync(new URL(import.meta.url), 'utf8').match(/\/\*\*([\s\S]*?)\*\//)[1].replace(/^ \* ?/gm, ''))
