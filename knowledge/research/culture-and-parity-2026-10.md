@@ -1,7 +1,7 @@
 ---
 type: research
 title: Culture and workplace parity across the five reporting markets
-description: First test of whether Hofstede's six dimensions, GLOBE gender egalitarianism and women's labour force participation line up with Nivel's company medians in ten countries. Culture tracks whether women are employed, not how they are paid. Hypothesis-generating only.
+description: Whether Hofstede's six dimensions, GLOBE gender egalitarianism and women's labour force participation line up with Nivel's company medians. The first ten-country pass suggested culture tracks who is hired; with fourteen countries and deeper markets that lead mostly disappears.
 updated: 2026-10-03
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/cb163c7c-eea8-4685-b4ab-4348f1430904
@@ -50,5 +50,18 @@ Do the national culture scores used in cross-cultural research line up with how 
 - **Country scores are old:** Hofstede 2015, GLOBE about 2004.
 - **Country-level association says nothing about any one company or person.**
 
+## Rerun with deeper markets (3 October 2026)
+Same script, on the data in PR #22 (FTSE 350, ASX top 300, TOPIX 500, India at 467 of 500, the 100 largest EU members of the STOXX 600). Fourteen countries; Sweden and Poland have no company with figures yet.
+
+| Test | Ten countries (first pass) | Fourteen countries |
+|---|---|---|
+| Masculinity against women's share of staff | −0.71 (p = 0.025) | −0.02 (p = 0.96) |
+| GLOBE gender egalitarianism (practices) against share of staff, countries with 5+ companies | +0.86 (p = 0.02, n = 7) | +0.67 (p = 0.08, n = 8) |
+| Masculinity against pay per head | +0.19 | −0.54 (p = 0.046) |
+
+- **The hiring lead does not hold.** It rested on thin EU cells; adding Denmark, Ireland and Austria, each with one to three companies, removes it.
+- **Pay per head now leans on masculinity,** but at p = 0.046 across 27 tests it is no stronger than the first lead was.
+- **No story should claim culture explains the figures.** The honest line: national gaps are large and mostly about who is hired; standard culture scores do not explain them at this sample size.
+
 ## Next
-Rerun once the market expansion lands. Twenty or more countries, with nationally scoped staff figures, would turn these leads into a test.
+Read the remaining 31 STOXX 600 EU companies (mostly Swedish and German) and rerun; a test needs every country cell to hold five or more companies.
