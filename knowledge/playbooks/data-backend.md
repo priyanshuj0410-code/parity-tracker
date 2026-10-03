@@ -50,7 +50,7 @@ Every change reaches the site only through publish and promote.
 
 ## Access
 - Writes use your Google login, impersonating `nivel-pipeline` (no keys): `gcloud auth application-default login --impersonate-service-account=nivel-pipeline@nivel-equal-lens.iam.gserviceaccount.com`. Run it again if a command reports an expired login.
-- Builds read without a login: `firestore.rules` makes `channels`, `releases` and `blobs` public. Deploy the rules after changing them: `firebase deploy --only firestore:rules`.
+- Builds read without a login: `firestore.rules` makes `channels`, `releases` and `blobs` public. Deploy the rules after changing them: `firebase deploy --only firestore:rules --project nivel-equal-lens`. Always name the project: the Firebase CLI's active project for the home folder is another one (`praxis-2ffa8`), and even a `--dry-run` deploy creates a missing database there.
 - The database ID is `default`, not `(default)`.
 
 ## Storage and quotas (Spark plan, free)
