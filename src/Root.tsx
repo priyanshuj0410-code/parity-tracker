@@ -63,7 +63,7 @@ export default function Root() {
       <header className="site-header">
         <div className="wrap header-row">
           <a className="brand" href={href('')} aria-label="Nivel by The Equal Lens, home">
-            <img src={mark} alt="" width="276" height="317" />
+            <img src={mark} alt="" width="834" height="619" />
             <span className="brand-text"><span className="brand-name">Nivel</span><span className="brand-by">by The Equal Lens</span></span>
           </a>
           <nav className="nav" aria-label="Main">
@@ -85,7 +85,7 @@ export default function Root() {
       </main>
       <footer className="site-footer">
         <div className="wrap">
-          <img src={mark} alt="" width="276" height="317" />
+          <img src={mark} alt="" width="834" height="619" />
           <span>By The Equal Lens, from companies' own gender pay filings, collected {SOURCE_DATE}. Not investment advice.</span>
           <span className="footer-links"><a className="go" href={correctionHref()}>Report a correction</a><InstallLink /></span>
         </div>
