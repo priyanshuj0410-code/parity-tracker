@@ -63,6 +63,7 @@ PARITY-75 schema and loader, PARITY-76 publish and promote, PARITY-77 app reads 
 ## What still needs a merge
 - **App code:** new pages, layouts, components, measures or chart types.
 - **Pipeline code:** a new parser for a new source. Once merged, every later refresh with it publishes without one.
+- **Not yet moved (follow-up):** hand-read inputs that live in pipeline files, such as `pipeline/india/annual_reports.json` and `float_overrides.json`, `pipeline/eu/eu_values.json` and the EU headcounts, sector overrides, and the AU and UK name maps. A figure read from a report reaches the site through a release without a merge, but recording it in git still takes one ([PR #26](https://github.com/priyanshuj0410-code/parity-tracker/pull/26)). They should move to `inputs/{name}` records.
 
 ## Limits on the free plan
 - **Firestore:** 1 GiB stored, 50,000 reads a day, 20,000 writes a day, 10 GiB downloaded a month. On Spark, a quota stops the service until the next day; it never bills.
@@ -75,7 +76,7 @@ PARITY-75 schema and loader, PARITY-76 publish and promote, PARITY-77 app reads 
 3. Create the `nivel-pipeline` service account with the Cloud Datastore User role (no key), grant your own account Service Account Token Creator on it, install the Google Cloud CLI and run `gcloud auth application-default login --impersonate-service-account=nivel-pipeline@nivel-equal-lens.iam.gserviceaccount.com`. Put `FIREBASE_PROJECT=nivel-equal-lens` in `.env`.
 4. In Vercel, add a production deploy hook for `main` and put its URL in `.env` as `VERCEL_DEPLOY_HOOK`.
 
-**Done, 3 October 2026.** Checked: the login impersonates `nivel-pipeline`, a test write and delete succeeded, and `.env` holds both values. The database ID is `default`, not the usual `(default)`, and is on the free tier. Every Firestore path uses `projects/nivel-equal-lens/databases/default`, so `load.py`, the `data:` commands and `fetch-data.mjs` use `default` (overridable with `FIRESTORE_DATABASE`, now in `.env`), never `(default)`.
+**Done, 3 October 2026.** Checked: the login impersonates `nivel-pipeline`, a test write and delete succeeded, and `.env` holds both values. The database ID is `default`, not the usual `(default)`, and is on the free tier. **It must be the Standard edition.** The console first created it as Enterprise, which counts reads in 4 KB units, so each build (about 8 MB of release blobs) cost about 2,000 of the 50,000 free daily units and the quota ran out on the first day. On 3 October 2026 it was deleted and recreated as Standard (`--edition standard`), where a read is one document, then reseeded from local copies with an exact-match check. Every Firestore path uses `projects/nivel-equal-lens/databases/default`, so `load.py`, the `data:` commands and `fetch-data.mjs` use `default` (overridable with `FIRESTORE_DATABASE`, now in `.env`), never `(default)`.
 
 ## As built (3 October 2026)
 Changes from the design above, each for a reason:

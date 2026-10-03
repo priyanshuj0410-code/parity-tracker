@@ -10,9 +10,10 @@ for s_,f_ in json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file_
     shp.setdefault(s_,{}).setdefault('public',f_['public'])
 for s_,ys_ in AR.items():
     for y_,a in ys_.items():
-        cy.setdefault(s_,{})[y_]=dict(kind='reported',w=a['w'],W=a.get('W'),N=a.get('N'),F=a.get('F'),Np=a.get('Np'),Fp=a.get('Fp'),
-            f_all=a['F']/a['N'] if a.get('N') else None,f_perm=a['Fp']/a['Np'] if a.get('Np') else None,board=a.get('board'),board_f=a.get('board_f'),dq=1,
-            note='from the annual report'+('' if a.get('W') else '; payroll missing'),boundary=a.get('boundary','Standalone'),src='annual report')
+        # `estimate` says how an estimated payroll (and share) was worked out; the figure is badged as an estimate.
+        cy.setdefault(s_,{})[y_]=dict(kind='estimated' if a.get('estimate') else 'reported',w=a['w'],W=a.get('W'),N=a.get('N'),F=a.get('F'),Np=a.get('Np'),Fp=a.get('Fp'),
+            f_all=a['F']/a['N'] if a.get('N') else None,f_perm=a['Fp']/a['Np'] if a.get('Np') else None,board=a.get('board'),board_f=a.get('board_f'),dq=3 if a.get('estimate') else 1,
+            note=a.get('estimate') or 'from the annual report'+('' if a.get('W') else '; payroll missing'),boundary=a.get('boundary','Standalone'),src='annual report')
         meta.setdefault(s_,{}).setdefault('filings',{})[a['filed']]=dict(xbrl='',pdf=a['src'],submitted='')
         if a.get('confirmed',True): AR_KEYS.add((s_,y_))
 mcap={}
