@@ -118,7 +118,7 @@ function deployPreview(id, ref) {
   try {
     execFileSync('git', ['worktree', 'add', '-q', '--detach', dir, ref], { stdio: 'inherit' })
     cpSync('.vercel', join(dir, '.vercel'), { recursive: true })
-    const out = execFileSync('vercel', ['deploy', '--yes', '--build-env', `DATA_RELEASE=${id}`], { cwd: dir, encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit'] })
+    const out = execFileSync('vercel', ['deploy', '--yes', '--archive=tgz', '--build-env', `DATA_RELEASE=${id}`], { cwd: dir, encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit'] })
     return out.trim().split('\n').pop()
   } finally {
     execFileSync('git', ['worktree', 'remove', '--force', dir])

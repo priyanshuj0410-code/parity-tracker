@@ -15,6 +15,7 @@ The app was renamed from Parity Tracker to Nivel on 2 October 2026 ([decisions/0
 
 - [design.md](design.md): design system (Equal Lens minimal register, validated chart palette, voice)
 - [plane.config.md](plane.config.md): Plane workspace, project and state IDs
+- [playbooks/data-backend.md](playbooks/data-backend.md): load, publish, preview, promote and roll back data releases from Firestore, with no merge
 - [playbooks/data-pipeline.md](playbooks/data-pipeline.md): how each market's dataset is built and refreshed, plus shared sectors and logos
 - [playbooks/deploy.md](playbooks/deploy.md): shipping to production from the CLI, and the free-plan upload limit
 - [decisions/0001-comparable-parity-measures.md](decisions/0001-comparable-parity-measures.md): the shared scales (employment parity, wage parity) that make every company and index comparable

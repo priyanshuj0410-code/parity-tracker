@@ -4,6 +4,7 @@ title: India data pipeline
 description: How the India dataset (BRSR filings for every Nifty 500 company, footprints for the Nifty and BSE indexes, and the index funds and ETFs that track them) is fetched, cleaned and turned into the app's JSON, and how to refresh it.
 updated: 2026-10-03
 plane_issues:
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/04793a6e-433c-4a37-9cb0-b1494804cf0c
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/d0a4b836-049d-4e53-98d6-9bdf266cd884
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/aa1e98d8-d58d-4a3e-8d0b-eccea0459975
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/16062d26-a8a8-4072-9fa6-3be0a36b4e5e
@@ -18,7 +19,7 @@ plane_issues:
 
 # India data pipeline
 
-Scripts are in `pipeline/india/` (Python 3 standard library plus `curl`). The output is `src/data/companies.json` and `src/data/indexes.json`. Display rules are in [../design.md](../design.md).
+Scripts are in `pipeline/india/` (Python 3 standard library plus `curl`). The output is loaded into Firestore and reaches the site through a release, with no merge: see [data-backend.md](data-backend.md). Display rules are in [../design.md](../design.md).
 
 ## Refresh steps
 **On hold for NSE steps.** NSE's website terms need its written consent for scripted collection. Do not run any step that calls `nseindia.com` until consent or a licence is recorded here ([legal review](../reviews/legal-review-2026-10.md#3-nse-data-and-index-names), [PARITY-66](https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/d0a4b836-049d-4e53-98d6-9bdf266cd884)).
@@ -45,14 +46,14 @@ Run these in a scratch folder with the scripts copied in.
    - Unzip `mcap{DDMMYYYY}.csv`.
    - Update the file name in `build_data.py`.
 5. **Extract:** `python3 extract_all.py` writes `company_years.json` with one record per company-year.
-6. **Build:** `python3 build_data.py` writes `out/companies.json` and `out/indexes.json`. Copy both into `src/data/`.
+6. **Build:** `python3 build_data.py` writes `out/companies.json` and `out/indexes.json`. From the repo root, `pnpm data load IN <scratch>/out/companies.json <scratch>/out/indexes.json`.
 7. **Index funds and ETFs** (`pipeline/funds/`):
    - Download AMFI's scheme list from `https://portal.amfiindia.com/spages/NAVAll.txt`. The `www.amfiindia.com` address now redirects there.
    - `python3 parse_amfi.py NAVAll.txt amfi_schemes.json` turns it into one row per scheme plan, with category and fund house. On 2 October 2026: 14,366 plans, 3,386 schemes, 55 fund houses.
    - `python3 map_passive.py` matches each passive equity scheme to the index it tracks, by name.
      - Rules run from the specific to the general. BSE indexes, variant indexes (equal weight, momentum, quality, value and others) and debt, gold or overseas schemes are excluded.
      - Unmatched schemes are listed for review.
-   - `python3 build_funds.py passive_map.json ../src/data/indexes.json out/funds.json` writes the app's fund list.
+   - `python3 build_funds.py passive_map.json <repo>/src/data/indexes.json out/funds.json` writes the app's fund list (`src/data/` holds the live release after any `pnpm dev` or `pnpm build`). Store it with `pnpm data put datasets funds <scratch>/out/funds.json`.
      - Each fund points at its index.
      - Active funds need each fund house's monthly portfolio file (PARITY-37) and are not in this list.
 
@@ -66,7 +67,7 @@ Run these in a scratch folder with the scripts copied in.
 - **Boards:** totals outside 6–20 are discarded as filing errors.
 
 ## EU pipeline (Euro Stoxx 50): live
-Scripts and verified values are in `pipeline/eu/`. `eu_build.py` turns `eu_values.json` into the app data.
+Scripts and verified values are in `pipeline/eu/`. `eu_build.py` turns `eu_values.json` into `eu_companies.json` and `eu_indexes.json`; from the repo root, `pnpm data load EU <scratch>/eu_companies.json <scratch>/eu_indexes.json`.
 
 - **Measure:** the CSRD ESRS S1-16 unadjusted gender pay gap, from each company's own sustainability statement. It shows like Japan's, as women's average pay as a share of men's, with parity at 100%. The index is an equal-weighted average.
 - **France, Netherlands, Italy:**
@@ -99,7 +100,7 @@ Scripts are in `pipeline/jp/`.
 1. **Members:** `n225.json` is parsed from the Wikipedia Nikkei 225 components list (as of April 2026, grouped by sector).
 2. **Data:** the MHLW women's advancement database open data. `https://positive-ryouritsu.mhlw.go.jp/positivedb/opendata/download_b.html?w=99` returns a zip, despite the `.html` name, holding `99_{YYYYMMDD}_utf8_bom.csv` (all companies, about 90 MB).
    - The site rejects bare curl. Send a browser User-Agent, `Accept-Language: ja`, and the open data page as Referer.
-3. **Build:** `python3 jp_build.py`, then `python3 ../merge_markets.py`.
+3. **Build:** `python3 jp_build.py`, then from the repo root `pnpm data load JP <scratch>/jp_companies.json <scratch>/jp_indexes.json`.
 
 Japan rules:
 - **Join:** on securities code (column 9). Where a code appears more than once, keep the largest employer, then the latest update.
@@ -115,7 +116,7 @@ Scripts are in `pipeline/au/`.
 2. **Data:** download `https://www.wgea.gov.au/sites/default/files/documents/Employer-Gender-Pay-Gaps-Spreadsheet.xlsx`. WGEA replaces it each March, so archive every release locally: the Wayback Machine only holds the current one.
 3. **Load:** `python3 au_load.py` reads the employer, corporate group and group info sheets into `wgea.json`.
 4. **Match:** `python3 au_match.py` auto-matches names (first-token index, overlap score ≥ 0.75). Manual fixes are the `OVR`, `REJECT` and `FUNDS` sets in `au_build.py`.
-5. **Build:** `python3 au_build.py`, then `python3 ../merge_markets.py`.
+5. **Build:** `python3 au_build.py`, then from the repo root `pnpm data load AU <scratch>/au_companies.json <scratch>/au_indexes.json`.
 
 Australia rules:
 - **Pay share:** women's share of full-time-equivalent pay is `f(1−g) / (f(1−g) + (1−f))`, using the average total remuneration gap.
@@ -123,12 +124,12 @@ Australia rules:
 - **Index:** weighted by Australian payroll, from exact group headcount × average total remuneration (size-band midpoints for single employers).
 
 ## UK pipeline (FTSE 100)
-Scripts are in `pipeline/uk/`; `pipeline/merge_markets.py` merges all markets into `src/data/`.
+Scripts are in `pipeline/uk/`.
 
 1. **Members:** `ftse100.json` is parsed from the Wikipedia FTSE 100 constituents table (members after the 1 October 2026 changes). Refresh it after each quarterly review.
 2. **Data:** download `https://gender-pay-gap.service.gov.uk/viewing/download-data/{year}` for every year from 2017, saved as `gpg{year}.csv`. The year is the April snapshot year.
 3. **Mapping:** `uk_map.py` holds a name regex per FTSE company, with exclusions. Trusts have no staff. Prudential plc has no UK filer since the M&G demerger.
-4. **Build:** `python3 uk_build.py`, then `python3 merge_markets.py`.
+4. **Build:** `python3 uk_build.py`, then from the repo root `pnpm data load GB <scratch>/uk_companies.json <scratch>/uk_indexes.json`.
 
 UK rules:
 - **Per employer:** women's share of the workforce is the mean of the four quartile shares. Women's share of pay is `f(1−g) / (f(1−g) + (1−f))`, using the mean hourly gap `g`.
@@ -144,28 +145,30 @@ The US is limited to board seats ([plan](../plans/us-indexes.md), PARITY-6). Scr
 4. Next (US-2): download the proxies and extract board seats. This needs `SEC_USER_AGENT` set to a name and contact email, because www.sec.gov refuses undeclared clients (403).
 
 ## Shared scale for Japan and the EU (PARITY-20)
-Run after `merge_markets.py`, from the repo root: `python3 pipeline/shared_scale.py`, then `python3 pipeline/sectors.py`.
+`pnpm data publish` runs it on every release, then `sectors.py`, on the assembled data: `python3 pipeline/shared_scale.py <data dir>`.
 - `pipeline/eu/eu_workforce.py` holds ESRS S1-6 headcount by gender (women, men) per EU company and year, read by hand from the same CSRD statements as the pay gap. Percent-only disclosures (ING, Saint-Gobain, Vinci, Siemens Energy) are stored as shares. Not found: Deutsche Bank, Air Liquide, EssilorLuxottica.
 - `shared_scale.py` sets each Japanese and EU company-year's `w` to women's share of pay, S = E·W/(E·W + 1 − E), with W = 1 − `gapMean` and E = `fPerm` (Japan, regular staff) or `fAll` (EU). Without E, `w` is empty and a note explains why; the pay ratio stays in `gapMean`.
 - It then recomputes the Nikkei 225 and Euro Stoxx 50 headlines (equal-weighted mean S), `payRatio`, `workforce`, sector averages and like-for-like change. It is idempotent: it reads `gapMean`, `fPerm` and `fAll`, never `w`.
 - Results on 2 October 2026: Nikkei 225 19.1% (105 companies), Euro Stoxx 50 37.3% in 2025 (28 companies), +0.2 pp like for like on 24.
 
 ## Shared sectors
-`python3 pipeline/sectors.py` (run from the repo root after any merge) writes `src/data/sectors.json`, mapping every company to one of 11 GICS-style sectors.
+`pnpm data publish` runs `python3 pipeline/sectors.py <data dir>` on every release. It writes `sectors.json`, mapping every company to one of 11 GICS-style sectors.
 - Each exchange's own labels are matched by rule (NSE industries, UK report sectors, GICS for ASX and Euro Stoxx, Nikkei's 36 groups). The script fails if any label is unmatched.
 - Nikkei groups that mix sectors are split by company in `OVERRIDES` (for example Sony and Panasonic to Consumer Discretionary, Hitachi and FANUC to Industrials, Nintendo to Communication Services).
 - See [../decisions/0001-comparable-parity-measures.md](../decisions/0001-comparable-parity-measures.md) for how sectors and the shared scales are used.
 
 ## Spot the Stereotype feed (PARITY-52)
-The build turns the site's data into `/feeds/spot/v1.json` for the game ([contract](../plans/spot-the-stereotype-anytime-and-nivel.md#5-the-nivel-feed)). After any data refresh:
-1. `pnpm build`. If the feed's items changed, it stops and lists them as new, changed or retired.
+The build turns the site's data into `/feeds/spot/v1.json` for the game ([contract](../plans/spot-the-stereotype-anytime-and-nivel.md#5-the-nivel-feed)). Every item ever published is kept in Firestore (`feeds/spot-v1`) and frozen into each release.
+1. `pnpm data publish` stops if the feed's items would change, and lists them as new, changed or retired.
 2. Read each listed item: the answer, the question's wording and the coverage in its rule.
-3. `SPOT_FEED_WRITE=1 pnpm build` records them in `src/feeds/spot-v1.json`. Commit that file with the data.
+3. `pnpm data publish --approve-feed` records them in the release. Promoting the release adds them to `feeds/spot-v1`.
+
+The build recomputes the feed and stops if it differs from the release's, so a code change to `src/feeds/spot.ts` needs a release approved with `--approve-feed` too.
 
 An item whose reported figures fall below 90% of the payroll drops out and is kept as retired; the build warns which ones it left out.
 
 ## Logos (PARITY-14)
-Scripts are in `pipeline/logos/`. Output is `public/logos/{safe}.png` (64×64, safe = symbol with characters outside `A-Za-z0-9_-` replaced by `_`) and `src/data/logos.json` (symbol → file). The app falls back to initials when a symbol has no file.
+Scripts are in `pipeline/logos/`. They edit the pulled `public/logos/{safe}.png` (64×64, safe = symbol with characters outside `A-Za-z0-9_-` replaced by `_`) and `src/data/logos.json` (symbol → file); `pnpm data logos public/logos src/data/logos.json` then stores them in Firestore. The app falls back to initials when a symbol has no file.
 1. **Websites:** `targets.py` and `resolve.py` resolve each company's Wikipedia article to its Wikidata item and official website (P856). `india.py` fills Indian companies from the Nifty 50 and Next 50 Wikipedia tables. `jobs.txt` holds `safe, symbol, domain` per company (note the column order).
 2. **First pass:** Google's favicon service, the site's `apple-touch-icon`, then DuckDuckGo icons; placeholders are dropped by image hash.
 3. **Fill pass:** `fill.py` asks Google's faviconV2 endpoint (size 128) and icon.horse; `fill2.py` adds icons listed in each homepage's `<link rel=icon>` tags (`html_icons.py`) and keeps the largest square image. icon.horse returns grey letter placeholders for unknown sites: probe nonexistent domains to collect their hashes, and check a contact sheet by eye.

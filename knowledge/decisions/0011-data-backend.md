@@ -52,7 +52,7 @@ plane_issues:
 3. **Promote:** `pnpm data:promote <release>` points `channels/live` at the release and calls the Vercel production deploy hook. The live site rebuilds from `main` with the new data. `pnpm data:rollback` points it back.
 
 ## Build order
-PARITY-75 schema and loader, PARITY-76 publish and promote, PARITY-77 app reads releases, PARITY-78 pipelines and playbooks (parent PARITY-74). Starts after the usage reset on 4 October 2026.
+PARITY-75 schema and loader, PARITY-76 publish and promote, PARITY-77 app reads releases, PARITY-78 pipelines and playbooks (parent PARITY-74). Built on 3 October 2026; how to run it: [data-backend.md](../playbooks/data-backend.md).
 
 ## What changes in the app (one PR, after the reset)
 - **Prebuild:** `scripts/fetch-data.mjs` reads `channels/live`, or `DATA_RELEASE` for a preview, through Firestore's REST API (no key needed for public reads), and writes `src/data/*.json` and `public/logos/` before `vite build`.
@@ -76,6 +76,15 @@ PARITY-75 schema and loader, PARITY-76 publish and promote, PARITY-77 app reads 
 4. In Vercel, add a production deploy hook for `main` and put its URL in `.env` as `VERCEL_DEPLOY_HOOK`.
 
 **Done, 3 October 2026.** Checked: the login impersonates `nivel-pipeline`, a test write and delete succeeded, and `.env` holds both values. The database ID is `default`, not the usual `(default)`, and is on the free tier. Every Firestore path uses `projects/nivel-equal-lens/databases/default`, so `load.py`, the `data:` commands and `fetch-data.mjs` use `default` (overridable with `FIRESTORE_DATABASE`, now in `.env`), never `(default)`.
+
+## As built (3 October 2026)
+Changes from the design above, each for a reason:
+- **One Node client, not Python:** `pnpm data load` replaces `pipeline/backend/load.py`, and `pnpm data publish|promote|rollback|status` replace the `data:` scripts. The build's pull needs a JavaScript client anyway, so loading, publishing and pulling share one (`scripts/data/firestore.mjs`, the REST API, no SDK). Pipelines stay in Python and hand over JSON files.
+- **Records hold their JSON as a string,** with `country` beside it for queries. It round-trips byte for byte, which a typed Firestore map does not (key order, whole numbers).
+- **`datasets/{funds,simulations,logos}`** replace `funds/{id}` and `simulations/{id}`: their builders always replace the whole list. Logos are one record per PNG in `logos/{file}`.
+- **Content-addressed `blobs/{sha256}`** replace `releases/{id}/chunks/{n}`: a release lists its files' blobs, so an unchanged file costs nothing to store again. Logos are packed into 16 groups per release.
+- **No fixture:** `src/data/` holds whatever release was last pulled; `DATA_RELEASE=local` builds from it offline. The repo has no tests that would need a fixture.
+- **Checked:** the first load matched every record in the old files exactly (1,754 companies, 40 indexes, 595 logos, the feed and the datasets). A release built from it rebuilt all 8,818 page heads identically, with the same data. Rendered pages matched the live site except the Home markets table (now lists every index shown) and the order of the Method page's source lines (market order).
 
 ## Alternatives considered
 - **Supabase:** Postgres suits tabular data and the markets ledger, but a free project pauses after a week idle, and the $25 a month plan would be needed to avoid that.

@@ -1,7 +1,8 @@
 """Index funds and ETFs that track an index Nivel covers, from AMFI's scheme list.
 
 Run from the pipeline working directory after map_passive.py:
-  python3 build_funds.py passive_map.json ../src/data/indexes.json out/funds.json
+  python3 build_funds.py passive_map.json <repo>/src/data/indexes.json out/funds.json
+then from the repo root: pnpm data put datasets funds <scratch>/out/funds.json
 Each fund points at the index it tracks; its footprint is that index's, so it updates when the index does.
 """
 import json, re, sys

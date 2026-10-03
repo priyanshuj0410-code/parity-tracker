@@ -16,7 +16,7 @@ Run in the India scratch folder (the one holding `company_years.json`, `meta_all
 8. `INDIA_DIR=<repo>/pipeline/india python3 parity50.py`: the Parity 50, version 1 (decision 0007), into `parity50_result.json`. It reads the Nifty 100 and Nifty 50 lists from `INDIA_DIR`.
 9. `INDIA_DIR=<repo>/pipeline/india python3 parity50_v2.py`: the Parity 50, version 2 (decision 0008), into `parity50_v2_result.json`.
 10. `INDIA_DIR=<repo>/pipeline/india python3 parity50_backfill.py`: the backfilled history from September 2021 (decision 0009), chained to version 2, into `parity50_backfill_result.json`.
-11. `INDIA_DIR=<repo>/pipeline/india python3 export_parity50.py <repo>/src/data/simulations.json`: the data that Nivel shows as a simulation.
+11. `INDIA_DIR=<repo>/pipeline/india python3 export_parity50.py simulations.json`: the data that Nivel shows as a simulation. Store it from the repo root with `pnpm data put datasets simulations <scratch>/simulations.json`, then publish a release.
 
 Copies of the outputs are in `results/`. Returns follow renamed companies by ISIN, and value demerged shares at NSE's ex-date price discovery until they list.
 
