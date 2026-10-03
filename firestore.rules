@@ -1,0 +1,17 @@
+rules_version = '2';
+
+// Published releases are public; the records behind them are not. Only the nivel-pipeline service account
+// writes, through IAM, which these rules do not govern. See knowledge/decisions/0011-data-backend.md.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /channels/{channel} {
+      allow get: if true;
+    }
+    match /releases/{release} {
+      allow read: if true;
+    }
+    match /blobs/{blob} {
+      allow get: if true;
+    }
+  }
+}
