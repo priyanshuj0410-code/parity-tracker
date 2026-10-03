@@ -75,6 +75,8 @@ PARITY-75 schema and loader, PARITY-76 publish and promote, PARITY-77 app reads 
 3. Create the `nivel-pipeline` service account with the Cloud Datastore User role (no key), grant your own account Service Account Token Creator on it, install the Google Cloud CLI and run `gcloud auth application-default login --impersonate-service-account=nivel-pipeline@nivel-equal-lens.iam.gserviceaccount.com`. Put `FIREBASE_PROJECT=nivel-equal-lens` in `.env`.
 4. In Vercel, add a production deploy hook for `main` and put its URL in `.env` as `VERCEL_DEPLOY_HOOK`.
 
+**Done, 3 October 2026.** Checked: the login impersonates `nivel-pipeline`, a test write and delete succeeded, and `.env` holds both values. The database ID is `default`, not the usual `(default)`, and is on the free tier. Every Firestore path uses `projects/nivel-equal-lens/databases/default`, so `load.py`, the `data:` commands and `fetch-data.mjs` use `default` (overridable with `FIRESTORE_DATABASE`, now in `.env`), never `(default)`.
+
 ## Alternatives considered
 - **Supabase:** Postgres suits tabular data and the markets ledger, but a free project pauses after a week idle, and the $25 a month plan would be needed to avoid that.
 - **Firebase with Cloud Storage:** cleaner for logos and snapshots, but needs the Blaze plan.
