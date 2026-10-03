@@ -127,8 +127,11 @@ function deployPreview(id, ref) {
   }
 }
 
-async function deployProduction() {
+function needHook() {
   if (!process.env.VERCEL_DEPLOY_HOOK) throw new Error('VERCEL_DEPLOY_HOOK is not set in .env')
+}
+
+async function deployProduction() {
   const res = await fetch(process.env.VERCEL_DEPLOY_HOOK, { method: 'POST' })
   if (!res.ok) throw new Error(`Vercel deploy hook returned ${res.status}`)
   const { job } = await res.json()
@@ -215,6 +218,7 @@ export async function publish({ collected, approveFeed = false, preview = true, 
 }
 
 export async function promote(id) {
+  needHook()
   const [staging, live] = await Promise.all([get('channels/staging'), get('channels/live')])
   id ??= staging?.release
   if (!id) throw new Error('Nothing is staged. Run pnpm data publish first.')
@@ -233,6 +237,7 @@ export async function promote(id) {
 }
 
 export async function rollback() {
+  needHook()
   const live = await get('channels/live')
   const [back, ...rest] = live?.previous ?? []
   if (!back) throw new Error('No earlier release to return to')
