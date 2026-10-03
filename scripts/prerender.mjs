@@ -22,6 +22,7 @@ for (const p of pages()) {
   html = put(html, /(<meta property="og:description" content=")[^"]*(")/, description)
   html = put(html, /(<meta property="og:url" content=")[^"]*(")/, SITE + p.path)
   html = put(html, /(<link rel="canonical" href=")[^"]*(")/, SITE + p.path)
+  if (p.preload) html = html.replace('</head>', `  <link rel="preload" href="${esc(p.preload)}" as="fetch" type="application/json" crossorigin>\n  </head>`)
   const file = `dist${decodeURIComponent(p.path)}/index.html`
   mkdirSync(dirname(file), { recursive: true })
   writeFileSync(file, html)

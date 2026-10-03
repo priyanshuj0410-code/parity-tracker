@@ -1,7 +1,7 @@
 import { Eq, Frac, Step, Steps } from '../components/Formula'
 import { CORRECTIONS_EMAIL, correctionHref } from '../lib/contact'
 import { usePageTitle } from '../lib/router'
-import { MARKET, SOURCE_DATE, companies, indexes } from '../lib/data'
+import { MARKET, SOURCE_DATE, companies, indexes, useStage } from '../lib/data'
 import { inr, pct } from '../lib/format'
 
 
@@ -21,6 +21,8 @@ const EXAMPLES = EXAMPLE_OF.flatMap(([code, symbol, inputs, wNote, eNote]) => {
 })
 
 export function Method() {
+  useStage('core')
+  useStage('companies')
   usePageTitle('Method')
   const IN = MARKET.IN
   const GB = MARKET.GB

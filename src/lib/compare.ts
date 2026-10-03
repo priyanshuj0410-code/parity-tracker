@@ -1,6 +1,6 @@
 import sectorsJson from '../data/sectors.json'
 import type { Company, CompanyYear } from '../types'
-import { MARKET, companies, indexes, marketOf, payRatio, type Market } from './data'
+import { MARKET, afterLoad, companies, indexes, marketOf, payRatio, type Market } from './data'
 
 export const SECTOR = sectorsJson as Record<string, string>
 export const SECTORS = [...new Set(Object.values(SECTOR))].sort()
@@ -55,13 +55,21 @@ function build(c: Company): Point | null {
   return null
 }
 
-export const POINTS: Point[] = Object.values(companies).map(build).filter((p): p is Point => p !== null)
-const BY_SYMBOL = new Map(POINTS.map((p) => [p.c.symbol, p]))
+/** Every company's point on the shared scales, filled when the companies stage lands. */
+export const POINTS: Point[] = []
+const BY_SYMBOL = new Map<string, Point>()
+afterLoad('companies', () => {
+  for (const c of Object.values(companies)) {
+    const p = build(c)
+    if (p) { POINTS.push(p); BY_SYMBOL.set(c.symbol, p) }
+  }
+})
 export const pointOf = (symbol: string): Point | undefined => BY_SYMBOL.get(symbol)
+/** A company's point, worked out from the company alone when the full set has not landed yet. */
+export const pointFor = (c: Company): Point | undefined => BY_SYMBOL.get(c.symbol) ?? build(c) ?? undefined
 
 /** Why a company is missing from the parity map, which needs both scales, or null when it is on the map. */
-export function offMapReason(symbol: string): string | null {
-  const p = pointOf(symbol)
+export function offMapReason(p: Point | undefined): string | null {
   if (p && p.e != null && p.w != null) return null
   if (p?.wRaw != null) return 'Its wage figure is outside the plausible range.'
   if (!p || p.w == null) return 'No usable pay comparison.'

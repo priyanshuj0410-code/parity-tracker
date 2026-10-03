@@ -2,7 +2,8 @@ import { Change } from '../components/Change'
 import { DataTable } from '../components/DataTable'
 import { ParityTrack } from '../components/ParityTrack'
 import { Sparkline } from '../components/Sparkline'
-import { INDEX_ORDER, MARKET, MARKETS, companies, indexes, simulations, yoyChange, type Market, type MarketRecord, type MarketStatus } from '../lib/data'
+import { TableSkeleton } from '../components/Skeleton'
+import { INDEX_ORDER, MARKET, MARKETS, companies, indexes, simulations, useLoaded, useStage, yoyChange, type Market, type MarketRecord, type MarketStatus } from '../lib/data'
 import { pct } from '../lib/format'
 import { href, usePageTitle } from '../lib/router'
 
@@ -32,6 +33,8 @@ function pace(m: Market): PaceRow | null {
 }
 
 export function Home() {
+  useStage('core')
+  const ready = useLoaded('companies')
   usePageTitle('')
   return (
     <>
@@ -97,14 +100,14 @@ export function Home() {
 
       <section>
         <h2>The pace of change</h2>
-        <DataTable caption="The pace of change by market" bare rows={Object.values(MARKET).map(pace).filter((r): r is PaceRow => r !== null)} rowKey={(r) => r.m.code}
+        {!ready ? <TableSkeleton rows={5} label="Loading the pace of change" /> : <DataTable caption="The pace of change by market" bare rows={Object.values(MARKET).map(pace).filter((r): r is PaceRow => r !== null)} rowKey={(r) => r.m.code}
           initial={{ key: 'market', dir: 1 }} columns={[
             { key: 'market', label: 'Market', render: (r) => <strong>{r.m.name}</strong>, sort: (r) => Object.keys(MARKET).indexOf(r.m.code) },
             { key: 'median', label: 'Median change', right: true, mobile: 'value', render: (r) => <Change value={r.median} /> },
             { key: 'n', label: 'Compared like for like', right: true, render: (r) => `${r.n} companies, ${r.m.label(r.m.prev)} to ${r.m.label(r.m.latest)}` },
             { key: 'split', label: 'Rose / fell', right: true, render: (r) => `${r.up} / ${r.down}` },
             { key: 'years', label: 'Years to parity at this pace', right: true, render: (r) => (r.years == null ? 'not on track' : `about ${r.years}`) },
-          ]} />
+          ]} />}
         <p className="small muted" style={{ marginTop: 10 }}>Like for like: the same companies in both years. Years to parity: time for an index to reach 50% at the median pace.</p>
       </section>
 

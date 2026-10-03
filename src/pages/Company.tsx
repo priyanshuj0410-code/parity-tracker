@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { Suspense, type ReactNode } from 'react'
 import { DataBadge } from '../components/Badge'
 import { Change } from '../components/Change'
 import { Calculations } from '../components/Calculations'
@@ -12,14 +12,15 @@ import { ParityTrack } from '../components/ParityTrack'
 import { DataTable, type Column } from '../components/DataTable'
 import { EmptyState } from '../components/EmptyState'
 import { Tabs } from '../components/Tabs'
-import { BASIS, E_PARITY, POINTS, W_PARITY, inMarket, marketName, offMapReason, pointOf, sectorOf, standing, type Point } from '../lib/compare'
-import { SOURCE_DATE, boardShare, companies, euYear, indexName, isExcluded, marketOf, payRatio, shareChange, workforce, yoyChange } from '../lib/data'
+import { BASIS, E_PARITY, POINTS, W_PARITY, inMarket, marketName, offMapReason, pointFor, sectorOf, standing, type Point } from '../lib/compare'
+import { SOURCE_DATE, boardShare, euYear, indexName, loadCompany, useCompany, useLoaded, useStage, isExcluded, marketOf, payRatio, shareChange, workforce, yoyChange } from '../lib/data'
 import { crore, pct, pctTick } from '../lib/format'
 import { correctionHref } from '../lib/contact'
 import { href, usePageTitle } from '../lib/router'
 import { COMPANY_TABS } from '../lib/tabs'
 import type { Company as Co } from '../types'
 import { NotFound } from './NotFound'
+import { Skeleton, TableSkeleton } from '../components/Skeleton'
 
 const TABS = COMPANY_TABS
 type Tab = (typeof TABS)[number][0]
@@ -27,7 +28,7 @@ type Tab = (typeof TABS)[number][0]
 const ticker = (c: Co) => c.symbol.replace(/^(ASX|TSE|EU)-/, '')
 
 function ScaleCard({ label, value, parity, max, basis, rank, children, empty = 'n/a' }: {
-  label: string; value: number | null | undefined; parity: number; max: number; basis: string; rank: string | null; children?: ReactNode; empty?: string
+  label: string; value: number | null | undefined; parity: number; max: number; basis: string; rank: ReactNode; children?: ReactNode; empty?: string
 }) {
   return (
     <div className="card scale-card">
@@ -55,7 +56,9 @@ function Overview({ c, pt }: { c: Co; pt?: Point }) {
   const p = prevKey ? c.years[prevKey] : undefined
   const ratio = payRatio(c, y)
   const bs = boardShare(y)
-  const offMap = offMapReason(c.symbol)
+  const offMap = offMapReason(pt)
+  const ranked = useLoaded('companies')
+  const rank = (measure: 'e' | 'w' | 's') => (ranked ? standing(pt, measure) : <Skeleton line label="Ranking against other companies" />)
   return (
     <>
       <section>
@@ -65,13 +68,13 @@ function Overview({ c, pt }: { c: Co; pt?: Point }) {
         </div>
         <div className="grid g3">
           <ScaleCard label="Employment parity" value={pt?.e} parity={E_PARITY} max={1}
-            basis={b.employment ? `Women's share of ${b.employment}. Parity is 50%.` : 'No workforce split yet.'} rank={standing(pt, 'e')} />
+            basis={b.employment ? `Women's share of ${b.employment}. Parity is 50%.` : 'No workforce split yet.'} rank={rank('e')} />
           <ScaleCard label="Wage parity" value={pt?.w} parity={W_PARITY} max={1.4} empty={pt?.wRaw != null ? 'Not comparable' : 'n/a'}
             basis={pt?.wRaw != null
               ? `Derived ${pct(pt.wRaw, 0)} is outside 30–130%, so it is not ranked: wages and headcount cover different staff.`
-              : `Women's average pay as a share of men's${b.approx ? ', approximate' : ''}. Parity is 100%.`} rank={standing(pt, 'w')} />
+              : `Women's average pay as a share of men's${b.approx ? ', approximate' : ''}. Parity is 100%.`} rank={rank('w')} />
           <ScaleCard label="Women's share of pay" value={pt?.s} parity={E_PARITY} max={1}
-            basis="Implied by the two measures. Parity is 50%." rank={standing(pt, 's')} />
+            basis="Implied by the two measures. Parity is 50%." rank={rank('s')} />
         </div>
         {offMap && <EmptyState art="offMap" title="Not on the parity map">The map needs both employment and wage parity. {offMap}</EmptyState>}
         <p className="small muted" style={{ marginTop: 10 }}>
@@ -220,6 +223,7 @@ function Trend({ c }: { c: Co }) {
 }
 
 function Peers({ c }: { c: Co }) {
+  useStage('companies')
   const sector = sectorOf(c)
   let peers = POINTS.filter((p) => p.c.country === c.country && p.sector === sector)
   let scope = `${sector} companies ${inMarket(c.country)}`
@@ -290,13 +294,15 @@ function Sources({ c }: { c: Co }) {
 }
 
 export function Company({ symbol, tab }: { symbol: string; tab?: string }) {
-  const c = companies[symbol]
+  loadCompany(symbol)
+  useStage('core')
+  const c = useCompany(symbol)
   const tabLabel = tab && tab !== 'overview' ? TABS.find(([id]) => id === tab)?.[1] : undefined
   usePageTitle(!c ? 'Page not found' : tabLabel ? `${c.name} · ${tabLabel}` : c.name)
   if (!c) return <NotFound />
   const m = marketOf(c)
   const sector = sectorOf(c)
-  const pt = pointOf(c.symbol)
+  const pt = pointFor(c)
   const hasData = m.years.some((k) => c.years[k])
   const current: Tab = TABS.some(([id]) => id === tab) ? (tab as Tab) : 'overview'
   return (
@@ -318,9 +324,9 @@ export function Company({ symbol, tab }: { symbol: string; tab?: string }) {
           ? <EmptyState art="excluded" title="Figure excluded">{c.noDataReason}. Nivel uses unadjusted, company-wide figures only.</EmptyState>
           : <EmptyState art="reports" title="No gender pay report to show">{c.noDataReason ?? 'No BRSR filing yet. New listings file after their first full year.'}</EmptyState>}</section>
       ) : current === 'trend' ? <Trend c={c} />
-        : current === 'peers' ? <Peers c={c} />
+        : current === 'peers' ? <Suspense fallback={<TableSkeleton rows={8} label="Loading peers" />}><Peers c={c} /></Suspense>
           : current === 'sources' ? <><Sources c={c} /><p className="small muted correction">Checked against the filings on {SOURCE_DATE}. <a className="go" href={correctionHref(c.name)}>Report a correction</a></p></>
-            : current === 'calculations' ? <Calculations c={c} pt={pt} />
+            : current === 'calculations' ? <Suspense fallback={<TableSkeleton rows={6} label="Loading the calculation" />}><Calculations c={c} pt={pt} /></Suspense>
             : <Overview c={c} pt={pt} />}
     </>
   )

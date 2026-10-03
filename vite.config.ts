@@ -1,6 +1,8 @@
+import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import react from '@vitejs/plugin-react'
 import { defineConfig, type Plugin } from 'vite'
+import { DATA_API_FILES, buildManifest, buildSummary, companyFile } from './src/feeds/data-api.ts'
 import { SPOT_SCHEMA, buildSpot, checkSpot, mergeSpot, type SpotItem } from './src/feeds/spot.ts'
 
 const readJson = (path: string) => JSON.parse(readFileSync(new URL(path, import.meta.url), 'utf8'))
@@ -27,7 +29,25 @@ const spotFeed = (): Plugin => ({
   },
 })
 
-/** Preload the hashed data files, so they download alongside the code instead of after it. */
+/**
+ * The public data API at /data/v1/ (src/feeds/data-api.ts): the release's files, a summary, one file per index
+ * and per company, and a manifest. The app reads the per-company files too, for a company page's first paint.
+ */
+const dataApi = (): Plugin => ({
+  name: 'nivel-data-api',
+  apply: 'build',
+  generateBundle() {
+    const files: Record<string, string> = Object.fromEntries(DATA_API_FILES.map((n) => [n, readFileSync(new URL(`./src/data/${n}.json`, import.meta.url), 'utf8')]))
+    files.summary = JSON.stringify(buildSummary(JSON.parse(files.markets), JSON.parse(files.indexes)))
+    const meta = Object.fromEntries(Object.entries(files).map(([n, t]) => [n, { bytes: Buffer.byteLength(t), sha256: createHash('sha256').update(t).digest('hex') }]))
+    for (const [n, t] of Object.entries(files)) this.emitFile({ type: 'asset', fileName: `data/v1/${n}.json`, source: t })
+    for (const [id, ix] of Object.entries(JSON.parse(files.indexes))) this.emitFile({ type: 'asset', fileName: `data/v1/indexes/${id}.json`, source: JSON.stringify(ix) })
+    for (const [symbol, c] of Object.entries(JSON.parse(files.companies))) this.emitFile({ type: 'asset', fileName: `data/v1/companies/${companyFile(symbol)}.json`, source: JSON.stringify(c) })
+    this.emitFile({ type: 'asset', fileName: 'data/v1/manifest.json', source: JSON.stringify(buildManifest(readJson('./src/data/release.json'), meta), null, 2) + '\n' })
+  },
+})
+
+/** Preload the first stage's data (indexes and simulations), so it downloads alongside the code. Companies follow once the page is up. */
 const preloadData = (): Plugin => ({
   name: 'nivel-preload-data',
   apply: 'build',
@@ -35,13 +55,13 @@ const preloadData = (): Plugin => ({
     order: 'post',
     handler: (_html, ctx) =>
       Object.values(ctx.bundle ?? {})
-        .filter((f) => f.type === 'asset' && /^assets\/(companies|indexes|simulations)-[\w-]+\.json$/.test(f.fileName))
+        .filter((f) => f.type === 'asset' && /^assets\/(indexes|simulations)-[\w-]+\.json$/.test(f.fileName))
         .map((f) => ({ tag: 'link', attrs: { rel: 'preload', href: `/${f.fileName}`, as: 'fetch', type: 'application/json', crossorigin: '' }, injectTo: 'head' as const })),
   },
 })
 
 // https://vite.dev/config/
 export default defineConfig(({ isSsrBuild }) => ({
-  plugins: [react(), preloadData(), ...(isSsrBuild ? [] : [spotFeed()])],
+  plugins: [react(), preloadData(), ...(isSsrBuild ? [] : [spotFeed(), dataApi()])],
   build: { copyPublicDir: !isSsrBuild },
 }))

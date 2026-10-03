@@ -1,10 +1,13 @@
 import { BASIS, marketName, pointOf } from './lib/compare'
 import { INDEX_ORDER, companies, indexMarket, indexes, marketOf, simulations } from './lib/data'
+import release from './data/release.json'
+import { companyFile } from './feeds/data-api'
 import { pct } from './lib/format'
 import { href } from './lib/paths'
 import { COMPANY_TABS, COMPARE_TABS, INDEX_TABS } from './lib/tabs'
 
-export interface PageMeta { path: string; title: string; description: string }
+/** `preload`: a data file the page needs first, fetched alongside the code. */
+export interface PageMeta { path: string; title: string; description: string; preload?: string }
 
 const COMPARE: Record<string, string> = {
   countries: "Every market and index on two scales: women's share of staff, and women's pay as a share of men's.",
@@ -52,8 +55,9 @@ export function pages(): PageMeta[] {
     const description = facts.length
       ? `${c.name}, ${marketName(c.country)}: ${facts.join(', ')}. From the company's own filings.`
       : `${c.name}, ${marketName(c.country)}: no usable gender pay figures yet.${c.noDataReason ? ` ${c.noDataReason}` : ''}`
+    const preload = `/data/v1/companies/${companyFile(c.symbol)}.json?r=${release.id}`
     for (const [t, label] of COMPANY_TABS) {
-      out.push({ path: t === 'overview' ? href('company', c.symbol) : href('company', c.symbol, t), title: t === 'overview' ? c.name : `${c.name} · ${label}`, description })
+      out.push({ path: t === 'overview' ? href('company', c.symbol) : href('company', c.symbol, t), title: t === 'overview' ? c.name : `${c.name} · ${label}`, description, preload })
     }
   }
   return out

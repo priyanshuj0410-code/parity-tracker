@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { POINTS, inMarket, type Point } from '../lib/compare'
-import { indexName, indexes, marketOf, yoyChange } from '../lib/data'
+import { indexName, indexes, marketOf, useStage, yoyChange } from '../lib/data'
 import { crore, ordinal, pct } from '../lib/format'
 import type { Company, CompanyYear } from '../types'
 import { Eq, Frac, Step, Steps } from './Formula'
@@ -50,6 +50,7 @@ function Reported({ c, y, year }: { c: Company; y: CompanyYear; year: string }) 
 }
 
 export function Calculations({ c, pt }: { c: Company; pt?: Point }) {
+  useStage('companies')
   const m = marketOf(c)
   const desc = [...m.years].reverse()
   const year = pt?.year ?? desc.find((k) => c.years[k]) ?? m.latest
