@@ -28,11 +28,17 @@ plane_issues:
 
 | Market | Flagship | Companies with figures | Target | Source | Work |
 |---|---|---|---|---|---|
-| India | Nifty 500 | 436 of 500 | 475 | BRSR in annual reports | 64 gaps, PDF by PDF |
-| Japan | Nikkei 225 | 152 | TOPIX 500 (492) | MHLW database by securities code | Small: member list and sectors |
-| UK | FTSE 100 | 81 | FTSE 350 | Gender pay gap service, every employer of 250+ | Map FTSE 250 parents to reporting employers |
-| Australia | ASX 200 | 146 | ASX 300 | WGEA, every employer of 100+ | Match 100 more companies |
+| India | Nifty 500 | **460 of 500** (was 436) | 475 | BRSR in annual reports | 22 read from reports; 3 fixed (BE series); 15 left, see below |
+| Japan | Nikkei 225 | **TOPIX 500 live: 334 of 492 with a pay ratio** | TOPIX 500 (492) | MHLW database by securities code | Done; 154 publish only on their own sites |
+| UK | FTSE 100 | **FTSE 350 live: 190 of 350** (96 trusts with no staff) | FTSE 350 | Gender pay gap service, every employer of 250+ | Done |
+| Australia | ASX 200 | **ASX top 300 live: 202 of 300** | ASX 300 | WGEA, every employer of 100+ | Done; S&P/ASX 300 membership is not free, so ASX's directory sets the next 100 |
 | EU | Euro Stoxx 50 | 31 | STOXX 600 EU members | CSRD S1-16 and S1-6 | Read sustainability statements |
+
+## India: what is left (3 October 2026)
+- **Read from annual reports (22):** HYUNDAI, VBL, ADANIGREEN, GAIL, MFSL, UNOMINDA, BAJAJHLDNG, TITAGARH, DEVYANI, IGL, HEXT, ABB, CASTROLIND, CRISIL, HONASA, ANANDRATHI, AIIL, SYNGENE, ABBOTINDIA, HBLENGINE, CYIENT, plus FSL (left out: 53.3% against 33.6% a year earlier).
+- **Left out on purpose:** GILLETTE (49.6% after 12 to 15%, same staff mix) and FSL, both under the 15-point jump rule.
+- **Found only on NSE's archive (about 15):** INDIGO, BPCL, HINDPETRO, IEX, TEJASNET, OLAELEC, MMTC, ADANIENSOL, SCHAEFFLER, KSB, CIEINDIA, CENTRALBK, CEMPRO, ITI, MCX. Their investor pages build links in the browser, so the PDFs cannot be found on their own sites by script.
+- **Structurally empty:** three REITs (BAGMANE, BIRET, EMBASSY) and DUMMYHEG file no BRSR; most 2025-26 listings (Pine Labs, Ather and others) published no BRSR in their first annual report.
 
 ## Rules carried over
 - Shared measures and the 30% to 130% wage parity filter as in [decision 0001](../decisions/0001-comparable-parity-measures.md).

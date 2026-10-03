@@ -1,8 +1,24 @@
-import json, csv, re
+import json, csv, re, os
 cy=json.load(open('company_years.json')); meta=json.load(open('meta_all.json')); shp=json.load(open('shp.json'))
+# Figures read by hand from companies' own annual reports or BRSR PDFs on their websites, for filings missing from
+# the NSE XBRL set or unusable there (PARITY-69). NSE downloads are on hold (PARITY-66). A figure here is confirmed,
+# so the 15-point jump rule below does not drop it.
+AR=json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'annual_reports.json')))
+AR_KEYS=set()
+# Public shareholding from the annual report's shareholding pattern, where NSE's file has none.
+for s_,f_ in json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'float_overrides.json'))).items():
+    shp.setdefault(s_,{}).setdefault('public',f_['public'])
+for s_,ys_ in AR.items():
+    for y_,a in ys_.items():
+        cy.setdefault(s_,{})[y_]=dict(kind='reported',w=a['w'],W=a.get('W'),N=a.get('N'),F=a.get('F'),Np=a.get('Np'),Fp=a.get('Fp'),
+            f_all=a['F']/a['N'] if a.get('N') else None,f_perm=a['Fp']/a['Np'] if a.get('Np') else None,board=a.get('board'),board_f=a.get('board_f'),dq=1,
+            note='from the annual report'+('' if a.get('W') else '; payroll missing'),boundary=a.get('boundary','Standalone'),src='annual report')
+        meta.setdefault(s_,{}).setdefault('filings',{})[a['filed']]=dict(xbrl='',pdf=a['src'],submitted='')
+        if a.get('confirmed',True): AR_KEYS.add((s_,y_))
 mcap={}
 for r in csv.reader(open('mcap30092026.csv')):
-    if len(r)>9 and r[2].strip()=='EQ':
+    # BE is trade-for-trade settlement; those shares are still index members (HFCL, MTAR, Sterlite on 30 September 2026).
+    if len(r)>9 and r[2].strip() in ('EQ','BE'):
         try: mcap[r[1].strip()]=float(r[9])
         except: pass
 import glob, os
@@ -30,6 +46,8 @@ NOTES=[('from next year filing (prior-year column); ','Taken from the prior-year
  ('payroll estimated from medians x headcount; w estimated','Wage totals missing: payroll and women\'s share estimated from median pay and headcount'),
  ('payroll estimated from medians x headcount','Wage totals missing: payroll estimated from median pay and headcount'),
  ('w as reported; payroll missing','Women\'s share as reported; payroll total missing'),
+ ('from the annual report; payroll missing',"Read from the company's annual report; payroll total missing"),
+ ('from the annual report',"Read from the company's annual report"),
  ('no usable payroll','No usable wage data'),('no usable wage data','No usable wage data')]
 def friendly(n):
     for a,b in NOTES: n=n.replace(a,b)
@@ -69,6 +87,7 @@ import statistics
 for s_,c in companies.items():
     vals={y:v['w'] for y,v in c['years'].items() if v.get('w') is not None}
     for y,w in list(vals.items()):
+        if (s_,y) in AR_KEYS: continue
         others=[v for k,v in vals.items() if k!=y]
         if len(others)>=2 and abs(w-statistics.median(others))>0.15:
             c['years'][y].update(w=None,wKind=None,dq=4,note='Moved more than 15 points from the company\'s other years, left out until confirmed')

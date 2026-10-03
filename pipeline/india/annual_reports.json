@@ -1,0 +1,332 @@
+{
+ "HYUNDAI": {
+  "2025-26": {
+   "w": 0.0275,
+   "Np": 6262,
+   "Fp": 289,
+   "N": 16801,
+   "F": 574,
+   "boundary": "Standalone",
+   "filed": "2026",
+   "src": "https://org3.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annual-report-26.pdf",
+   "page": 110
+  }
+ },
+ "VBL": {
+  "2025-26": {
+   "w": 0.06,
+   "Np": 10654,
+   "Fp": 584,
+   "N": 29434,
+   "F": 1744,
+   "board": 10,
+   "board_f": 2,
+   "boundary": "Standalone",
+   "filed": "2026",
+   "src": "https://www.varunbeverages.com/Annual-Report-FY-2025.pdf",
+   "page": 223,
+   "period": "January to December 2025"
+  }
+ },
+ "ADANIGREEN": {
+  "2025-26": {
+   "w": 0.02,
+   "W": 830000000.0,
+   "Np": 976,
+   "Fp": 34,
+   "N": 976,
+   "F": 34,
+   "board": 10,
+   "board_f": 1,
+   "boundary": "Standalone",
+   "filed": "2026",
+   "src": "https://www.adanigreenenergy.com/-/media/project/greenenergy/investor-downloads/annual-reports/fy26.pdf",
+   "page": 156,
+   "payroll": "Salaries, wages and bonus, standalone, p207"
+  }
+ },
+ "GAIL": {
+  "2025-26": {
+   "w": 0.0667,
+   "Np": 5356,
+   "Fp": 410,
+   "N": 26021,
+   "F": 822,
+   "boundary": "Standalone",
+   "filed": "2026",
+   "src": "https://gailebank.gail.co.in/InvestorsZone/AnnualReports/Business-Responsibility-%26-Sustainability-Report-10082026.pdf",
+   "page": 39
+  }
+ },
+ "MFSL": {
+  "2025-26": {
+   "w": 0.2366,
+   "Np": 25779,
+   "Fp": 7564,
+   "N": 28159,
+   "F": 8103,
+   "board": 8,
+   "board_f": 1,
+   "boundary": "Axis Max Life Insurance (subsidiary), as in earlier years",
+   "filed": "2026",
+   "src": "https://maxfinancialservices.com/static/uploads/brasr/brsr-march-31-2026.pdf",
+   "page": 36,
+   "W": 30480000000.0,
+   "payroll": "Employees' remuneration and welfare benefits, consolidated, \u20b93,048 crore (annual-report-2026.pdf)"
+  }
+ },
+ "UNOMINDA": {
+  "2025-26": {
+   "w": 0.0754,
+   "Np": 14608,
+   "Fp": 1768,
+   "N": 23250,
+   "F": 4450,
+   "boundary": "Standalone",
+   "filed": "2026",
+   "src": "https://www.unominda.com/uploads/investor/Business%20Responsibility%20and%20Sustainability%20Report%202025-26..pdf",
+   "page": 53
+  }
+ },
+ "BAJAJHLDNG": {
+  "2025-26": {
+   "w": 0.0688,
+   "Np": 14,
+   "Fp": 3,
+   "N": 14,
+   "F": 3,
+   "board": 11,
+   "board_f": 2,
+   "boundary": "Standalone",
+   "filed": "2026",
+   "src": "https://www.bhil.in/pdf/Annual%20Report%20for%20FY2026.pdf",
+   "page": 79
+  }
+ },
+ "FSL": {
+  "2025-26": {
+   "w": 0.533,
+   "Np": 33592,
+   "Fp": 16166,
+   "N": 36205,
+   "F": 17575,
+   "boundary": "Standalone",
+   "filed": "2026",
+   "src": "https://media.firstsource.com/Landing-pages/Investor%20Relation/Financial%20Information/Annual%20Report/FSL-Annual%20Report%20for%20FY%202025-26.pdf",
+   "page": 88,
+   "confirmed": false,
+   "why": "53.3% against 33.6% a year earlier, with women about 48% of staff: left to the jump rule"
+  }
+ },
+ "TITAGARH": {
+  "2025-26": {
+   "w": 0.0553,
+   "Np": 1052,
+   "Fp": 63,
+   "N": 6847,
+   "F": 127,
+   "board": 11,
+   "board_f": 2,
+   "boundary": "Standalone",
+   "filed": "2026",
+   "src": "https://www.titagarh.in/storage/report/actual/annual_report_2025-26.pdf",
+   "page": 53
+  }
+ },
+ "DEVYANI": {
+  "2025-26": {
+   "w": 0.2259,
+   "Np": 15955,
+   "Fp": 4861,
+   "N": 15955,
+   "F": 4861,
+   "board": 10,
+   "board_f": 1,
+   "boundary": "Standalone",
+   "filed": "2026",
+   "src": "https://dil-rjcorp.com/wp-content/uploads/2026/07/annual-report-fy-2025-26.pdf",
+   "page": 116
+  }
+ },
+ "IGL": {
+  "2025-26": {
+   "w": 0.0505,
+   "Np": 709,
+   "Fp": 41,
+   "N": 11743,
+   "F": 183,
+   "board": 10,
+   "board_f": 4,
+   "boundary": "Standalone",
+   "filed": "2026",
+   "src": "https://www.iglonline.net/uploads/files/Annual%20Report%202025-26.pdf",
+   "page": 77
+  }
+ },
+ "HEXT": {
+  "2025-26": {
+   "w": 0.24,
+   "Np": 31410,
+   "Fp": 10853,
+   "N": 33844,
+   "F": 11618,
+   "board": 11,
+   "board_f": 3,
+   "boundary": "Standalone",
+   "filed": "2026",
+   "src": "https://hexaware.com/annual-report-2025.pdf",
+   "page": 115,
+   "period": "January to December 2025"
+  }
+ },
+ "ABB": {
+  "2025-26": {
+   "w": 0.0818,
+   "Np": 3859,
+   "Fp": 431,
+   "N": 5027,
+   "F": 554,
+   "boundary": "Standalone",
+   "filed": "2026",
+   "src": "https://new.abb.com/indian-subcontinent/investors/abb-india-limited-integrated-annual-report-2025",
+   "page": 187,
+   "period": "January to December 2025"
+  }
+ },
+ "CASTROLIND": {
+  "2025-26": {
+   "w": 0.169,
+   "Np": 632,
+   "Fp": 90,
+   "N": 829,
+   "F": 119,
+   "board": 8,
+   "board_f": 4,
+   "boundary": "Standalone",
+   "filed": "2026",
+   "src": "https://www.castrol.com/content/dam/castrol/country-sites-new/en_in/india/home/documents/investors/cil-annual-report-2025.pdf",
+   "page": 69,
+   "period": "January to December 2025"
+  }
+ },
+ "CRISIL": {
+  "2025-26": {
+   "w": 0.3467,
+   "board": 8,
+   "board_f": 1,
+   "boundary": "Standalone, India permanent employees",
+   "filed": "2026",
+   "src": "https://www.crisil.com/crisil-annual-report-flipbook/crisil-annual-report2025/assets/Crisil_2025_Accessibility_version.pdf",
+   "page": 147,
+   "period": "January to December 2025",
+   "staff": "in the separate Sustainability Databook, not read"
+  }
+ },
+ "HONASA": {
+  "2025-26": {
+   "w": 0.2809,
+   "Np": 936,
+   "Fp": 278,
+   "N": 3453,
+   "F": 1827,
+   "board": 6,
+   "board_f": 2,
+   "boundary": "Standalone",
+   "filed": "2026",
+   "src": "https://honasa.in/cdn/shop/files/Annual_Report_2025-26.pdf",
+   "page": 92
+  }
+ },
+ "ANANDRATHI": {
+  "2025-26": {
+   "w": 0.2961,
+   "Np": 1256,
+   "Fp": 463,
+   "N": 1280,
+   "F": 464,
+   "boundary": "Standalone",
+   "filed": "2026",
+   "src": "https://www.anandrathiwealth.in/wealthpdf/27april2026/AnnualReport2025-26.pdf",
+   "page": 129
+  }
+ },
+ "AIIL": {
+  "2025-26": {
+   "w": 0.1241,
+   "Np": 358,
+   "Fp": 46,
+   "N": 468,
+   "F": 70,
+   "board": 9,
+   "board_f": 1,
+   "boundary": "Standalone",
+   "filed": "2026",
+   "src": "https://www.authum.com/admin/uploads/Final%20Annual%20Report%202025-26.pdf",
+   "page": 146
+  }
+ },
+ "SYNGENE": {
+  "2025-26": {
+   "w": 0.199,
+   "Np": 6692,
+   "Fp": 1802,
+   "N": 8373,
+   "F": 2100,
+   "board": 10,
+   "board_f": 5,
+   "boundary": "Standalone",
+   "filed": "2026",
+   "src": "https://annualreport.syngeneintl.com/images/Business%20Responsibility%20and%20Sustainability%20Report.pdf",
+   "page": 29
+  }
+ },
+ "ABBOTINDIA": {
+  "2025-26": {
+   "w": 0.12,
+   "W": 5896800000.0,
+   "Np": 3679,
+   "Fp": 404,
+   "N": 3749,
+   "F": 439,
+   "board": 9,
+   "board_f": 3,
+   "boundary": "Standalone",
+   "filed": "2026",
+   "src": "https://www.abbott.co.in/content/dam/corp/abbott/en-ind/pdf/financials/2025-26-Annual-Report.pdf",
+   "page": 128,
+   "payroll": "Salaries, wages and bonus, \u20b9589.68 crore"
+  }
+ },
+ "HBLENGINE": {
+  "2025-26": {
+   "w": 0.0584,
+   "W": 2478100000.0,
+   "Np": 2455,
+   "Fp": 192,
+   "N": 7732,
+   "F": 1335,
+   "board": 8,
+   "board_f": 4,
+   "boundary": "Standalone",
+   "filed": "2026",
+   "src": "https://hbl.in/reports/hblannualreport2026.pdf",
+   "page": 113,
+   "payroll": "Employee benefits expense, \u20b9247.81 crore"
+  }
+ },
+ "CYIENT": {
+  "2025-26": {
+   "w": 0.1885,
+   "Np": 12038,
+   "Fp": 3156,
+   "N": 12151,
+   "F": 3159,
+   "board": 8,
+   "board_f": 1,
+   "boundary": "Standalone",
+   "filed": "2026",
+   "src": "https://www.cyient.com/hubfs/2027/Investors/Statutory-Filings/Q1/11-june/Annual%20Report%20for%20FY%202025-26.pdf",
+   "page": 114
+  }
+ }
+}
