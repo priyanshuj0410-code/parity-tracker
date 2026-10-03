@@ -37,7 +37,8 @@ plane_issues:
 | `releases/{id}` | Status (staging, live, retired), who and when, record counts, check results; subcollection `chunks/{n}` with the frozen JSON, each under 900 KB | Publish |
 | `channels/{live,staging}` | The release each channel points to | Publish and promote |
 
-- **Security rules:** public read on `releases`, `channels` and `logos` (the data is published anyway); no client writes anywhere. Pipelines write with a service account through the Admin SDK.
+- **Security rules:** public read on `releases`, `channels` and `logos` (the data is published anyway); no client writes anywhere.
+- **No keys anywhere.** The organisation blocks service account keys (`iam.managed.disableServiceAccountKeyCreation`), which is the safer default. Pipelines write as the `nivel-pipeline` service account (Cloud Datastore User only) by impersonation: a person's own Google login (Application Default Credentials) borrows its rights for each run. If publishing later runs from GitHub Actions, it uses Workload Identity Federation, also keyless.
 - **Index figures are computed at publish,** by the same Python that computes them today (`shared_scale.py`, `sectors.py`, the index builders), so the numbers cannot drift from the method.
 
 ## The flow
@@ -71,7 +72,7 @@ PARITY-75 schema and loader, PARITY-76 publish and promote, PARITY-77 app reads 
 ## Setup for the owner (no cost)
 1. Create a Firebase project for Nivel on the Spark plan.
 2. Create a Firestore database in Native mode, region `asia-south1` (Mumbai).
-3. Create a service account key with the Cloud Datastore User role, and save it outside the repo; put its path in `.env` as `FIREBASE_SERVICE_ACCOUNT`.
+3. Create the `nivel-pipeline` service account with the Cloud Datastore User role (no key), grant your own account Service Account Token Creator on it, install the Google Cloud CLI and run `gcloud auth application-default login --impersonate-service-account=nivel-pipeline@nivel-equal-lens.iam.gserviceaccount.com`. Put `FIREBASE_PROJECT=nivel-equal-lens` in `.env`.
 4. In Vercel, add a production deploy hook for `main` and put its URL in `.env` as `VERCEL_DEPLOY_HOOK`.
 
 ## Alternatives considered
