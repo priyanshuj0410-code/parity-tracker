@@ -47,3 +47,4 @@ Base URL: `https://nivel-equal-lens.vercel.app/data/v1/`. Plain static JSON, `Ac
 - v1 only grows: new files and new fields can appear; nothing is removed, renamed or redefined. Ignore fields you don't know.
 - A breaking change ships as `/data/v2/` next to v1, which keeps serving for at least six months after v2 is announced in this file.
 - Figures change whenever a release is promoted; `release` in the manifest changes with them.
+- One removal, on 3 October 2026, before any app used v1: the Parity 50's `performance` block (returns), as Nivel publishes no investment returns ([decision 0013](../decisions/0013-no-investment-returns.md)).

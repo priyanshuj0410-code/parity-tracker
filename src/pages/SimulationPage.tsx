@@ -1,7 +1,6 @@
 import { Change } from '../components/Change'
 import { ChartFrame } from '../components/ChartFrame'
 import { DataTable, type Column } from '../components/DataTable'
-import { GrowthChart } from '../components/GrowthChart'
 import { Logo } from '../components/Logo'
 import { Meter } from '../components/Meter'
 import { ParityTrack } from '../components/ParityTrack'
@@ -14,11 +13,9 @@ import { NotFound } from './NotFound'
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 const WORDS = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten']
 
-const monthLabel = (k: string) => `${MONTHS[Number(k.slice(5, 7)) - 1].slice(0, 3)} ${k.slice(0, 4)}`
 const longDate = (d: string) => `${Number(d.slice(8, 10))} ${MONTHS[Number(d.slice(5, 7)) - 1]} ${d.slice(0, 4)}`
 const nameOf = (s: string) => companies[s]?.name ?? s
 const short = (s: string) => nameOf(s).replace(/\s+(Ltd\.?|Limited)$/i, '')
-const ret = (v: number) => `${v < 0 ? '−' : ''}${Math.abs(v * 100).toFixed(1)}%`
 const points = (v: number) => Math.abs(v * 100).toFixed(1)
 const listOf = (xs: string[]) => (xs.length < 2 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`)
 const nameCell = (symbol: string, sub: string) => (
@@ -60,18 +57,6 @@ export function SimulationPage({ id }: { id: string }) {
   const m = MARKET[parent.country]
   const fy = m.label(sim.dataYear)
   const h = sim.headline
-  const p = sim.performance
-  const st = p.stats
-  const first = p.months[0]
-  const last = p.months[p.months.length - 1]
-  const five = p.five
-  const bfill = p.backfill
-  const etf = p.etfStats
-  const backfilled = (k: string) => k <= p.backfillUntil && k !== p.months[0]
-  // ₹100 sits where real-time data begins; the backfilled years grow into it.
-  const baseAt = p.months.indexOf(p.backfillUntil)
-  const indexed = (vs: number[]) => vs.map((v) => (v / vs[baseAt]) * 100)
-  const lines = { sim: indexed(p.sim), parent: indexed(p.parent), etf: indexed(p.etf) }
   const biggest = sim.left[0]
   const outSectors = sim.out.sectors
 
@@ -171,47 +156,6 @@ export function SimulationPage({ id }: { id: string }) {
       </section>
 
       <section>
-        <h2>What it would have delivered</h2>
-        <p>Indexed to ₹100 in {monthLabel(p.backfillUntil)}, when real-time data begins. Dividends reinvested. Shaded years are backfilled with figures published later.</p>
-        <ChartFrame title="Growth of ₹100" sub={`${monthLabel(first)} to ${monthLabel(last)}, ₹100 in ${monthLabel(p.backfillUntil)}`}
-          table={(
-            <DataTable caption="Growth of ₹100" bare rows={p.months} rowKey={(k) => k} initial={{ key: 'month', dir: 1 }} columns={[
-              { key: 'month', label: 'Month', render: (k) => <>{monthLabel(k)}{backfilled(k) && <span className="sub">backfilled</span>}</>, sort: (k) => k },
-              { key: 'sim', label: sim.name, right: true, mobile: 'value', render: (k) => `₹${lines.sim[p.months.indexOf(k)].toFixed(1)}`, sort: (k) => lines.sim[p.months.indexOf(k)] },
-              { key: 'parent', label: `${parent.name}, rebuilt`, right: true, render: (k) => `₹${lines.parent[p.months.indexOf(k)].toFixed(1)}`, sort: (k) => lines.parent[p.months.indexOf(k)] },
-              { key: 'etf', label: 'Index fund', right: true, render: (k) => `₹${lines.etf[p.months.indexOf(k)].toFixed(1)}`, sort: (k) => lines.etf[p.months.indexOf(k)] },
-            ]} />
-          )}>
-          <GrowthChart months={p.months} xLabel={monthLabel} base={baseAt} shade={{ until: p.backfillUntil, label: 'Backfilled' }}
-            ariaLabel={`Growth of ₹100 in the ${sim.name}, the ${parent.name} rebuilt the same way, and a ${parent.name} index fund, indexed to ₹100 in ${monthLabel(p.backfillUntil)}`}
-            series={[
-              { id: 'sim', label: sim.name, short: sim.name, color: 'var(--s1)', dashed: true, values: lines.sim },
-              { id: 'parent', label: `${parent.name}, rebuilt`, short: parent.name, color: 'var(--s2)', values: lines.parent },
-              { id: 'etf', label: 'Index fund', short: 'Index fund', color: 'var(--s3)', values: lines.etf },
-            ]} />
-        </ChartFrame>
-        <div style={{ marginTop: 16 }}>
-          <DataTable caption={`Returns of the ${sim.name}, the ${parent.name} rebuilt the same way, and a ${parent.name} index fund`} bare rows={[
-            { key: 'five', label: `Five years, ${monthLabel(first)} to ${monthLabel(last)}`, sim: ret(five.sim.cumulative), parent: ret(five.parent.cumulative), etf: ret(etf.full.cumulative) },
-            { key: 'backfill', label: `Backfilled, ${monthLabel(first)} to ${monthLabel(p.backfillUntil)}`, sim: ret(bfill.sim.cumulative), parent: ret(bfill.parent.cumulative), etf: ret(etf.backfill.cumulative) },
-            { key: 'live', label: `Not backfilled, ${monthLabel(p.backfillUntil)} to ${monthLabel(last)}`, sim: ret(st.sim.cumulative), parent: ret(st.parent.cumulative), etf: ret(etf.live.cumulative) },
-            { key: 'year', label: 'A year, over five years', sim: ret(five.sim.annualised), parent: ret(five.parent.annualised), etf: ret(etf.full.annualised) },
-            { key: 'vol', label: 'Volatility, a year', sim: pct(five.sim.volatility), parent: pct(five.parent.volatility), etf: pct(etf.full.volatility) },
-            { key: 'fall', label: 'Largest fall', sim: ret(five.sim.maxDrawdown), parent: ret(five.parent.maxDrawdown), etf: ret(etf.full.maxDrawdown) },
-            { key: 'te', label: `Tracking error against the rebuilt ${parent.name}`, sim: pct(five.trackingError), parent: 'n/a', etf: 'n/a' },
-          ]} rowKey={(r) => r.key} initial={{ key: 'label', dir: 1 }} columns={[
-            { key: 'label', label: 'Return', mobile: 'title', render: (r) => r.label },
-            { key: 'sim', label: sim.name, right: true, mobile: 'meta', render: (r) => r.sim },
-            { key: 'parent', label: `${parent.name}, rebuilt`, right: true, mobile: 'meta', render: (r) => r.parent },
-            { key: 'etf', label: 'Index fund', right: true, mobile: 'meta', render: (r) => r.etf },
-          ]} />
-        </div>
-        <p className="small" style={{ marginTop: 16 }}>
-          <strong>The backfill flatters both rebuilt lines:</strong> they use today's members. The index fund shows the real {parent.name}.
-        </p>
-      </section>
-
-      <section>
         <h2>Why the bar is not 50%</h2>
         <p><strong>At 25%, only {sim.at25} large companies qualify:</strong> too few for 50.</p>
         <p><strong>Only {sim.nearParity.count} of {sim.nearParity.of} large employers are near parity</strong> in both hiring and pay. The rest is up to companies, not portfolios.</p>
@@ -225,9 +169,9 @@ export function SimulationPage({ id }: { id: string }) {
           <li><strong>Holds:</strong> the 50 largest qualifiers by free-float market value.</li>
           <li><strong>Weights:</strong> market value times share of pay over the bar, capped at 8%. No sector limits.</li>
           <li><strong>Data:</strong> companies' own filings, reported, not estimated. Before September 2024, figures published later.</li>
-          <li><strong>Returns:</strong> dividends, splits, bonus issues and demergers included. The {parent.name} is rebuilt from the same prices with its September 2026 members.</li>
+          <li><strong>No returns:</strong> Nivel measures who is paid, not how shares perform, so it shows no returns, prices or growth for this index.</li>
           <li><strong>Near parity:</strong> women are 35% to 65% of permanent staff and earn at least 80% of men's pay per head.</li>
-          <li><strong>Rules fixed before any return was calculated.</strong> An earlier version kept the {parent.name}'s sectors, so it held companies paying women as little as 1.5%. We replaced it.</li>
+          <li><strong>Rules fixed in advance.</strong> An earlier version kept the {parent.name}'s sectors, so it held companies paying women as little as 1.5%. We replaced it.</li>
         </ul>
         <p><a className="go" href={href('method')}>Method</a></p>
       </section>
