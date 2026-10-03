@@ -32,6 +32,12 @@ plane_issues:
 
 The brand reads "Nivel" in the header next to the Nivel mark, and "Nivel by The Equal Lens" in the install manifest. Brand files (the mark in colour, black and white, the app tiles, and the Lensy illustrations) are in `Nivel/` at the repo root; the app uses copies in `src/assets/nivel-mark.svg`, `public/favicon.svg`, `public/icons/` and `public/illustrations/`.
 
+**The logo (from 3 October 2026):** the source is The Equal Lens's `Solutions/Nivel - Logo.svg` (1254 by 1254, transparent; white- and black-ground versions beside it): an N of four nodes with a dashed teal parity line. Its dark outline (`#200E2B`) blends into dark grounds while the lilac, violet and teal fills stay legible, so one transparent file serves both themes. Every use is derived from it:
+- **Header and footer mark** (`src/assets/nivel-mark.svg`): the SVG cropped to the artwork with an 8-unit margin (viewBox `209 301 834 619`), 32px tall in the header (28px on phones) and 24px in the footer.
+- **Browser icon:** `public/favicon.svg` (a square crop, viewBox `196 180 860 860`), with `public/icons/favicon-32.png` and a 16, 32 and 48px `public/favicon.ico` for browsers without SVG icons. The boot screen shows the same file.
+- **App icons:** `icon-192` and `icon-512` (transparent, the logo 86% of the width); `maskable-192` and `maskable-512` (white, 62%, inside the 80% safe circle); `apple-touch-icon` (white, 180px, 74%). The install prompt uses `icon-192`.
+- Regenerate them from the source logo rather than editing the copies.
+
 Source: The Equal Lens brand package (`equal-lens` skill, `references/brand.md` and `voice.md`). Patterns were checked against references from Lazyweb: investing.com's major-indices table with sparklines, WSJ's leaders and laggards tables, and ESG Book's score dashboard. We copied the first two and rejected the third's circular gauges.
 
 ## 1. Register
