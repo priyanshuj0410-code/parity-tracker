@@ -38,7 +38,7 @@ Prepared by the team from public sources for counsel; not a legal opinion. Ticke
 | Money or bought tokens staked | Tokens come only from sign-up, daily visits, streaks and payouts | No donation, grant, sponsorship or ad ever credits tokens |
 | Winnings worth money | No prizes of monetary value | No cash, vouchers, goods or scholarships tied to results |
 | Assets leaving the game | No transfer, gifting or cash-out | No exchange with any currency that has value, Thoth's included |
-| Revenue model | Grant-funded NGO, no ads on markets | No income rises with play |
+| Revenue model | Non-profit with no funding yet; no ads on markets | No income rises with play |
 
 ## Build rules (acceptance for PARITY-44)
 

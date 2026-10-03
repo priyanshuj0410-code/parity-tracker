@@ -121,7 +121,7 @@ On 2 October 2026 the team set the framing:
 - **The organisation:** The Equal Lens is a nonprofit, with no payer and no partner for this work.
 
 **How the winners' pattern applies now:**
-- **A payer:** this does not apply to a grant-funded NGO. Report the cost per person reached instead, as Rocket Learning did with $0.10 per child a year.
+- **A payer:** this does not apply to a non-profit without paying users. Report the cost per person reached instead, as Rocket Learning did with $0.10 per child a year.
 - **A partner:** this does not apply either. The proximity point is answered by testing the design with savers, investors and players.
 - **A measured pilot result:** still essential. It becomes ThriveLink's shape with awareness in place of dollars: one setting, a small group, and the change in awareness before and after, reported plainly.
 
