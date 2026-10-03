@@ -5,7 +5,7 @@ import { GrowthChart } from '../components/GrowthChart'
 import { Logo } from '../components/Logo'
 import { Meter } from '../components/Meter'
 import { ParityTrack } from '../components/ParityTrack'
-import { MARKET, companies, indexes, simulations } from '../lib/data'
+import { MARKET, companies, indexes, simulations, useStage } from '../lib/data'
 import { pct } from '../lib/format'
 import { href, usePageTitle } from '../lib/router'
 import type { SimHolding, SimLeft, Simulation } from '../types'
@@ -51,6 +51,8 @@ function SectorMix({ sim, parentName }: { sim: Simulation; parentName: string })
 }
 
 export function SimulationPage({ id }: { id: string }) {
+  useStage('core')
+  useStage('companies')
   const sim = simulations[id]
   usePageTitle(sim ? `${sim.name}, a simulation` : 'Page not found')
   if (!sim) return <NotFound />

@@ -6,7 +6,7 @@ import { Meter } from '../components/Meter'
 import { DataTable, type Column } from '../components/DataTable'
 import { EmptyState } from '../components/EmptyState'
 import { E_PARITY, W_PARITY, percentile, pointOf, sectorOf } from '../lib/compare'
-import { INDEX_ORDER, companies, indexes, marketOf, yoyChange } from '../lib/data'
+import { INDEX_ORDER, companies, indexes, marketOf, useStage, yoyChange } from '../lib/data'
 import { ordinal, pct } from '../lib/format'
 import { href, usePageTitle, useQueryState } from '../lib/router'
 import type { Company } from '../types'
@@ -33,6 +33,8 @@ const makeColumns = (mixed: boolean): Column<Company>[] => [
 ]
 
 export function Companies() {
+  useStage('core')
+  useStage('companies')
   const [q, setQ] = useQueryState<string>('q', '')
   const [ix, setIx] = useQueryState('index', INDEX_ORDER[0], ['all', ...INDEX_ORDER])
   usePageTitle(ix === 'all' ? 'Companies' : `Companies · ${indexes[ix].name}`)

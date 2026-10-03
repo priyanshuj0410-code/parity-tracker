@@ -663,3 +663,26 @@ body.locked { overflow: hidden; }
   .boot img { animation: boot-pulse 1.1s ease-in-out infinite alternate; }
 }
 @keyframes boot-pulse { from { opacity: .45; } }
+
+/* Skeletons (decision 0012): the content's shape in --tint, a slow sheen, shown only after 300ms. */
+.sk { display: inline-block; vertical-align: middle; height: 12px; border-radius: 6px; background: var(--tint); }
+.sk-line { width: 70%; height: 12px; }
+.sk-crumbs { display: block; width: 180px; margin-bottom: 14px; }
+.sk-title { display: block; width: min(360px, 70%); height: 30px; border-radius: 8px; margin-bottom: 22px; }
+.sk-tile { display: grid; gap: 12px; min-height: 120px; align-content: start; }
+.sk-value { width: 45%; height: 34px; border-radius: 8px; }
+.sk-table { display: grid; margin-top: 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); overflow: hidden; }
+.sk-table.compact { margin-top: 0; border: 0; background: none; }
+.sk-row { display: grid; grid-template-columns: 26px 1fr 64px; align-items: center; gap: 12px; padding: 12px; border-top: 1px solid var(--line); }
+.sk-row:first-child { border-top: 0; }
+.sk-table.compact .sk-row { padding: 8px 0; }
+.sk-logo { width: 26px; height: 26px; border-radius: 6px; }
+.sk-num { justify-self: end; width: 48px; }
+.sk-chip { width: 132px; height: 30px; border-radius: 8px; flex: none; }
+.sk, .sk-table, .sk-page { animation: sk-in .2s ease-out .3s both; }
+@keyframes sk-in { from { opacity: 0; } }
+@media (prefers-reduced-motion: no-preference) {
+  .sk { background: linear-gradient(90deg, var(--tint) 30%, var(--mist) 50%, var(--tint) 70%) 0 0 / 300% 100%; animation: sk-in .2s ease-out .3s both, sk-sheen 1.6s ease-in-out .5s infinite; }
+}
+@keyframes sk-sheen { from { background-position: 100% 0; } to { background-position: 0 0; } }
+.sk-failed { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13px; color: var(--soft); }

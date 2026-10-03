@@ -16,6 +16,8 @@ The app was renamed from Parity Tracker to Nivel on 2 October 2026 ([decisions/0
 - [design.md](design.md): design system (Equal Lens minimal register, validated chart palette, voice)
 - [plane.config.md](plane.config.md): Plane workspace, project and state IDs
 - [playbooks/data-backend.md](playbooks/data-backend.md): load, publish, preview, promote and roll back data releases from Firestore, with no merge
+- [playbooks/app-data-layers.md](playbooks/app-data-layers.md): how Nivel, Spot the Stereotype and SwipeEd keep data and app layers apart, each in its own Firebase project
+- [reference/data-api-v1.md](reference/data-api-v1.md): the public data API at /data/v1/ for Spot the Stereotype, SwipeEd and others
 - [playbooks/data-pipeline.md](playbooks/data-pipeline.md): how each market's dataset is built and refreshed, plus shared sectors and logos
 - [playbooks/deploy.md](playbooks/deploy.md): shipping to production from the CLI, and the free-plan upload limit
 - [decisions/0001-comparable-parity-measures.md](decisions/0001-comparable-parity-measures.md): the shared scales (employment parity, wage parity) that make every company and index comparable
@@ -23,6 +25,7 @@ The app was renamed from Parity Tracker to Nivel on 2 October 2026 ([decisions/0
 - [decisions/0003-path-urls-and-prerendered-pages.md](decisions/0003-path-urls-and-prerendered-pages.md): plain path URLs with one prerendered HTML file per page, so shared links preview their own page
 - [decisions/0004-data-as-separate-files.md](decisions/0004-data-as-separate-files.md): company and index data load as hashed JSON files alongside the code, not inside it
 - [decisions/0011-data-backend.md](decisions/0011-data-backend.md): data moves to a free Firebase project; releases go live by preview and promote, with no merge
+- [decisions/0012-progressive-loading.md](decisions/0012-progressive-loading.md): pages show as their own data arrives, from static files rather than live database reads
 - [decisions/0010-fund-footprint-method.md](decisions/0010-fund-footprint-method.md): fund footprints: attribution by market cap, a 60% coverage floor, comparison only with each fund's Tier 1 benchmark, and no ranking
 - [plans/us-indexes.md](plans/us-indexes.md): adding the S&P 500 and Dow as a limited-data market, measured by women's share of board seats
 - [plans/fund-footprints.md](plans/fund-footprints.md): women's share of the payroll a mutual fund or personal portfolio owns

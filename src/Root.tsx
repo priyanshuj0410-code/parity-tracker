@@ -1,8 +1,9 @@
 import mark from './assets/nivel-mark.svg'
-import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import { Suspense, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { InstallLink, InstallPrompt } from './components/InstallPrompt'
 import { MarketStrip } from './components/MarketStrip'
+import { PageSkeleton, StripSkeleton } from './components/Skeleton'
 import { SiteSearch } from './components/SiteSearch'
 import { TabBar } from './components/TabBar'
 import { ThemeToggle } from './components/ThemeToggle'
@@ -78,9 +79,9 @@ export default function Root() {
         </div>
       </header>
       {!online && <p className="offline-bar" role="status">Offline. Showing data collected {SOURCE_DATE}.</p>}
-      <MarketStrip current={route[0] === 'index' ? route[1] : undefined} />
+      <ErrorBoundary quiet={null}><Suspense fallback={<StripSkeleton />}><MarketStrip current={route[0] === 'index' ? route[1] : undefined} /></Suspense></ErrorBoundary>
       <main id="content" tabIndex={-1} className="wrap">
-        <ErrorBoundary key={where}><Page route={route} /></ErrorBoundary>
+        <ErrorBoundary key={where}><Suspense fallback={<PageSkeleton />}><Page route={route} /></Suspense></ErrorBoundary>
       </main>
       <footer className="site-footer">
         <div className="wrap">

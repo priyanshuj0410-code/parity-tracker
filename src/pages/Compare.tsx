@@ -9,8 +9,8 @@ import { Segmented } from '../components/Segmented'
 import { DataTable, type Column } from '../components/DataTable'
 import { EmptyState } from '../components/EmptyState'
 import { Tabs } from '../components/Tabs'
-import { BASIS, COMPARE_MARKETS, E_PARITY, MEASURE, POINTS, SECTORS, W_PARITY, indexPoints, marketName, marketPoints, offMapReason, summarise, type Measure, type Point, type Summary } from '../lib/compare'
-import { INDEX_ORDER, MARKET, companies, indexMarket, indexes } from '../lib/data'
+import { BASIS, COMPARE_MARKETS, E_PARITY, MEASURE, POINTS, SECTORS, W_PARITY, indexPoints, marketName, marketPoints, offMapReason, pointOf, summarise, type Measure, type Point, type Summary } from '../lib/compare'
+import { INDEX_ORDER, MARKET, companies, indexes, indexMarket, useStage } from '../lib/data'
 import { pct } from '../lib/format'
 import { href, usePageTitle, useQueryState } from '../lib/router'
 import { COMPARE_TABS } from '../lib/tabs'
@@ -189,7 +189,7 @@ function MapTab({ focus }: { focus?: string }) {
     { key: 'w', label: 'Wage parity', phone: (p) => p.w == null ? 'n/a' : `${p.c.country === 'IN' ? '≈' : ''}${pct(p.w)}`, render: (p) => <Meter value={p.w} parity={W_PARITY} max={MAX.w} approx={p.c.country === 'IN'} />, sort: (p) => p.w },
     { key: 's', label: 'Share of pay', mobile: 'value', phone: (p) => pct(p.s), render: (p) => <Meter value={p.s} parity={E_PARITY} />, sort: (p) => p.s },
   ]
-  const missing = focus && companies[focus] ? offMapReason(focus) : null
+  const missing = focus && companies[focus] ? offMapReason(pointOf(focus)) : null
   return (
     <>
       {missing && (
@@ -232,6 +232,8 @@ function MapTab({ focus }: { focus?: string }) {
 }
 
 export function Compare({ tab, focus }: { tab?: string; focus?: string }) {
+  useStage('core')
+  useStage('companies')
   const current = TABS.some((t) => t.id === tab) ? (tab as string) : 'countries'
   usePageTitle(`Compare · ${TABS.find((t) => t.id === current)?.label}`)
   return (

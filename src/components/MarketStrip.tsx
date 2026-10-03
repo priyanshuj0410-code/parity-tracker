@@ -1,8 +1,9 @@
-import { INDEX_ORDER, indexMarket, indexes } from '../lib/data'
+import { INDEX_ORDER, indexMarket, indexes, useStage } from '../lib/data'
 import { pct } from '../lib/format'
 import { href } from '../lib/router'
 
 export function MarketStrip({ current }: { current?: string }) {
+  useStage('core')
   return (
     <nav className="strip" aria-label="Indexes">
       <div className="wrap strip-row">

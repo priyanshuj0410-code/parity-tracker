@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { INDEX_ORDER, companies, indexes, marketOf } from '../lib/data'
+import { INDEX_ORDER, companies, indexes, load, marketOf, useLoaded } from '../lib/data'
 import { href, navigate } from '../lib/router'
 import { PHONE, useMedia } from '../lib/useMedia'
 import { EmptyState } from './EmptyState'
@@ -9,9 +9,10 @@ import { Monogram } from './Monogram'
 
 interface Hit { key: string; title: string; sub: string; to: string; seed: string; index: boolean }
 
-const ALL: Hit[] = [
-  ...INDEX_ORDER.map((id) => ({ key: 'i-' + id, title: indexes[id].name, sub: `Index · ${indexes[id].market}`, to: href('index', id), seed: id, index: true })),
-  ...Object.values(companies).map((c) => ({
+/** Whatever has loaded so far: indexes first, then companies. */
+const everything = (withIndexes: boolean, withCompanies: boolean): Hit[] => [
+  ...(withIndexes ? INDEX_ORDER : []).map((id) => ({ key: 'i-' + id, title: indexes[id].name, sub: `Index · ${indexes[id].market}`, to: href('index', id), seed: id, index: true })),
+  ...(withCompanies ? Object.values(companies) : []).map((c) => ({
     key: c.symbol, title: c.name, sub: `${c.symbol.replace(/^(ASX|TSE|EU)-/, '')} · ${marketOf(c).name}`, to: href('company', c.symbol), seed: c.symbol, index: false,
   })),
 ]
@@ -25,14 +26,18 @@ export function SiteSearch() {
   const [sheet, setSheet] = useState(false)
   const [active, setActive] = useState(0)
   const input = useRef<HTMLInputElement>(null)
+  const core = useLoaded('core', false)
+  const ready = useLoaded('companies', false)
+  const warm = () => { load('companies').catch(() => {}) }
 
   const hits = useMemo(() => {
     const n = q.trim().toLowerCase()
     if (!n) return []
+    const ALL = everything(core, ready)
     const starts = ALL.filter((h) => h.title.toLowerCase().startsWith(n) || h.sub.toLowerCase().startsWith(n))
     const rest = ALL.filter((h) => !starts.includes(h) && (h.title.toLowerCase().includes(n) || h.sub.toLowerCase().includes(n)))
     return [...starts, ...rest].slice(0, phone ? 20 : 8)
-  }, [q, phone])
+  }, [q, phone, core, ready])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -49,6 +54,7 @@ export function SiteSearch() {
 
   useEffect(() => {
     if (!sheet) return
+    warm()
     input.current?.focus()
     document.body.classList.add('locked')
     return () => document.body.classList.remove('locked')
@@ -63,7 +69,7 @@ export function SiteSearch() {
       role="combobox" aria-autocomplete="list" aria-expanded={(open || sheet) && hits.length > 0}
       aria-controls="search-results" aria-activedescendant={hits[active] ? `sr-${hits[active].key}` : undefined}
       onChange={(e) => { setQ(e.target.value); setActive(0); setOpen(true) }}
-      onFocus={() => setOpen(true)}
+      onFocus={() => { setOpen(true); warm() }}
       onBlur={() => { if (!sheet) setTimeout(() => setOpen(false), 120) }}
       onKeyDown={(e) => {
         if (e.key === 'ArrowDown') { e.preventDefault(); setActive((a) => Math.min(a + 1, hits.length - 1)) }
@@ -95,9 +101,10 @@ export function SiteSearch() {
               <div className="search-field">{ICON}{field}</div>
               <button type="button" className="sheet-cancel" onClick={close}>Cancel</button>
             </div>
-            {results || (q.trim()
-              ? <div role="status"><EmptyState art="results" compact title={`No companies or indexes match “${q.trim()}”`}>Try a ticker, such as TCS, or an index name.</EmptyState></div>
-              : <p className="sheet-hint">Type a company, ticker or index</p>)}
+            {results}
+            {q.trim() && !ready && <p className="sheet-hint" role="status">Loading companies…</p>}
+            {!results && (!q.trim() ? <p className="sheet-hint">Type a company, ticker or index</p> : ready
+              && <div role="status"><EmptyState art="results" compact title={`No companies or indexes match “${q.trim()}”`}>Try a ticker, such as TCS, or an index name.</EmptyState></div>)}
           </div>,
           document.body,
         )}
@@ -110,7 +117,8 @@ export function SiteSearch() {
       {field}
       <kbd className="search-kbd" aria-hidden="true">⌘K</kbd>
       {results}
-      {open && q.trim() && hits.length === 0 && <p className="search-empty" role="status">No companies or indexes match “{q.trim()}”. Try a ticker, such as TCS.</p>}
+      {open && q.trim() && !ready && <p className="search-empty" role="status">Loading companies…</p>}
+      {open && q.trim() && ready && hits.length === 0 && <p className="search-empty" role="status">No companies or indexes match “{q.trim()}”. Try a ticker, such as TCS.</p>}
     </div>
   )
 }

@@ -2,8 +2,9 @@
 type: design-system
 title: Nivel design system
 description: Visual and writing rules for Nivel (formerly Parity Tracker), derived from The Equal Lens brand package (minimal register) plus a validated chart palette.
-updated: 2026-10-02
+updated: 2026-10-03
 plane_issues:
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/39903f09-b70b-48dd-88c7-a10bce33c7c6
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/ccb18646-56ef-40e7-8091-87a1a83f7f23
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/f8e47e59-45e2-4e07-a743-4773f2b04774
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/eb5a5943-61a5-4130-991f-afea4703a3b8
@@ -111,7 +112,12 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
 - **Footer:** the Nivel mark, one line ("Built with The Equal Lens from companies' own legally required gender pay disclosures, collected 1 October 2026. Not investment advice."), then Report a correction and Install the app. The trademark note lives on Method.
 - **Corrections:** "Report a correction" opens an email to priyanshu.jain@theequallens.com, from the footer, the Method page's Corrections section and every company's Sources tab. The subject names the company.
 - **Page change:** a 180ms opacity fade on the new page's content, off under reduced motion.
-- **Loading (PARITY-28):** until the code and data arrive, the page shows the Nivel mark (48px, a slow pulse that is off under reduced motion) over "Loading Nivel" in `--soft`. If loading fails, the same spot says "Nivel could not load" with a reload link. See [decisions/0004](decisions/0004-data-as-separate-files.md).
+- **Loading (PARITY-28):** until the code runs, the page shows the Nivel mark (48px, a slow pulse that is off under reduced motion) over "Loading Nivel" in `--soft`. If the code fails to load, the same spot says "Nivel could not load" with a reload link. See [decisions/0004](decisions/0004-data-as-separate-files.md).
+- **Progressive loading (PARITY-79):** after the code, each page shows as soon as its own data is in; parts that need more data hold skeletons until it lands. See [decisions/0012](decisions/0012-progressive-loading.md).
+  - **Skeletons:** the content's own shape in `--tint` (12px bars with 6px radius, 26px logo squares, 30px strip chips, table rows on a white card with hairline dividers), with a slow `--tint` to `--mist` sheen that is off under reduced motion. They fade in only after 300ms, so a fast or cached load never flashes grey. Each carries `role="status"` and a label ("Loading peers").
+  - **Shapes in use:** a whole page (crumbs, title, three tiles, a list), the index strip (six chips), table rows (pace of change, movers, an index's companies, peers), and a single line (a scale card's market ranking).
+  - **A part that failed** says "This part didn't load." (or "This part loads when you're back online.") in 13px `--soft`, with a quiet Try again button. It also retries by itself when the connection comes back. The rest of the page stays usable.
+  - **Search** shows indexes at once and "Loading companies…" until companies arrive, never a false "no match".
 - **Skip link and focus:** "Skip to content" is the first focusable element (violet pill, shown on focus). After every route change the page title updates ("TCS · Calculations · Nivel"), a polite live region announces it, and focus moves to the page's h1 without scrolling.
 - **Card grids** use `auto-fill`, so a market with one index keeps a normal-width card.
 
@@ -158,7 +164,7 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
   | A measure a market cannot show (no workforce split) | No data yet |
 
   The states always sit on a card (white, hairline border, 12px radius). Only the compact variant drops the card, and only where a container already frames it: inside a chart frame or the full-screen search sheet. Landscape art (wider than 1.4:1) is 320px wide, or 240px when compact. The desktop search dropdown stays text-only, as it is too small for art. The four unused illustrations (No benchmark selected, No insights yet, No organizations yet, No team members yet) wait for features that need them.
-- **Error states:** a page that throws shows "Something went wrong" (or "You're offline" when the device is offline) with its illustration, says the figures are not affected, and offers Reload and Go to indexes. The error boundary is keyed by route, so the next page renders normally.
+- **Error states:** a page that throws, usually because its data did not arrive after three tries, shows "Something went wrong" (or "You're offline" when the device is offline) with its illustration, says the figures are not affected, and offers Try again (retries in place, no reload) and Go to indexes. Offline, it says the page loads by itself when the connection returns, and it does. The error boundary is keyed by route, so the next page renders normally. The index strip has its own boundary and disappears rather than taking the page down.
 - **Chart frame:** every chart sits in a card with a title, a one-line subtitle and a Chart / Table segmented control at the top right, so every chart has a table view one click away. Extra controls (market pills) sit beside the toggle.
 - **Chart frame on phones:** the title (15px) and a two-line subtitle sit beside the Chart / Table switch; filters (market, sector) go in their own row under the title, and a market filter becomes one dropdown instead of a row of pills (`MarketPicker`). A table view's list header names its single column instead of offering a one-option dropdown.
 - **Scale card (company overview):** label, big value, the basis in one muted line, a parity track with its own scale (0%, parity, maximum), and the market percentile in violet ("Higher than 66% of companies in the UK").

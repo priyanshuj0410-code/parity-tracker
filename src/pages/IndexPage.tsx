@@ -11,7 +11,8 @@ import { DataTable, type Column } from '../components/DataTable'
 import { EmptyState } from '../components/EmptyState'
 import { Tabs } from '../components/Tabs'
 import { indexPoints, summarise } from '../lib/compare'
-import { boardShare, companies, indexMarket, indexes, payRatio, simulationOf, workforce, yoyChange } from '../lib/data'
+import { boardShare, companies, indexMarket, indexes, payRatio, simulationOf, useLoaded, useStage, workforce, yoyChange } from '../lib/data'
+import { Skeleton, TableSkeleton } from '../components/Skeleton'
 import { inr, pct, pctTick } from '../lib/format'
 import { href, usePageTitle } from '../lib/router'
 import { INDEX_TABS } from '../lib/tabs'
@@ -21,6 +22,8 @@ import { NotFound } from './NotFound'
 interface Row { symbol: string; weight: number | null; co: Company }
 
 export function IndexPage({ id, tab }: { id: string; tab?: string }) {
+  useStage('core')
+  const ready = useLoaded('companies')
   const ix = indexes[id]
   const current = INDEX_TABS.find(([t]) => t === tab) ?? INDEX_TABS[0]
   usePageTitle(!ix ? 'Page not found' : current[0] === 'overview' ? ix.name : `${ix.name} · ${current[1]}`)
@@ -164,7 +167,7 @@ export function IndexPage({ id, tab }: { id: string; tab?: string }) {
           )}
         </div>
         <p className="small" style={{ marginTop: 14 }}>
-          <strong>Median company:</strong> {sE ? <>women are <strong>{pct(sE.median)}</strong> of staff and </> : null}earn <strong>{sW ? pct(sW.median) : 'n/a'}</strong> of men's pay.{' '}
+          <strong>Median company:</strong> {!ready ? <Skeleton line label="Loading the median company" /> : <>{sE ? <>women are <strong>{pct(sE.median)}</strong> of staff and </> : null}earn <strong>{sW ? pct(sW.median) : 'n/a'}</strong> of men's pay.</>}{' '}
           <a className="go" href={href('compare', 'countries')}>Compare markets</a>
         </p>
       </section>
@@ -224,7 +227,7 @@ export function IndexPage({ id, tab }: { id: string; tab?: string }) {
           {[{ title: 'Rose most', list: risers }, { title: 'Fell most', list: fallers }].map((g) => (
             <div className="card" key={g.title}>
               <h3>{g.title}</h3>
-              {g.list.length === 0 ? <p className="muted small">None</p> : (
+              {!ready ? <TableSkeleton rows={5} compact label={`Loading ${g.title.toLowerCase()}`} /> : g.list.length === 0 ? <p className="muted small">None</p> : (
                 <table className="movers">
                   <caption className="sr-only">{g.title}</caption>
                   <tbody>
@@ -246,6 +249,7 @@ export function IndexPage({ id, tab }: { id: string; tab?: string }) {
 
       {current[0] === 'companies' && <section>
         <h2>All {ix.name} companies</h2>
+        {!ready ? <TableSkeleton rows={10} label="Loading companies" /> : <>
         <DataTable caption={`${ix.name} constituents`} columns={columns} rows={rows} rowKey={(r) => r.symbol} initial={{ key: uk ? 'w' : 'weight', dir: -1 }} rowHref={(r) => href('company', r.symbol)}
           urlState limit={20} rank download={`${ix.id}-companies`} summary={`${rows.length} companies`} />
         <p className="small muted key-note">≈ estimated. pp: percentage points.</p>
@@ -262,6 +266,7 @@ export function IndexPage({ id, tab }: { id: string; tab?: string }) {
             {noData.length > 0 && <>No usable {fy(LATEST)} data for {noData.map((r) => r.co.name).join(', ')}.</>}
           </p>
         )}
+        </>}
       </section>}
     </>
   )

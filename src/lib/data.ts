@@ -1,31 +1,151 @@
+import { use, useSyncExternalStore } from 'react'
 import companiesUrl from '../data/companies.json?url'
 import indexesUrl from '../data/indexes.json?url'
 import simulationsUrl from '../data/simulations.json?url'
 import marketsJson from '../data/markets.json'
+import release from '../data/release.json'
+import { companyFile } from '../feeds/data-api'
 import type { Company, CompanyYear, IndexData, Simulation } from '../types'
 
 /**
- * The data ships as its own hashed files, fetched alongside the code (index.html preloads them), so it parses
- * as JSON and stays cached across code-only deploys. The build-time page writer reads the files directly.
+ * Data arrives in stages, so a page shows as soon as its own part is in (decision 0012):
+ * - `core`: indexes and simulations, about 60 KB compressed, preloaded by index.html;
+ * - `companies`: every company, about 320 KB compressed, fetched once the first page is up, or at once by a
+ *   page that needs it. A company page fetches that one company's file first.
+ * The maps below are filled in place when a stage lands, so code that runs after it sees the data.
+ * Files are hashed or carry the release id, so the service worker can serve them offline and two releases
+ * never mix. The build-time page writer loads everything up front.
  */
-async function load(): Promise<[unknown, unknown, unknown]> {
-  if (import.meta.env.SSR) {
-    return [(await import('../data/companies.json')).default, (await import('../data/indexes.json')).default, (await import('../data/simulations.json')).default]
-  }
-  const get = async (url: string) => {
-    const res = await fetch(url)
-    if (!res.ok) throw new Error(`${url} returned ${res.status}`)
-    return res.json()
-  }
-  return Promise.all([get(companiesUrl), get(indexesUrl), get(simulationsUrl)])
+export const companies: Record<string, Company> = {}
+export const indexes: Record<string, IndexData> = {}
+/** Fictional indexes, kept apart from the real ones so they never enter the index strip, search or comparisons. */
+export const simulations: Record<string, Simulation> = {}
+export const simulationOf = (parent: string): Simulation | undefined => Object.values(simulations).find((s) => s.parent === parent)
+
+export type Stage = 'core' | 'companies'
+const done = new Set<Stage>()
+const pending = new Map<Stage, Promise<void>>()
+const listeners = new Set<() => void>()
+const fills: Record<Stage, (() => void)[]> = { core: [], companies: [] }
+const landed = (stage: Stage) => {
+  done.add(stage)
+  for (const fill of fills[stage]) fill()
+  for (const cb of listeners) cb()
 }
 
-const [companiesJson, indexesJson, simulationsJson] = await load()
-export const companies = companiesJson as Record<string, Company>
-export const indexes = indexesJson as Record<string, IndexData>
-/** Fictional indexes, kept apart from the real ones so they never enter the index strip, search or comparisons. */
-export const simulations = simulationsJson as Record<string, Simulation>
-export const simulationOf = (parent: string): Simulation | undefined => Object.values(simulations).find((s) => s.parent === parent)
+/** Fill a table derived from a stage once it lands (at once if it has), before any page re-renders. */
+export function afterLoad(stage: Stage, fill: () => void) {
+  if (done.has(stage)) fill()
+  else fills[stage].push(fill)
+}
+
+/** Patchy networks drop requests: try three times, backing off, before giving up. */
+async function getJson<T>(url: string): Promise<T> {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      const res = await fetch(url)
+      if (!res.ok) throw new Error(`${url} returned ${res.status}`)
+      return await res.json()
+    } catch (err) {
+      if (attempt === 2) throw err
+      await new Promise((r) => setTimeout(r, 800 * 2 ** attempt))
+    }
+  }
+}
+
+const LOADERS: Record<Stage, () => Promise<void>> = {
+  core: async () => {
+    const [ix, sims] = await Promise.all([getJson<typeof indexes>(indexesUrl), getJson<typeof simulations>(simulationsUrl)])
+    Object.assign(indexes, ix)
+    Object.assign(simulations, sims)
+  },
+  companies: async () => {
+    Object.assign(companies, await getJson<typeof companies>(companiesUrl))
+  },
+}
+
+/** A failed stage stays failed (and its page shows the error) until Try again or the connection asks again. */
+const failed = new Set<Stage>()
+const errors = new Map<Stage, unknown>()
+const notify = () => { for (const cb of listeners) cb() }
+
+/** Start (or join) a stage. A failed stage can be asked for again. */
+export function load(stage: Stage): Promise<void> {
+  let p = pending.get(stage)
+  if (!p) {
+    if (failed.delete(stage)) notify()
+    p = LOADERS[stage]().then(() => landed(stage), (err) => {
+      pending.delete(stage)
+      failed.add(stage)
+      errors.set(stage, err)
+      notify()
+      throw err
+    })
+    pending.set(stage, p)
+  }
+  return p
+}
+
+/** Ask again for every stage that failed: from Try again, or when the connection comes back. */
+export function retryFailed() {
+  for (const symbol of failedCompanies) single.delete(symbol)
+  failedCompanies.clear()
+  for (const stage of [...failed]) load(stage).catch(() => {})
+}
+
+export const isLoaded = (stage: Stage) => done.has(stage)
+const subscribe = (cb: () => void) => { listeners.add(cb); return () => { listeners.delete(cb) } }
+
+/** True while any stage has failed and not been asked for again. */
+export const useFailed = (): boolean => useSyncExternalStore(subscribe, () => failed.size > 0, () => false)
+
+/** For a page that cannot show without a stage: suspends until it lands (the nearest Suspense shows a skeleton). */
+export function useStage(stage: Stage): void {
+  if (failed.has(stage)) throw errors.get(stage)
+  if (!done.has(stage)) use(load(stage))
+}
+
+/** For a part that can wait: true once the stage has landed. Starts it meanwhile unless `start` is false. */
+export function useLoaded(stage: Stage, start = true): boolean {
+  const ready = useSyncExternalStore(subscribe, () => done.has(stage), () => true)
+  if (!ready && start && !failed.has(stage)) load(stage).catch(() => {})
+  return ready
+}
+
+const single = new Map<string, Promise<Company | undefined>>()
+const failedCompanies = new Set<string>()
+
+/** One company, from its own small file when the full set has not landed yet. Undefined if there is no such company. */
+export function loadCompany(symbol: string): Promise<Company | undefined> {
+  let p = single.get(symbol)
+  if (!p) {
+    const whole = () => load('companies').then(() => companies[symbol])
+    p = done.has('companies') || import.meta.env.DEV ? whole()
+      : fetch(`/data/v1/companies/${companyFile(symbol)}.json?r=${release.id}`)
+        .then((res) => (res.status === 404 ? undefined : res.ok ? res.json() : whole()), whole)
+    p.catch(() => failedCompanies.add(symbol))
+    single.set(symbol, p)
+  }
+  return p
+}
+
+/** The company for a page: at once when the full set is in, else suspends on its own file. */
+export function useCompany(symbol: string): Company | undefined {
+  return done.has('companies') ? companies[symbol] : use(loadCompany(symbol))
+}
+
+if (import.meta.env.SSR) {
+  Object.assign(companies, (await import('../data/companies.json')).default)
+  Object.assign(indexes, (await import('../data/indexes.json')).default)
+  Object.assign(simulations, (await import('../data/simulations.json')).default)
+  done.add('core').add('companies')
+} else {
+  window.addEventListener('online', retryFailed)
+  load('core')
+    .then(() => new Promise((r) => ('requestIdleCallback' in window ? requestIdleCallback(r, { timeout: 2000 }) : setTimeout(r, 1000))))
+    .then(() => load('companies'))
+    .catch(() => {})
+}
 
 export { SOURCE_DATE } from './source'
 

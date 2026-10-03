@@ -1,4 +1,4 @@
-const CACHE = 'nivel-v3'
+const CACHE = 'nivel-v4'
 const SHELL = ['/', '/manifest.webmanifest', '/favicon.svg', '/icons/icon-192.png']
 
 async function precache() {
