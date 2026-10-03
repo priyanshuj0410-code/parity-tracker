@@ -43,3 +43,8 @@ out/
 *.log
 .DS_Store
 .vercel
+
+# data: pulled from the live (or DATA_RELEASE) release before each build, see knowledge/playbooks/data-backend.md
+src/data/
+src/feeds/spot-v1.json
+public/logos/

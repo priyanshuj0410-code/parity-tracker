@@ -1,6 +1,7 @@
 import companiesUrl from '../data/companies.json?url'
 import indexesUrl from '../data/indexes.json?url'
 import simulationsUrl from '../data/simulations.json?url'
+import marketsJson from '../data/markets.json'
 import type { Company, CompanyYear, IndexData, Simulation } from '../types'
 
 /**
@@ -26,87 +27,61 @@ export const indexes = indexesJson as Record<string, IndexData>
 export const simulations = simulationsJson as Record<string, Simulation>
 export const simulationOf = (parent: string): Simulation | undefined => Object.values(simulations).find((s) => s.parent === parent)
 
-export const INDEX_ORDER = ['nifty50', 'sensex', 'niftynext50', 'nifty500', 'niftymidcap150', 'niftysmallcap250', 'ftse100', 'ftse350', 'asx200', 'asxtop300', 'nikkei225', 'topix500', 'eurostoxx50', 'stoxx600eu100']
 export { SOURCE_DATE } from './source'
 
-export interface Market {
+export type MarketStatus = 'live' | 'planned' | 'limited'
+
+/** A market as stored in Firestore (`markets/{code}`): every setting that changes with the data, not the method. */
+export interface MarketRecord {
   code: string
   name: string
+  order: number
+  status: MarketStatus
+  /** The Home page's coverage table; `indexes` only for markets without live indexes. */
+  reporting: { source: string; required: string; indexes?: string }
+}
+
+interface LiveMarketRecord extends MarketRecord {
   years: string[]
   latest: string
   prev: string
-  label: (year: string) => string
+  yearStyle: 'fy' | 'plain'
   wageLabel: string
   workforceLabel: string
   headlineLabel: string
   intro: string
-  payPhrase: (ratio: number) => string
-  coverage: (n: number) => string
+  /** Templates: {n} is pence (or cents, yen…) per 100, or a company count. */
+  payPhrase: string
+  coverageText: string
   parity: number
+  /** The index the Home page paces the market by, and the indexes shown, in order. */
+  flagship: string
+  indexes: string[]
+  short: string
+  basis: { employment: string | null; wage: string; approx?: boolean }
+  /** Method page lines; {firstYear} and {latestYear} take the market's year labels. */
+  sources: { label: string; text: string }[]
 }
 
-export const MARKET: Record<string, Market> = {
-  IN: {
-    code: 'IN', name: 'India',
-    years: ['2021-22', '2022-23', '2023-24', '2024-25', '2025-26'], latest: '2025-26', prev: '2024-25',
-    label: (y) => 'FY' + y.slice(-2),
-    wageLabel: "Women's share of pay",
-    workforceLabel: 'Employment parity (permanent staff)',
-    headlineLabel: "Women's share of pay (payroll you own)",
-    intro: 'From company BRSR filings. Each company counts by its payroll.',
-    payPhrase: (r) => `₹${Math.round(r * 100)} for every ₹100 paid to men`,
-    coverage: (n) => `${n} companies covered`,
-    parity: 0.5,
-  },
-  GB: {
-    code: 'GB', name: 'United Kingdom',
-    years: ['2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'], latest: '2025', prev: '2024',
-    label: (y) => y,
-    wageLabel: "Women's share of pay (hourly, UK staff)",
-    workforceLabel: 'Employment parity (UK staff)',
-    headlineLabel: "Women's share of pay (average company, UK staff)",
-    intro: 'From UK gender pay gap reports: hourly pay, UK staff. Each company counts equally.',
-    payPhrase: (r) => `${Math.round(r * 100)}p for every £1 men earn per hour`,
-    coverage: (n) => `${n} companies with UK gender pay gap reports`,
-    parity: 0.5,
-  },
-  AU: {
-    code: 'AU', name: 'Australia',
-    years: ['2023-24', '2024-25'], latest: '2024-25', prev: '2023-24',
-    label: (y) => 'FY' + y.slice(-2),
-    wageLabel: "Women's share of pay (full-time equivalent, Australian staff)",
-    workforceLabel: 'Employment parity (Australian staff)',
-    headlineLabel: "Women's share of pay (payroll you own, Australian staff)",
-    intro: 'From WGEA reports: full-time-equivalent pay, Australian staff. Each company counts by its Australian payroll.',
-    payPhrase: (r) => `${Math.round(r * 100)}c for every $1 men earn (full-time equivalent)`,
-    coverage: (n) => `${n} companies with WGEA reports`,
-    parity: 0.5,
-  },
-  JP: {
-    code: 'JP', name: 'Japan',
-    years: ['latest'], latest: 'latest', prev: '',
-    label: () => 'latest',
-    wageLabel: "Women's share of pay",
-    workforceLabel: 'Employment parity (regular staff)',
-    headlineLabel: "Women's share of pay (average company)",
-    intro: 'From each employer\'s pay ratio and share of women in regular staff. Each company counts equally. One snapshot so far, mostly FY25.',
-    payPhrase: (r) => `¥${Math.round(r * 100)} for every ¥100 men earn`,
-    coverage: (n) => `${n} companies with a pay ratio and a workforce split`,
-    parity: 0.5,
-  },
-  EU: {
-    code: 'EU', name: 'European Union',
-    years: ['2024', '2025'], latest: '2025', prev: '2024',
-    label: (y) => y,
-    wageLabel: "Women's share of pay",
-    workforceLabel: 'Employment parity (employees)',
-    headlineLabel: "Women's share of pay (average company)",
-    intro: 'From each company\'s CSRD pay gap and headcount by gender. Each company counts equally.',
-    payPhrase: (r) => `€${Math.round(r * 100)} for every €100 men earn`,
-    coverage: (n) => `${n} companies with a pay gap and a workforce split`,
-    parity: 0.5,
-  },
+export interface Market extends Omit<LiveMarketRecord, 'payPhrase'> {
+  label: (year: string) => string
+  payPhrase: (ratio: number) => string
+  coverage: (n: number) => string
 }
+
+/** Every market, live or not, in display order. */
+export const MARKETS = Object.values(marketsJson) as MarketRecord[]
+
+export const MARKET: Record<string, Market> = Object.fromEntries(
+  (MARKETS.filter((m) => m.status === 'live') as LiveMarketRecord[]).map((m) => [m.code, {
+    ...m,
+    label: m.yearStyle === 'fy' ? (y: string) => 'FY' + y.slice(-2) : (y: string) => y,
+    payPhrase: (r: number) => m.payPhrase.replace('{n}', String(Math.round(r * 100))),
+    coverage: (n: number) => m.coverageText.replace('{n}', String(n)),
+  }]),
+)
+
+export const INDEX_ORDER = Object.values(MARKET).flatMap((m) => m.indexes)
 
 export const euYear = (c: Company): string => (c.years[MARKET.EU.latest] ? MARKET.EU.latest : MARKET.EU.prev)
 export const marketOf = (c: Company): Market => MARKET[c.country] ?? MARKET.IN
