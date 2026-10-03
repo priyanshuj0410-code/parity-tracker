@@ -450,5 +450,54 @@
    "page": 35,
    "via": "NSE archive, single file (owner decision 3 October 2026)"
   }
+ },
+ "ADANIENSOL": {
+  "2025-26": {
+   "w": 0.065,
+   "Np": 3514,
+   "Fp": 273,
+   "N": 8127,
+   "F": 359,
+   "board": 8,
+   "board_f": 2,
+   "boundary": "Consolidated",
+   "filed": "2026",
+   "src": "https://www.adanienergysolutions.com/digital-reports/energy-solution/2026/pdf/brsr-report.pdf",
+   "page": 35
+  }
+ },
+ "CENTRALBK": {
+  "2025-26": {
+   "w": 0.2778,
+   "W": 44875982429,
+   "Np": 33997,
+   "Fp": 9779,
+   "N": 34050,
+   "F": 9792,
+   "board": 9,
+   "board_f": 0,
+   "boundary": "Standalone",
+   "filed": "2026",
+   "src": "https://nsearchives.nseindia.com/corporate/BRSR_532885_09072026190422.pdf",
+   "page": 20,
+   "via": "NSE archive, single file (owner decision 3 October 2026); scanned, read by OCR",
+   "estimate": "Read from the company's annual report; payroll estimated from monthly median pay and headcount"
+  }
+ },
+ "MMTC": {
+  "2025-26": {
+   "w": 0.1949,
+   "W": 465266428,
+   "Np": 245,
+   "Fp": 49,
+   "N": 245,
+   "F": 49,
+   "boundary": "Standalone",
+   "filed": "2026",
+   "src": "https://nsearchives.nseindia.com/corporate/ajaymisra_24082026154636_BRSRSDF.pdf",
+   "page": 19,
+   "via": "NSE archive, single file (owner decision 3 October 2026)",
+   "estimate": "Wage totals filed as zero; payroll and women's share estimated from the pay table, whose median column holds each group's total pay"
+  }
  }
 }
