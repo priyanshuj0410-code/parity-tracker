@@ -9,7 +9,7 @@ Japan: E is women's share of regular staff (MHLW item 3). EU: E is women's share
 employees from ESRS S1-6 (eu/eu_workforce.py). W is 1 − gapMean in both.
 A company with no E keeps its W but has no share of pay (w = None) and drops out of the headline.
 
-Run from the repo root after merge_markets.py: python3 pipeline/shared_scale.py
+Run from the repo root on an assembled release (pnpm data publish does): python3 pipeline/shared_scale.py <data dir>
 Idempotent: it recomputes from gapMean, fPerm and fAll, never from w.
 """
 import json, sys
@@ -18,7 +18,7 @@ from statistics import mean
 sys.path.insert(0, 'pipeline/eu')
 from eu_workforce import apply as apply_eu_workforce  # noqa: E402
 
-C_PATH, I_PATH = 'src/data/companies.json', 'src/data/indexes.json'
+C_PATH, I_PATH = sys.argv[1] + '/companies.json', sys.argv[1] + '/indexes.json'
 companies = json.load(open(C_PATH))
 indexes = json.load(open(I_PATH))
 rd = lambda x: None if x is None else round(x, 4)

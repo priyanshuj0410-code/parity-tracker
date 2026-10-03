@@ -2,13 +2,15 @@ import { Change } from '../components/Change'
 import { DataTable } from '../components/DataTable'
 import { ParityTrack } from '../components/ParityTrack'
 import { Sparkline } from '../components/Sparkline'
-import { MARKETS, type MarketStatus } from '../data/markets'
-import { INDEX_ORDER, MARKET, companies, indexes, simulations, yoyChange, type Market } from '../lib/data'
+import { INDEX_ORDER, MARKET, MARKETS, companies, indexes, simulations, yoyChange, type Market, type MarketRecord, type MarketStatus } from '../lib/data'
 import { pct } from '../lib/format'
 import { href, usePageTitle } from '../lib/router'
 
 const STATUS: Record<MarketStatus, string> = { live: 'Live', planned: 'Planned', limited: 'Limited data' }
-const PACE_INDEX: Record<string, string> = { IN: 'nifty50', GB: 'ftse100', AU: 'asx200', JP: 'nikkei225', EU: 'eurostoxx50' }
+
+/** The live market's indexes as shown above; a market without them keeps its own list. */
+const marketIndexes = (m: MarketRecord): string =>
+  MARKET[m.code] ? MARKET[m.code].indexes.map((id) => indexes[id].name).join(', ') : m.reporting.indexes ?? ''
 
 interface PaceRow { m: Market; n: number; up: number; down: number; median: number; years: number | null }
 
@@ -20,7 +22,7 @@ function pace(m: Market): PaceRow | null {
     .sort((a, b) => a - b)
   if (!changes.length) return null
   const median = changes[Math.floor(changes.length / 2)]
-  const level = indexes[PACE_INDEX[m.code]].years[m.latest].headline
+  const level = indexes[m.flagship].years[m.latest].headline
   return {
     m, n: changes.length, median,
     up: changes.filter((v) => v >= 0.0005).length,
@@ -109,12 +111,12 @@ export function Home() {
       <section>
         <h2>Markets</h2>
         <p className="small">Only where the law requires disclosure.</p>
-        <DataTable caption="Market coverage" bare rows={MARKETS} rowKey={(m) => m.market} initial={{ key: 'market', dir: 1 }} columns={[
-          { key: 'market', label: 'Market', render: (m) => <strong>{m.market}</strong> },
+        <DataTable caption="Market coverage" bare rows={MARKETS} rowKey={(m) => m.code} initial={{ key: 'market', dir: 1 }} columns={[
+          { key: 'market', label: 'Market', render: (m) => <strong>{m.name}</strong> },
           { key: 'status', label: 'Status', mobile: 'value', render: (m) => <span className={`status ${m.status}`}>{STATUS[m.status]}</span> },
-          { key: 'source', label: 'Source', wide: true, render: (m) => m.source },
-          { key: 'required', label: 'What companies must disclose', wide: true, render: (m) => m.required },
-          { key: 'indexes', label: 'Indexes', wide: true, render: (m) => m.indexes },
+          { key: 'source', label: 'Source', wide: true, render: (m) => m.reporting.source },
+          { key: 'required', label: 'What companies must disclose', wide: true, render: (m) => m.reporting.required },
+          { key: 'indexes', label: 'Indexes', wide: true, render: (m) => marketIndexes(m) },
         ]} />
       </section>
 

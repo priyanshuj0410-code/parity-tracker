@@ -10,7 +10,7 @@ import { DataTable, type Column } from '../components/DataTable'
 import { EmptyState } from '../components/EmptyState'
 import { Tabs } from '../components/Tabs'
 import { BASIS, COMPARE_MARKETS, E_PARITY, MEASURE, POINTS, SECTORS, W_PARITY, indexPoints, marketName, marketPoints, offMapReason, summarise, type Measure, type Point, type Summary } from '../lib/compare'
-import { INDEX_ORDER, companies, indexMarket, indexes } from '../lib/data'
+import { INDEX_ORDER, MARKET, companies, indexMarket, indexes } from '../lib/data'
 import { pct } from '../lib/format'
 import { href, usePageTitle, useQueryState } from '../lib/router'
 import { COMPARE_TABS } from '../lib/tabs'
@@ -92,7 +92,6 @@ function Countries() {
 const SHORT_SECTOR: Record<string, string> = {
   'Communication Services': 'Communication', 'Consumer Discretionary': 'Discretionary', 'Consumer Staples': 'Staples', 'Information Technology': 'Technology',
 }
-const SHORT_MARKET: Record<string, string> = { IN: 'IN', GB: 'UK', AU: 'AU', JP: 'JP', EU: 'EU' }
 
 /** Phones: every sector against every market in one compact grid. Tap a market to sort by it. */
 function SectorGrid({ measure, cell }: { measure: Measure; cell: (code: string, sector: string) => Summary | null }) {
@@ -108,7 +107,7 @@ function SectorGrid({ measure, cell }: { measure: Measure; cell: (code: string, 
             <th scope="col">Sector</th>
             {COMPARE_MARKETS.map((code) => (
               <th key={code} scope="col" aria-sort={by === code ? 'descending' : undefined} className={by === code ? 'on' : undefined}>
-                <button type="button" onClick={() => setBy(code)} aria-label={`Sort by ${marketName(code)}`}>{SHORT_MARKET[code]}</button>
+                <button type="button" onClick={() => setBy(code)} aria-label={`Sort by ${marketName(code)}`}>{MARKET[code].short}</button>
               </th>
             ))}
           </tr>

@@ -1,6 +1,6 @@
-"""Writes the Parity 50 simulation for Nivel (src/data/simulations.json) from parity50_v2_result.json and the same point-in-time data.
+"""Writes the Parity 50 simulation for Nivel (simulations.json, stored with pnpm data put datasets simulations) from parity50_v2_result.json and the same point-in-time data.
 
-  INDIA_DIR=<repo>/pipeline/india python3 export_parity50.py <repo>/src/data/simulations.json
+  INDIA_DIR=<repo>/pipeline/india python3 export_parity50.py simulations.json
 """
 import json, math, os, sys
 

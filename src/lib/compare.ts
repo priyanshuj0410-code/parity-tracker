@@ -1,6 +1,6 @@
 import sectorsJson from '../data/sectors.json'
 import type { Company, CompanyYear } from '../types'
-import { MARKET, companies, indexes, marketOf, payRatio } from './data'
+import { MARKET, companies, indexes, marketOf, payRatio, type Market } from './data'
 
 export const SECTOR = sectorsJson as Record<string, string>
 export const SECTORS = [...new Set(Object.values(SECTOR))].sort()
@@ -11,15 +11,9 @@ export const W_PLAUSIBLE = [0.3, 1.3] as const
 export const E_PARITY = 0.5
 export const W_PARITY = 1
 
-export interface Basis { employment: string | null; wage: string; approx?: boolean }
-export const BASIS: Record<string, Basis> = {
-  IN: { employment: 'permanent staff', wage: 'annual wages, derived from wage share and staff share', approx: true },
-  GB: { employment: 'UK staff', wage: 'mean hourly pay, UK staff' },
-  AU: { employment: 'Australian staff', wage: 'mean full-time-equivalent pay, Australian staff' },
-  JP: { employment: 'regular staff', wage: 'mean annual pay, all workers' },
-  EU: { employment: 'employees (headcount)', wage: 'unadjusted mean pay, as each company defines it' },
-}
-export const COMPARE_MARKETS = ['IN', 'GB', 'AU', 'JP', 'EU']
+export type Basis = Market['basis']
+export const BASIS: Record<string, Basis> = Object.fromEntries(Object.values(MARKET).map((m) => [m.code, m.basis]))
+export const COMPARE_MARKETS = Object.keys(MARKET)
 
 export function employmentParity(c: Company, y?: CompanyYear): number | null {
   if (!y) return null

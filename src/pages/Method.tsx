@@ -110,12 +110,9 @@ export function Method() {
       <section>
         <h2>Where the data comes from</h2>
         <ul className="tight">
-          <li><strong>Company data:</strong> BRSR filings, required by SEBI from India's top 1,000 listed companies, read from NSE's XBRL files, {fy(IN.years[0])} to {fy(LATEST)}. Women's share of wages is a BRSR Core field, assured for the largest companies. Where NSE's file is missing or unusable, figures come from the company's own annual report.</li>
-          <li><strong>Market data:</strong> NSE market capitalisation on 30 September 2026 and the latest shareholding patterns.</li>
-          <li><strong>UK company data:</strong> the government's gender pay gap service, every reporting year from {GB.years[0]} to {GB.label(GB.latest)}. FTSE 100 as of 1 October 2026; FTSE 250 as of March 2026.</li>
-          <li><strong>EU company data:</strong> CSRD statements: unadjusted pay gaps (S1-16) and headcount by gender (S1-6), from filings.xbrl.org or company reports. Euro Stoxx 50 as of September 2025. STOXX 600: the 100 largest EU members (iShares holdings, 1 October 2026), read from FY2025 ESEF filings on filings.xbrl.org.</li>
-          <li><strong>Japanese company data:</strong> the labour ministry's women's advancement database (downloaded 2 October 2026), joined by securities code to Nikkei 225 members (April 2026) and TOPIX 500 members (JPX, 31 August 2026).</li>
-          <li><strong>Australian company data:</strong> WGEA employer gender pay gaps (2024-25, with 2023-24 gaps). Group results where groups report, weighted by headcount and average pay. ASX top 300: the S&P/ASX 200 plus the next 100 companies by market value in ASX's directory (3 October 2026).</li>
+          {Object.values(MARKET).flatMap((m) => m.sources.map((x) => (
+            <li key={m.code + x.label}><strong>{x.label}:</strong> {x.text.replace('{firstYear}', m.label(m.years[0])).replace('{latestYear}', m.label(m.latest))}</li>
+          )))}
           <li><strong>Collected:</strong> {SOURCE_DATE}.</li>
         </ul>
       </section>

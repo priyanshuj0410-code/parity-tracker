@@ -6,9 +6,9 @@ then Japanese sectors that mix GICS sectors (electric appliances, transportation
 wholesale trade, information and communication, precision instruments, services, other
 products) are split by company.
 
-Run from the repo root: python3 pipeline/sectors.py
+Run from the repo root on an assembled release (pnpm data publish does): python3 pipeline/sectors.py <data dir>
 """
-import json, re
+import json, re, sys
 
 RULES = [
     ('Real Estate', r'real ?estate|realty|reit|propert'),
@@ -57,14 +57,14 @@ def sector(industry):
     return next((name for name, pat in RULES if re.search(pat, s)), None)
 
 
-companies = json.load(open('src/data/companies.json'))
+companies = json.load(open(sys.argv[1] + '/companies.json'))
 out, unmatched = {}, []
 for sym, c in sorted(companies.items()):
     out[sym] = OVERRIDES.get(sym) or sector(c['industry'])
     if not out[sym]:
         unmatched.append((sym, c['industry']))
 assert not unmatched, unmatched
-json.dump(out, open('src/data/sectors.json', 'w'), indent=0, ensure_ascii=False)
+json.dump(out, open(sys.argv[1] + '/sectors.json', 'w'), indent=0, ensure_ascii=False)
 counts = {}
 for v in out.values():
     counts[v] = counts.get(v, 0) + 1
