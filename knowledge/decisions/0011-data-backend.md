@@ -63,6 +63,7 @@ PARITY-75 schema and loader, PARITY-76 publish and promote, PARITY-77 app reads 
 ## What still needs a merge
 - **App code:** new pages, layouts, components, measures or chart types.
 - **Pipeline code:** a new parser for a new source. Once merged, every later refresh with it publishes without one.
+- **Not yet moved (follow-up):** hand-read inputs that live in pipeline files, such as `pipeline/india/annual_reports.json` and `float_overrides.json`, `pipeline/eu/eu_values.json` and the EU headcounts, sector overrides, and the AU and UK name maps. A figure read from a report reaches the site through a release without a merge, but recording it in git still takes one ([PR #26](https://github.com/priyanshuj0410-code/parity-tracker/pull/26)). They should move to `inputs/{name}` records.
 
 ## Limits on the free plan
 - **Firestore:** 1 GiB stored, 50,000 reads a day, 20,000 writes a day, 10 GiB downloaded a month. On Spark, a quota stops the service until the next day; it never bills.
