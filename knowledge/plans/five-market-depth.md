@@ -32,7 +32,7 @@ plane_issues:
 | Japan | Nikkei 225 | **TOPIX 500 live: 334 of 492 with a pay ratio** | TOPIX 500 (492) | MHLW database by securities code | Done; 154 publish only on their own sites |
 | UK | FTSE 100 | **FTSE 350 live: 190 of 350** (96 trusts with no staff) | FTSE 350 | Gender pay gap service, every employer of 250+ | Done |
 | Australia | ASX 200 | **ASX top 300 live: 202 of 300** | ASX 300 | WGEA, every employer of 100+ | Done; S&P/ASX 300 membership is not free, so ASX's directory sets the next 100 |
-| EU | Euro Stoxx 50 | 31 | STOXX 600 EU members | CSRD S1-16 and S1-6 | Read sustainability statements |
+| EU | Euro Stoxx 50 | **STOXX 600, 100 largest EU members: 43 with a pay gap, 40 with a share of pay** | STOXX 600 EU members | CSRD S1-16 and S1-6 from FY2025 ESEF filings | 17 new read; 31 not in filings.xbrl.org yet (mostly Swedish and German); 3 excluded (adjusted gap only or not material) |
 
 ## India: what is left (3 October 2026)
 - **Read from annual reports (22):** HYUNDAI, VBL, ADANIGREEN, GAIL, MFSL, UNOMINDA, BAJAJHLDNG, TITAGARH, DEVYANI, IGL, HEXT, ABB, CASTROLIND, CRISIL, HONASA, ANANDRATHI, AIIL, SYNGENE, ABBOTINDIA, HBLENGINE, CYIENT, plus FSL (left out: 53.3% against 33.6% a year earlier).

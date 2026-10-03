@@ -247,6 +247,142 @@
    "gap2024": 36,
    "basis": "Hourly gender pay gap ratio, average (median 26%)",
    "source": "https://www.santander.com/content/dam/santander-com/en/documentos/informe-financiero-anual/2025/ifa-2025-consolidated-annual-financial-report-en.pdf"
+  },
+  {
+   "ticker": "NOVO-B.CO",
+   "name": "Novo Nordisk",
+   "gap2025": -1.2,
+   "gap2024": null,
+   "basis": "Unadjusted gender pay gap, in favour of women",
+   "source": "https://filings.xbrl.org/549300DAQ1CVT6CXN342/2025-12-31/ESEF/DK/0/NOVO-2025-12-31-1-en/reports/NOVO-2025-12-31-1-en.xhtml"
+  },
+  {
+   "ticker": "NOKIA.HE",
+   "name": "Nokia",
+   "gap2025": 0.9,
+   "gap2024": 0.7,
+   "basis": "Unadjusted gender pay gap (Finnish filing)",
+   "source": "https://filings.xbrl.org/549300A0JPRWG1KI7U06/2025-12-31/ESEF/FI/0/549300A0JPRWG1KI7U06-2025-12-31-1-fi/reports/549300A0JPRWG1KI7U06-2025-12-31-1-fi.xhtml"
+  },
+  {
+   "ticker": "ENGI.PA",
+   "name": "Engie",
+   "gap2025": 3.0,
+   "gap2024": 4.3,
+   "basis": "Écart de rémunération (S1-16 97a)",
+   "source": "https://filings.xbrl.org/LAXUQCHT4FH58LRZDY46/2025-12-31/ESEF/FR/0/engie-2025-12-31-1-fr/reports/engie-2025-12-31-1-fr.xhtml"
+  },
+  {
+   "ticker": "ASM.AS",
+   "name": "ASM International",
+   "gap2025": -0.5,
+   "gap2024": null,
+   "basis": "Unadjusted gender pay gap",
+   "source": "https://filings.xbrl.org/7245001I22ND6ZFHX623/2025-12-31/ESEF/NL/0/asm-2025-12-31-1-en/reports/asm-2025-12-31-1-en.xhtml"
+  },
+  {
+   "ticker": "LR.PA",
+   "name": "Legrand",
+   "gap2025": 23,
+   "gap2024": 25,
+   "basis": "Estimated pay gap, all categories (fixed annual salary and variable pay)",
+   "source": "https://filings.xbrl.org/969500XXRPGD7HCAFA90/2025-12-31/ESEF/FR/0/Legrand-2025-12-31-1-FR/reports/Legrand-2025-12-31-1-FR.xhtml"
+  },
+  {
+   "ticker": "EBS.VI",
+   "name": "Erste Group",
+   "gap2025": 27.7,
+   "gap2024": 28.9,
+   "basis": "Gender Pay Gap, total remuneration, all employees",
+   "source": "https://filings.xbrl.org/PQOH26KWDF7CG10L6792/2025-12-31/ESEF/AT/0/egb-2025-12-31-0-de/reports/egb-2025-12-31-0-de.xhtml"
+  },
+  {
+   "ticker": "DSV.CO",
+   "name": "DSV",
+   "gap2025": 5.6,
+   "gap2024": null,
+   "basis": "Average salary gap, female against male",
+   "source": "https://filings.xbrl.org/529900X41C0BSLK67H70/2025-12-31/ESEF/DK/0/DSV-2025-12-31-en/reports/DSV-2025-12-31-en.xhtml"
+  },
+  {
+   "ticker": "KBC.BR",
+   "name": "KBC Group",
+   "gap2025": 30.2,
+   "gap2024": 31.2,
+   "basis": "Gender pay gap",
+   "source": "https://filings.xbrl.org/213800X3Q9LSAKRUWY91/2025-12-31/ESEF/BE/1/213800X3Q9LSAKRUWY91-2025-12-31-0-en/reports/213800X3Q9LSAKRUWY91-2025-12-31-0-en.xhtml"
+  },
+  {
+   "ticker": "ABN.AS",
+   "name": "ABN AMRO",
+   "gap2025": 14.1,
+   "gap2024": 14.9,
+   "basis": "Unadjusted gender pay gap",
+   "source": "https://filings.xbrl.org/BFXS5XCH7N0Y05NIXW11/2025-12-31/ESEF/NL/0/abn-2025-12-31-1-en/reports/abn-2025-12-31-1-en.xhtml"
+  },
+  {
+   "ticker": "VWS.CO",
+   "name": "Vestas",
+   "gap2025": 0.2,
+   "gap2024": 2.2,
+   "basis": "Gender pay gap (S1-16)",
+   "source": "https://filings.xbrl.org/549300DYMC8BGZZC8844/2025-12-31/ESEF/DK/0/VWS-2025-12-31-1-en/reports/VWS-2025-12-31-1-en.xhtml"
+  },
+  {
+   "ticker": "BMPS.MI",
+   "name": "Banca Monte dei Paschi di Siena",
+   "gap2025": 29.4,
+   "gap2024": null,
+   "basis": "Gender pay gap, consolidated including Mediobanca (2024: 11.35% before the acquisition, not comparable)",
+   "source": "https://filings.xbrl.org/J4CP7MHCXR8DAQMKIL78/2025-12-31/ESEF/IT/0/J4CP7MHCXR8DAQMKIL78-2025-12-31-1-it/reports/J4CP7MHCXR8DAQMKIL78-2025-12-31-1-it.html"
+  },
+  {
+   "ticker": "FER.MC",
+   "name": "Ferrovial",
+   "gap2025": 4.54,
+   "gap2024": 2.1,
+   "basis": "Global gender pay gap, average salary",
+   "source": "https://filings.xbrl.org/72450022R2ZFL41Y6I04/2025-12-31/ESEF/NL/0/fer-2025-12-31-1-en/reports/fer-2025-12-31-1-en.xhtml"
+  },
+  {
+   "ticker": "SAMPO.HE",
+   "name": "Sampo",
+   "gap2025": 24.9,
+   "gap2024": 24.5,
+   "basis": "Gender pay gap, fixed and variable remuneration",
+   "source": "https://filings.xbrl.org/743700UF3RL386WIDA22/2025-12-31/ESEF/FI/0/743700UF3RL386WIDA22-2025-12-31-1-en/reports/743700UF3RL386WIDA22-2025-12-31-1-en.xhtml"
+  },
+  {
+   "ticker": "NN.AS",
+   "name": "NN Group",
+   "gap2025": 27,
+   "gap2024": 29,
+   "basis": "Gender pay gap",
+   "source": "https://filings.xbrl.org/724500OHYNDT9OY6Q215/2025-12-31/ESEF/NL/0/724500OHYNDT9OY6Q215-2025-12-31-1-en/reports/724500OHYNDT9OY6Q215-2025-12-31-1-en.html"
+  },
+  {
+   "ticker": "HEIA.AS",
+   "name": "Heineken",
+   "gap2025": -30.1,
+   "gap2024": -28.4,
+   "basis": "Total gender pay gap, in favour of women",
+   "source": "https://filings.xbrl.org/724500K5PTPSST86UQ23/2025-12-31/ESEF/NL/0/heia-2025-12-31-en/reports/heia-2025-12-31-en.xhtml"
+  },
+  {
+   "ticker": "G.MI",
+   "name": "Generali",
+   "gap2025": 26.9,
+   "gap2024": 28.4,
+   "basis": "Divario retributivo di genere (S1-16)",
+   "source": "https://filings.xbrl.org/549300X5UKJVE386ZB61/2025-12-31/ESEF/IT/0/549300X5UKJVE386ZB61-2025-12-31-1-it/reports/549300X5UKJVE386ZB61-2025-12-31-1-it.html"
+  },
+  {
+   "ticker": "A5G.IR",
+   "name": "AIB Group",
+   "gap2025": 17.5,
+   "gap2024": 17.8,
+   "basis": "Mean gender pay gap, AIB Republic of Ireland, snapshot 30 June 2025",
+   "source": "https://filings.xbrl.org/635400AKJBGNS5WNQL34/2025-12-31/ESEF/GB/0/635400AKJBGNS5WNQL34-2025-12-31/reports/635400AKJBGNS5WNQL34-2025-12-31.xhtml"
   }
  ],
  "excluded": {
@@ -261,7 +397,10 @@
   "BN.PA": "Discloses a gap only for manager, director and executive grades (1.1 points), not for all employees",
   "UCG.MI": "Discloses gaps per country (Italy 20.0%, Germany 29.2%), not a Group figure",
   "ARGX.BR": "Gap computed within job categories and averaged (effectively adjusted): -4.6% weighted average",
-  "ENEL.MI": "Discloses only job-category ratios and an adjusted Equal Remuneration Ratio (94.0%), not an unadjusted Group gap"
+  "ENEL.MI": "Discloses only job-category ratios and an adjusted Equal Remuneration Ratio (94.0%), not an unadjusted Group gap",
+  "STMMI.MI": "Reports only an adjusted pay gap target",
+  "HO.PA": "Reports only a pay gap at equivalent responsibility (adjusted)",
+  "KNEBV.HE": "Reports the pay gap as not material"
  },
  "unresolved": {
   "ALV.DE": "Report blocks automated access",
@@ -270,6 +409,39 @@
   "MBG.DE": "Report blocks automated access",
   "ABI.BR": "FY2025 sustainability statement PDF not reachable from the company site; listed with the Mexican exchange in a summary form without the pay gap",
   "RHM.DE": "Group annual report 2025 not located; the parent-company statements on EQS do not include the pay gap",
-  "PRX.AS": "Financial year ends in March; FY2026 report not yet in the filings repository"
+  "PRX.AS": "Financial year ends in March; FY2026 report not yet in the filings repository",
+  "GLE.PA": "Pay gap not found in the ESEF filing",
+  "ML.PA": "Pay gap not found in the ESEF filing",
+  "INVE-B.ST": "Sustainability statement not yet read (no FY2025 ESEF filing on filings.xbrl.org)",
+  "ATCO-A.ST": "Sustainability statement not yet read (no FY2025 ESEF filing on filings.xbrl.org)",
+  "VOLV-B.ST": "Sustainability statement not yet read (no FY2025 ESEF filing on filings.xbrl.org)",
+  "CABK.MC": "Sustainability statement not yet read (no FY2025 ESEF filing on filings.xbrl.org)",
+  "RWE.DE": "Sustainability statement not yet read (no FY2025 ESEF filing on filings.xbrl.org)",
+  "EOAN.DE": "Sustainability statement not yet read (no FY2025 ESEF filing on filings.xbrl.org)",
+  "PRY.MI": "Sustainability statement not yet read (no FY2025 ESEF filing on filings.xbrl.org)",
+  "SAND.ST": "Sustainability statement not yet read (no FY2025 ESEF filing on filings.xbrl.org)",
+  "REP.MC": "Sustainability statement not yet read (no FY2025 ESEF filing on filings.xbrl.org)",
+  "SWED-A.ST": "Sustainability statement not yet read (no FY2025 ESEF filing on filings.xbrl.org)",
+  "DANSKE.CO": "Sustainability statement not yet read (no FY2025 ESEF filing on filings.xbrl.org)",
+  "ASSA-B.ST": "Sustainability statement not yet read (no FY2025 ESEF filing on filings.xbrl.org)",
+  "SEB-A.ST": "Sustainability statement not yet read (no FY2025 ESEF filing on filings.xbrl.org)",
+  "ORA.PA": "Sustainability statement not yet read (no FY2025 ESEF filing on filings.xbrl.org)",
+  "MT.AS": "Sustainability statement not yet read (no FY2025 ESEF filing on filings.xbrl.org)",
+  "UCB.BR": "Sustainability statement not yet read (no FY2025 ESEF filing on filings.xbrl.org)",
+  "PKO.WA": "Sustainability statement not yet read (no FY2025 ESEF filing on filings.xbrl.org)",
+  "ERIC-B.ST": "Sustainability statement not yet read (no FY2025 ESEF filing on filings.xbrl.org)",
+  "PUB.PA": "Sustainability statement not yet read (no FY2025 ESEF filing on filings.xbrl.org)",
+  "AMS.MC": "Sustainability statement not yet read (no FY2025 ESEF filing on filings.xbrl.org)",
+  "DTG.DE": "Sustainability statement not yet read (no FY2025 ESEF filing on filings.xbrl.org)",
+  "EQT.ST": "Sustainability statement not yet read (no FY2025 ESEF filing on filings.xbrl.org)",
+  "SHB-A.ST": "Sustainability statement not yet read (no FY2025 ESEF filing on filings.xbrl.org)",
+  "BPE.MI": "Sustainability statement not yet read (no FY2025 ESEF filing on filings.xbrl.org)",
+  "VIE.PA": "Sustainability statement not yet read (no FY2025 ESEF filing on filings.xbrl.org)",
+  "PST.MI": "Sustainability statement not yet read (no FY2025 ESEF filing on filings.xbrl.org)",
+  "MTX.DE": "Sustainability statement not yet read (no FY2025 ESEF filing on filings.xbrl.org)",
+  "PKN.WA": "Sustainability statement not yet read (no FY2025 ESEF filing on filings.xbrl.org)",
+  "NSIS-B.CO": "Sustainability statement not yet read (no FY2025 ESEF filing on filings.xbrl.org)",
+  "CAP.PA": "Sustainability statement not yet read (no FY2025 ESEF filing on filings.xbrl.org)",
+  "GMAB.CO": "Sustainability statement not yet read (no FY2025 ESEF filing on filings.xbrl.org)"
  }
 }

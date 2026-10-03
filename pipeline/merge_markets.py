@@ -1,6 +1,6 @@
 import json
 C=json.load(open('out/companies.json')); I=json.load(open('out/indexes.json'))
-for path_c,path_i,key in (('uk/uk_companies.json','uk/uk_index.json','ftse100'),('au/au_companies.json','au/au_index.json','asx200'),('jp/jp_companies.json','jp/jp_indexes.json',None),('eu/eu_companies.json','eu/eu_index.json','eurostoxx50')):
+for path_c,path_i,key in (('uk/uk_companies.json','uk/uk_indexes.json',None),('au/au_companies.json','au/au_indexes.json',None),('jp/jp_companies.json','jp/jp_indexes.json',None),('eu/eu_companies.json','eu/eu_indexes.json','eurostoxx50')):
     MC=json.load(open(path_c)); MI=json.load(open(path_i))
     for c in MC.values():
         if 'ukStatus' in c: c['noDataReason']=c.pop('ukStatus')
