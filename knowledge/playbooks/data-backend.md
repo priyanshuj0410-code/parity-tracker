@@ -51,9 +51,9 @@ Every change reaches the site only through publish and promote.
 ## Access
 - Writes use your Google login, impersonating `nivel-pipeline` (no keys): `gcloud auth application-default login --impersonate-service-account=nivel-pipeline@nivel-equal-lens.iam.gserviceaccount.com`. Run it again if a command reports an expired login.
 - Builds read without a login: `firestore.rules` makes `channels`, `releases` and `blobs` public. Deploy the rules after changing them: `firebase deploy --only firestore:rules --project nivel-equal-lens`. Always name the project: the Firebase CLI's active project for the home folder is another one (`praxis-2ffa8`), and even a `--dry-run` deploy creates a missing database there.
-- The database ID is `default`, not `(default)`.
+- The database ID is `default`, not `(default)`, and it must be the **Standard** edition: Enterprise counts reads by size, and a few builds exhaust its free quota. If it ever needs recreating: `firebase firestore:databases:create default --location asia-south1 --edition standard --project nivel-equal-lens`, redeploy the rules, then `seed` from a pulled release and `verify`.
 
 ## Storage and quotas (Spark plan, free)
 - Records: `markets`, `indexes`, `companies` (one per company, about 1,750), `datasets` (funds, simulations, logo map), `logos` (one PNG each), `feeds/spot-v1`. Each holds its JSON as a string, so it round-trips exactly.
 - Releases: `releases/{id}` lists its files as content-addressed `blobs` (SHA-256, under 900 KB each). A release that changes one file stores only that file's new blobs.
-- A publish reads about 2,400 documents and writes about 30; a build reads about 30. The daily limits are 50,000 reads and 20,000 writes.
+- A publish reads about 2,400 documents and writes about 30; a build reads about 30. The daily limits are 50,000 reads and 20,000 writes. When a limit is hit, Firestore returns 429 until the daily reset (midnight Pacific time) and builds fail, while the live site keeps serving its last build.
