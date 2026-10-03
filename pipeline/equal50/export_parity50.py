@@ -1,8 +1,9 @@
 """Writes the Parity 50 simulation for Nivel (simulations.json, stored with pnpm data put datasets simulations) from parity50_v2_result.json and the same point-in-time data.
+Holdings, weights and pay figures only: Nivel publishes no returns, prices or growth (owner, 3 October 2026).
 
   INDIA_DIR=<repo>/pipeline/india python3 export_parity50.py simulations.json
 """
-import json, math, os, sys
+import json, os, sys
 
 OUT = sys.argv[1]
 _here = os.path.dirname(os.path.abspath(__file__))
@@ -12,7 +13,6 @@ exec(compile(_src[:_src.index("if __name__ == '__main__':")], 'parity50_v2', 'ex
 __file__ = _me
 
 res = json.load(open(os.path.join(_here, 'parity50_v2_result.json')))['main']
-bf = json.load(open(os.path.join(_here, 'parity50_backfill_result.json')))
 Y = 2026
 r6 = lambda v: None if v is None else round(float(v), 6)
 fy = lambda y: f'{y - 1}-{str(y)[2:]}'
@@ -25,13 +25,6 @@ holdings = [{'symbol': s, 'sector': rs[s]['sector'], 'w': r6(rs[s]['w']), 'e': r
             for s, v in sorted(x.items(), key=lambda t: -t[1])]
 left = [{'symbol': l['symbol'], 'sector': rs[l['symbol']]['sector'] if l['symbol'] in rs else n500[l['symbol']]['industry'], 'w': r6(l['w']),
          'parent': r6(l['parent']), 'reason': l['reason']} for l in d['left']]
-
-months = ['2021-09'] + bf['months']
-grow = lambda rs_: [100.0] + [round(100 * math.prod(1 + v for v in rs_[:i + 1]), 2) for i in range(len(rs_))]
-st_ = res['stats']
-side = lambda s_: {'sim': {k: r6(v) for k, v in s_['index'].items() if k != 'months'}, 'parent': {k: r6(v) for k, v in s_['parent'].items() if k != 'months'},
-                   'trackingError': r6(s_['trackingError']), 'beta': r6(s_['beta']), 'active': r6(s_['activeReturnAnnualised'])}
-etf = lambda s_: {k: r6(v) for k, v in s_.items() if k != 'months'}
 
 # Context for "why the bar is not 50%": how many large companies clear 25%, and how many are near parity on both counts.
 base = [r for r in allrows if r['E'] is not None and r['h'] * r['mcap'] >= 1000 and r['ff'] >= 2000e7]
@@ -51,17 +44,6 @@ out = {'parity50': {
             'sectors': [{'sector': k, 'weight': r6(v)} for k, v in d['sectorsOut']]},
     'sectors': [{'sector': s['sector'], 'sim': r6(s['sim']), 'parent': r6(s['parent'])} for s in d['sectors']],
     'holdings': holdings, 'left': left,
-    'performance': {
-        'months': months, 'backfillUntil': '2024-09',
-        'sim': grow(bf['series']['index']), 'parent': grow(bf['series']['parent']), 'etf': grow(bf['series']['etf']),
-        'stats': {'sim': {k: r6(v) for k, v in st_['index'].items() if k != 'months'}, 'parent': {k: r6(v) for k, v in st_['parent'].items() if k != 'months'},
-                  'trackingError': r6(st_['trackingError']), 'beta': r6(st_['beta']), 'active': r6(st_['activeReturnAnnualised']),
-                  'year1': {k: r6(v) for k, v in st_['year1'].items()}, 'year2': {k: r6(v) for k, v in st_['year2'].items()},
-                  'nifty50Etf': r6(st_['nifty50TR']['cumulative']), 'sensexEtf': r6(st_['sensexTR']['cumulative'])},
-        'five': side(bf['stats']['full']), 'backfill': side(bf['stats']['backfill']),
-        'etfStats': {k: etf(v) for k, v in bf['stats']['etf'].items()},
-        'backfillYears': [{'year': fy(int(k)), 'bar': r6(v['bar']), 'eligible': v['eligible'], 'laterFigures': v['laterFigures'],
-                           'pay': r6(v['pay']), 'parentPay': r6(v['parentPay'])} for k, v in bf['years'].items()]},
     'nearParity': {'count': len(near), 'of': len(base)},
 }}
 json.dump(out, open(OUT, 'w'), indent=1)
@@ -69,4 +51,4 @@ p = out['parity50']
 print('bar', p['bar'], 'eligible', p['eligible'], 'at25', p['at25'], '| headline', p['headline'])
 print('out', p['out'])
 print('holdings', len(p['holdings']), '| left', len(p['left']), [(l['symbol'], l['w'], l['reason']) for l in p['left'][:6]])
-print('perf end', p['performance']['sim'][-1], p['performance']['parent'][-1], '| near', p['nearParity'])
+print('near parity', p['nearParity'])
