@@ -1,0 +1,4191 @@
+[
+{
+"code": "1332",
+"name": "Nissui",
+"sector": "Fishery, Agriculture and Forestry",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "1333",
+"name": "Umios",
+"sector": "Fishery, Agriculture and Forestry",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "1414",
+"name": "SHO-BOND Holdings",
+"sector": "Construction",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "1417",
+"name": "Mirait One",
+"sector": "Construction",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "1605",
+"name": "INPEX",
+"sector": "Mining",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "1719",
+"name": "Hazama Ando",
+"sector": "Construction",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "1721",
+"name": "Comsys Holdings",
+"sector": "Construction",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "1801",
+"name": "Taisei",
+"sector": "Construction",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "1802",
+"name": "Obayashi",
+"sector": "Construction",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "1803",
+"name": "Shimizu",
+"sector": "Construction",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "1808",
+"name": "Haseko",
+"sector": "Construction",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "1812",
+"name": "Kajima",
+"sector": "Construction",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "1820",
+"name": "Nishimatsu Construction",
+"sector": "Construction",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "1860",
+"name": "Toda",
+"sector": "Construction",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "1878",
+"name": "Daito Trust Construction",
+"sector": "Real Estate",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "1893",
+"name": "Penta-Ocean Construction",
+"sector": "Construction",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "1911",
+"name": "Sumitomo Forestry",
+"sector": "Construction",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "1925",
+"name": "Daiwa House Industry",
+"sector": "Construction",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "1928",
+"name": "Sekisui House",
+"sector": "Construction",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "1942",
+"name": "Kandenko",
+"sector": "Construction",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "1944",
+"name": "Kinden",
+"sector": "Construction",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "1951",
+"name": "Exeo Group",
+"sector": "Construction",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "1959",
+"name": "Kraftia",
+"sector": "Construction",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "1963",
+"name": "JGC Holdings",
+"sector": "Construction",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "1969",
+"name": "Takasago Thermal Engineering",
+"sector": "Construction",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "2002",
+"name": "Nisshin Seifun Group",
+"sector": "Foods",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "2127",
+"name": "Nihon M&A Center Holdings",
+"sector": "Services",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "2181",
+"name": "Persol Holdings",
+"sector": "Services",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "2201",
+"name": "Morinaga",
+"sector": "Foods",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "2206",
+"name": "Ezaki Glico",
+"sector": "Foods",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "2212",
+"name": "Yamazaki Baking",
+"sector": "Foods",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "2222",
+"name": "Kotobuki Spirits",
+"sector": "Foods",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "2229",
+"name": "Calbee",
+"sector": "Foods",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "2264",
+"name": "Morinaga Milk Industry",
+"sector": "Foods",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "2267",
+"name": "Yakult Honsha",
+"sector": "Foods",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "2269",
+"name": "Meiji Holdings",
+"sector": "Foods",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "2282",
+"name": "NH Foods",
+"sector": "Foods",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "2327",
+"name": "NS Solutions",
+"sector": "Information & Communication",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "2331",
+"name": "Alsok",
+"sector": "Services",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "2371",
+"name": "Kakaku.com",
+"sector": "Services",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "2413",
+"name": "M3",
+"sector": "Services",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "2432",
+"name": "DeNA",
+"sector": "Information & Communication",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "2433",
+"name": "Hakuhodo DY Holdings",
+"sector": "Services",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "2501",
+"name": "Sapporo Breweries",
+"sector": "Foods",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "2502",
+"name": "Asahi Group Holdings",
+"sector": "Foods",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "2503",
+"name": "Kirin Holdings",
+"sector": "Foods",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "2531",
+"name": "Takara Holdings",
+"sector": "Foods",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "2579",
+"name": "Coca-Cola Bottlers Japan Holdings",
+"sector": "Foods",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "2587",
+"name": "Suntory Beverage & Food",
+"sector": "Foods",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "2593",
+"name": "Ito En",
+"sector": "Foods",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "2607",
+"name": "Fuji Oil",
+"sector": "Foods",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "2670",
+"name": "ABC-Mart",
+"sector": "Retail Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "2768",
+"name": "Sojitz",
+"sector": "Wholesale Trade",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "2784",
+"name": "Alfresa Holdings",
+"sector": "Wholesale Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "2801",
+"name": "Kikkoman",
+"sector": "Foods",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "2802",
+"name": "Ajinomoto",
+"sector": "Foods",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "2809",
+"name": "Kewpie",
+"sector": "Foods",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "2810",
+"name": "House Foods Group",
+"sector": "Foods",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "2811",
+"name": "Kagome",
+"sector": "Foods",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "285A",
+"name": "Kioxia Holdings",
+"sector": "Electric Appliances",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "2871",
+"name": "Nichirei",
+"sector": "Foods",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "2875",
+"name": "Toyo Suisan Kaisha",
+"sector": "Foods",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "2897",
+"name": "Nissin Foods Holdings",
+"sector": "Foods",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "2914",
+"name": "Japan Tobacco",
+"sector": "Foods",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "3003",
+"name": "Hulic",
+"sector": "Real Estate",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "3038",
+"name": "Kobe Bussan",
+"sector": "Wholesale Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "3048",
+"name": "Bic Camera",
+"sector": "Retail Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "3064",
+"name": "MonotaRO",
+"sector": "Retail Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "3086",
+"name": "J.Front Retailing",
+"sector": "Retail Trade",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "3088",
+"name": "MatsukiyoCocokara",
+"sector": "Retail Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "3092",
+"name": "ZOZO",
+"sector": "Retail Trade",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "3099",
+"name": "Isetan Mitsukoshi Holdings",
+"sector": "Retail Trade",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "3105",
+"name": "Nisshinbo Holdings",
+"sector": "Electric Appliances",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "3107",
+"name": "Daiwabo Holdings",
+"sector": "Wholesale Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "3116",
+"name": "Toyota Boshoku",
+"sector": "Transportation Equipment",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "3132",
+"name": "Macnica Holdings",
+"sector": "Wholesale Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "3197",
+"name": "Skylark Holdings",
+"sector": "Retail Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "3231",
+"name": "Nomura Real Estate Holdings",
+"sector": "Real Estate",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "3288",
+"name": "Open House Group",
+"sector": "Real Estate",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "3289",
+"name": "Tokyu Fudosan Holdings",
+"sector": "Real Estate",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "3291",
+"name": "Iida Group Holdings",
+"sector": "Real Estate",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "3349",
+"name": "Cosmos Pharmaceutical",
+"sector": "Retail Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "3360",
+"name": "Ship Healthcare Holdings",
+"sector": "Wholesale Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "3382",
+"name": "Seven & I Holdings",
+"sector": "Retail Trade",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "3391",
+"name": "Tsuruha Holdings",
+"sector": "Retail Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "3397",
+"name": "Toridoll Holdings",
+"sector": "Retail Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "3401",
+"name": "Teijin",
+"sector": "Textiles and Apparels",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "3402",
+"name": "Toray Industries",
+"sector": "Textiles and Apparels",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "3405",
+"name": "Kuraray",
+"sector": "Chemicals",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "3407",
+"name": "Asahi Kasei",
+"sector": "Chemicals",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "3436",
+"name": "SUMCO",
+"sector": "Metal Products",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "3549",
+"name": "Kusuri no Aoki Holdings",
+"sector": "Retail Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "3563",
+"name": "Food & Life Companies",
+"sector": "Retail Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "3591",
+"name": "Wacoal Holdings",
+"sector": "Textiles and Apparels",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "3626",
+"name": "TIS",
+"sector": "Information & Communication",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "3635",
+"name": "Koei Tecmo Holdings",
+"sector": "Information & Communication",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "3659",
+"name": "Nexon",
+"sector": "Information & Communication",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "3697",
+"name": "SHIFT",
+"sector": "Information & Communication",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "3769",
+"name": "GMO Payment Gateway",
+"sector": "Information & Communication",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "3774",
+"name": "Internet Initiative Japan",
+"sector": "Information & Communication",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "3861",
+"name": "Oji Holdings",
+"sector": "Pulp and Paper",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "3923",
+"name": "Rakus",
+"sector": "Information & Communication",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "3941",
+"name": "Rengo",
+"sector": "Pulp and Paper",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "3994",
+"name": "Money Forward",
+"sector": "Information & Communication",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4004",
+"name": "Resonac Holdings",
+"sector": "Chemicals",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "4005",
+"name": "Sumitomo Chemical",
+"sector": "Chemicals",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "4021",
+"name": "Nissan Chemical",
+"sector": "Chemicals",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "4042",
+"name": "Tosoh",
+"sector": "Chemicals",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "4043",
+"name": "Tokuyama",
+"sector": "Chemicals",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "4045",
+"name": "Toagosei",
+"sector": "Chemicals",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4061",
+"name": "Denka",
+"sector": "Chemicals",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "4062",
+"name": "Ibiden",
+"sector": "Electric Appliances",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4063",
+"name": "Shin-Etsu Chemical",
+"sector": "Chemicals",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "4091",
+"name": "Nippon Sanso Holdings",
+"sector": "Chemicals",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4114",
+"name": "Nippon Shokubai",
+"sector": "Chemicals",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4118",
+"name": "Kaneka",
+"sector": "Chemicals",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4151",
+"name": "Kyowa Kirin",
+"sector": "Pharmaceutical",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "417A",
+"name": "Blue Zones Holdings",
+"sector": "Retail Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4182",
+"name": "Mitsubishi Gas Chemical Company",
+"sector": "Chemicals",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4183",
+"name": "Mitsui Chemicals",
+"sector": "Chemicals",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "4186",
+"name": "Tokyo Ohka Kogyo",
+"sector": "Chemicals",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4188",
+"name": "Mitsubishi Chemical Group",
+"sector": "Chemicals",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "4194",
+"name": "Visional",
+"sector": "Information & Communication",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4202",
+"name": "Daicel",
+"sector": "Chemicals",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4203",
+"name": "Sumitomo Bakelite",
+"sector": "Chemicals",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4204",
+"name": "Sekisui Chemical",
+"sector": "Chemicals",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4205",
+"name": "Zeon",
+"sector": "Chemicals",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4206",
+"name": "Aica Kogyo",
+"sector": "Chemicals",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4208",
+"name": "UBE",
+"sector": "Chemicals",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "4272",
+"name": "Nippon Kayaku",
+"sector": "Chemicals",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4307",
+"name": "Nomura Research Institute",
+"sector": "Information & Communication",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "4324",
+"name": "Dentsu Group",
+"sector": "Services",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "4385",
+"name": "Mercari",
+"sector": "Information & Communication",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "4401",
+"name": "Adeka",
+"sector": "Chemicals",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4403",
+"name": "NOF",
+"sector": "Chemicals",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4452",
+"name": "Kao",
+"sector": "Chemicals",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "4502",
+"name": "Takeda Pharmaceutical",
+"sector": "Pharmaceutical",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "4503",
+"name": "Astellas Pharma",
+"sector": "Pharmaceutical",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "4506",
+"name": "Sumitomo Pharma",
+"sector": "Pharmaceutical",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "4507",
+"name": "Shionogi",
+"sector": "Pharmaceutical",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "4516",
+"name": "Nippon Shinyaku",
+"sector": "Pharmaceutical",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4519",
+"name": "Chugai Pharmaceutical",
+"sector": "Pharmaceutical",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "4523",
+"name": "Eisai",
+"sector": "Pharmaceutical",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "4527",
+"name": "Rohto Pharmaceutical",
+"sector": "Pharmaceutical",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4528",
+"name": "Ono Pharmaceutical",
+"sector": "Pharmaceutical",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4536",
+"name": "Santen Pharmaceutical",
+"sector": "Pharmaceutical",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4540",
+"name": "Tsumura",
+"sector": "Pharmaceutical",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4543",
+"name": "Terumo",
+"sector": "Precision Instruments",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "4544",
+"name": "H.U. Group Holdings",
+"sector": "Services",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4568",
+"name": "Daiichi Sankyo",
+"sector": "Pharmaceutical",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "4578",
+"name": "Otsuka Holdings",
+"sector": "Pharmaceutical",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "4587",
+"name": "PeptiDream",
+"sector": "Pharmaceutical",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4612",
+"name": "Nippon Paint Holdings",
+"sector": "Chemicals",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4613",
+"name": "Kansai Paint",
+"sector": "Chemicals",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4626",
+"name": "Taiyo Holdings",
+"sector": "Chemicals",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4631",
+"name": "DIC",
+"sector": "Chemicals",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4661",
+"name": "Oriental Land",
+"sector": "Services",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "4665",
+"name": "Duskin",
+"sector": "Services",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4666",
+"name": "Park24",
+"sector": "Real Estate",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4676",
+"name": "Fuji Media Holdings",
+"sector": "Information & Communication",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4680",
+"name": "Round One",
+"sector": "Services",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4681",
+"name": "Resorttrust",
+"sector": "Services",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4684",
+"name": "OBIC",
+"sector": "Information & Communication",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4689",
+"name": "LY Corporation",
+"sector": "Information & Communication",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "4704",
+"name": "Trend Micro",
+"sector": "Information & Communication",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "4716",
+"name": "Oracle Corporation Japan",
+"sector": "Information & Communication",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4732",
+"name": "USS",
+"sector": "Services",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4733",
+"name": "OBIC Business Consultants",
+"sector": "Information & Communication",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4751",
+"name": "CyberAgent",
+"sector": "Services",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "4755",
+"name": "Rakuten Group",
+"sector": "Services",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "4768",
+"name": "Otsuka",
+"sector": "Information & Communication",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4887",
+"name": "Sawai Group Holdings",
+"sector": "Pharmaceutical",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4901",
+"name": "Fujifilm Holdings",
+"sector": "Chemicals",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "4902",
+"name": "Konica Minolta",
+"sector": "Electric Appliances",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "4911",
+"name": "Shiseido",
+"sector": "Chemicals",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "4912",
+"name": "Lion",
+"sector": "Chemicals",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4922",
+"name": "Kose Holdings",
+"sector": "Chemicals",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4927",
+"name": "Pola Orbis Holdings",
+"sector": "Chemicals",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4967",
+"name": "Kobayashi Pharmaceutical",
+"sector": "Chemicals",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "4980",
+"name": "Dexerials",
+"sector": "Chemicals",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "5016",
+"name": "JX Advanced Metals",
+"sector": "Nonferrous Metals",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "5019",
+"name": "Idemitsu Kosan",
+"sector": "Oil and Coal Products",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "5020",
+"name": "ENEOS Holdings",
+"sector": "Oil and Coal Products",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "5021",
+"name": "Cosmo Energy Holdings",
+"sector": "Oil and Coal Products",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "5076",
+"name": "Infroneer Holdings",
+"sector": "Construction",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "5101",
+"name": "The Yokohama Rubber",
+"sector": "Rubber Products",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "5105",
+"name": "Toyo Tire",
+"sector": "Rubber Products",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "5108",
+"name": "Bridgestone",
+"sector": "Rubber Products",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "5110",
+"name": "Sumitomo Rubber Industries",
+"sector": "Rubber Products",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "5201",
+"name": "AGC",
+"sector": "Glass and Ceramics Products",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "5214",
+"name": "Nippon Electric Glass",
+"sector": "Glass and Ceramics Products",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "5232",
+"name": "Sumitomo Osaka Cement",
+"sector": "Glass and Ceramics Products",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "5233",
+"name": "Taiheiyo Cement",
+"sector": "Glass and Ceramics Products",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "5301",
+"name": "Tokai Carbon",
+"sector": "Glass and Ceramics Products",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "5332",
+"name": "TOTO",
+"sector": "Glass and Ceramics Products",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "5333",
+"name": "NGK",
+"sector": "Glass and Ceramics Products",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "5334",
+"name": "Niterra",
+"sector": "Glass and Ceramics Products",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "5344",
+"name": "Maruwa",
+"sector": "Glass and Ceramics Products",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "5393",
+"name": "Nichias",
+"sector": "Glass and Ceramics Products",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "5401",
+"name": "Nippon Steel",
+"sector": "Iron and Steel",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "5406",
+"name": "Kobe Steel",
+"sector": "Iron and Steel",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "5411",
+"name": "JFE Holdings",
+"sector": "Iron and Steel",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "543A",
+"name": "Archion",
+"sector": "Transportation Equipment",
+"indexes": [
+"nikkei225"
+]
+},
+{
+"code": "5444",
+"name": "Yamato Kogyo",
+"sector": "Iron and Steel",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "5463",
+"name": "Maruichi Steel Tube",
+"sector": "Iron and Steel",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "5471",
+"name": "Daido Steel",
+"sector": "Iron and Steel",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "5631",
+"name": "The Japan Steel Works",
+"sector": "Machinery",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "5706",
+"name": "Mitsui Kinzoku",
+"sector": "Nonferrous Metals",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "5711",
+"name": "Mitsubishi Materials",
+"sector": "Nonferrous Metals",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "5713",
+"name": "Sumitomo Metal Mining",
+"sector": "Nonferrous Metals",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "5714",
+"name": "DOWA Holdings",
+"sector": "Nonferrous Metals",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "5801",
+"name": "Furukawa Electric",
+"sector": "Nonferrous Metals",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "5802",
+"name": "Sumitomo Electric Industries",
+"sector": "Nonferrous Metals",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "5803",
+"name": "Fujikura",
+"sector": "Nonferrous Metals",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "5830",
+"name": "Iyogin Holdings",
+"sector": "Banks",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "5831",
+"name": "Shizuoka Financial Group",
+"sector": "Banks",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "5832",
+"name": "Chugin Financial Group",
+"sector": "Banks",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "5838",
+"name": "Rakuten Bank",
+"sector": "Banks",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "5844",
+"name": "Kyoto Financial Group",
+"sector": "Banks",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "5901",
+"name": "Toyo Seikan Group Holdings",
+"sector": "Metal Products",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "5929",
+"name": "Sanwa Holdings",
+"sector": "Metal Products",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "5938",
+"name": "LIXIL",
+"sector": "Metal Products",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "5947",
+"name": "Rinnai",
+"sector": "Metal Products",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "5991",
+"name": "NHK Spring",
+"sector": "Metal Products",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6005",
+"name": "Miura",
+"sector": "Machinery",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6098",
+"name": "Recruit Holdings",
+"sector": "Services",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6103",
+"name": "Okuma",
+"sector": "Machinery",
+"indexes": [
+"nikkei225"
+]
+},
+{
+"code": "6113",
+"name": "Amada",
+"sector": "Machinery",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6134",
+"name": "Fuji",
+"sector": "Machinery",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6136",
+"name": "OSG",
+"sector": "Machinery",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6141",
+"name": "DMG Mori",
+"sector": "Machinery",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6146",
+"name": "Disco",
+"sector": "Machinery",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6178",
+"name": "Japan Post Holdings",
+"sector": "Services",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6268",
+"name": "Nabtesco",
+"sector": "Machinery",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6269",
+"name": "Modec",
+"sector": "Machinery",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6273",
+"name": "SMC",
+"sector": "Machinery",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6301",
+"name": "Komatsu",
+"sector": "Machinery",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6302",
+"name": "Sumitomo Heavy Industries",
+"sector": "Machinery",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6305",
+"name": "Hitachi Construction Machinery",
+"sector": "Machinery",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6323",
+"name": "Rorze",
+"sector": "Machinery",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6326",
+"name": "Kubota",
+"sector": "Machinery",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6361",
+"name": "Ebara",
+"sector": "Machinery",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6367",
+"name": "Daikin Industries",
+"sector": "Machinery",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6368",
+"name": "Organo",
+"sector": "Machinery",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6370",
+"name": "Kurita Water Industries",
+"sector": "Machinery",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6383",
+"name": "Daifuku",
+"sector": "Machinery",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6417",
+"name": "Sankyo",
+"sector": "Machinery",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6436",
+"name": "Amano",
+"sector": "Machinery",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6448",
+"name": "Brother Industries",
+"sector": "Electric Appliances",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6457",
+"name": "Glory",
+"sector": "Machinery",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6460",
+"name": "Sega Sammy Holdings",
+"sector": "Machinery",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6465",
+"name": "Hoshizaki",
+"sector": "Machinery",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6471",
+"name": "NSK",
+"sector": "Machinery",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6472",
+"name": "NTN",
+"sector": "Machinery",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6473",
+"name": "JTEKT",
+"sector": "Machinery",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6479",
+"name": "Minebea Mitsumi",
+"sector": "Electric Appliances",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6481",
+"name": "THK",
+"sector": "Machinery",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6501",
+"name": "Hitachi",
+"sector": "Electric Appliances",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6503",
+"name": "Mitsubishi Electric",
+"sector": "Electric Appliances",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6504",
+"name": "Fuji Electric",
+"sector": "Electric Appliances",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6506",
+"name": "Yaskawa Electric",
+"sector": "Electric Appliances",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6525",
+"name": "Kokusai Electric",
+"sector": "Electric Appliances",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6526",
+"name": "Socionext",
+"sector": "Electric Appliances",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6532",
+"name": "BayCurrent",
+"sector": "Services",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6544",
+"name": "Japan Elevator Service Holdings",
+"sector": "Services",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6586",
+"name": "Makita",
+"sector": "Machinery",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6592",
+"name": "Mabuchi Motor",
+"sector": "Electric Appliances",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6594",
+"name": "Nidec",
+"sector": "Electric Appliances",
+"indexes": [
+"nikkei225"
+]
+},
+{
+"code": "6632",
+"name": "JVCKenwood",
+"sector": "Electric Appliances",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6645",
+"name": "Omron",
+"sector": "Electric Appliances",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6674",
+"name": "GS Yuasa",
+"sector": "Electric Appliances",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6701",
+"name": "NEC",
+"sector": "Electric Appliances",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6702",
+"name": "Fujitsu",
+"sector": "Electric Appliances",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6707",
+"name": "Sanken Electric",
+"sector": "Electric Appliances",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6723",
+"name": "Renesas Electronics",
+"sector": "Electric Appliances",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6724",
+"name": "Seiko Epson",
+"sector": "Electric Appliances",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6728",
+"name": "ULVAC",
+"sector": "Electric Appliances",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6752",
+"name": "Panasonic Holdings",
+"sector": "Electric Appliances",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6753",
+"name": "Sharp",
+"sector": "Electric Appliances",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6754",
+"name": "Anritsu",
+"sector": "Electric Appliances",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6758",
+"name": "Sony Group",
+"sector": "Electric Appliances",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6762",
+"name": "TDK",
+"sector": "Electric Appliances",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6770",
+"name": "Alps Alpine",
+"sector": "Electric Appliances",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6806",
+"name": "Hirose Electric",
+"sector": "Electric Appliances",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6841",
+"name": "Yokogawa Electric",
+"sector": "Electric Appliances",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6845",
+"name": "Azbil",
+"sector": "Electric Appliances",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6849",
+"name": "Nihon Kohden",
+"sector": "Electric Appliances",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6856",
+"name": "Horiba",
+"sector": "Electric Appliances",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6857",
+"name": "Advantest",
+"sector": "Electric Appliances",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6861",
+"name": "Keyence",
+"sector": "Electric Appliances",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6869",
+"name": "Sysmex",
+"sector": "Electric Appliances",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6902",
+"name": "Denso",
+"sector": "Transportation Equipment",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6920",
+"name": "Lasertec",
+"sector": "Electric Appliances",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6923",
+"name": "Stanley Electric",
+"sector": "Electric Appliances",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6925",
+"name": "Ushio",
+"sector": "Electric Appliances",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6951",
+"name": "JEOL",
+"sector": "Electric Appliances",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6952",
+"name": "Casio Computer",
+"sector": "Electric Appliances",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6954",
+"name": "Fanuc",
+"sector": "Electric Appliances",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6963",
+"name": "Rohm",
+"sector": "Electric Appliances",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6965",
+"name": "Hamamatsu Photonics",
+"sector": "Electric Appliances",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "6971",
+"name": "Kyocera",
+"sector": "Electric Appliances",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6976",
+"name": "Taiyo Yuden",
+"sector": "Electric Appliances",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6981",
+"name": "Murata Manufacturing",
+"sector": "Electric Appliances",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "6988",
+"name": "Nitto Denko",
+"sector": "Chemicals",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "7003",
+"name": "Mitsui E&S",
+"sector": "Machinery",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "7004",
+"name": "Kanadevia",
+"sector": "Machinery",
+"indexes": [
+"nikkei225"
+]
+},
+{
+"code": "7011",
+"name": "Mitsubishi Heavy Industries",
+"sector": "Machinery",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "7012",
+"name": "Kawasaki Heavy Industries",
+"sector": "Transportation Equipment",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "7013",
+"name": "IHI",
+"sector": "Machinery",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "7164",
+"name": "Zenkoku Hosho",
+"sector": "Other Financing Business",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "7167",
+"name": "Mebuki Financial Group",
+"sector": "Banks",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "7180",
+"name": "Kyushu Financial Group",
+"sector": "Banks",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "7181",
+"name": "Japan Post Insurance",
+"sector": "Insurance",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "7182",
+"name": "Japan Post Bank",
+"sector": "Banks",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "7186",
+"name": "Yokohama Financial Group",
+"sector": "Banks",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "7189",
+"name": "Nishi-Nippon Financial Holdings",
+"sector": "Banks",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "7201",
+"name": "Nissan Motor",
+"sector": "Transportation Equipment",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "7202",
+"name": "Isuzu Motors",
+"sector": "Transportation Equipment",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "7203",
+"name": "Toyota Motor",
+"sector": "Transportation Equipment",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "7211",
+"name": "Mitsubishi Motors",
+"sector": "Transportation Equipment",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "7240",
+"name": "NOK",
+"sector": "Transportation Equipment",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "7259",
+"name": "Aisin",
+"sector": "Transportation Equipment",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "7261",
+"name": "Mazda Motor",
+"sector": "Transportation Equipment",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "7267",
+"name": "Honda Motor",
+"sector": "Transportation Equipment",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "7269",
+"name": "Suzuki Motor",
+"sector": "Transportation Equipment",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "7270",
+"name": "Subaru",
+"sector": "Transportation Equipment",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "7272",
+"name": "Yamaha Motor",
+"sector": "Transportation Equipment",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "7276",
+"name": "Koito Manufacturing",
+"sector": "Electric Appliances",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "7282",
+"name": "Toyoda Gosei",
+"sector": "Transportation Equipment",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "7309",
+"name": "Shimano",
+"sector": "Transportation Equipment",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "7313",
+"name": "TS Tech",
+"sector": "Transportation Equipment",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "7337",
+"name": "Hirogin Holdings",
+"sector": "Banks",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "7453",
+"name": "Ryohin Keikaku",
+"sector": "Retail Trade",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "7458",
+"name": "Daiichikosho",
+"sector": "Wholesale Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "7459",
+"name": "Medipal Holdings",
+"sector": "Wholesale Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "7476",
+"name": "AS ONE",
+"sector": "Wholesale Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "7532",
+"name": "Pan Pacific International Holdings",
+"sector": "Retail Trade",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "7550",
+"name": "Zensho Holdings",
+"sector": "Retail Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "7616",
+"name": "Colowide",
+"sector": "Retail Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "7649",
+"name": "Sugi Holdings",
+"sector": "Retail Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "7701",
+"name": "Shimadzu",
+"sector": "Precision Instruments",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "7729",
+"name": "Tokyo Seimitsu",
+"sector": "Precision Instruments",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "7731",
+"name": "Nikon",
+"sector": "Precision Instruments",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "7733",
+"name": "Olympus",
+"sector": "Precision Instruments",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "7735",
+"name": "Screen Holdings",
+"sector": "Electric Appliances",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "7741",
+"name": "Hoya",
+"sector": "Precision Instruments",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "7747",
+"name": "Asahi Intecc",
+"sector": "Precision Instruments",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "7751",
+"name": "Canon",
+"sector": "Electric Appliances",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "7752",
+"name": "Ricoh",
+"sector": "Electric Appliances",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "7832",
+"name": "Bandai Namco Holdings",
+"sector": "Other Products",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "7846",
+"name": "Pilot",
+"sector": "Other Products",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "7867",
+"name": "Tomy Company",
+"sector": "Other Products",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "7911",
+"name": "Toppan Holdings",
+"sector": "Other Products",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "7912",
+"name": "Dai Nippon Printing",
+"sector": "Other Products",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "7936",
+"name": "Asics",
+"sector": "Other Products",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "7951",
+"name": "Yamaha",
+"sector": "Other Products",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "7956",
+"name": "Pigeon",
+"sector": "Other Products",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "7974",
+"name": "Nintendo",
+"sector": "Other Products",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "7984",
+"name": "Kokuyo",
+"sector": "Other Products",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "7988",
+"name": "Nifco",
+"sector": "Chemicals",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "8001",
+"name": "ITOCHU",
+"sector": "Wholesale Trade",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "8002",
+"name": "Marubeni",
+"sector": "Wholesale Trade",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "8012",
+"name": "Nagase",
+"sector": "Wholesale Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "8015",
+"name": "Toyota Tsusho",
+"sector": "Wholesale Trade",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "8020",
+"name": "Kanematsu",
+"sector": "Wholesale Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "8031",
+"name": "Mitsui & Co.",
+"sector": "Wholesale Trade",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "8035",
+"name": "Tokyo Electron",
+"sector": "Electric Appliances",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "8053",
+"name": "Sumitomo Corporation",
+"sector": "Wholesale Trade",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "8056",
+"name": "BIPROGY",
+"sector": "Information & Communication",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "8058",
+"name": "Mitsubishi Corporation",
+"sector": "Wholesale Trade",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "8060",
+"name": "Canon Marketing Japan",
+"sector": "Wholesale Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "8086",
+"name": "Nipro",
+"sector": "Precision Instruments",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "8088",
+"name": "Iwatani",
+"sector": "Wholesale Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "8111",
+"name": "Goldwin",
+"sector": "Textiles and Apparels",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "8113",
+"name": "Unicharm",
+"sector": "Chemicals",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "8129",
+"name": "Toho Holdings",
+"sector": "Wholesale Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "8136",
+"name": "Sanrio Company",
+"sector": "Wholesale Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "8174",
+"name": "Nippon Gas",
+"sector": "Retail Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "8227",
+"name": "Shimamura",
+"sector": "Retail Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "8233",
+"name": "Takashimaya",
+"sector": "Retail Trade",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "8242",
+"name": "H2O Retailing",
+"sector": "Retail Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "8252",
+"name": "Marui Group",
+"sector": "Retail Trade",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "8253",
+"name": "Credit Saison",
+"sector": "Other Financing Business",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "8267",
+"name": "Aeon",
+"sector": "Retail Trade",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "8282",
+"name": "K's Holdings",
+"sector": "Retail Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "8303",
+"name": "SBI Shinsei Bank",
+"sector": "Banks",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "8304",
+"name": "Aozora Bank",
+"sector": "Banks",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "8306",
+"name": "Mitsubishi UFJ Financial Group",
+"sector": "Banks",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "8308",
+"name": "Resona Holdings",
+"sector": "Banks",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "8309",
+"name": "Sumitomo Mitsui Trust Group",
+"sector": "Banks",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "8316",
+"name": "Sumitomo Mitsui Financial Group",
+"sector": "Banks",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "8331",
+"name": "The Chiba Bank",
+"sector": "Banks",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "8334",
+"name": "The Gunma Bank",
+"sector": "Banks",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "8341",
+"name": "The 77 Bank",
+"sector": "Banks",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "8354",
+"name": "Fukuoka Financial Group",
+"sector": "Banks",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "8359",
+"name": "Hachijuni Nagano Bank",
+"sector": "Banks",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "8377",
+"name": "Hokuhoku Financial Group",
+"sector": "Banks",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "8410",
+"name": "Seven Bank",
+"sector": "Banks",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "8411",
+"name": "Mizuho Financial Group",
+"sector": "Banks",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "8418",
+"name": "Yamaguchi Financial Group",
+"sector": "Banks",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "8424",
+"name": "Fuyo General Lease",
+"sector": "Other Financing Business",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "8439",
+"name": "Tokyo Century",
+"sector": "Other Financing Business",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "8473",
+"name": "SBI Holdings",
+"sector": "Securities and Commodities Futures",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "8570",
+"name": "Aeon Financial Service",
+"sector": "Other Financing Business",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "8572",
+"name": "Acom",
+"sector": "Other Financing Business",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "8591",
+"name": "ORIX",
+"sector": "Other Financing Business",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "8593",
+"name": "Mitsubishi HC Capital",
+"sector": "Other Financing Business",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "8595",
+"name": "Jafco Group",
+"sector": "Securities and Commodities Futures",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "8601",
+"name": "Daiwa Securities Group",
+"sector": "Securities and Commodities Futures",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "8604",
+"name": "Nomura Holdings",
+"sector": "Securities and Commodities Futures",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "8630",
+"name": "Sompo Holdings",
+"sector": "Insurance",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "8697",
+"name": "Japan Exchange Group",
+"sector": "Other Financing Business",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "8725",
+"name": "MS&AD Insurance Group Holdings",
+"sector": "Insurance",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "8729",
+"name": "Sony Financial Group",
+"sector": "Insurance",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "8750",
+"name": "Daiichi Life Group",
+"sector": "Insurance",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "8766",
+"name": "Tokio Marine Holdings",
+"sector": "Insurance",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "8795",
+"name": "T&D Holdings",
+"sector": "Insurance",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "8801",
+"name": "Mitsui Fudosan",
+"sector": "Real Estate",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "8802",
+"name": "Mitsubishi Estate",
+"sector": "Real Estate",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "8804",
+"name": "Tokyo Tatemono",
+"sector": "Real Estate",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "8830",
+"name": "Sumitomo Realty & Development",
+"sector": "Real Estate",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "8876",
+"name": "Relo Group",
+"sector": "Services",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9001",
+"name": "Tobu Railway",
+"sector": "Land Transportation",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "9003",
+"name": "Sotetsu Holdings",
+"sector": "Land Transportation",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9005",
+"name": "Tokyu",
+"sector": "Land Transportation",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "9006",
+"name": "Keikyu",
+"sector": "Land Transportation",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9007",
+"name": "Odakyu Electric Railway",
+"sector": "Land Transportation",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "9008",
+"name": "Keio",
+"sector": "Land Transportation",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "9009",
+"name": "Keisei Electric Railway",
+"sector": "Land Transportation",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "9020",
+"name": "East Japan Railway Company",
+"sector": "Land Transportation",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "9021",
+"name": "West Japan Railway Company",
+"sector": "Land Transportation",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "9022",
+"name": "Central Japan Railway Company",
+"sector": "Land Transportation",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "9023",
+"name": "Tokyo Metro",
+"sector": "Land Transportation",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9024",
+"name": "Seibu Holdings",
+"sector": "Land Transportation",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9031",
+"name": "Nishi-Nippon Railroad",
+"sector": "Land Transportation",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9041",
+"name": "Kintetsu Group Holdings",
+"sector": "Land Transportation",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9042",
+"name": "Hankyu Hanshin Holdings",
+"sector": "Land Transportation",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9044",
+"name": "Nankai",
+"sector": "Land Transportation",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9045",
+"name": "Keihan Holdings",
+"sector": "Land Transportation",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9048",
+"name": "Nagoya Railroad",
+"sector": "Land Transportation",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9064",
+"name": "Yamato Holdings",
+"sector": "Land Transportation",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "9065",
+"name": "Sankyu",
+"sector": "Land Transportation",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9069",
+"name": "Senko Group Holdings",
+"sector": "Land Transportation",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9072",
+"name": "Nikkon Holdings",
+"sector": "Land Transportation",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9076",
+"name": "Seino Holdings",
+"sector": "Land Transportation",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9101",
+"name": "Nippon Yusen Kabushiki Kaisha",
+"sector": "Marine Transportation",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "9104",
+"name": "Mitsui O.S.K. Lines",
+"sector": "Marine Transportation",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "9107",
+"name": "Kawasaki Kisen Kaisha",
+"sector": "Marine Transportation",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "9142",
+"name": "Kyushu Railway Company",
+"sector": "Land Transportation",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9143",
+"name": "SG Holdings",
+"sector": "Land Transportation",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9147",
+"name": "Nippon Express Holdings",
+"sector": "Land Transportation",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "9201",
+"name": "Japan Airlines",
+"sector": "Air Transportation",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "9202",
+"name": "ANA Holdings",
+"sector": "Air Transportation",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "9301",
+"name": "Mitsubishi Logistics",
+"sector": "Warehousing and Harbor Transportation Service",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9302",
+"name": "Mitsui-Soko Holdings",
+"sector": "Warehousing and Harbor Transportation Service",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9364",
+"name": "Kamigumi",
+"sector": "Warehousing and Harbor Transportation Service",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9401",
+"name": "TBS Holdings",
+"sector": "Information & Communication",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9404",
+"name": "Nippon Television Holdings",
+"sector": "Information & Communication",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9432",
+"name": "NTT",
+"sector": "Information & Communication",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "9433",
+"name": "KDDI",
+"sector": "Information & Communication",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "9434",
+"name": "SoftBank Corp.",
+"sector": "Information & Communication",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "9435",
+"name": "Hikari Tsushin",
+"sector": "Information & Communication",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9449",
+"name": "GMO Internet Group",
+"sector": "Information & Communication",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9468",
+"name": "Kadokawa",
+"sector": "Information & Communication",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9501",
+"name": "Tokyo Electric Power Company Holdings",
+"sector": "Electric Power and Gas",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "9502",
+"name": "Chubu Electric Power Company",
+"sector": "Electric Power and Gas",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "9503",
+"name": "The Kansai Electric Power Company",
+"sector": "Electric Power and Gas",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "9504",
+"name": "The Chugoku Electric Power Company",
+"sector": "Electric Power and Gas",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9505",
+"name": "Hokuriku Electric Power Company",
+"sector": "Electric Power and Gas",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9506",
+"name": "Tohoku Electric Power Company",
+"sector": "Electric Power and Gas",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9507",
+"name": "Shikoku Electric Power Company",
+"sector": "Electric Power and Gas",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9508",
+"name": "Kyushu Electric Power Company",
+"sector": "Electric Power and Gas",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9509",
+"name": "Hokkaido Electric Power Company",
+"sector": "Electric Power and Gas",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9513",
+"name": "Electric Power Development",
+"sector": "Electric Power and Gas",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9531",
+"name": "Tokyo Gas",
+"sector": "Electric Power and Gas",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "9532",
+"name": "Osaka Gas",
+"sector": "Electric Power and Gas",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "9533",
+"name": "Toho Gas",
+"sector": "Electric Power and Gas",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9602",
+"name": "Toho",
+"sector": "Information & Communication",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "9616",
+"name": "Kyoritsu Maintenance",
+"sector": "Services",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9627",
+"name": "Ain Holdings",
+"sector": "Retail Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9684",
+"name": "Square Enix Holdings",
+"sector": "Information & Communication",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9697",
+"name": "Capcom",
+"sector": "Information & Communication",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9706",
+"name": "Japan Airport Terminal",
+"sector": "Real Estate",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9735",
+"name": "Secom",
+"sector": "Services",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "9744",
+"name": "Meitec Group Holdings",
+"sector": "Services",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9759",
+"name": "NSD",
+"sector": "Information & Communication",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9766",
+"name": "Konami Group",
+"sector": "Information & Communication",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "9831",
+"name": "Yamada Holdings",
+"sector": "Retail Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9843",
+"name": "Nitori Holdings",
+"sector": "Retail Trade",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "9861",
+"name": "Yoshinoya Holdings",
+"sector": "Retail Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9934",
+"name": "Inaba Denkisangyo",
+"sector": "Wholesale Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9962",
+"name": "Misumi Group",
+"sector": "Wholesale Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9983",
+"name": "Fast Retailing",
+"sector": "Retail Trade",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "9984",
+"name": "SoftBank Group",
+"sector": "Information & Communication",
+"indexes": [
+"nikkei225",
+"topix500"
+]
+},
+{
+"code": "9987",
+"name": "Suzuken",
+"sector": "Wholesale Trade",
+"indexes": [
+"topix500"
+]
+},
+{
+"code": "9989",
+"name": "Sundrug",
+"sector": "Retail Trade",
+"indexes": [
+"topix500"
+]
+}
+]

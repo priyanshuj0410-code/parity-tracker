@@ -1,6 +1,9 @@
 import csv, re, json, glob
-from uk_map import MAP, TRUSTS
-ftse=json.load(open('ftse100.json'))
+from uk_map import MAP, TRUSTS, MAP250, TRUSTS250
+ftse=[dict(c,idx=['ftse100','ftse350']) for c in json.load(open('ftse100.json'))]+[dict(c,idx=['ftse350']) for c in json.load(open('ftse250.json'))]
+# FTSE 250 tickers that are also NSE symbols get an exchange prefix.
+CLASH={'NCC','RHIM'}
+def norm(s): s=(s or '').upper().replace('&',' & '); s=re.sub(r"[.'’,()\"/]",' ',s); return re.sub(r'\s+',' ',s).strip()
 SIZE={'Less than 250':150,'250 to 499':375,'500 to 999':750,'1000 to 4999':3000,'5000 to 19,999':12500,'20,000 or more':30000}
 rows={f[3:7]:list(csv.DictReader(open(f,encoding='utf-8-sig'))) for f in sorted(glob.glob('gpg20*.csv'))}
 YEARS=sorted(rows)
@@ -13,15 +16,16 @@ def title(s):
 companies={}; index_members=[]
 for c in ftse:
     n=c['name']; tick=c['ticker'].replace('.','')
-    key=tick
-    rec=dict(symbol=key,name=n,industry=title(c['sector']),exchange='LSE',country='GB',indexes=['ftse100'],marketCapCr=None,publicFloatPct=None,
+    key='LSE-'+tick if tick in CLASH else tick
+    rec=dict(symbol=key,name=n,industry=title(c['sector']),exchange='LSE',country='GB',indexes=c['idx'],marketCapCr=None,publicFloatPct=None,
              years={},filings={},payrollWeightCr=None,payrollWeightBasis=None,ukStatus=None,entities=[])
     index_members.append(key)
-    if n in TRUSTS: rec['ukStatus']='Investment trust or externally managed fund: no employees of its own'; companies[key]=rec; continue
-    inc,exc=MAP[n]; ri=re.compile(inc,re.I); rx=re.compile(exc,re.I) if exc else None
+    if n in TRUSTS or n in TRUSTS250: rec['ukStatus']='Investment trust or externally managed fund: no employees of its own'; companies[key]=rec; continue
+    inc,exc=MAP[n] if n in MAP else MAP250[n]; ri=re.compile(inc,re.I); rx=re.compile(exc,re.I) if exc else None
+    names=(lambda r:(r['EmployerName'],r['CurrentName'] or '')) if n in MAP else (lambda r:(norm(r['EmployerName']),norm(r['CurrentName'])))
     prev_ids=None
     for y in YEARS:
-        m=[r for r in rows[y] if (ri.search(r['EmployerName']) or ri.search(r['CurrentName'] or '')) and not (rx and (rx.search(r['EmployerName']) or rx.search(r['CurrentName'] or '')))]
+        m=[r for r in rows[y] if any(ri.search(x) for x in names(r)) and not (rx and any(rx.search(x) for x in names(r)))]
         ents=[]
         for r in m:
             q=[num(r[k]) for k in ('FemaleLowerQuartile','FemaleLowerMiddleQuartile','FemaleUpperMiddleQuartile','FemaleTopQuartile')]
@@ -49,30 +53,33 @@ for c in ftse:
         rec['entitiesYear']=y
     if not rec['years']: rec['ukStatus']='No UK employer in the group files a gender pay gap report (fewer than 250 UK staff per employer, or staff mostly outside the UK)'
     companies[key]=rec
-# index: equal-weighted average across companies with data
+# indexes: equal-weighted average across companies with data
 def avg(vals): return sum(vals)/len(vals) if vals else None
-idx_years={}
-for y in YEARS:
-    cs=[c for c in companies.values() if y in c['years']]
-    if not cs: continue
-    sec={}
-    for c in cs: sec.setdefault(c['industry'],[]).append(c['years'][y]['w'])
-    idx_years[y]=dict(headline=rd(avg([c['years'][y]['w'] for c in cs])),companiesCovered=len(cs),companiesReported=len(cs),reportedPayrollShare=1,
-        ownedPayroll=None,womenWages=None,gap=None,representationShare=None,payShare=None,
-        workforce=rd(avg([c['years'][y]['fAll'] for c in cs])),topQuartile=rd(avg([c['years'][y]['topQuartile'] for c in cs])),gapMean=rd(avg([c['years'][y]['gapMean'] for c in cs])),
-        sectors=sorted([dict(industry=k,w=rd(avg(v)),payrollShare=None,companies=len(v)) for k,v in sec.items()],key=lambda x:-x['w']))
-yoy={}
-for y0,y1 in zip(YEARS,YEARS[1:]):
-    both=[c for c in companies.values() if y0 in c['years'] and y1 in c['years'] and not c['years'][y1]['basisChange']]
-    if both:
-        a=avg([c['years'][y0]['w'] for c in both]); b=avg([c['years'][y1]['w'] for c in both])
-        yoy[f"{y0}>{y1}"]=dict(**{'from':rd(a),'to':rd(b)},change=rd(b-a),companies=len(both))
-index=dict(id='ftse100',name='FTSE 100',country='GB',market='United Kingdom',exchange='LSE',weightsAsOf='2026-10-01',
-    weighting='equal weight across companies (UK data has no payroll totals)',constituents=[dict(symbol=s,weight=None) for s in index_members],missing=[],years=idx_years,yoy=yoy)
-json.dump(companies,open('uk_companies.json','w'),separators=(',',':')); json.dump(index,open('uk_index.json','w'),separators=(',',':'))
+def make_index(ix_id,name,as_of):
+    keys=[('LSE-'+t if t in CLASH else t) for t in (c['ticker'].replace('.','') for c in ftse if ix_id in c['idx'])]
+    members=[companies[k] for k in keys]
+    idx_years={}
+    for y in YEARS:
+        cs=[c for c in members if y in c['years']]
+        if not cs: continue
+        sec={}
+        for c in cs: sec.setdefault(c['industry'],[]).append(c['years'][y]['w'])
+        idx_years[y]=dict(headline=rd(avg([c['years'][y]['w'] for c in cs])),companiesCovered=len(cs),companiesReported=len(cs),reportedPayrollShare=1,
+            ownedPayroll=None,womenWages=None,gap=None,representationShare=None,payShare=None,
+            workforce=rd(avg([c['years'][y]['fAll'] for c in cs])),topQuartile=rd(avg([c['years'][y]['topQuartile'] for c in cs])),gapMean=rd(avg([c['years'][y]['gapMean'] for c in cs])),
+            sectors=sorted([dict(industry=k,w=rd(avg(v)),payrollShare=None,companies=len(v)) for k,v in sec.items()],key=lambda x:-x['w']))
+    yoy={}
+    for y0,y1 in zip(YEARS,YEARS[1:]):
+        both=[c for c in members if y0 in c['years'] and y1 in c['years'] and not c['years'][y1]['basisChange']]
+        if both:
+            a=avg([c['years'][y0]['w'] for c in both]); b=avg([c['years'][y1]['w'] for c in both])
+            yoy[f"{y0}>{y1}"]=dict(**{'from':rd(a),'to':rd(b)},change=rd(b-a),companies=len(both))
+    return dict(id=ix_id,name=name,country='GB',market='United Kingdom',exchange='LSE',weightsAsOf=as_of,
+        weighting='equal weight across companies (UK data has no payroll totals)',constituents=[dict(symbol=k,weight=None) for k in keys],missing=[],years=idx_years,yoy=yoy)
+indexes={'ftse100':make_index('ftse100','FTSE 100','2026-10-01'),'ftse350':make_index('ftse350','FTSE 350','2026-10-01')}
+json.dump(companies,open('uk_companies.json','w'),separators=(',',':')); json.dump(indexes,open('uk_indexes.json','w'),separators=(',',':'))
 print('companies with data:',sum(1 for c in companies.values() if c['years']),'trusts:',sum(1 for c in companies.values() if c['ukStatus'] and 'trust' in c['ukStatus'].lower()))
-print({y:(v['headline'],v['companiesCovered'],v['workforce'],v['topQuartile'],v['gapMean']) for y,v in idx_years.items()})
-print(yoy)
+for ix in indexes.values(): print(ix['id'],{y:(v['headline'],v['companiesCovered']) for y,v in ix['years'].items()})
 ch=sorted([(c['years']['2025']['w']-c['years']['2024']['w'],c['name']) for c in companies.values() if '2025' in c['years'] and '2024' in c['years'] and not c['years']['2025']['basisChange']])
 print('2024>2025 n',len(ch),'up',sum(1 for d,_ in ch if d>0.0005),'down',sum(1 for d,_ in ch if d<-0.0005),'median',ch[len(ch)//2][0])
 print('top',[(n,round(d*100,1)) for d,n in ch[-4:]],'bottom',[(n,round(d*100,1)) for d,n in ch[:4]])

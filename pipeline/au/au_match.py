@@ -1,5 +1,5 @@
 import json, re
-W=json.load(open('wgea.json')); asx=json.load(open('asx200.json'))
+W=json.load(open('wgea.json')); asx=json.load(open('asx200.json'))+json.load(open('asxnext100.json'))
 STOP={'LIMITED','LTD','PTY','GROUP','HOLDINGS','HOLDING','AUSTRALIA','AUSTRALIAN','CORPORATION','CORP','THE','AND','INC','PLC','CO','COMPANY','ASIA','PACIFIC','AUSTRALASIA','INTERNATIONAL','SERVICES','OPERATIONS','ENTERPRISES','NL','TRUST','FUND','REIT','SECURITIES','PROPERTY','PROPERTIES','INDUSTRIES','RESOURCES','ENERGY','MANAGEMENT','INVESTMENTS','BANK','BANKING','GLOBAL','N.V.','NV','SA','AG','A'}
 def norm(s):
     s=re.sub(r'[^A-Z0-9 ]',' ',s.upper().replace('&',' AND '))

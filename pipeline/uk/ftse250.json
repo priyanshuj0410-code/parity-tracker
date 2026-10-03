@@ -1,0 +1,1252 @@
+[
+{
+"name": "3i Infrastructure",
+"ticker": "3IN",
+"sector": "Financial Services"
+},
+{
+"name": "4imprint",
+"ticker": "FOUR",
+"sector": "Media"
+},
+{
+"name": "Aberdeen Asia Focus",
+"ticker": "AAS",
+"sector": "Investment Trusts"
+},
+{
+"name": "Aberforth Smaller Companies Trust",
+"ticker": "ASL",
+"sector": "Investment Trusts"
+},
+{
+"name": "AEP Plantations",
+"ticker": "AEP",
+"sector": "Food Producers"
+},
+{
+"name": "Alfa Financial Software",
+"ticker": "ALFA",
+"sector": "Software and Computer Services"
+},
+{
+"name": "Allianz Technology Trust",
+"ticker": "ATT",
+"sector": "Investment Trusts"
+},
+{
+"name": "AO World",
+"ticker": "AO",
+"sector": "Retail"
+},
+{
+"name": "Applied Nutrition",
+"ticker": "APN",
+"sector": "Food Producers"
+},
+{
+"name": "Ashmore Group",
+"ticker": "ASHM",
+"sector": "Financial Services"
+},
+{
+"name": "Ashoka India Equity Investment Trust",
+"ticker": "AIE",
+"sector": "Investment Trusts"
+},
+{
+"name": "ASOS",
+"ticker": "|ASC",
+"sector": "Retailers"
+},
+{
+"name": "Atalaya Mining",
+"ticker": "ATYM",
+"sector": "Industrial Metals and Mining"
+},
+{
+"name": "Auction Technology Group",
+"ticker": "ATG",
+"sector": "Software and Computer Services"
+},
+{
+"name": "AVI Global Trust",
+"ticker": "AGT",
+"sector": "Investment Trusts"
+},
+{
+"name": "Avon Technologies",
+"ticker": "AVON",
+"sector": "Industrial Goods and Services"
+},
+{
+"name": "B&M",
+"ticker": "BME",
+"sector": "Retailers"
+},
+{
+"name": "Baillie Gifford Japan Trust",
+"ticker": "BGFD",
+"sector": "Investment Trusts"
+},
+{
+"name": "Baillie Gifford US Growth Trust",
+"ticker": "USA",
+"sector": "Investment Trusts"
+},
+{
+"name": "Baltic Classifieds",
+"ticker": "BCG",
+"sector": "Consumer Digital Services"
+},
+{
+"name": "Bankers Investment Trust",
+"ticker": "BNKR",
+"sector": "Investment Trusts"
+},
+{
+"name": "A.G. Barr",
+"ticker": "BAG",
+"sector": "Beverages"
+},
+{
+"name": "AJ Bell",
+"ticker": "AJB",
+"sector": "Financial Services"
+},
+{
+"name": "Bellway",
+"ticker": "BWY",
+"sector": "Home Construction"
+},
+{
+"name": "Berkeley Group Holdings",
+"ticker": "BKG",
+"sector": "Household goods & home construction"
+},
+{
+"name": "BH Macro",
+"ticker": "BHMG",
+"sector": "Hedge Funds"
+},
+{
+"name": "Big Yellow Group",
+"ticker": "BYG",
+"sector": "Real Estate Investment Trusts"
+},
+{
+"name": "Biopharma Credit",
+"ticker": "BPCR",
+"sector": "Investment Trusts"
+},
+{
+"name": "BlackRock Greater Europe Investment Trust",
+"ticker": "BRGE",
+"sector": "Investment Trusts"
+},
+{
+"name": "BlackRock Smaller Companies Trust",
+"ticker": "BRSC",
+"sector": "Investment Trusts"
+},
+{
+"name": "BlackRock World Mining Trust",
+"ticker": "BRWM",
+"sector": "Investment Trusts"
+},
+{
+"name": "Bloomsbury Publishing",
+"ticker": "BMY",
+"sector": "Media"
+},
+{
+"name": "Bodycote",
+"ticker": "BOY",
+"sector": "Industrial Engineering"
+},
+{
+"name": "Breedon Group",
+"ticker": "BREE",
+"sector": "Construction & Materials"
+},
+{
+"name": "Bridgepoint Group",
+"ticker": "BPT",
+"sector": "Financial Services"
+},
+{
+"name": "Brunner Investment Trust",
+"ticker": "BUT",
+"sector": "Investment Trusts"
+},
+{
+"name": "Bytes Technology Group",
+"ticker": "BYIT",
+"sector": "Aerospace & Defence"
+},
+{
+"name": "Caledonia Investments",
+"ticker": "CLDN",
+"sector": "Investment Trusts"
+},
+{
+"name": "Capital Gearing Trust",
+"ticker": "CGT",
+"sector": "Investment Trusts"
+},
+{
+"name": "Ceres Power",
+"ticker": "CWR",
+"sector": "Alternative Energy"
+},
+{
+"name": "Chemring Group",
+"ticker": "CHG",
+"sector": "Aerospace & Defence"
+},
+{
+"name": "Chesnara",
+"ticker": "CSN",
+"sector": "Life Insurance"
+},
+{
+"name": "City of London Investment Trust",
+"ticker": "CTY",
+"sector": "Investment Trusts"
+},
+{
+"name": "Clarkson",
+"ticker": "CKN",
+"sector": "Industrial Transportation"
+},
+{
+"name": "Close Brothers Group",
+"ticker": "CBG",
+"sector": "Financial Services"
+},
+{
+"name": "CMC Markets",
+"ticker": "CMCX",
+"sector": "Financial Services"
+},
+{
+"name": "Coats Group",
+"ticker": "COA",
+"sector": "Consumer Staples"
+},
+{
+"name": "Cordiant Digital Infrastructure",
+"ticker": "CORD",
+"sector": "Investment Trusts"
+},
+{
+"name": "Costain Group",
+"ticker": "COST",
+"sector": "Engineering and Construction"
+},
+{
+"name": "Cranswick",
+"ticker": "CWK",
+"sector": "Food Producers"
+},
+{
+"name": "Currys",
+"ticker": "CURY",
+"sector": "Retailers"
+},
+{
+"name": "CVS Group",
+"ticker": "CVSG",
+"sector": "Health Care"
+},
+{
+"name": "Derwent London",
+"ticker": "DLN",
+"sector": "Real Estate Investment Trusts"
+},
+{
+"name": "discoverIE",
+"ticker": "DSCV",
+"sector": "Support Services"
+},
+{
+"name": "Domino's Pizza",
+"ticker": "DOM",
+"sector": "Travel & Leisure"
+},
+{
+"name": "Drax Group",
+"ticker": "DRX",
+"sector": "Electricity"
+},
+{
+"name": "Dr. Martens",
+"ticker": "DOCS",
+"sector": "Retailers"
+},
+{
+"name": "Dunelm Group",
+"ticker": "DNLM",
+"sector": "Retailers"
+},
+{
+"name": "Edinburgh Investment Trust",
+"ticker": "EDIN",
+"sector": "Investment Trusts"
+},
+{
+"name": "Edinburgh Worldwide Investment Trust",
+"ticker": "EWI",
+"sector": "Investment Trusts"
+},
+{
+"name": "Elementis",
+"ticker": "ELM",
+"sector": "Chemicals"
+},
+{
+"name": "Energean",
+"ticker": "ENOG",
+"sector": "Oil & Gas Producers"
+},
+{
+"name": "Entain",
+"ticker": "ENT",
+"sector": "Travel & leisure"
+},
+{
+"name": "European Smaller Companies Trust",
+"ticker": "ESCT",
+"sector": "Investment Trusts"
+},
+{
+"name": "Eurowag",
+"ticker": "EWG",
+"sector": "Financial Services"
+},
+{
+"name": "Fidelity China Special Situations",
+"ticker": "FCSS",
+"sector": "Investment Trusts"
+},
+{
+"name": "Fidelity Emerging Markets",
+"ticker": "FEML",
+"sector": "Investment Trusts"
+},
+{
+"name": "Fidelity European Trust",
+"ticker": "FEV",
+"sector": "Investment Trusts"
+},
+{
+"name": "Fidelity Special Values",
+"ticker": "FSV",
+"sector": "Investment Trusts"
+},
+{
+"name": "Finsbury Growth & Income Trust",
+"ticker": "FGT",
+"sector": "Equity Investments"
+},
+{
+"name": "FirstGroup",
+"ticker": "FGP",
+"sector": "Travel & Leisure"
+},
+{
+"name": "Foresight Environmental Infrastructure",
+"ticker": "FGEN",
+"sector": "Investment Trusts"
+},
+{
+"name": "Foresight Group",
+"ticker": "FSG",
+"sector": "Investment Banking and Brokerage Services"
+},
+{
+"name": "Frasers Group",
+"ticker": "FRAS",
+"sector": "Retailers"
+},
+{
+"name": "Funding Circle",
+"ticker": "FCH",
+"sector": "Financial Services"
+},
+{
+"name": "Galliford Try",
+"ticker": "GFRD",
+"sector": "Construction"
+},
+{
+"name": "Gamma Communications",
+"ticker": "GAMA",
+"sector": "Telecommunications"
+},
+{
+"name": "GCP Infrastructure Investments",
+"ticker": "GCP",
+"sector": "General Financial"
+},
+{
+"name": "Genuit Group",
+"ticker": "GEN",
+"sector": "Construction & Materials"
+},
+{
+"name": "Genus",
+"ticker": "GNS",
+"sector": "Pharmaceuticals & Biotechnology"
+},
+{
+"name": "GlobalData",
+"ticker": "DATA",
+"sector": "Industrial Goods and Services"
+},
+{
+"name": "Global Smaller Companies Trust",
+"ticker": "GSCT",
+"sector": "Investment Trusts"
+},
+{
+"name": "Goodwin",
+"ticker": "GDWN",
+"sector": "General Industrials"
+},
+{
+"name": "Grafton Group",
+"ticker": "GFTU",
+"sector": "Support Services"
+},
+{
+"name": "Grainger",
+"ticker": "GRI",
+"sector": "Real Estate Investment & Services"
+},
+{
+"name": "Great Portland Estates",
+"ticker": "GPE",
+"sector": "Real Estate Investment Trusts"
+},
+{
+"name": "Greencoat UK Wind",
+"ticker": "UKW",
+"sector": "Gas, Water & Multiutilities"
+},
+{
+"name": "Greencore",
+"ticker": "GNC",
+"sector": "Food, Beverage and Tobacco"
+},
+{
+"name": "Greggs",
+"ticker": "GRG",
+"sector": "Food & Drug Retailers"
+},
+{
+"name": "Halfords",
+"ticker": "HFD",
+"sector": "Retailers"
+},
+{
+"name": "Hammerson",
+"ticker": "HMSO",
+"sector": "Real Estate Investment Trusts"
+},
+{
+"name": "Hansa Investment Company",
+"ticker": "HANA",
+"sector": "Investment Trusts"
+},
+{
+"name": "Harbour Energy",
+"ticker": "HBR",
+"sector": "Oil & Gas Producers"
+},
+{
+"name": "HarbourVest Global Private Equity",
+"ticker": "HVPE",
+"sector": "Equity Investments"
+},
+{
+"name": "Harworth Group",
+"ticker": "HWG",
+"sector": "Real Estate"
+},
+{
+"name": "Hays",
+"ticker": "HAS",
+"sector": "Support Services"
+},
+{
+"name": "Helios Towers",
+"ticker": "HTWS",
+"sector": "Telecomms"
+},
+{
+"name": "Henderson Far East Income",
+"ticker": "HFEL",
+"sector": "Investment Trusts"
+},
+{
+"name": "Henderson Smaller Companies Investment Trust",
+"ticker": "HSL",
+"sector": "Investment Trusts"
+},
+{
+"name": "Herald Investment Trust",
+"ticker": "HRI",
+"sector": "Investment Trusts"
+},
+{
+"name": "Hg Capital Trust",
+"ticker": "HGT",
+"sector": "Investment Trusts"
+},
+{
+"name": "HICL Infrastructure Company",
+"ticker": "HICL",
+"sector": "Investment Trusts"
+},
+{
+"name": "Hikma Pharmaceuticals",
+"ticker": "HIK",
+"sector": "Pharmaceuticals and Biotechnology"
+},
+{
+"name": "Hill & Smith",
+"ticker": "HILS",
+"sector": "Industrial Engineering"
+},
+{
+"name": "Hilton Food Group",
+"ticker": "HFG",
+"sector": "Food Producers"
+},
+{
+"name": "Hochschild Mining",
+"ticker": "HOC",
+"sector": "Basic Resources"
+},
+{
+"name": "Hollywood Bowl Group",
+"ticker": "BOWL",
+"sector": "Travel and leisure"
+},
+{
+"name": "Hunting",
+"ticker": "HTG",
+"sector": "Oil, Gas and Coal"
+},
+{
+"name": "ICG Enterprise Trust",
+"ticker": "ICGT",
+"sector": "Investment Trusts"
+},
+{
+"name": "Inchcape",
+"ticker": "INCH",
+"sector": "Retailers"
+},
+{
+"name": "IntegraFin Holdings",
+"ticker": "IHP",
+"sector": "Financial Services"
+},
+{
+"name": "International Public Partnerships",
+"ticker": "INPP",
+"sector": "Financial Services"
+},
+{
+"name": "International Workplace Group",
+"ticker": "IWG",
+"sector": "Support Services"
+},
+{
+"name": "Invesco Asia Dragon Trust",
+"ticker": "IAD",
+"sector": "Investment Trusts"
+},
+{
+"name": "IP Group",
+"ticker": "IPO",
+"sector": "Financial Services"
+},
+{
+"name": "ITV",
+"ticker": "ITV",
+"sector": "Media"
+},
+{
+"name": "Johnson Matthey",
+"ticker": "JMAT",
+"sector": "Chemicals"
+},
+{
+"name": "Johnson Service Group",
+"ticker": "JSG",
+"sector": "Industrial Support Services"
+},
+{
+"name": "JPMorgan American Investment Trust",
+"ticker": "JAM",
+"sector": "Investment Trusts"
+},
+{
+"name": "JPMorgan Claverhouse Investment Trust",
+"ticker": "JCH",
+"sector": "Investment Trusts"
+},
+{
+"name": "JPMorgan Emerging Markets Dividend Income",
+"ticker": "JEMI",
+"sector": "Investment Trusts"
+},
+{
+"name": "JPMorgan Emerging Markets Growth & Income",
+"ticker": "JMGI",
+"sector": "Investment Trusts"
+},
+{
+"name": "JPMorgan European Discovery",
+"ticker": "JEDT",
+"sector": "Investment Trusts"
+},
+{
+"name": "JPMorgan European Growth & Income",
+"ticker": "JEGI",
+"sector": "Investment Trusts"
+},
+{
+"name": "JPMorgan Global Growth & Income",
+"ticker": "JGGI",
+"sector": "Investment Trusts"
+},
+{
+"name": "JPMorgan Japanese Investment Trust",
+"ticker": "JFJ",
+"sector": "Investment Trusts"
+},
+{
+"name": "Jupiter Fund Management",
+"ticker": "JUP",
+"sector": "Financial Services"
+},
+{
+"name": "Kainos",
+"ticker": "KNOS",
+"sector": "Software & Computer Services"
+},
+{
+"name": "Keller Group",
+"ticker": "KLR",
+"sector": "Construction & Materials"
+},
+{
+"name": "Kier Group",
+"ticker": "KIE",
+"sector": "Construction & Materials"
+},
+{
+"name": "Lancashire Holdings",
+"ticker": "LRE",
+"sector": "Nonlife Insurance"
+},
+{
+"name": "Law Debenture",
+"ticker": "LWDB",
+"sector": "Investment Trusts"
+},
+{
+"name": "Man Group",
+"ticker": "EMG",
+"sector": "Investment Trusts"
+},
+{
+"name": "ME Group International",
+"ticker": "MEGP",
+"sector": "Leisure Goods"
+},
+{
+"name": "Mercantile Investment Trust",
+"ticker": "MRC",
+"sector": "Collective Investments"
+},
+{
+"name": "Merchants Trust",
+"ticker": "MRCH",
+"sector": "Investment Trusts"
+},
+{
+"name": "Meridian Mining",
+"ticker": "MNO",
+"sector": "Industrial Metals and Mining"
+},
+{
+"name": "Metro Bank",
+"ticker": "MTRO",
+"sector": "Banks"
+},
+{
+"name": "Michael Page",
+"ticker": "PAGE",
+"sector": "Support Services"
+},
+{
+"name": "Mitchells & Butlers",
+"ticker": "MAB",
+"sector": "Travel & Leisure"
+},
+{
+"name": "Mitie",
+"ticker": "MTO",
+"sector": "Support Services"
+},
+{
+"name": "Molten Ventures",
+"ticker": "GROW",
+"sector": "Financial Services"
+},
+{
+"name": "Mondi",
+"ticker": "MNDI",
+"sector": "Containers & packaging"
+},
+{
+"name": "Monks Investment Trust",
+"ticker": "MNKS",
+"sector": "Investment Trusts"
+},
+{
+"name": "MONY Group",
+"ticker": "MONY",
+"sector": "Media"
+},
+{
+"name": "Moonpig",
+"ticker": "MOON",
+"sector": "Retailers"
+},
+{
+"name": "Morgan Advanced Materials",
+"ticker": "MGAM",
+"sector": "Electronic & Electrical Equipment"
+},
+{
+"name": "Morgan Sindall Group",
+"ticker": "MGNS",
+"sector": "Construction & Materials"
+},
+{
+"name": "Murray Income Trust",
+"ticker": "MUT",
+"sector": "Investment Trusts"
+},
+{
+"name": "Murray International Trust",
+"ticker": "MYI",
+"sector": "Investment Trusts"
+},
+{
+"name": "NCC Group",
+"ticker": "NCC",
+"sector": "Software and Computer Services"
+},
+{
+"name": "Neuberger Private Equity Partners",
+"ticker": "NBPE",
+"sector": "Collective Investments"
+},
+{
+"name": "Ninety One",
+"ticker": "N91",
+"sector": "Financial Services"
+},
+{
+"name": "North American Income Trust",
+"ticker": "NAIT",
+"sector": "Investment Trusts"
+},
+{
+"name": "North Atlantic Smaller Companies Investment Trust",
+"ticker": "NAS",
+"sector": "Investment Trusts"
+},
+{
+"name": "Oakley Capital Investments",
+"ticker": "OCI",
+"sector": "Investment Trusts"
+},
+{
+"name": "Ocado Group",
+"ticker": "OCDO",
+"sector": "Food & drug retailers"
+},
+{
+"name": "OSB Group",
+"ticker": "OSB",
+"sector": "Banks"
+},
+{
+"name": "Oxford Biomedica",
+"ticker": "OXB",
+"sector": "Pharmaceuticals and Biotechnology"
+},
+{
+"name": "Oxford Instruments",
+"ticker": "OXIG",
+"sector": "Electronic & Electrical Equipment"
+},
+{
+"name": "Oxford Nanopore Technologies",
+"ticker": "ONT",
+"sector": "Health Care"
+},
+{
+"name": "Pacific Horizon Investment Trust",
+"ticker": "PHI",
+"sector": "Investment Trusts"
+},
+{
+"name": "Pan African Resources",
+"ticker": "PAF",
+"sector": "Precious Metals and Mining"
+},
+{
+"name": "Pantheon Infrastructure",
+"ticker": "PINT",
+"sector": "Investment Trusts"
+},
+{
+"name": "Pantheon International",
+"ticker": "PIN",
+"sector": "Equity Investments"
+},
+{
+"name": "Paragon Banking Group",
+"ticker": "PAG",
+"sector": "Financial Services"
+},
+{
+"name": "Partners Group Private Equity",
+"ticker": "PEY",
+"sector": "Investment Trusts"
+},
+{
+"name": "Patria Private Equity Trust",
+"ticker": "PPET",
+"sector": "Financial Services"
+},
+{
+"name": "Pennon Group",
+"ticker": "PNN",
+"sector": "Gas, Water & Multiutilities"
+},
+{
+"name": "Persimmon",
+"ticker": "PSN",
+"sector": "Household goods & home construction"
+},
+{
+"name": "Personal Assets Trust",
+"ticker": "PNL",
+"sector": "Investment Trusts"
+},
+{
+"name": "Pets at Home",
+"ticker": "PETS",
+"sector": "Retailers"
+},
+{
+"name": "Pinewood Technologies",
+"ticker": "PINE",
+"sector": "Software and Computer Services"
+},
+{
+"name": "Playtech",
+"ticker": "PTEC",
+"sector": "Software & Computer Services"
+},
+{
+"name": "Plus500",
+"ticker": "PLUS",
+"sector": "Financial Services"
+},
+{
+"name": "Polar Capital Global Healthcare Trust",
+"ticker": "PCGH",
+"sector": "Investment Trusts"
+},
+{
+"name": "Pollen Street Group",
+"ticker": "POLN",
+"sector": "Financial Services"
+},
+{
+"name": "PPHE Hotel Group",
+"ticker": "PPH",
+"sector": "Travel and Leisure"
+},
+{
+"name": "Premier Foods",
+"ticker": "PFD",
+"sector": "Food & Drug Retailers"
+},
+{
+"name": "Primary Health Properties",
+"ticker": "PHP",
+"sector": "Real Estate Investment Trusts"
+},
+{
+"name": "Princes Group",
+"ticker": "PRN",
+"sector": "Food and drink"
+},
+{
+"name": "Qinetiq",
+"ticker": "QQ",
+"sector": "Aerospace & Defence"
+},
+{
+"name": "Quilter",
+"ticker": "QLT",
+"sector": "Financial Services"
+},
+{
+"name": "Rank Group",
+"ticker": "RNK",
+"sector": "Travel and Leisure"
+},
+{
+"name": "Raspberry Pi Holdings",
+"ticker": "RPI",
+"sector": "Technology"
+},
+{
+"name": "Rathbones",
+"ticker": "RAT",
+"sector": "Financial Services"
+},
+{
+"name": "Renishaw",
+"ticker": "RSW",
+"sector": "Electronic & Electrical Equipment"
+},
+{
+"name": "RHI Magnesita",
+"ticker": "RHIM",
+"sector": "Support Services"
+},
+{
+"name": "Rightmove",
+"ticker": "RMV",
+"sector": "Media"
+},
+{
+"name": "RIT Capital Partners",
+"ticker": "RCP",
+"sector": "Investment Trusts"
+},
+{
+"name": "Rosebank Industries",
+"ticker": "ROSE",
+"sector": "Industrial Goods and Services"
+},
+{
+"name": "Rotork",
+"ticker": "ROR",
+"sector": "Industrial Engineering"
+},
+{
+"name": "RS Group",
+"ticker": "RS1",
+"sector": "Industrials"
+},
+{
+"name": "RTW Biotech Opportunities",
+"ticker": "RTW",
+"sector": "Investment Trusts"
+},
+{
+"name": "Ruffer Investment Company",
+"ticker": "RICA",
+"sector": "Investment Trusts"
+},
+{
+"name": "Safestore",
+"ticker": "SAFE",
+"sector": "Real Estate Investment Trusts"
+},
+{
+"name": "Saga",
+"ticker": "SAGA",
+"sector": "Travel and Leisure"
+},
+{
+"name": "Savills",
+"ticker": "SVS",
+"sector": "Real Estate Investment & Services"
+},
+{
+"name": "Schiehallion Fund",
+"ticker": "MNTN",
+"sector": "Investment Trusts"
+},
+{
+"name": "Schroder Asian Total Return Investment Company",
+"ticker": "ATR",
+"sector": "Investment Trusts"
+},
+{
+"name": "Schroder AsiaPacific Fund",
+"ticker": "SDP",
+"sector": "Investment Trusts"
+},
+{
+"name": "Schroder Oriental Income Fund",
+"ticker": "SOI",
+"sector": "Financial Services"
+},
+{
+"name": "Scottish American Investment Company",
+"ticker": "SAIN",
+"sector": "Investment Trusts"
+},
+{
+"name": "SDCL Efficiency Income Trust",
+"ticker": "SEIT",
+"sector": "Energy"
+},
+{
+"name": "Senior",
+"ticker": "SNR",
+"sector": "Aerospace & Defence"
+},
+{
+"name": "Sequoia Economic Infrastructure Income Fund",
+"ticker": "SEQI",
+"sector": "Financial Services"
+},
+{
+"name": "Seraphim Space Investment Trust",
+"ticker": "SSIT",
+"sector": "Investment Trusts"
+},
+{
+"name": "Serco",
+"ticker": "SRP",
+"sector": "Support Services"
+},
+{
+"name": "Shaftesbury Capital",
+"ticker": "SHC",
+"sector": "Real Estate Investment Trusts"
+},
+{
+"name": "Shawbrook Bank",
+"ticker": "SHAW",
+"sector": "Banking"
+},
+{
+"name": "Sirius Real Estate",
+"ticker": "SRE",
+"sector": "Real Estate"
+},
+{
+"name": "Softcat",
+"ticker": "SCT",
+"sector": "Software & Computer Services"
+},
+{
+"name": "Spire Healthcare",
+"ticker": "SPI",
+"sector": "Health Care Equipment & Services"
+},
+{
+"name": "SSP Group",
+"ticker": "SSPG",
+"sector": "Retailers"
+},
+{
+"name": "Supermarket Income REIT",
+"ticker": "SUPR",
+"sector": "Real Estate Investment Trusts"
+},
+{
+"name": "Syncona",
+"ticker": "SYNC",
+"sector": "Pharmaceuticals & Biotechnology"
+},
+{
+"name": "Target Healthcare REIT",
+"ticker": "THRL",
+"sector": "Real Estate Investment Trusts"
+},
+{
+"name": "Tate & Lyle",
+"ticker": "TATE",
+"sector": "Food Producers"
+},
+{
+"name": "Taylor Wimpey",
+"ticker": "TW",
+"sector": "Household goods & home construction"
+},
+{
+"name": "TBC Bank",
+"ticker": "TBCG",
+"sector": "Banks"
+},
+{
+"name": "Telecom Plus",
+"ticker": "TEP",
+"sector": "Telecomms"
+},
+{
+"name": "Temple Bar Investment Trust",
+"ticker": "TMPL",
+"sector": "Collective Investments"
+},
+{
+"name": "Templeton Emerging Markets Investment Trust",
+"ticker": "TEM",
+"sector": "Investment Trusts"
+},
+{
+"name": "The Renewables Infrastructure Group",
+"ticker": "TRIG",
+"sector": "Investment Trusts"
+},
+{
+"name": "THG",
+"ticker": "THG",
+"sector": "Personal Products"
+},
+{
+"name": "TP ICAP",
+"ticker": "TCAP",
+"sector": "Support Services"
+},
+{
+"name": "Trainline",
+"ticker": "TRN",
+"sector": "Industrial Transportation"
+},
+{
+"name": "Travis Perkins",
+"ticker": "TPK",
+"sector": "Support Services"
+},
+{
+"name": "TR Property Investment Trust",
+"ticker": "TRY",
+"sector": "Investment Trusts"
+},
+{
+"name": "Trustpilot",
+"ticker": "TRST",
+"sector": "Technology"
+},
+{
+"name": "Twentyfour Income Fund",
+"ticker": "TFIF",
+"sector": "Investment Trusts"
+},
+{
+"name": "Unite Group",
+"ticker": "UTG",
+"sector": "Real estate investment trusts"
+},
+{
+"name": "Utilico Emerging Markets",
+"ticker": "UEM",
+"sector": "Investment Trusts"
+},
+{
+"name": "Vesuvius",
+"ticker": "VSVS",
+"sector": "General Industrials"
+},
+{
+"name": "Victrex",
+"ticker": "VCT",
+"sector": "Chemicals"
+},
+{
+"name": "Vietnam Enterprise Investments",
+"ticker": "VEIL",
+"sector": "General Financial"
+},
+{
+"name": "VinaCapital Vietnam Opportunity Fund",
+"ticker": "VOF",
+"sector": "General Financial"
+},
+{
+"name": "Vistry Group",
+"ticker": "VTY",
+"sector": "Home Construction"
+},
+{
+"name": "Volex",
+"ticker": "VLX",
+"sector": "Industrial Goods and Services"
+},
+{
+"name": "Volution Group",
+"ticker": "FAN",
+"sector": "Construction & Materials"
+},
+{
+"name": "Watches of Switzerland",
+"ticker": "WOSG",
+"sector": "Personal Goods"
+},
+{
+"name": "Wetherspoons",
+"ticker": "JDW",
+"sector": "Travel & Leisure"
+},
+{
+"name": "WHSmith",
+"ticker": "SMWH",
+"sector": "Retailers"
+},
+{
+"name": "Wickes",
+"ticker": "WIX",
+"sector": "Retailers"
+},
+{
+"name": "Wizz Air",
+"ticker": "WIZZ",
+"sector": "Travel & Leisure"
+},
+{
+"name": "Workspace Group",
+"ticker": "WKP",
+"sector": "Real Estate Investment Trusts"
+},
+{
+"name": "Worldwide Healthcare Trust",
+"ticker": "WWH",
+"sector": "Investment Trusts"
+},
+{
+"name": "XP Power",
+"ticker": "XPP",
+"sector": "Industrial Goods and Services"
+},
+{
+"name": "XPS Pensions",
+"ticker": "XPS",
+"sector": "Financial Services"
+},
+{
+"name": "Zigup",
+"ticker": "ZIG",
+"sector": "Support Services"
+}
+]
