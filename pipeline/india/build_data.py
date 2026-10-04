@@ -86,11 +86,6 @@ for s,i in info.items():
         indexes=[k for k,v in idx_members.items() if s in v],
         marketCapCr=round(mcap[s]/1e7) if s in mcap else None,publicFloatPct=shp.get(s,{}).get('public'),
         years=years,filings={f"{int(k)-1}-{k[2:]}":v for k,v in sorted(fl.items())})
-# Why a company has no figure for the latest year, read from its own documents (listed too recently, financial year
-# not ended, no employees): an input, pulled with pnpm data inputs pull (decision 0015).
-REASONS=os.path.join(HERE,'reasons.json')
-for s_,r_ in (json.load(open(REASONS)) if os.path.exists(REASONS) else {}).items():
-    if s_ in companies and companies[s_]['years'].get(YEARS[-1],{}).get('w') is None: companies[s_]['noDataReason']=r_
 import statistics
 for s_,c in companies.items():
     vals={y:v['w'] for y,v in c['years'].items() if v.get('w') is not None}
@@ -166,6 +161,12 @@ for k,mem in idx_members.items():
         constituents=[dict(symbol=s,weight=rd(w,5)) for s,w in sorted(wts.items(),key=lambda x:-x[1])],
         missing=[s for s in mem if s not in wts],years=res,yoy=yoy)
     print(k,len(wts),{y:(v['headline'],v['companiesCovered'],v['reportedPayrollShare']) for y,v in res.items()}); print('   yoy',yoy)
+# Why a company has no figure for the latest year, read from its own documents (listed too recently, financial year
+# not ended, no employees, a filing its own tables contradict): an input (decision 0015). Applied last, after the rules
+# above have dropped any figure.
+REASONS=os.path.join(HERE,'reasons.json')
+for s_,r_ in (json.load(open(REASONS)) if os.path.exists(REASONS) else {}).items():
+    if s_ in companies and companies[s_]['years'].get(YEARS[-1],{}).get('w') is None: companies[s_]['noDataReason']=r_
 RENAME={'BBOX':'NSE-BBOX'}  # NSE symbols that clash with another market's (BBOX is also Tritax Big Box in the FTSE 100)
 for a_,b_ in RENAME.items():
     if a_ in companies:
