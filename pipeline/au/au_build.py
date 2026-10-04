@@ -1,4 +1,4 @@
-import json, re
+import json, os, re
 W=json.load(open('wgea.json')); auto=json.load(open('au_auto.json'))
 # ASX top 300: the ASX 200 plus the next 100 companies by market value in ASX's own directory (3 October 2026),
 # as S&P does not publish S&P/ASX 300 membership freely.
@@ -6,6 +6,8 @@ asx=[dict(a,idx=['asx200','asxtop300']) for a in json.load(open('asx200.json'))]
 # Manual fixes to au_match.py's automatic matches: an input, pulled with pnpm data inputs pull.
 X=json.load(open('au_overrides.json'))
 OVR={k:tuple(v) for k,v in X['match'].items()}; REJECT=set(X['reject']); FUNDS=set(X['funds'])
+# Company-report fallbacks and verified reasons, keyed by ASX code: an input (decision 0015).
+REPORTS=json.load(open('au_reports.json')) if os.path.exists('au_reports.json') else dict(figures={},reasons={})
 SIZE={'<250':175,'250-499':375,'500-999':750,'1000-4999':3000,'5000+':10000}
 G={r[0]:r for r in W['groups']}; E={r[0]:r for r in W['emps']}
 heads={}
@@ -25,7 +27,7 @@ for a in asx:
     if code in OVR: m=OVR[code]
     elif code not in REJECT and auto.get(a['code'],{}).get('match'): m=(auto[a['code']]['kind'],auto[a['code']]['match'])
     if not m:
-        rec['noDataReason']=('Investment company, fund or externally managed trust: few or no employees of its own' if code in FUNDS
+        rec['noDataReason']=REPORTS['reasons'].get(code) or ('Investment company, fund or externally managed trust: few or no employees of its own' if code in FUNDS
             else 'No Australian employer in the group reports to WGEA (fewer than 100 Australian staff, or operations mostly outside Australia)')
         companies[key]=rec; continue
     kind,name=m
