@@ -1,7 +1,9 @@
-import csv, re, json, glob
+import csv, re, json, glob, os
 # FTSE name to UK employer regexes: an input, pulled with pnpm data inputs pull.
 U=json.load(open('uk_map.json'))
 MAP,TRUSTS,MAP250,TRUSTS250=U['map'],set(U['trusts']),U['map250'],set(U['trusts250'])
+# Company-report fallbacks and verified reasons, keyed by FTSE name: an input (decision 0015).
+REPORTS=json.load(open('uk_reports.json')) if os.path.exists('uk_reports.json') else dict(figures={},reasons={})
 ftse=[dict(c,idx=['ftse100','ftse350']) for c in json.load(open('ftse100.json'))]+[dict(c,idx=['ftse350']) for c in json.load(open('ftse250.json'))]
 # FTSE 250 tickers that are also NSE symbols get an exchange prefix.
 CLASH={'NCC','RHIM'}
@@ -54,6 +56,8 @@ for c in ftse:
         rec['entities']=[dict(name=e['name'],size=e['size'],link=e['link']) for e in sorted(ents,key=lambda e:-e['n'])]
         rec['entitiesYear']=y
     if not rec['years']: rec['ukStatus']='No UK employer in the group files a gender pay gap report (fewer than 250 UK staff per employer, or staff mostly outside the UK)'
+    # A verified reason, read from the company's own documents, for a latest year with no filing.
+    if n in REPORTS['reasons'] and YEARS[-1] not in rec['years']: rec['ukStatus']=REPORTS['reasons'][n]
     companies[key]=rec
 # indexes: equal-weighted average across companies with data
 def avg(vals): return sum(vals)/len(vals) if vals else None
