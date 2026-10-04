@@ -1,5 +1,6 @@
 import { BASIS, marketName, pointOf } from './lib/compare'
-import { INDEX_ORDER, companies, indexMarket, indexes, marketOf, simulations } from './lib/data'
+import { INDEX_ORDER, companies, indexMarket, indexes, loadAll, marketOf, simulations, type Core } from './lib/data'
+import type { Company } from './types'
 import { companyFile } from './feeds/data-api'
 import { pct } from './lib/format'
 import { href } from './lib/paths'
@@ -16,8 +17,9 @@ const COMPARE: Record<string, string> = {
 
 const dated = (label: string) => (label === 'latest' ? '' : label)
 
-/** Every page the build writes as its own HTML file, so a shared link previews with that page's title and figures. */
-export function pages(): PageMeta[] {
+/** Every page's title and description for a release, so a shared link previews with that page's own figures. Publish passes the release in. */
+export function pages(core: Core, all: Record<string, Company>): PageMeta[] {
+  loadAll(core, all)
   const out: PageMeta[] = [
     { path: href('companies'), title: 'Companies', description: `Women's share of pay at ${Object.keys(companies).length} companies across ${INDEX_ORDER.length} indexes, from their own filings.` },
     { path: href('method'), title: 'Method', description: "How Nivel measures women's share of the payroll you own, and its limits." },

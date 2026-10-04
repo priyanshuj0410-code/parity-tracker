@@ -23,7 +23,7 @@ export const release = { id: '', collected: '' }
 export const sectorBySymbol: Record<string, string> = {}
 export const logoFiles: Record<string, string> = {}
 
-interface Core {
+export interface Core {
   release: { id: string; collected: string }
   markets: Record<string, MarketRecord>
   indexes: Record<string, IndexData>
@@ -279,21 +279,19 @@ export function indexName(id: string): string {
   return indexes[id]?.name ?? id
 }
 
-// Start-up, last so the tables above exist. Publish builds page titles with the app's code from the release
-// files it writes into src/data (scripts/data/release.mjs); the browser loads the release over the network.
-if (import.meta.env.SSR) {
-  const json = async (load: () => Promise<{ default: unknown }>) => (await load()).default
-  takeCore({
-    release: (await json(() => import('../data/release.json'))) as Core['release'],
-    markets: (await json(() => import('../data/markets.json'))) as Core['markets'],
-    indexes: (await json(() => import('../data/indexes.json'))) as Core['indexes'],
-    simulations: (await json(() => import('../data/simulations.json'))) as Core['simulations'],
-    sectors: (await json(() => import('../data/sectors.json'))) as Core['sectors'],
-    logos: (await json(() => import('../data/logos.json'))) as Core['logos'],
-  })
-  Object.assign(companies, await json(() => import('../data/companies.json')))
-  done.add('core').add('companies')
-} else {
+/**
+ * Everything at once, for publish: it builds page titles with the app's own code (src/prerender-routes.ts)
+ * from the release it is assembling, passed in rather than read from files, so no app source imports data.
+ */
+export function loadAll(core: Core, all: Record<string, Company>) {
+  takeCore(core)
+  landed('core')
+  Object.assign(companies, all)
+  landed('companies')
+}
+
+// Start-up in the browser, last so the tables above exist: the release loads over the network.
+if (!import.meta.env.SSR) {
   window.addEventListener('online', retryFailed)
   load('core')
     .then(() => new Promise((r) => ('requestIdleCallback' in window ? requestIdleCallback(r, { timeout: 2000 }) : setTimeout(r, 1000))))

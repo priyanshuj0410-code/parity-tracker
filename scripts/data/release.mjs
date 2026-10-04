@@ -5,7 +5,7 @@
  */
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { copyFileSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir, userInfo } from 'node:os'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
@@ -119,13 +119,11 @@ function report({ companies, indexes, markets }, base) {
  * Every page's title and description, worked out by the app's own code (src/prerender-routes.ts) from the
  * assembled release, for the page function (api/page.js). Company tabs share their company's entry.
  */
-async function pageMeta(dir, release) {
-  for (const name of ['companies', 'indexes', 'markets', 'simulations', 'sectors', 'logos']) copyFileSync(join(dir, `${name}.json`), `${DATA}/${name}.json`)
-  writeFileSync(`${DATA}/release.json`, release)
+async function pageMeta(core, companies) {
   execFileSync('npx', ['vite', 'build', '--ssr', 'src/prerender-routes.ts', '--outDir', 'node_modules/.prerender', '--logLevel', 'error'], { stdio: 'inherit' })
   const { pages } = await import(`${pathToFileURL('node_modules/.prerender/prerender-routes.js')}?t=${Date.now()}`)
   const out = { tabs: {}, paths: {}, companies: {} }
-  for (const p of pages()) {
+  for (const p of pages(core, companies)) {
     const path = p.path.split('/').map(decodeURIComponent).join('/')   // keys decoded: M&M, not M%26M
     const m = path.match(/^\/company\/([^/]+)(?:\/([^/]+))?$/)
     if (!m) out.paths[path] = [p.title, p.description]
@@ -182,7 +180,7 @@ export async function publish({ collected, approveFeed = false }) {
     .map(([p, text]) => [p.slice(3, -5), { bytes: Buffer.byteLength(text), sha256: createHash('sha256').update(text).digest('hex') }]))
   files['v1/manifest.json'] = JSON.stringify(buildManifest({ id, collected }, meta), null, 2) + '\n'
   files['app/core.json'] = JSON.stringify({ release: { id, collected }, markets, indexes, simulations: data.simulations, sectors: JSON.parse(read('sectors')), logos: data.logos })
-  files['app/pages.json'] = JSON.stringify(await pageMeta(dir, files[`${DATA}/release.json`]))
+  files['app/pages.json'] = JSON.stringify(await pageMeta(JSON.parse(files['app/core.json']), companies))
   files['feeds/spot/v1.json'] = JSON.stringify({ kind: 'nivel-spot-feed', version: 1, generatedAt: new Date().toISOString(), dataAsOf: collected, items: spot }, null, 2) + '\n'
   files['feeds/spot/v1.schema.json'] = JSON.stringify(SPOT_SCHEMA, null, 2) + '\n'
   rmSync(dir, { recursive: true })
