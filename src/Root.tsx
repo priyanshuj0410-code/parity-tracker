@@ -37,7 +37,8 @@ const onConnection = (cb: () => void) => {
   return () => { window.removeEventListener('online', cb); window.removeEventListener('offline', cb) }
 }
 
-const SECTION: Record<string, string> = { index: '', simulation: '', company: 'companies', companies: 'companies', compare: 'compare', method: 'method' }
+const PAGED = new Set(['company', 'index', 'simulation'])
+const SECTION: Record<string, string> ={ index: '', simulation: '', company: 'companies', companies: 'companies', compare: 'compare', method: 'method' }
 
 export default function Root() {
   const route = useRoute()
@@ -49,15 +50,21 @@ export default function Root() {
   const [announce, setAnnounce] = useState('')
   const first = useRef(true)
   const where = route.join('/')
+  // The page without its section tab: switching tabs keeps the page mounted, so its head never flashes.
+  const page = route.slice(0, PAGED.has(route[0] ?? '') ? 2 : 1).join('/')
+  const lastPage = useRef(page)
   useEffect(() => {
     if (first.current) { first.current = false; return }
+    const newPage = lastPage.current !== page
+    lastPage.current = page
     const t = window.setTimeout(() => {
       setAnnounce(document.title)
-      const h1 = document.querySelector<HTMLElement>('main h1')
+      // A new page moves focus to its heading; a new tab leaves it on the tab the reader chose.
+      const h1 = newPage && document.querySelector<HTMLElement>('main h1')
       if (h1) { h1.tabIndex = -1; h1.focus({ preventScroll: true }) }
     }, 60)
     return () => window.clearTimeout(t)
-  }, [where])
+  }, [where, page])
   return (
     <>
       <a className="skip-link" href="#content" onClick={(e) => { e.preventDefault(); document.getElementById('content')?.focus() }}>Skip to content</a>
@@ -83,7 +90,7 @@ export default function Root() {
       {!online && <p className="offline-bar" role="status">{collected ? `Offline. Showing data collected ${collected}.` : 'Offline. Showing saved data.'}</p>}
       <ErrorBoundary quiet={null}><Suspense fallback={<StripSkeleton />}><MarketStrip current={route[0] === 'index' ? route[1] : undefined} /></Suspense></ErrorBoundary>
       <main id="content" tabIndex={-1} className="wrap">
-        <ErrorBoundary key={where}><Suspense fallback={<PageSkeleton />}><Page route={route} /></Suspense></ErrorBoundary>
+        <ErrorBoundary key={page} resetKey={where}><Suspense fallback={<PageSkeleton />}><Page route={route} /></Suspense></ErrorBoundary>
       </main>
       <footer className="site-footer">
         <div className="wrap">

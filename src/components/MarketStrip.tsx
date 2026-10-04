@@ -1,12 +1,16 @@
+import { useLayoutEffect, useRef } from 'react'
 import { INDEX_ORDER, indexMarket, indexes, useStage } from '../lib/data'
+import { revealInRow } from '../lib/reveal'
 import { pct } from '../lib/format'
 import { href } from '../lib/router'
 
 export function MarketStrip({ current }: { current?: string }) {
   useStage('core')
+  const row = useRef<HTMLDivElement>(null)
+  useLayoutEffect(() => revealInRow(row.current, '.strip-item.on', 32), [current])
   return (
     <nav className="strip" aria-label="Indexes">
-      <div className="wrap strip-row">
+      <div className="wrap strip-row" ref={row}>
         {INDEX_ORDER.map((id) => {
           const ix = indexes[id]
           const m = indexMarket(ix)

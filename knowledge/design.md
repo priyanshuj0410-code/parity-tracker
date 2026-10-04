@@ -2,8 +2,9 @@
 type: design-system
 title: Nivel design system
 description: Visual and writing rules for Nivel (formerly Parity Tracker), derived from The Equal Lens brand package (minimal register) plus a validated chart palette.
-updated: 2026-10-03
+updated: 2026-10-05
 plane_issues:
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/77409619-e627-469b-8529-9a2a961f852a
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/39903f09-b70b-48dd-88c7-a10bce33c7c6
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/ccb18646-56ef-40e7-8091-87a1a83f7f23
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/f8e47e59-45e2-4e07-a743-4773f2b04774
@@ -112,19 +113,20 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
 - **Search sheet (below 900px):** the search icon opens a full-screen sheet: a 44px field (16px text, so iOS does not zoom) with a Cancel link, then up to 20 results as tall rows with logo or monogram. The page behind stops scrolling while it is open. The sheet renders in a portal on `<body>` so nothing (the tab bar included) can paint over it. No matches repeats the query and suggests a ticker, here and in the desktop dropdown.
 - **Page head:** breadcrumb, title (with a 52px logo tile on company pages), a meta line of index names ("Nifty 50 · BSE Sensex", plain links separated by middots, not chips, no "In"), then section tabs. The first section after the page head has no top rule.
 - **Title row (company pages):** the 52px logo tile, then the name (h1, line height 1.15) with the exchange and industry line 4px below it.
-- **Index strip:** a white bar under the header on every page, scrolling horizontally. Each item shows name, headline value and like-for-like change. The current index is highlighted with a tint. The right edge fades on every width to show the strip scrolls, with 20px of end padding so the last index can scroll clear of the fade. On phones the chips are 34px tall with 6px of strip above and below, so the selected chip never touches the borders, and an invisible area makes each one 44px to tap. The fade is 24px, so the next index peeks in.
+- **Index strip:** a white bar under the header on every page, scrolling horizontally. Each item shows name, headline value and like-for-like change. The current index is highlighted with a tint, and the strip scrolls itself (never the page) to bring it into view. The right edge fades on every width to show the strip scrolls, with 20px of end padding so the last index can scroll clear of the fade. On phones the chips are 34px tall with 6px of strip above and below, so the selected chip never touches the borders, and an invisible area makes each one 44px to tap. The fade is 24px, so the next index peeks in.
 - **Offline bar:** when the device is offline, a slim tint bar under the header says "Offline. Showing data collected 1 October 2026." (`role="status"`).
-- **URLs (PARITY-25):** pages have plain paths (`/company/TCS/calculations`, `/index/nifty50/companies`). Dots in tickers become underscores (`/company/EU-ADS_DE`). Links shared before October 2026 (`#/company/TCS`) redirect. The build writes one HTML file per page with its own title, description, Open Graph tags and canonical URL, so every shared link previews its own page. See [decisions/0003](decisions/0003-path-urls-and-prerendered-pages.md).
-- **Footer:** the Nivel mark, one line ("Built with The Equal Lens from companies' own legally required gender pay disclosures, collected 1 October 2026. Not investment advice."), then Report a correction and Install the app. The trademark note lives on Method.
+- **URLs (PARITY-25):** pages have plain paths (`/company/TCS/calculations`, `/index/nifty50/companies`). Dots in tickers become underscores (`/company/EU-ADS_DE`). Links shared before October 2026 (`#/company/TCS`) redirect. The page function gives every page its own title, description, Open Graph tags and canonical URL from the live release, so every shared link previews its own page. See [decisions/0003](decisions/0003-path-urls-and-prerendered-pages.md) and [decisions/0014](decisions/0014-data-separate-from-app.md).
+- **Footer:** the Nivel mark, one line ("By The Equal Lens, from companies' own gender pay filings, collected 1 October 2026. Not investment advice."), then Report a correction and Install the app. The trademark note lives on Method.
 - **Corrections:** "Report a correction" opens an email to priyanshu.jain@theequallens.com, from the footer, the Method page's Corrections section and every company's Sources tab. The subject names the company.
-- **Page change:** a 180ms opacity fade on the new page's content, off under reduced motion.
+- **Page change:** a 180ms opacity fade on the new page's content, off under reduced motion. A new page starts at the top; Back and Forward return to where the reader was.
+- **Section tab change (PARITY-82):** only the section below the tabs changes. The page head (crumbs, title, logo, tabs) stays mounted and still, the page keeps its scroll so the tabs stay under the reader's finger, the new section fades in, and focus stays on the chosen tab. The pattern of native finance apps (Robinhood, Fidelity, Koyfin on Lazyweb), where a stock's header holds still while its sections switch.
 - **Loading (PARITY-28):** until the code runs, the page shows the Nivel mark (48px, a slow pulse that is off under reduced motion) over "Loading Nivel" in `--soft`. If the code fails to load, the same spot says "Nivel could not load" with a reload link. See [decisions/0004](decisions/0004-data-as-separate-files.md).
 - **Progressive loading (PARITY-79):** after the code, each page shows as soon as its own data is in; parts that need more data hold skeletons until it lands. See [decisions/0012](decisions/0012-progressive-loading.md).
   - **Skeletons:** the content's own shape in `--tint` (12px bars with 6px radius, 26px logo squares, 30px strip chips, table rows on a white card with hairline dividers), with a slow `--tint` to `--mist` sheen that is off under reduced motion. They fade in only after 300ms, so a fast or cached load never flashes grey. Each carries `role="status"` and a label ("Loading peers").
   - **Shapes in use:** a whole page (crumbs, title, three tiles, a list), the index strip (six chips), table rows (pace of change, movers, an index's companies, peers), and a single line (a scale card's market ranking).
   - **A part that failed** says "This part didn't load." (or "This part loads when you're back online.") in 13px `--soft`, with a quiet Try again button. It also retries by itself when the connection comes back. The rest of the page stays usable.
   - **Search** shows indexes at once and "Loading companies…" until companies arrive, never a false "no match".
-- **Skip link and focus:** "Skip to content" is the first focusable element (violet pill, shown on focus). After every route change the page title updates ("TCS · Calculations · Nivel"), a polite live region announces it, and focus moves to the page's h1 without scrolling.
+- **Skip link and focus:** "Skip to content" is the first focusable element (violet pill, shown on focus). After every route change the page title updates ("TCS · Calculations · Nivel") and a polite live region announces it. On a new page, focus moves to the h1 without scrolling; on a section tab change it stays on the tab.
 - **Card grids** use `auto-fill`, so a market with one index keeps a normal-width card.
 
 ## 5. Components
@@ -153,7 +155,16 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
   - Home's pace of change is a small table (market, median change, companies compared, rose / fell, years to parity), shown as detail cards on phones.
   - a one-line key sits under long lists: "≈ means estimated or derived rather than reported. pp means percentage points.
 - **Meter (inline data bar):** the value, then a 52px by 6px `--line` track with a `--s1` fill and a 2px ink tick at parity. Employment parity and share of pay run 0–100% (tick at 50%); wage parity runs 0–140% (tick at 100%). Replaces bare percentages wherever a value has a parity point.
-- **Tabs:** underline tabs for sections that have their own URL (company pages: Overview, Trend, Peers, Calculations, Sources; index pages: Overview, Companies, Sectors; Compare: Countries, Sectors, Parity map). The first tab is the page's base URL. 14px Poppins 500, `--soft`, active `--violet` with a 2px underline and `aria-current="page"`. They scroll sideways on phones, where each tab is 44px tall.
+- **Tabs:** underline tabs for sections that have their own URL (company pages: Overview, Trend, Peers, Calculations, Sources; index pages: Overview, Companies, Sectors; Compare: Countries, Sectors, Parity map). The first tab is the page's base URL. 14px Poppins 500, `--soft`, active `--violet` with a 2px underline and `aria-current="page"`. They scroll sideways on phones, where each tab is 44px tall, and the row scrolls itself to keep the current tab in view. Switching tabs follows the section tab change rule in Layout.
+- **Feedback and motion (PARITY-82):**
+  - **Hover only where a pointer can hover** (`@media (hover: hover)`), so a tap on a phone never leaves a control looking hovered.
+  - **Pressed:** pills, segmented options, buttons, dropdown and icon buttons shrink to 96% while pressed; strip chips, menu and search options, link cards and Show all take `--tint`; tabs and tab bar items darken to `--ink`. List rows already tint while pressed.
+  - **Easing:** colour, background, border and shadow changes on controls take 150ms (presses 100ms), so a selection glides rather than snaps. A theme change switches the whole page in one frame, with no easing.
+  - **Entrances:** dropdown menus and the desktop search results rise 4px and fade in over 120ms; the phone search sheet fades in over 140ms.
+  - **No grey tap flash** on Android (`-webkit-tap-highlight-color: transparent`); the pressed states replace it.
+  - **Scroll containment:** sideways rows (the strip, tabs, pill filters) and inner scrollers (menus, the search sheet) keep their scroll to themselves, so reaching an end never triggers the browser's back swipe or scrolls the page.
+  - **Reduced motion** turns off the fades, entrances and the press shrink; colour easing stays.
+  - **Measured (5 October 2026):** every interaction (tabs, sorting, filters, search, charts, menus, the map) paints within 75ms on a phone with the CPU slowed 4×, with no unexpected layout shift.
 - **Segmented control:** for switching views in place (Chart or Table, One map or By market, the measure). A `--tint` well with 3px padding; the selected option is a white raised pill. Buttons carry `aria-pressed`. Below 400px the options share the width and long labels wrap, so a three-option switch fits a 320px screen.
 - **Touch targets (PARITY-24):** on phones every control has a 44px hit area. Small controls (pills, dropdown buttons, segmented options, the sort direction button, quiet buttons) keep their visual size and get an invisible 44px `::after` hit area; header icons are 44px; section tabs and menu options are 44px tall; standalone links (`.go`) get a 44px row. On desktop nothing interactive is under 24px, sortable headers included. Links inside sentences are exempt (WCAG 2.5.8).
 - **Empty and not-yet states (`EmptyState`, PARITY-25):** a Lensy illustration on a rounded `--stage` tile, 220px wide (160px when compact, inside a chart frame or the search sheet), then a 16px Poppins title saying what happened, one line of guidance, and actions to get out.
@@ -189,7 +200,7 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
     - the two index cards (the real index plain, the simulation dashed), each ending with its lowest holding;
     - a comparison table: payroll owned, the average holding's share of pay and of staff, and the lowest holding;
     - "What the bar keeps out": the count and weight of real-index companies left out, the sectors with no holding, sector bars with the real index as a tick, and a table of every company left out with how far below the bar it is;
-    - the holdings, the growth of ₹100, "Why the bar is not 50%", and how it is built.
+    - the holdings, "Why the bar is not 50%", and how it is built. No returns, prices or growth ([decision 0013](decisions/0013-no-investment-returns.md)).
 - **Global search:**
   - combobox over every company and index, at most 8 results, monogram plus title plus "symbol · market"
   - opens with ⌘K, Ctrl+K or "/"; arrow keys, Enter and Esc work
@@ -238,16 +249,7 @@ Validated with the dataviz `validate_palette.js` using `--pairs all`, because co
   - The sub-line gives the real index's figure ("none held · Nifty 50 9%").
   - A key names the bar and the tick, and the table view has both columns.
   - Below 720px each row stacks: the name above a full-width bar.
-- **Growth of ₹100 (PARITY-63, PARITY-64):** monthly lines from ₹100.
-  - **Y axis:** fitted to the data on a round step (5, 10, 20, 25 or 50) giving 2–4 intervals, so a 2% gap is visible. It is money, not a share, so the 0–50% rule does not apply.
-  - **Start line:** ₹100 is an unlabelled reference line; the axis already shows it. When early years are backfilled, ₹100 sits at the first month of real-time data, the backfilled years grow into it, and the tooltip shows change only after it (the owner's call, PARITY-64).
-  - **Markers:** only at the end and at the hovered month.
-  - **Month labels:** every 6, 12 or 24 months, whichever keeps them at least 64px apart.
-  - **Checked against** Monarch Money's portfolio-versus-benchmark chart on Lazyweb.
-- **Backfilled stretch (PARITY-64):**
-  - Months built from figures published later sit in a `--tint` band from the first month to the last backfilled rebuild, labelled "Backfilled" in its top-left corner.
-  - The tooltip and the table view mark those months.
-  - The real-world comparison (an index fund) is drawn as a third line, so the backfill's flattery is visible.
+- **No return charts:** the growth of ₹100 chart and its backfilled band were removed with every investment return ([decision 0013](decisions/0013-no-investment-returns.md)).
 - **Simulated series:** dashed (6 on, 4 off, butt caps) in its slot colour, with a dashed legend swatch. Real series stay solid.
 - **Grid:** solid 1px `--mist`, never dashed.
 - **Parity reference:** the 50% line is a solid 1px `--muted` rule, labelled at its left end so it never collides with the series end labels on the right.

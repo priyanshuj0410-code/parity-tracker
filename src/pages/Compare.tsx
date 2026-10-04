@@ -243,7 +243,7 @@ export function Compare({ tab, focus }: { tab?: string; focus?: string }) {
         <p className="lead">How many women companies employ, and how their pay compares with men's, on scales that work in every market.</p>
         <Tabs label="Compare views" items={TABS} current={current} />
       </section>
-      <section className="tab-panel">
+      <section className="tab-panel" key={current}>
         {current === 'countries' && <Countries />}
         {current === 'sectors' && <Sectors />}
         {current === 'map' && <MapTab focus={focus} />}

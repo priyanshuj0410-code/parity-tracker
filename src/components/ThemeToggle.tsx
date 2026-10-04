@@ -17,8 +17,12 @@ export function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>(current)
 
   const choose = (t: Theme) => {
-    if (t === 'system') document.documentElement.removeAttribute('data-theme')
-    else document.documentElement.setAttribute('data-theme', t)
+    const root = document.documentElement
+    // The whole page changes theme in one frame, never control by control.
+    root.classList.add('theme-changing')
+    if (t === 'system') root.removeAttribute('data-theme')
+    else root.setAttribute('data-theme', t)
+    requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove('theme-changing')))
     try {
       if (t === 'system') localStorage.removeItem('pt-theme')
       else localStorage.setItem('pt-theme', t)
