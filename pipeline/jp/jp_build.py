@@ -1,7 +1,9 @@
-import csv, json, re
+import csv, glob, json, re
 members=json.load(open('jp_members.json')); codes={c['code'] for c in members}
 rows={}
-for r in csv.reader(open('99_20261002_utf8_bom.csv',encoding='utf-8-sig')):
+# The latest MHLW open data download in the folder (99_YYYYMMDD_utf8_bom.csv), so a refresh needs no code change.
+DOWNLOAD=max(glob.glob('99_*_utf8_bom.csv'))
+for r in csv.reader(open(DOWNLOAD,encoding='utf-8-sig')):
     for c in re.findall(r'[0-9A-Z]{4}',(r[9] or '')):
         if c in codes: rows.setdefault(c,[]).append(r)
 def num(x):
