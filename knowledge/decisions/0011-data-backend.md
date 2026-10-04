@@ -3,13 +3,14 @@ type: decision
 title: Data backend on Firebase, with releases that need no merge
 description: Nivel's data moves out of the code repo into a free Firebase project. Pipelines write records to Firestore; a publish command freezes them into a release, builds a preview, and a promote command takes it live by rebuilding the unchanged app. Merges are for app code only.
 status: accepted
-updated: 2026-10-03
+updated: 2026-10-04
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/b8e24bab-221d-4ed9-99f5-434428caaa1b
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/459f7fb5-a97a-4064-be30-d339eaaedfd9
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/90451686-6a03-48ed-b2e7-993e5649a10b
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/e178d8a6-05a3-4bbb-8419-8a9ff168593b
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/04793a6e-433c-4a37-9cb0-b1494804cf0c
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/25f85b77-2bcc-40a5-9ef9-0ac94da273e0
 ---
 
 # Data backend on Firebase, with releases that need no merge
@@ -63,7 +64,7 @@ PARITY-75 schema and loader, PARITY-76 publish and promote, PARITY-77 app reads 
 ## What still needs a merge
 - **App code:** new pages, layouts, components, measures or chart types.
 - **Pipeline code:** a new parser for a new source. Once merged, every later refresh with it publishes without one.
-- **Not yet moved (follow-up):** hand-read inputs that live in pipeline files, such as `pipeline/india/annual_reports.json` and `float_overrides.json`, `pipeline/eu/eu_values.json` and the EU headcounts, sector overrides, and the AU and UK name maps. A figure read from a report reaches the site through a release without a merge, but recording it in git still takes one ([PR #26](https://github.com/priyanshuj0410-code/parity-tracker/pull/26)). They should move to `inputs/{name}` records.
+- **Moved on 4 October 2026 (PARITY-80):** pipeline inputs (index member lists, figures read by hand from reports, overrides and name maps) were files in git, so recording a figure took a PR ([PR #26](https://github.com/priyanshuj0410-code/parity-tracker/pull/26)). They are now `inputs/{path}` records, pulled and pushed with `pnpm data inputs` ([data-backend.md](../playbooks/data-backend.md#pipeline-inputs)). The maps that were Python (sector overrides, EU headcounts, AU match fixes, the UK name map) became JSON first. Pipeline research results in `pipeline/equal50/` stay in git.
 
 ## Limits on the free plan
 - **Firestore:** 1 GiB stored, 50,000 reads a day, 20,000 writes a day, 10 GiB downloaded a month. On Spark, a quota stops the service until the next day; it never bills.

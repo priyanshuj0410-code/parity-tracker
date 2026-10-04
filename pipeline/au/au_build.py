@@ -3,15 +3,9 @@ W=json.load(open('wgea.json')); auto=json.load(open('au_auto.json'))
 # ASX top 300: the ASX 200 plus the next 100 companies by market value in ASX's own directory (3 October 2026),
 # as S&P does not publish S&P/ASX 300 membership freely.
 asx=[dict(a,idx=['asx200','asxtop300']) for a in json.load(open('asx200.json'))]+[dict(a,idx=['asxtop300']) for a in json.load(open('asxnext100.json'))]
-OVR={'ANZ':('G','ANZ GROUP HOLDINGS LIMITED'),'TNE':('E','Technology One Limited'),'REG':('E','Regis Aged Care Pty Ltd'),
- 'PMV':('E','JUST GROUP LIMITED'),'PXA':('G','Property Exchange Australia Limited'),'VCX':('E','Vicinity Property Management Trust'),
- 'SOL':('G','Washington H. Soul Pattinson And Company Limited'),'NWS':('G','News Pty Limited'),'MFG':('E','Magellan Asset Management Limited'),
- 'ALL':('E','Aristocrat Technologies Australia Pty Limited'),'SGM':('G','Sims Group Australia Holdings Limited'),'ASK':('G','Abacus Storage Operations Limited'),
- 'CHC':('E','Charter Hall Holdings Pty. Limited'),
- 'APZ':('G','Aspen Group Limited'),'CBO':('E','BOUNDARY BEND OLIVES PTY LTD'),'CKF':('E','Collins Restaurants Management Pty. Ltd.'),
- 'JDO':('E','Judo Bank Pty Ltd'),'CMW':('E','Cromwell Operations Pty Ltd'),'GLF':('E','GEMLIFE ADMINISTRATION PTY LTD')}
-REJECT={'MAF','SRL','SX2','BCI','UOS','CXO','SBM','A4N','FDC','WEB','CEN','GNE','MEZ','ZIP','FPH','CIA','CSC','CMM','CYL','WAF','DBI','ALX','CLW','CQR','CIP','AFI','MXT','CNU','PNI'}
-FUNDS={'QRI','AFI','ARG','MFF','WAM','WLE','LSF','MXT','BWP','HDN','RGN','CLW','CQR','CIP','DRR','L1G'}
+# Manual fixes to au_match.py's automatic matches: an input, pulled with pnpm data inputs pull.
+X=json.load(open('au_overrides.json'))
+OVR={k:tuple(v) for k,v in X['match'].items()}; REJECT=set(X['reject']); FUNDS=set(X['funds'])
 SIZE={'<250':175,'250-499':375,'500-999':750,'1000-4999':3000,'5000+':10000}
 G={r[0]:r for r in W['groups']}; E={r[0]:r for r in W['emps']}
 heads={}

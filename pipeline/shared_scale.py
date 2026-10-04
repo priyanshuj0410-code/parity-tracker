@@ -6,24 +6,45 @@ With women's share of staff (employment parity E) the share of pay follows:
     S = E·W / (E·W + 1 − E)
 
 Japan: E is women's share of regular staff (MHLW item 3). EU: E is women's share of
-employees from ESRS S1-6 (eu/eu_workforce.py). W is 1 − gapMean in both.
+employees from ESRS S1-6, read by hand into the input eu/eu_headcount.json. W is 1 − gapMean in both.
 A company with no E keeps its W but has no share of pay (w = None) and drops out of the headline.
 
-Run from the repo root on an assembled release (pnpm data publish does): python3 pipeline/shared_scale.py <data dir>
+Run from the repo root on an assembled release (pnpm data publish does, and copies eu_headcount.json in from
+Firestore's inputs): python3 pipeline/shared_scale.py <data dir>
 Idempotent: it recomputes from gapMean, fPerm and fAll, never from w.
 """
 import json, sys
 from statistics import mean
-
-sys.path.insert(0, 'pipeline/eu')
-from eu_workforce import apply as apply_eu_workforce  # noqa: E402
 
 C_PATH, I_PATH = sys.argv[1] + '/companies.json', sys.argv[1] + '/indexes.json'
 companies = json.load(open(C_PATH))
 indexes = json.load(open(I_PATH))
 rd = lambda x: None if x is None else round(x, 4)
 
-set_years = apply_eu_workforce(companies)
+
+def apply_eu_workforce(headcount):
+    """Set fAll (and women and men counts where given) on EU company years. Returns how many years were set."""
+    n = 0
+    for ticker, years in headcount.items():
+        c = companies.get('EU-' + ticker)
+        if not c:
+            continue
+        for year, v in years.items():
+            y = c['years'].get(year)
+            if not y:
+                continue
+            if isinstance(v, list):
+                women, men = v
+                y['headcountWomen'], y['headcountMen'] = women, men
+                y['headcount'] = women + men
+                y['fAll'] = round(women / (women + men), 4)
+            else:
+                y['fAll'] = v
+            n += 1
+    return n
+
+
+set_years = apply_eu_workforce(json.load(open(sys.argv[1] + '/eu_headcount.json'))['headcount'])
 NO_SPLIT = {
     'JP': "Pay ratio reported, but no share of women in regular staff, so women's share of pay cannot be worked out",
     'EU': "Pay gap reported, but no workforce split by gender, so women's share of pay cannot be worked out",

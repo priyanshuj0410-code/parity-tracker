@@ -1,4 +1,4 @@
-import json, csv, re, os
+import json, csv, re, os, glob
 cy=json.load(open('company_years.json')); meta=json.load(open('meta_all.json')); shp=json.load(open('shp.json'))
 # Figures read by hand from companies' own annual reports or BRSR PDFs on their websites, for filings missing from
 # the NSE XBRL set or unusable there (PARITY-69). NSE downloads are on hold (PARITY-66). A figure here is confirmed,
@@ -17,7 +17,9 @@ for s_,ys_ in AR.items():
         meta.setdefault(s_,{}).setdefault('filings',{})[a['filed']]=dict(xbrl='',pdf=a['src'],submitted='')
         if a.get('confirmed',True): AR_KEYS.add((s_,y_))
 mcap={}
-for r in csv.reader(open('mcap30092026.csv')):
+# The latest NSE market-cap file in the folder (mcapDDMMYYYY.csv), so a refresh needs no code change.
+MCAP=max(glob.glob('mcap*.csv'),key=lambda f:f[8:12]+f[6:8]+f[4:6])
+for r in csv.reader(open(MCAP)):
     # BE is trade-for-trade settlement; those shares are still index members (HFCL, MTAR, Sterlite on 30 September 2026).
     if len(r)>9 and r[2].strip() in ('EQ','BE'):
         try: mcap[r[1].strip()]=float(r[9])
@@ -155,7 +157,7 @@ indexes={}
 for k,mem in idx_members.items():
     wts,res,yoy=index_calc(mem)
     indexes[k]=dict(id=k,name=NAMES[k][0],country='IN',market=NAMES[k][1],exchange=NAMES[k][2],
-        weightsAsOf='2026-09-30',weighting='free-float market cap (public shareholding % as free-float proxy)',
+        weightsAsOf=f'{MCAP[8:12]}-{MCAP[6:8]}-{MCAP[4:6]}',weighting='free-float market cap (public shareholding % as free-float proxy)',
         constituents=[dict(symbol=s,weight=rd(w,5)) for s,w in sorted(wts.items(),key=lambda x:-x[1])],
         missing=[s for s in mem if s not in wts],years=res,yoy=yoy)
     print(k,len(wts),{y:(v['headline'],v['companiesCovered'],v['reportedPayrollShare']) for y,v in res.items()}); print('   yoy',yoy)

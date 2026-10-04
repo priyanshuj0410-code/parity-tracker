@@ -9,6 +9,10 @@
  *   seed <data dir> <logos dir> <spot feed> <markets.json>    load everything from local files (first load, or a restore)
  *   verify <data dir> <logos dir> <spot feed>                 check Firestore's records match local files exactly
  *
+ *   inputs                                                    pipeline inputs (hand-read figures, maps, members) against your copy
+ *   inputs pull [--force]                                     write every input into pipeline/
+ *   inputs push [file...] [--force]                           store the inputs changed here, or the files named
+ *
  *   publish [--collected=YYYY-MM-DD] [--approve-feed]         freeze the records into a staging release, report, preview link
  *   promote [release]                                         take the staged (or named) release live
  *   rollback                                                  return to the release live before
@@ -18,6 +22,7 @@ import { createHash } from 'node:crypto'
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { commit, get, getMany, list, where } from './firestore.mjs'
+import * as inputs from './inputs.mjs'
 import { promote, publish, rollback, status } from './release.mjs'
 
 const RECORDS = ['markets', 'indexes', 'datasets', 'feeds']
@@ -165,6 +170,7 @@ const commands = {
     console.log(`${pos[0]}/${pos[1]}: deleted`)
   },
   logos: () => logos(pos[0], readJson(pos[1])),
+  inputs: () => (pos[0] === 'pull' ? inputs.pull({ force: flags.has('--force') }) : pos[0] === 'push' ? inputs.push(pos.slice(1), { force: flags.has('--force') }) : inputs.status()),
   seed: () => seed(...pos.slice(0, 4)),
   verify: () => verify(...pos.slice(0, 3)),
   publish: () => publish({ collected: option('collected'), approveFeed: flags.has('--approve-feed') }),

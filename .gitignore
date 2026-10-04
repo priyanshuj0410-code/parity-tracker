@@ -51,3 +51,9 @@ public/logos/
 
 # written by the build: the app shell the page function serves
 api/_shell.js
+
+# pipeline inputs (hand-read figures, maps, index members): Firestore inputs/, pulled with pnpm data inputs pull
+pipeline/**/*.json
+pipeline/**/*.csv
+pipeline/**/*.txt
+!pipeline/equal50/**

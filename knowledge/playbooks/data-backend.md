@@ -2,13 +2,14 @@
 type: runbook
 title: Data backend
 description: How Nivel's data gets from a pipeline to the live site without a merge. Pipelines load records into Firestore, `pnpm data publish` freezes them into a checked release with a preview, and `pnpm data promote` takes it live.
-updated: 2026-10-03
+updated: 2026-10-04
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/b8e24bab-221d-4ed9-99f5-434428caaa1b
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/459f7fb5-a97a-4064-be30-d339eaaedfd9
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/90451686-6a03-48ed-b2e7-993e5649a10b
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/e178d8a6-05a3-4bbb-8419-8a9ff168593b
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/04793a6e-433c-4a37-9cb0-b1494804cf0c
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/25f85b77-2bcc-40a5-9ef9-0ac94da273e0
 ---
 
 # Data backend
@@ -16,7 +17,7 @@ plane_issues:
 Why and what: [decision 0011](../decisions/0011-data-backend.md) (records and releases) and [decision 0014](../decisions/0014-data-separate-from-app.md) (the app holds no data; the edge serves releases). Per-market pipeline steps: [data-pipeline.md](data-pipeline.md).
 
 ## The loop
-1. **Run a pipeline** as its section in [data-pipeline.md](data-pipeline.md) says. It writes JSON files in its scratch folder.
+1. **Run a pipeline** as its section in [data-pipeline.md](data-pipeline.md) says, after `pnpm data inputs pull`. It writes JSON files in its scratch folder. If you changed an input on the way (a figure read from a report, a member list), `pnpm data inputs push` stores it.
 2. **Load:** `pnpm data load <market> <companies.json> <indexes.json>` replaces that market's companies and upserts its indexes. It prints what was added, changed and removed, refuses a file with another market's companies, and refuses to remove more than 10% of a market without `--force`.
 3. **Publish:** `pnpm data publish` (add `--collected=YYYY-MM-DD` when the figures were collected on a new day). It assembles every record, runs `shared_scale.py` and `sectors.py`, checks everything, works out every page's title and description with the app's own code, and writes a staging release holding every file the site serves. It prints a change report against the live release (companies added or removed, figures gained, lost or changed, coverage per index, and flagship headlines with the companies behind each move) and a preview link: the live site with `?release={id}`.
 4. **Check the preview,** then **promote:** `pnpm data promote`. The live channel points at the release; the site serves it within about five minutes, as edge caches refresh. Nothing is built, deployed or merged.
@@ -35,6 +36,21 @@ Why and what: [decision 0011](../decisions/0011-data-backend.md) (records and re
 | One index record | `pnpm data put indexes <id> <file>`, `pnpm data rm indexes <id>` |
 
 Every change reaches the site only through publish and promote.
+
+## Pipeline inputs
+What the pipelines read that is not code: index member lists, figures read by hand from reports (`india/annual_reports.json`, `eu/eu_values.json`, `eu/eu_headcount.json`), overrides (`india/float_overrides.json`, `au/au_overrides.json`, `sector_overrides.json`) and name maps (`uk/uk_map.json`). Every data file under `pipeline/` outside `equal50/` is one record `inputs/{path, slashes as dots}` holding the file's exact text. None is in git (PARITY-80), so recording a figure needs no PR.
+
+| Step | Command |
+|---|---|
+| Get them, before running a pipeline | `pnpm data inputs pull` writes every input into `pipeline/` |
+| See what differs from Firestore | `pnpm data inputs` lists each input changed here, newer in Firestore, or both; exits 1 if any |
+| Store what you changed | `pnpm data inputs push` stores every pulled input changed here; name files to store only those, or a new file to add it |
+| Retire one | `pnpm data rm inputs <path, slashes as dots>`, such as `india.indexes.ind_niftymedia.csv` |
+
+- **No lost work.** `pipeline/.inputs.json` remembers each input as last pulled or pushed. `pull` refuses to overwrite a local edit not yet pushed, and `push` refuses a file whose record someone else changed since your pull. `--force` overrides either.
+- **Publish reads two inputs itself:** `sector_overrides.json` (for `sectors.py`) and `eu/eu_headcount.json` (for `shared_scale.py`), straight from Firestore, never a local copy. A newly read EU headcount or a sector split is `inputs push`, then publish.
+- **Market pipelines read the pulled files.** A newly read India figure: add it to `pipeline/india/annual_reports.json`, `inputs push`, run the India build, `load`, publish.
+- **Checked on 4 October 2026:** all 50 inputs pulled back byte for byte, and a release published from Firestore's inputs matched the live release in every file except the four that carry the release id or time.
 
 ## What blocks a release
 - A company or index missing required fields, in a market that is not live, or pointing at a company or index that does not exist.
@@ -56,6 +72,6 @@ Every change reaches the site only through publish and promote.
 - The database ID is `default`, not `(default)`, and it must be the **Standard** edition: Enterprise counts reads by size, and a few builds exhaust its free quota. If it ever needs recreating: `firebase firestore:databases:create default --location asia-south1 --edition standard --project nivel-equal-lens`, redeploy the rules, then `seed` from a pulled release and `verify`.
 
 ## Storage and quotas (Spark plan, free)
-- Records: `markets`, `indexes`, `companies` (one per company, about 1,750), `datasets` (funds, simulations, logo map), `logos` (one PNG each), `feeds/spot-v1`. Each holds its JSON as a string, so it round-trips exactly.
+- Records: `markets`, `indexes`, `companies` (one per company, about 1,750), `datasets` (funds, simulations, logo map), `logos` (one PNG each), `feeds/spot-v1`, `inputs` (about 50 pipeline files, 500 KB). Each holds its JSON as a string, so it round-trips exactly.
 - Releases: `releases/{id}` lists its files as content-addressed `blobs` (SHA-256, under 900 KB each). A release that changes one file stores only that file's new blobs.
 - A publish reads about 2,400 documents and writes only the blobs that changed (every company's file once, the first time). The site reads Firestore only when an edge cache misses: about two reads per file per region per release, and one for the live pointer every two minutes per region. The daily limits are 50,000 reads and 20,000 writes. When a limit is hit, Firestore returns 429 until the daily reset (midnight Pacific time) and builds fail, while the live site keeps serving its last build.

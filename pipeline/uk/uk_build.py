@@ -1,5 +1,7 @@
 import csv, re, json, glob
-from uk_map import MAP, TRUSTS, MAP250, TRUSTS250
+# FTSE name to UK employer regexes: an input, pulled with pnpm data inputs pull.
+U=json.load(open('uk_map.json'))
+MAP,TRUSTS,MAP250,TRUSTS250=U['map'],set(U['trusts']),U['map250'],set(U['trusts250'])
 ftse=[dict(c,idx=['ftse100','ftse350']) for c in json.load(open('ftse100.json'))]+[dict(c,idx=['ftse350']) for c in json.load(open('ftse250.json'))]
 # FTSE 250 tickers that are also NSE symbols get an exchange prefix.
 CLASH={'NCC','RHIM'}
