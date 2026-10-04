@@ -6,6 +6,7 @@
     { "source": "/data/:path*", "destination": "/api/data" },
     { "source": "/feeds/spot/:path*", "destination": "/api/data?kind=feed" },
     { "source": "/logos/:path*", "destination": "/api/data?kind=logo" },
+    { "source": "/", "destination": "/api/page" },
     { "source": "/:path*", "destination": "/api/page" }
   ],
   "headers": [
