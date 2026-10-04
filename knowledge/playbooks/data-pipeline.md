@@ -147,6 +147,13 @@ The US is limited to board seats ([plan](../plans/us-indexes.md), PARITY-6). Scr
 3. `python3 fetch_proxies.py` writes `proxies.json` with each company's latest DEF 14A from data.sec.gov. 497 of 503 had one on 2 October 2026.
 4. Next (US-2): download the proxies and extract board seats. This needs `SEC_USER_AGENT` set to a name and contact email, because www.sec.gov refuses undeclared clients (403).
 
+## Company-report fallbacks and verified reasons (PARITY-92)
+Where the statutory source has nothing, figures from the company's own report are used, with their basis shown ([decision 0015](../decisions/0015-coverage-accounted-for.md)). Each is read from the source passage, and an independent reader checks it before it goes in. They are inputs, so recording one needs no PR:
+- **`uk/uk_reports.json`:** `figures` maps a FTSE name to a list of `{year, gapMean (percent, positive = men paid more), womenShare (0 to 1), basis, title, url, page}`, used only for years with no UK employer filing; `reasons` maps a FTSE name to a verified reason, used when the latest year has no figure. Company-report years stay out of the FTSE headlines.
+- **`au/au_reports.json`:** the same shape, keyed by ASX code, for companies with no WGEA reporter.
+- **`jp/jp_reports.json`:** keyed by securities code: `{status: value | reason, ratio, ratioRegular, ratioNonRegular (percent), share (0 to 1), shareScope, period, ratioSource, shareSource: {title, url, page}, reason}`. The ratio is used only when the company is not in the MHLW database. The share is used only when the database gives none, and only for the listed company's own staff (`parent regular` or `parent all`), like the database. A group-wide share is noted instead.
+- **`india/reasons.json`:** symbol to the reason a company has no figure for the latest year (listed during the year, financial year not ended, no employees before a demerger). Figures read from annual reports go in `india/annual_reports.json` as before.
+
 ## Shared scale for Japan and the EU (PARITY-20)
 `pnpm data publish` runs it on every release, then `sectors.py`, on the assembled data: `python3 pipeline/shared_scale.py <data dir>`.
 - **Load EU and Japanese records after shared scale.** Their builders write the pay ratio into `w`, which is above 100% when women are paid more, and publish checks every share of pay before it runs `shared_scale.py`. So run `shared_scale.py` on the assembled data with the rebuilt market swapped in, then load that market's records (which then hold shares). This is how the first EU records were seeded. shared_scale is idempotent, so publish recomputes the same values.

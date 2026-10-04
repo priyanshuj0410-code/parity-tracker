@@ -4,6 +4,7 @@ import { indexName, indexes, marketOf, useStage, yoyChange } from '../lib/data'
 import { crore, ordinal, pct } from '../lib/format'
 import type { Company, CompanyYear } from '../types'
 import { Eq, Frac, Step, Steps } from './Formula'
+import { ReportRefs, fromReport } from './ReportSource'
 
 const n0 = (v: number) => Math.round(v).toLocaleString('en-GB')
 const r3 = (v: number) => v.toFixed(3)
@@ -20,6 +21,12 @@ const SOURCE: Record<string, string> = {
   EU: 'CSRD sustainability statement (ESRS S1-16 pay gap, S1-6 headcount)',
 }
 
+/** Where a year's figures come from when some are the company's own: the statutory source for the rest, then the company's documents. */
+function ReportedFrom({ c, y }: { c: Company; y: CompanyYear }) {
+  const all = ['gapMean', 'ratio'].some((f) => fromReport(y.reportSources, f))
+  return <>{all ? "The company's own " : `${SOURCE[c.country]}, and the company's `}<ReportRefs sources={y.reportSources ?? []} /> ({y.reportSources?.map((s) => s.scope).join('; ')})</>
+}
+
 function Reported({ c, y, year }: { c: Company; y: CompanyYear; year: string }) {
   const m = marketOf(c)
   const items: ReactNode[] = []
@@ -29,6 +36,10 @@ function Reported({ c, y, year }: { c: Company; y: CompanyYear; year: string }) 
     else items.push(<Input key="f" label="Women in permanent staff" value={pct(y.fPerm)} />)
     if (y.payrollCr) items.push(<Input key="p" label="Total wages" value={crore(y.payrollCr)} />)
     if (y.board) items.push(<Input key="b" label="Board" value={`${y.boardWomen} of ${y.board}`} note="women directors" />)
+  } else if ((c.country === 'GB' || c.country === 'AU') && fromReport(y.reportSources, 'gapMean')) {
+    // The company's own group-wide figures, where no local employer files with the regulator (decision 0015).
+    items.push(<Input key="g" label="Mean pay gap, whole group" value={pct(y.gapMean)} note="men's average minus women's, as a share of men's" />)
+    items.push(<Input key="f" label="Women in the group's workforce" value={pct(y.fAll)} />)
   } else if (c.country === 'GB' || c.country === 'AU') {
     items.push(<Input key="g" label={c.country === 'GB' ? 'Mean hourly pay gap' : 'Average total pay gap (full-time equivalent)'} value={pct(y.gapMean)} note="men's average minus women's, as a share of men's" />)
     items.push(<Input key="f" label={c.country === 'GB' ? "Women's share of the four pay quarters (average)" : 'Women in Australian workforce'} value={pct(y.fAll)} />)
@@ -38,7 +49,8 @@ function Reported({ c, y, year }: { c: Company; y: CompanyYear; year: string }) 
   } else if (c.country === 'JP') {
     items.push(<Input key="r" label="Women's pay as a share of men's" value={pct(y.gapMean == null ? null : 1 - y.gapMean)} note="all workers" />)
     items.push(<Input key="rr" label="Regular and non-regular staff" value={`${pct(y.ratioRegular, 0)} · ${pct(y.ratioNonRegular, 0)}`} />)
-    items.push(<Input key="f" label="Women in regular staff" value={pct(y.fPerm)} note={y.fPerm == null ? 'not disclosed' : undefined} />)
+    const share = fromReport(y.reportSources, 'fPerm')
+    items.push(<Input key="f" label="Women in regular staff" value={pct(y.fPerm)} note={y.fPerm == null ? 'not disclosed' : share ? `from the company's report: ${share.scope}` : undefined} />)
   } else {
     items.push(<Input key="g" label="Unadjusted gender pay gap" value={pct(y.gapMean)} note={c.entities?.[0]?.size} />)
     if (y.headcountWomen != null && y.headcountMen != null) {
@@ -73,7 +85,7 @@ export function Calculations({ c, pt }: { c: Company; pt?: Point }) {
     <>
       <section>
         <h2>What {c.name} reported</h2>
-        <p className="small muted">{SOURCE[c.country]}, {m.label(year) === 'latest' ? 'latest disclosure' : m.label(year)}. Every figure below comes from these.</p>
+        <p className="small muted">{y.reportSources?.length ? <ReportedFrom c={c} y={y} /> : SOURCE[c.country]}, {m.label(year) === 'latest' ? 'latest disclosure' : m.label(year)}. Every figure below comes from these.</p>
         <Reported c={c} y={y} year={year} />
       </section>
 

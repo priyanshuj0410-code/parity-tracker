@@ -5,6 +5,7 @@ import { Calculations } from '../components/Calculations'
 import { ChartFrame } from '../components/ChartFrame'
 import { EuGlance, EuSources } from '../components/EuDetail'
 import { JapanGlance, JapanSources } from '../components/JapanDetail'
+import { ReportRefs } from '../components/ReportSource'
 import { LineChart, type Series } from '../components/LineChart'
 import { Logo } from '../components/Logo'
 import { Meter } from '../components/Meter'
@@ -254,12 +255,15 @@ function Sources({ c }: { c: Co }) {
   if (c.country === 'JP') return <section><JapanSources c={c} /></section>
   if (c.country === 'EU') return <section><EuSources c={c} /></section>
   if (c.country !== 'IN') {
+    const own = c.years[m.latest]?.reportSources
     return (
       <section>
         <ul className="tight">
-          <li><strong>Source:</strong> {gb
+          {own?.length ? (
+            <li><strong>Source:</strong> no {gb ? 'UK employer in the group files with the UK gender pay gap service' : 'Australian employer in the group reports to WGEA'}, so the {fy(m.latest)} figures are the company's own, from its <ReportRefs sources={own} /> ({own.map((s) => s.scope).join('; ')}). They are not the statutory figures.</li>
+          ) : <li><strong>Source:</strong> {gb
             ? 'UK gender pay gap service. Employers with 250+ UK staff, April pay snapshot.'
-            : <>WGEA employer gender pay gaps, {fy(m.latest)} release. Employers with 100+ Australian staff; groups report combined. <a href="https://www.wgea.gov.au/data-statistics/data-explorer" target="_blank" rel="noreferrer">WGEA Data Explorer</a></>}</li>
+            : <>WGEA employer gender pay gaps, {fy(m.latest)} release. Employers with 100+ Australian staff; groups report combined. <a href="https://www.wgea.gov.au/data-statistics/data-explorer" target="_blank" rel="noreferrer">WGEA Data Explorer</a></>}</li>}
           {m.years.filter((k) => c.years[k]?.basisChange).map((k) => <li key={k}><strong>{fy(k)}:</strong> reporting employers changed, so not compared like for like.</li>)}
         </ul>
         {c.entities && c.entities.length > 0 && (
@@ -286,7 +290,9 @@ function Sources({ c }: { c: Co }) {
       <h2 className="h-sub">Source filings</h2>
       <ul className="tight filings">
         {Object.entries(c.filings).reverse().map(([k, f]) => (
-          <li key={k}>{fy(k)} BRSR, filed {f.submitted}: <a href={f.xbrl} target="_blank" rel="noreferrer">XBRL</a> · <a href={f.pdf} target="_blank" rel="noreferrer">PDF</a></li>
+          <li key={k}>{f.xbrl
+            ? <>{fy(k)} BRSR, filed {f.submitted}: <a href={f.xbrl} target="_blank" rel="noreferrer">XBRL</a> · <a href={f.pdf} target="_blank" rel="noreferrer">PDF</a></>
+            : <>{fy(k)} BRSR, in the company's annual report: <a href={f.pdf} target="_blank" rel="noreferrer">PDF</a></>}</li>
         ))}
       </ul>
     </section>

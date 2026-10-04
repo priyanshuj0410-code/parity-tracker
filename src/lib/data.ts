@@ -164,8 +164,12 @@ const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 
 
 /** The day the release's figures were collected ("1 October 2026"), or '' before core lands. */
 export function sourceDate(): string {
-  if (!release.collected) return ''
-  const [y, m, d] = release.collected.split('-').map(Number)
+  return release.collected ? longDate(release.collected) : ''
+}
+
+/** 2026-10-05 as "5 October 2026". */
+export function longDate(iso: string): string {
+  const [y, m, d] = iso.split('-').map(Number)
   return `${d} ${MONTHS[m - 1]} ${y}`
 }
 
@@ -270,6 +274,7 @@ export function dataLabel(y?: CompanyYear): { label: string; tone: Tone } {
   if (y && y.w == null && y.gapMean != null) return { label: 'No staff split', tone: 'warn' }
   if (!y || y.w == null) return { label: 'Missing', tone: 'bad' }
   if (y.wKind === 'estimated') return { label: 'Estimated', tone: 'warn' }
+  if (y.reportSources?.length) return { label: 'Company report', tone: 'warn' }
   if (y.basisChange) return { label: 'Basis changed', tone: 'warn' }
   if (y.dq === 2) return { label: 'Rescaled', tone: 'warn' }
   return { label: 'Reported', tone: 'ok' }
