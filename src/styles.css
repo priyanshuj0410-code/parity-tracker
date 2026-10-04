@@ -65,7 +65,8 @@ body {
   font: 400 16px/1.6 var(--font-body);
 }
 a { color: var(--violet); text-decoration: none; }
-a:hover { color: var(--violet-deep); text-decoration: underline; }
+/* Hover styles only where a pointer can hover, so a tap on a phone never leaves one stuck on (PARITY-82). */
+@media (hover: hover) { a:hover { color: var(--violet-deep); text-decoration: underline; } }
 p a, .tight a, .meta a { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
 h1, h2, h3 { font-family: var(--font-display); color: var(--ink); line-height: 1.2; margin: 0 0 12px; letter-spacing: -0.01em; }
 h1 { font-size: clamp(26px, 3.6vw, 36px); font-weight: 600; }
@@ -81,14 +82,14 @@ strong { color: var(--ink); font-weight: 700; }
 .site-header { border-bottom: 1px solid var(--mist); background: var(--card); position: sticky; top: 0; z-index: 20; }
 .header-row { display: flex; align-items: center; gap: 28px; height: 64px; }
 .brand { display: flex; align-items: center; gap: 10px; color: var(--ink); flex: none; }
-.brand:hover { text-decoration: none; color: var(--ink); }
+@media (hover: hover) { .brand:hover { text-decoration: none; color: var(--ink); } }
 .brand img { height: 32px; width: auto; }
 .brand-text { display: flex; flex-direction: column; line-height: 1.05; }
 .brand-name { font: 600 19px/1.1 var(--font-display); letter-spacing: -0.01em; }
 .brand-by { font: 500 12px/1.25 var(--font-display); color: var(--soft); margin-top: 1px; }
 .nav { display: flex; gap: 2px; font: 500 14px var(--font-display); align-self: stretch; }
 .nav a { color: var(--body); display: flex; align-items: center; padding: 0 12px; border-bottom: 2px solid transparent; }
-.nav a:hover { color: var(--ink); text-decoration: none; }
+@media (hover: hover) { .nav a:hover { color: var(--ink); text-decoration: none; } }
 .nav a.on { color: var(--violet); border-bottom-color: var(--violet); }
 .header-actions { margin-left: auto; display: flex; align-items: center; justify-content: flex-end; gap: 6px; flex: 0 1 400px; min-width: 0; }
 
@@ -110,7 +111,7 @@ strong { color: var(--ink); font-weight: 700; }
 .strip-row { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent); }
 .strip-row::after { content: ''; flex: 0 0 20px; }
 .strip-item { display: inline-flex; align-items: baseline; gap: 8px; padding: 6px 12px; border-radius: 8px; white-space: nowrap; font-size: 13px; color: var(--body); }
-.strip-item:hover { background: var(--tint); text-decoration: none; color: var(--ink); }
+@media (hover: hover) { .strip-item:hover { background: var(--tint); text-decoration: none; color: var(--ink); } }
 .strip-item.on { background: var(--tint); }
 .strip-name { font: 500 13px var(--font-display); color: var(--ink); }
 .strip-val { font-variant-numeric: tabular-nums; }
@@ -137,12 +138,12 @@ strong { color: var(--ink); font-weight: 700; }
 
 .pills { display: flex; flex-wrap: wrap; gap: 6px; }
 .pill { font: 500 13px var(--font-display); padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--body); cursor: pointer; }
-.pill:hover { border-color: var(--soft); color: var(--ink); }
+@media (hover: hover) { .pill:hover { border-color: var(--soft); color: var(--ink); } }
 .pill.on { background: var(--violet); border-color: var(--violet); color: var(--on-accent); }
 .theme-toggle, .icon-btn { flex: none; display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 10px; border: 0; background: transparent; color: var(--body); cursor: pointer; }
-.icon-btn:hover { background: var(--tint); color: var(--ink); }
+@media (hover: hover) { .icon-btn:hover { background: var(--tint); color: var(--ink); } }
 .icon-btn:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
-.theme-toggle:hover { color: var(--ink); background: var(--tint); }
+@media (hover: hover) { .theme-toggle:hover { color: var(--ink); background: var(--tint); } }
 .theme-toggle:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
 .pill:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
 
@@ -163,7 +164,7 @@ section:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
 
 .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px; min-width: 0; }
 a.card { display: block; color: inherit; }
-a.card:hover { text-decoration: none; border-color: var(--soft); }
+@media (hover: hover) { a.card:hover { text-decoration: none; border-color: var(--soft); } }
 
 .tile-label { font: 500 13px var(--font-display); color: var(--soft); margin-bottom: 4px; }
 .card-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
@@ -247,7 +248,7 @@ td.r, th.r { text-align: right; }
 .table-wrap:not(.flow) td:first-child { position: sticky; left: 0; z-index: 1; background: inherit; }
 .table-wrap:not(.flow) th:first-child { left: 0; z-index: 3; }
 tbody tr { background: var(--card); }
-tbody tr:hover { background: var(--tint); }
+@media (hover: hover) { tbody tr:hover { background: var(--tint); } }
 .sub { display: block; color: var(--muted); font-size: 12px; }
 
 .controls { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
@@ -297,7 +298,7 @@ h1 .badge.sim { margin-left: 8px; vertical-align: middle; }
 .tabs { display: flex; gap: 26px; border-bottom: 1px solid var(--line); margin-top: 18px; overflow-x: auto; scrollbar-width: none; }
 .tabs::-webkit-scrollbar { display: none; }
 .tab { font: 500 14px var(--font-display); color: var(--soft); padding: 10px 0 11px; border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
-.tab:hover { color: var(--ink); text-decoration: none; }
+@media (hover: hover) { .tab:hover { color: var(--ink); text-decoration: none; } }
 .tab.on { color: var(--violet); border-bottom-color: var(--violet); }
 .tab:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; border-radius: 4px; }
 .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
@@ -305,7 +306,7 @@ h1 .badge.sim { margin-left: 8px; vertical-align: middle; }
 
 .seg { display: inline-flex; padding: 3px; gap: 2px; background: var(--tint); border-radius: 9px; flex: none; }
 .seg button { all: unset; cursor: pointer; font: 500 13px var(--font-display); color: var(--soft); padding: 5px 12px; border-radius: 7px; white-space: nowrap; }
-.seg button:hover { color: var(--ink); }
+@media (hover: hover) { .seg button:hover { color: var(--ink); } }
 .seg button.on { background: var(--card); color: var(--ink); box-shadow: 0 1px 3px var(--shadow); }
 .seg button:focus-visible { outline: 2px solid var(--violet); outline-offset: 1px; }
 .toolbar { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; margin-bottom: 14px; }
@@ -354,7 +355,7 @@ h1 .badge.sim { margin-left: 8px; vertical-align: middle; }
 .table-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; min-height: 30px; }
 .table-bar .meta { margin: 0; }
 .btn-quiet { display: inline-flex; align-items: center; gap: 6px; font: 500 13px var(--font-display); color: var(--violet); background: transparent; border: 1px solid var(--line); border-radius: 8px; padding: 5px 10px; cursor: pointer; white-space: nowrap; }
-.btn-quiet:hover { border-color: var(--soft); background: var(--tint); }
+@media (hover: hover) { .btn-quiet:hover { border-color: var(--soft); background: var(--tint); } }
 .btn-quiet:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
 table.data th, table.data td { padding: 8px 12px; }
 table.data th { font-size: 12px; color: var(--soft); white-space: normal; line-height: 1.3; }
@@ -427,7 +428,7 @@ td .meter + .sub { margin-top: 2px; }
 
 /* Install, search sheet and app chrome */
 .btn-primary { font: 500 13px var(--font-display); background: var(--violet); color: var(--on-accent); border: 0; border-radius: 8px; padding: 7px 14px; cursor: pointer; }
-.btn-primary:hover { background: var(--violet-deep); }
+@media (hover: hover) { .btn-primary:hover { background: var(--violet-deep); } }
 .btn-primary:focus-visible, .install-link:focus-visible, .sheet-cancel:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
 .install-pop { position: fixed; right: 20px; bottom: 20px; z-index: 35; width: min(360px, calc(100vw - 32px)); display: flex; gap: 12px; align-items: flex-start; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 16px 16px 16px; box-shadow: 0 18px 50px var(--shadow); animation: pop-in .25s ease-out; }
 .install-pop img { border-radius: 10px; flex: none; }
@@ -435,7 +436,7 @@ td .meter + .sub { margin-top: 2px; }
 .install-body p { margin: 2px 0 10px; font-size: 14px; }
 .install-actions { display: flex; gap: 8px; }
 .install-link { border: 0; background: none; padding: 0; cursor: pointer; color: var(--violet); font: 500 13px var(--font-display); }
-.install-link:hover { text-decoration: underline; }
+@media (hover: hover) { .install-link:hover { text-decoration: underline; } }
 @keyframes pop-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .install-pop { animation: none; } }
 
@@ -453,7 +454,8 @@ body.locked { overflow: hidden; }
 /* Dropdown */
 .dd { position: relative; display: inline-block; }
 .dd-btn { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--ink); font: 500 13px var(--font-display); cursor: pointer; white-space: nowrap; }
-.dd-btn:hover, .dd-btn.open { border-color: var(--soft); }
+.dd-btn.open { border-color: var(--soft); }
+@media (hover: hover) { .dd-btn:hover { border-color: var(--soft); } }
 .dd-btn:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
 .dd-prefix { color: var(--soft); }
 .dd-chev { color: var(--soft); transition: transform .15s; }
@@ -504,7 +506,7 @@ body.locked { overflow: hidden; }
 .list-tools .dd-btn { max-width: 100%; }
 .dd-value { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .btn-icon { flex: none; display: inline-grid; place-items: center; width: 34px; height: 30px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--body); cursor: pointer; }
-.btn-icon:hover { border-color: var(--soft); color: var(--ink); }
+@media (hover: hover) { .btn-icon:hover { border-color: var(--soft); color: var(--ink); } }
 .btn-icon:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
 .mlist { list-style: none; margin: 0; padding: 0; background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
 .mlist > li { padding: 14px 14px 14px 12px; border-bottom: 1px solid var(--mist); }
@@ -579,7 +581,7 @@ body.locked { overflow: hidden; }
   .tabbar { display: grid; grid-template-columns: repeat(4, 1fr); position: fixed; left: 0; right: 0; bottom: 0; z-index: 25; background: var(--card); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom); }
   .tabbar a { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px 0 8px; font: 500 12px var(--font-display); color: var(--soft); }
   .tabbar a svg { box-sizing: content-box; padding: 4px 20px; border-radius: 16px; transition: background-color .15s; }
-  .tabbar a:hover { text-decoration: none; color: var(--ink); }
+  @media (hover: hover) { .tabbar a:hover { text-decoration: none; color: var(--ink); } }
   .tabbar a.on { color: var(--violet); font-weight: 700; }
   .tabbar a.on svg { background: var(--mist); }
   body { padding-bottom: calc(66px + env(safe-area-inset-bottom)); }
@@ -655,6 +657,31 @@ body.locked { overflow: hidden; }
 @keyframes page-in { from { opacity: 0; } }
 @media (prefers-reduced-motion: no-preference) {
   main > * { animation: page-in .18s ease-out; }
+}
+
+/* Feedback (PARITY-82): controls ease between states and answer a press at once. No grey tap flash on phones. */
+a, button, summary, [role="option"] { -webkit-tap-highlight-color: transparent; }
+.pill, .seg button, .tab, .nav a, .strip-item, .btn-quiet, .btn-primary, .btn-icon, .icon-btn, .theme-toggle, .dd-btn, .dd-menu li, .search-results li, a.card, .mtable-more, .tabbar a {
+  transition: color .15s, background-color .15s, border-color .15s, box-shadow .15s, transform .1s;
+}
+.pill:active, .seg button:active, .btn-quiet:active, .btn-primary:active, .btn-icon:active, .icon-btn:active, .theme-toggle:active, .dd-btn:active { transform: scale(.96); }
+.strip-item:active, .btn-quiet:active, .icon-btn:active, .theme-toggle:active, .dd-menu li:active, .search-results li:active, .mtable-more:active, a.card:active { background: var(--tint); }
+.pill:not(.on):active, .dd-btn:active, .btn-icon:active, a.card:active { border-color: var(--soft); }
+.btn-primary:active { background: var(--violet-deep); }
+.tab:not(.on):active, .tabbar a:not(.on):active { color: var(--ink); }
+.tabbar a:not(.on):active svg { background: var(--tint); }
+html.theme-changing, html.theme-changing * { transition: none !important; }
+/* Sideways rows and inner scrollers keep their scroll to themselves: no browser back-swipe, no page scroll at their ends. */
+.strip-row, .tabs, .pills.scroller { overscroll-behavior-x: contain; }
+.dd-menu, .search-sheet .search-results { overscroll-behavior: contain; }
+@keyframes menu-in { from { opacity: 0; transform: translateY(-4px); } }
+@keyframes sheet-in { from { opacity: 0; } }
+@media (prefers-reduced-motion: no-preference) {
+  .dd-menu, .search > .search-results { animation: menu-in .12s ease-out; }
+  .search-sheet { animation: sheet-in .14s ease-out; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pill:active, .seg button:active, .btn-quiet:active, .btn-primary:active, .btn-icon:active, .icon-btn:active, .theme-toggle:active, .dd-btn:active { transform: none; }
 }
 
 .boot { min-height: 70vh; display: grid; place-content: center; justify-items: center; gap: 14px; padding: 24px; text-align: center; font: 500 14px var(--font-display); color: var(--soft); }

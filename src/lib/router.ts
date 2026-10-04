@@ -11,7 +11,11 @@ if (location.hash.startsWith('#/')) {
 
 const keyOf = () => (history.state as { k?: number } | null)?.k
 
-/** In-app navigation is a new page and starts at the top; Back and Forward return each page to where the reader left it. */
+/**
+ * In-app navigation is a new page and starts at the top; Back and Forward return each page to where the reader left it.
+ * Section tabs (links marked data-scroll="keep") change only the part below them, so the page stays where it is and
+ * the tabs stay under the reader's finger.
+ */
 let entry = keyOf() ?? Date.now()
 if (keyOf() == null) history.replaceState({ k: entry }, '')
 let restoreTo: number | null = null
@@ -19,21 +23,21 @@ const scrolls = new Map<number, number>()
 const listeners = new Set<() => void>()
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
 
-function arrive(next: number, top: boolean) {
+function arrive(next: number, scroll: 'top' | 'keep' | 'restore') {
   scrolls.set(entry, window.scrollY)
   entry = next
-  restoreTo = top ? 0 : scrolls.get(entry) ?? 0
+  restoreTo = scroll === 'top' ? 0 : scroll === 'keep' ? null : scrolls.get(entry) ?? 0
   listeners.forEach((l) => l())
 }
 
-export function navigate(to: string) {
-  if (to === location.pathname + location.search) { window.scrollTo(0, 0); return }
+export function navigate(to: string, { keepScroll = false } = {}) {
+  if (to === location.pathname + location.search) { if (!keepScroll) window.scrollTo(0, 0); return }
   const k = Date.now() + Math.random()
   history.pushState({ k }, '', to)
-  arrive(k, true)
+  arrive(k, keepScroll ? 'keep' : 'top')
 }
 
-window.addEventListener('popstate', () => arrive(keyOf() ?? 0, false))
+window.addEventListener('popstate', () => arrive(keyOf() ?? 0, 'restore'))
 
 document.addEventListener('click', (e) => {
   if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
@@ -42,7 +46,7 @@ document.addEventListener('click', (e) => {
   const url = new URL(a.href)
   if (url.origin !== location.origin || /\.[a-z0-9]+$/i.test(url.pathname)) return
   e.preventDefault()
-  navigate(url.pathname + url.search)
+  navigate(url.pathname + url.search, { keepScroll: a.dataset.scroll === 'keep' })
 })
 
 export function useRoute(): string[] {

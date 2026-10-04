@@ -8,11 +8,16 @@ import { EmptyState } from './EmptyState'
  * retries by itself when the connection comes back. `quiet` renders a fallback instead, for parts like the
  * index strip that should never take the page down with them.
  */
-export class ErrorBoundary extends Component<{ children: ReactNode; quiet?: ReactNode }, { failed: boolean }> {
+export class ErrorBoundary extends Component<{ children: ReactNode; quiet?: ReactNode; resetKey?: string }, { failed: boolean }> {
   state = { failed: false }
 
   static getDerivedStateFromError() {
     return { failed: true }
+  }
+
+  /** A new section of the same page (another tab) gets a fresh try without remounting the page. */
+  componentDidUpdate(prev: { resetKey?: string }) {
+    if (this.state.failed && prev.resetKey !== this.props.resetKey) this.setState({ failed: false })
   }
 
   retry = () => {
