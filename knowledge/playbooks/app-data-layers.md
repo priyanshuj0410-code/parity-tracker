@@ -33,14 +33,15 @@ Nivel is the working example: [decision 0011](../decisions/0011-data-backend.md)
    gcloud auth application-default login --impersonate-service-account=<app>-pipeline@<project>.iam.gserviceaccount.com
    ```
 4. **Rules:** public `get`/`read` only on `channels`, `releases` and `blobs`; nothing else readable; no client writes to content. Copy Nivel's `firestore.rules`. Live-state collections get their own per-user rules.
-5. **Deploy hook:** a Vercel production deploy hook in the app's `.env` as `VERCEL_DEPLOY_HOOK`, with `FIREBASE_PROJECT` and `FIRESTORE_DATABASE`.
+5. **Serve releases from the edge, not the build** ([decision 0014](../decisions/0014-data-separate-from-app.md)): a data function and a page function in the app's own Vercel project read the live release from Firestore and let Vercel's CDN cache it. Promote moves a pointer; nothing is rebuilt. `.env` holds `FIREBASE_PROJECT` and `FIRESTORE_DATABASE`.
 6. **Firebase CLI:** always pass `--project` (and `--account` if several are signed in). The CLI's default project for the home folder belongs to another product.
 
 ## The toolkit to copy from Nivel
 | File | Reuse |
 |---|---|
 | `scripts/data/firestore.mjs` | As is: REST client, keyless writes, public reads, content-addressed blobs |
-| `scripts/data/pull.mjs` | As is, with the app's file list: runs before every build |
+| `api/_data.js`, `api/data.js`, `api/page.js` | The edge side: serve a release's files and fill each page's preview tags; change the project id and the page lookup |
+| `scripts/serve-local.mjs` | Runs a build with the functions and rewrites, as Vercel does, before deploying |
 | `scripts/data/release.mjs` | The flow as is; replace `check()` and `report()` with the app's own checks (for a game: every item answerable, no dashes, reading level, child-safety review flags) |
 | `scripts/data/cli.mjs` | Keep `put`, `get`, `rm`, `seed`, `verify`; replace `load` with the app's own import |
 | Loading pattern | Two stages and per-item files, as in `src/lib/data.ts`, with skeletons and failed states from `src/components/Skeleton.tsx` and `ErrorBoundary.tsx` |
@@ -63,8 +64,8 @@ For a Next.js app (SwipeEd), run the pull before `next build` (in `prebuild`, af
 
 ## Onboarding checklist for Spot the Stereotype and SwipeEd
 - [ ] Inventory content now held in the repo (item lists, question banks, card decks, copy that changes with data) and live state (scores, rooms).
-- [ ] Create the Firebase project and Standard database; set up access, rules and the deploy hook.
+- [ ] Create the Firebase project and Standard database; set up access and rules.
 - [ ] Seed content records from today's files, then `verify` an exact match.
-- [ ] Add `pull` before the build, remove the content files from git, publish, preview, promote.
+- [ ] Add the data and page functions, remove the content files from git and the build, publish, preview, promote.
 - [ ] Move live state to its own collections or database with per-user rules.
 - [ ] Publish the app's own API if others will read it, and record it in the app's knowledge base.

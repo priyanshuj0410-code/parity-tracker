@@ -15,7 +15,11 @@ const MAX_BYTES = 8_000_000
 
 let token
 function authHeader() {
-  token ??= execFileSync('gcloud', ['auth', 'application-default', 'print-access-token'], { encoding: 'utf8' }).trim()
+  try {
+    token ??= execFileSync('gcloud', ['auth', 'application-default', 'print-access-token'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim()
+  } catch {
+    throw new Error(`Your Google login for the data tools has expired or is missing. Sign in again, then rerun:\n  gcloud auth application-default login --impersonate-service-account=nivel-pipeline@${PROJECT}.iam.gserviceaccount.com`)
+  }
   return { Authorization: `Bearer ${token}` }
 }
 
@@ -99,22 +103,25 @@ export async function where(collection, field, value) {
 }
 
 /**
- * A release's frozen files ({ path: text }) and logo PNGs ({ file: Buffer }). Blobs are content-addressed,
- * so each is checked against its id.
+ * A release's frozen files ({ path: text }) and, with `withLogos`, its logo PNGs ({ file: Buffer }).
+ * `only` limits the files read to those whose path passes it: a release holds thousands of small files.
+ * Blobs are content-addressed, so each is checked against its id.
  */
-export async function readRelease(id, { signed = true } = {}) {
+export async function readRelease(id, { signed = true, only = () => true, withLogos = false } = {}) {
   const meta = await get(`releases/${id}`, { signed })
   if (!meta) throw new Error(`No release ${id}`)
-  const ids = [...new Set([...Object.values(meta.files), ...Object.values(meta.logos)].flat())]
+  const wanted = Object.entries(meta.files).filter(([path]) => only(path))
+  const logoParts = withLogos ? Object.values(meta.logos) : []
+  const ids = [...new Set([...wanted.map(([, parts]) => parts), ...logoParts].flat())]
   const docs = await getMany(ids.map((b) => `blobs/${b}`), { signed })
   const blobs = new Map(ids.map((b, i) => {
     if (!docs[i] || blobId(docs[i].data) !== b) throw new Error(`Release ${id}: blob ${b} is missing or damaged`)
     return [b, docs[i].data]
   }))
   const text = (parts) => parts.map((b) => blobs.get(b)).join('')
-  const files = Object.fromEntries(Object.entries(meta.files).map(([path, parts]) => [path, text(parts)]))
+  const files = Object.fromEntries(wanted.map(([path, parts]) => [path, text(parts)]))
   const logos = {}
-  for (const parts of Object.values(meta.logos)) {
+  for (const parts of logoParts) {
     for (const [file, b64] of Object.entries(JSON.parse(text(parts)))) logos[file] = Buffer.from(b64, 'base64')
   }
   return { meta, files, logos }

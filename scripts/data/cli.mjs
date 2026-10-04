@@ -9,8 +9,7 @@
  *   seed <data dir> <logos dir> <spot feed> <markets.json>    load everything from local files (first load, or a restore)
  *   verify <data dir> <logos dir> <spot feed>                 check Firestore's records match local files exactly
  *
- *   publish [--collected=YYYY-MM-DD] [--approve-feed] [--no-preview] [--ref=origin/main]
- *                                                             freeze the records into a staging release, report, preview
+ *   publish [--collected=YYYY-MM-DD] [--approve-feed]         freeze the records into a staging release, report, preview link
  *   promote [release]                                         take the staged (or named) release live
  *   rollback                                                  return to the release live before
  *   status                                                    the live and staged releases
@@ -168,7 +167,7 @@ const commands = {
   logos: () => logos(pos[0], readJson(pos[1])),
   seed: () => seed(...pos.slice(0, 4)),
   verify: () => verify(...pos.slice(0, 3)),
-  publish: () => publish({ collected: option('collected'), approveFeed: flags.has('--approve-feed'), preview: !flags.has('--no-preview'), ref: option('ref') }),
+  publish: () => publish({ collected: option('collected'), approveFeed: flags.has('--approve-feed') }),
   promote: () => promote(pos[0]),
   rollback,
   status,

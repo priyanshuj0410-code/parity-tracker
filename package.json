@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "node scripts/data/pull.mjs && vite",
-    "build": "node scripts/data/pull.mjs && tsc -b && vite build && vite build --ssr src/prerender-routes.ts --outDir node_modules/.prerender && node scripts/prerender.mjs",
+    "dev": "vite",
+    "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
     "data": "node --env-file-if-exists=.env scripts/data/cli.mjs"

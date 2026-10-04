@@ -1,7 +1,7 @@
 import { Eq, Frac, Step, Steps } from '../components/Formula'
 import { CORRECTIONS_EMAIL, correctionHref } from '../lib/contact'
 import { usePageTitle } from '../lib/router'
-import { MARKET, SOURCE_DATE, companies, indexes, useStage } from '../lib/data'
+import { MARKET, companies, indexes, sourceDate, useStage } from '../lib/data'
 import { inr, pct } from '../lib/format'
 
 
@@ -115,7 +115,7 @@ export function Method() {
           {Object.values(MARKET).flatMap((m) => m.sources.map((x) => (
             <li key={m.code + x.label}><strong>{x.label}:</strong> {x.text.replace('{firstYear}', m.label(m.years[0])).replace('{latestYear}', m.label(m.latest))}</li>
           )))}
-          <li><strong>Collected:</strong> {SOURCE_DATE}.</li>
+          <li><strong>Collected:</strong> {sourceDate()}.</li>
         </ul>
       </section>
 
@@ -156,7 +156,7 @@ export function Method() {
 
       <section>
         <h2>Corrections</h2>
-        <p>Checked against the filings on {SOURCE_DATE}. Found an error? Email the company and the figure.</p>
+        <p>Checked against the filings on {sourceDate()}. Found an error? Email the company and the figure.</p>
         <p><a className="go" href={correctionHref()}>{CORRECTIONS_EMAIL}</a></p>
       </section>
     </>

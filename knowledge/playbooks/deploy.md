@@ -9,9 +9,9 @@ plane_issues:
 
 # Deploying Nivel to Vercel
 
-Production is https://nivel-equal-lens.vercel.app (project `parity-tracker`, scope `priyanshuj0410-5861s-projects`). Vercel builds remotely with `pnpm build`, which also writes the 3,401 prerendered pages ([decisions/0003](../decisions/0003-path-urls-and-prerendered-pages.md)).
+Production is https://nivel-equal-lens.vercel.app (project `parity-tracker`, scope `priyanshuj0410-5861s-projects`). Vercel builds remotely with `pnpm build`, which compiles the app only, and deploys the edge functions in `api/` beside it.
 
-This page is for app code. `pnpm build` first pulls the live data release from Firestore, so a deploy always carries the live data, and data changes ship with `pnpm data promote`, which rebuilds production through the deploy hook ([data-backend.md](data-backend.md)).
+This page is for app code. The build holds no data: pages and data are served at request time from the live release ([decision 0014](../decisions/0014-data-separate-from-app.md)), so data changes ship with `pnpm data promote` and never need a deploy ([data-backend.md](data-backend.md)). The deploy hook in `.env` is no longer used.
 
 ## Ship
 

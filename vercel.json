@@ -3,38 +3,12 @@
   "buildCommand": "pnpm build",
   "outputDirectory": "dist",
   "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
+    { "source": "/data/:path*", "destination": "/api/data" },
+    { "source": "/feeds/spot/:path*", "destination": "/api/data?kind=feed" },
+    { "source": "/logos/:path*", "destination": "/api/data?kind=logo" },
+    { "source": "/:path*", "destination": "/api/page" }
   ],
   "headers": [
-    {
-      "source": "/feeds/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=3600"
-        },
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
-        }
-      ]
-    },
-    {
-      "source": "/data/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=3600"
-        },
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
-        }
-      ]
-    },
     {
       "source": "/assets/(.*)",
       "headers": [

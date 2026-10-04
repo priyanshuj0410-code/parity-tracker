@@ -1,21 +1,19 @@
 /**
- * Before every build: write a release's data into src/data, src/feeds and public/logos.
- * DATA_RELEASE names a release (a preview build); otherwise the live channel's release is used.
- * DATA_RELEASE=local keeps the files already on disk, for offline work. Reads are public, so no login is needed.
- * DATA_OUT writes under another directory instead of the repo root.
+ * A local copy of a release, for pipelines that read the published data (the funds builder, the logo
+ * pipeline): its files into src/data and src/feeds, its logos into public/logos. The app itself never needs
+ * this; it reads releases over the network (decision 0014).
+ * DATA_RELEASE names a release; otherwise the live one. DATA_OUT writes under another directory.
+ * Reads are public, so no login is needed.
  */
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { get, readRelease } from './firestore.mjs'
 
-const want = process.env.DATA_RELEASE
 const out = process.env.DATA_OUT ?? '.'
-if (want === 'local') {
-  console.log('data: DATA_RELEASE=local, using the files on disk')
-} else {
-  const id = want || (await get('channels/live', { signed: false }))?.release
+{
+  const id = process.env.DATA_RELEASE || (await get('channels/live', { signed: false }))?.release
   if (!id) throw new Error('No live release in Firestore')
-  const { meta, files, logos } = await readRelease(id, { signed: false })
+  const { meta, files, logos } = await readRelease(id, { signed: false, only: (p) => p.startsWith('src/'), withLogos: true })
   for (const [path, text] of Object.entries(files)) {
     mkdirSync(dirname(join(out, path)), { recursive: true })
     writeFileSync(join(out, path), text)
