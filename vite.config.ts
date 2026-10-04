@@ -1,4 +1,4 @@
-import { renameSync } from 'node:fs'
+import { readFileSync, rmSync, writeFileSync } from 'node:fs'
 import react from '@vitejs/plugin-react'
 import { defineConfig, type Plugin } from 'vite'
 // @ts-expect-error: the edge handler is plain JavaScript, shared with api/data.js.
@@ -27,13 +27,15 @@ const devData = (): Plugin => ({
 
 /**
  * In production every page is served by the page function (api/page.js), which fills its title, link-preview
- * tags and data preloads, so the built page is renamed to the shell it reads, leaving no static index.html.
+ * tags and data preloads. The built page becomes a module the function imports (api/_shell.js, not in git),
+ * so it never fetches its own site, and no static index.html is left to bypass the function.
  */
 const shell = (): Plugin => ({
   name: 'nivel-shell',
   apply: 'build',
   closeBundle() {
-    renameSync('dist/index.html', 'dist/shell.html')
+    writeFileSync('api/_shell.js', `// Written by vite.config.ts at build time.\nexport default ${JSON.stringify(readFileSync('dist/index.html', 'utf8'))}\n`)
+    rmSync('dist/index.html')
   },
 })
 

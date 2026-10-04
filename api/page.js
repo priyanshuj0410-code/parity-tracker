@@ -4,6 +4,7 @@
  * preview), the release id for the app, and preloads for the data the page needs first. Cached at the edge.
  */
 import { file, live, release } from './_data.js'
+import shell from './_shell.js'
 
 export const config = { runtime: 'edge' }
 
@@ -11,7 +12,6 @@ const SITE = 'https://nivel-equal-lens.vercel.app'
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 const put = (html, pattern, value) => html.replace(pattern, (_, open, close) => open + esc(value) + close)
 
-let shell
 const pagesByRelease = new Map()
 
 async function pagesOf(id) {
@@ -45,7 +45,6 @@ function lookup(pages, path) {
 export default async function handler(req) {
   const url = new URL(req.url)
   const path = normal(url.searchParams.get('path') ?? '')
-  shell ??= await (await fetch(new URL('/shell.html', url))).text()
 
   let html = shell, status = 200, cdn = 'public, s-maxage=300, stale-while-revalidate=86400'
   try {

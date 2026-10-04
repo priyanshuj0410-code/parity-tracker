@@ -21,7 +21,7 @@ function rewrite(path) {
     const m = path.match(new RegExp('^' + source.replace(/:path\*/, '(.*)') + '$'))
     if (!m) continue
     const target = new URL(destination, 'http://local')
-    target.searchParams.set('path', decodeURIComponent(m[1]))
+    if (m[1] !== undefined) target.searchParams.set('path', decodeURIComponent(m[1]))
     return target.pathname + target.search
   }
   return null
