@@ -50,4 +50,6 @@ Lazy-loading each page cut the main file from 430 KB to 233 KB (125 KB to 73 KB 
 | Nifty 50 | 5.4 s | 6.4 s | 6.1 s | 6.1 s |
 | Companies | 12.8 s | 13.6 s | 7.0 s | 6.8 s |
 
-On a slow link the extra requests cost more than the smaller file saves; on a fast link with a slow phone the difference is noise. The app stays one file. On the fast link, first content still takes about 6 seconds, so the next gain is processor time (parsing the index file and the first render), not download size.
+On a slow link the extra requests cost more than the smaller file saves; on a fast link with a slow phone the difference is noise. The app stays one file.
+
+**A measurement artefact to know about:** in these tests the first layout of every page took 1.2 seconds (4.7 with the slowed processor), all of it in Chrome's `FontCache::GetFontPlatformData`: the headless browser, started with a fresh profile on macOS, looking up system fonts. With the font cache warm, the whole page's layout takes 7 ms. Visitors' phones do not pay this, so the times above are about a second too slow for both builds alike, and there is no processor-time problem to fix. Warm the browser with one page before timing another.
