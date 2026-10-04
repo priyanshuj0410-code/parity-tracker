@@ -1,10 +1,9 @@
-import sectorsJson from '../data/sectors.json'
 import type { Company, CompanyYear } from '../types'
-import { MARKET, afterLoad, companies, indexes, marketOf, payRatio, type Market } from './data'
+import { MARKET, afterLoad, companies, indexes, marketOf, payRatio, sectorBySymbol, type Market } from './data'
 
-export const SECTOR = sectorsJson as Record<string, string>
-export const SECTORS = [...new Set(Object.values(SECTOR))].sort()
-export const sectorOf = (c: Company): string => SECTOR[c.symbol] ?? c.industry
+/** The 11 sectors, and each live market's measurement bases, filled when the release's core lands. */
+export const SECTORS: string[] = []
+export const sectorOf = (c: Company): string => sectorBySymbol[c.symbol] ?? c.industry
 
 /** India's derived wage parity outside this range comes from mismatched staff bases, not pay. */
 export const W_PLAUSIBLE = [0.3, 1.3] as const
@@ -12,8 +11,13 @@ export const E_PARITY = 0.5
 export const W_PARITY = 1
 
 export type Basis = Market['basis']
-export const BASIS: Record<string, Basis> = Object.fromEntries(Object.values(MARKET).map((m) => [m.code, m.basis]))
-export const COMPARE_MARKETS = Object.keys(MARKET)
+export const BASIS: Record<string, Basis> = {}
+export const COMPARE_MARKETS: string[] = []
+afterLoad('core', () => {
+  SECTORS.push(...[...new Set(Object.values(sectorBySymbol))].sort())
+  for (const m of Object.values(MARKET)) BASIS[m.code] = m.basis
+  COMPARE_MARKETS.push(...Object.keys(MARKET))
+})
 
 export function employmentParity(c: Company, y?: CompanyYear): number | null {
   if (!y) return null

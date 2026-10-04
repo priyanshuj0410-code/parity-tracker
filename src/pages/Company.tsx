@@ -13,7 +13,7 @@ import { DataTable, type Column } from '../components/DataTable'
 import { EmptyState } from '../components/EmptyState'
 import { Tabs } from '../components/Tabs'
 import { BASIS, E_PARITY, POINTS, W_PARITY, inMarket, marketName, offMapReason, pointFor, sectorOf, standing, type Point } from '../lib/compare'
-import { SOURCE_DATE, boardShare, euYear, indexName, loadCompany, useCompany, useLoaded, useStage, isExcluded, marketOf, payRatio, shareChange, workforce, yoyChange } from '../lib/data'
+import { boardShare, sourceDate, euYear, indexName, loadCompany, useCompany, useLoaded, useStage, isExcluded, marketOf, payRatio, shareChange, workforce, yoyChange } from '../lib/data'
 import { crore, pct, pctTick } from '../lib/format'
 import { correctionHref } from '../lib/contact'
 import { href, usePageTitle } from '../lib/router'
@@ -325,7 +325,7 @@ export function Company({ symbol, tab }: { symbol: string; tab?: string }) {
           : <EmptyState art="reports" title="No gender pay report to show">{c.noDataReason ?? 'No BRSR filing yet. New listings file after their first full year.'}</EmptyState>}</section>
       ) : current === 'trend' ? <Trend c={c} />
         : current === 'peers' ? <Suspense fallback={<TableSkeleton rows={8} label="Loading peers" />}><Peers c={c} /></Suspense>
-          : current === 'sources' ? <><Sources c={c} /><p className="small muted correction">Checked against the filings on {SOURCE_DATE}. <a className="go" href={correctionHref(c.name)}>Report a correction</a></p></>
+          : current === 'sources' ? <><Sources c={c} /><p className="small muted correction">Checked against the filings on {sourceDate()}. <a className="go" href={correctionHref(c.name)}>Report a correction</a></p></>
             : current === 'calculations' ? <Suspense fallback={<TableSkeleton rows={6} label="Loading the calculation" />}><Calculations c={c} pt={pt} /></Suspense>
             : <Overview c={c} pt={pt} />}
     </>

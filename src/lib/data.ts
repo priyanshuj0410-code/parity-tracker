@@ -1,26 +1,54 @@
 import { use, useSyncExternalStore } from 'react'
-import companiesUrl from '../data/companies.json?url'
-import indexesUrl from '../data/indexes.json?url'
-import simulationsUrl from '../data/simulations.json?url'
-import marketsJson from '../data/markets.json'
-import release from '../data/release.json'
 import { companyFile } from '../feeds/data-api'
 import type { Company, CompanyYear, IndexData, Simulation } from '../types'
 
 /**
- * Data arrives in stages, so a page shows as soon as its own part is in (decision 0012):
- * - `core`: indexes and simulations, about 60 KB compressed, preloaded by index.html;
+ * The app holds no data (decision 0014). It reads a release from `/data/r/{release}/...`, served from Firestore
+ * by the edge, in stages so a page shows as soon as its own part is in (decision 0012):
+ * - `core` (`app/core.json`): markets, indexes, simulations, sectors and the logo map, about 60 KB compressed,
+ *   preloaded by the page;
  * - `companies`: every company, about 320 KB compressed, fetched once the first page is up, or at once by a
- *   page that needs it. A company page fetches that one company's file first.
- * The maps below are filled in place when a stage lands, so code that runs after it sees the data.
- * Files are hashed or carry the release id, so the service worker can serve them offline and two releases
- * never mix. The build-time page writer loads everything up front.
+ *   page that needs it. A company page fetches that one company's file first, also preloaded.
+ * The tables below are filled in place when a stage lands, so code that runs after it sees the data. A
+ * release's files never change, so the service worker serves them offline and two releases never mix.
  */
 export const companies: Record<string, Company> = {}
 export const indexes: Record<string, IndexData> = {}
 /** Fictional indexes, kept apart from the real ones so they never enter the index strip, search or comparisons. */
 export const simulations: Record<string, Simulation> = {}
 export const simulationOf = (parent: string): Simulation | undefined => Object.values(simulations).find((s) => s.parent === parent)
+/** The release in use and the day its figures were collected. */
+export const release = { id: '', collected: '' }
+/** Each company's sector (one of 11) and logo file, by symbol. */
+export const sectorBySymbol: Record<string, string> = {}
+export const logoFiles: Record<string, string> = {}
+
+export interface Core {
+  release: { id: string; collected: string }
+  markets: Record<string, MarketRecord>
+  indexes: Record<string, IndexData>
+  simulations: Record<string, Simulation>
+  sectors: Record<string, string>
+  logos: Record<string, string>
+}
+
+function takeCore(core: Core) {
+  Object.assign(release, core.release)
+  Object.assign(indexes, core.indexes)
+  Object.assign(simulations, core.simulations)
+  Object.assign(sectorBySymbol, core.sectors)
+  Object.assign(logoFiles, core.logos)
+  fillMarkets(core.markets)
+}
+
+/** The release this page reads: the one the page function chose (live, or `?release=` for a preview), else the live pointer. */
+let releaseIdOnce: Promise<string> | undefined
+const releaseId = () => (releaseIdOnce ??= (async () => {
+  const chosen = document.querySelector<HTMLMetaElement>('meta[name="nivel-release"]')?.content
+    || new URLSearchParams(location.search).get('release')
+  return chosen || (await getJson<{ release: string }>('/data/live.json')).release
+})())
+const fileUrl = async (path: string) => `/data/r/${await releaseId()}/${path}`
 
 export type Stage = 'core' | 'companies'
 const done = new Set<Stage>()
@@ -55,12 +83,10 @@ async function getJson<T>(url: string): Promise<T> {
 
 const LOADERS: Record<Stage, () => Promise<void>> = {
   core: async () => {
-    const [ix, sims] = await Promise.all([getJson<typeof indexes>(indexesUrl), getJson<typeof simulations>(simulationsUrl)])
-    Object.assign(indexes, ix)
-    Object.assign(simulations, sims)
+    takeCore(await getJson<Core>(await fileUrl('app/core.json')))
   },
   companies: async () => {
-    Object.assign(companies, await getJson<typeof companies>(companiesUrl))
+    Object.assign(companies, await getJson<typeof companies>(await fileUrl('v1/companies.json')))
   },
 }
 
@@ -120,8 +146,8 @@ export function loadCompany(symbol: string): Promise<Company | undefined> {
   let p = single.get(symbol)
   if (!p) {
     const whole = () => load('companies').then(() => companies[symbol])
-    p = done.has('companies') || import.meta.env.DEV ? whole()
-      : fetch(`/data/v1/companies/${companyFile(symbol)}.json?r=${release.id}`)
+    p = done.has('companies') ? whole()
+      : fileUrl(`v1/companies/${companyFile(symbol)}.json`).then(fetch)
         .then((res) => (res.status === 404 ? undefined : res.ok ? res.json() : whole()), whole)
     p.catch(() => failedCompanies.add(symbol))
     single.set(symbol, p)
@@ -134,20 +160,14 @@ export function useCompany(symbol: string): Company | undefined {
   return done.has('companies') ? companies[symbol] : use(loadCompany(symbol))
 }
 
-if (import.meta.env.SSR) {
-  Object.assign(companies, (await import('../data/companies.json')).default)
-  Object.assign(indexes, (await import('../data/indexes.json')).default)
-  Object.assign(simulations, (await import('../data/simulations.json')).default)
-  done.add('core').add('companies')
-} else {
-  window.addEventListener('online', retryFailed)
-  load('core')
-    .then(() => new Promise((r) => ('requestIdleCallback' in window ? requestIdleCallback(r, { timeout: 2000 }) : setTimeout(r, 1000))))
-    .then(() => load('companies'))
-    .catch(() => {})
-}
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
-export { SOURCE_DATE } from './source'
+/** The day the release's figures were collected ("1 October 2026"), or '' before core lands. */
+export function sourceDate(): string {
+  if (!release.collected) return ''
+  const [y, m, d] = release.collected.split('-').map(Number)
+  return `${d} ${MONTHS[m - 1]} ${y}`
+}
 
 export type MarketStatus = 'live' | 'planned' | 'limited'
 
@@ -189,19 +209,23 @@ export interface Market extends Omit<LiveMarketRecord, 'payPhrase'> {
   coverage: (n: number) => string
 }
 
-/** Every market, live or not, in display order. */
-export const MARKETS = Object.values(marketsJson) as MarketRecord[]
+/** Every market, live or not, in display order; the live ones by code; their shown indexes in order. Filled when core lands. */
+export const MARKETS: MarketRecord[] = []
+export const MARKET: Record<string, Market> = {}
+export const INDEX_ORDER: string[] = []
 
-export const MARKET: Record<string, Market> = Object.fromEntries(
-  (MARKETS.filter((m) => m.status === 'live') as LiveMarketRecord[]).map((m) => [m.code, {
-    ...m,
-    label: m.yearStyle === 'fy' ? (y: string) => 'FY' + y.slice(-2) : (y: string) => y,
-    payPhrase: (r: number) => m.payPhrase.replace('{n}', String(Math.round(r * 100))),
-    coverage: (n: number) => m.coverageText.replace('{n}', String(n)),
-  }]),
-)
-
-export const INDEX_ORDER = Object.values(MARKET).flatMap((m) => m.indexes)
+function fillMarkets(records: Record<string, MarketRecord>) {
+  MARKETS.push(...Object.values(records))
+  for (const m of MARKETS.filter((x) => x.status === 'live') as LiveMarketRecord[]) {
+    MARKET[m.code] = {
+      ...m,
+      label: m.yearStyle === 'fy' ? (y: string) => 'FY' + y.slice(-2) : (y: string) => y,
+      payPhrase: (r: number) => m.payPhrase.replace('{n}', String(Math.round(r * 100))),
+      coverage: (n: number) => m.coverageText.replace('{n}', String(n)),
+    }
+  }
+  INDEX_ORDER.push(...Object.values(MARKET).flatMap((m) => m.indexes))
+}
 
 export const euYear = (c: Company): string => (c.years[MARKET.EU.latest] ? MARKET.EU.latest : MARKET.EU.prev)
 export const marketOf = (c: Company): Market => MARKET[c.country] ?? MARKET.IN
@@ -253,4 +277,24 @@ export function dataLabel(y?: CompanyYear): { label: string; tone: Tone } {
 
 export function indexName(id: string): string {
   return indexes[id]?.name ?? id
+}
+
+/**
+ * Everything at once, for publish: it builds page titles with the app's own code (src/prerender-routes.ts)
+ * from the release it is assembling, passed in rather than read from files, so no app source imports data.
+ */
+export function loadAll(core: Core, all: Record<string, Company>) {
+  takeCore(core)
+  landed('core')
+  Object.assign(companies, all)
+  landed('companies')
+}
+
+// Start-up in the browser, last so the tables above exist: the release loads over the network.
+if (!import.meta.env.SSR) {
+  window.addEventListener('online', retryFailed)
+  load('core')
+    .then(() => new Promise((r) => ('requestIdleCallback' in window ? requestIdleCallback(r, { timeout: 2000 }) : setTimeout(r, 1000))))
+    .then(() => load('companies'))
+    .catch(() => {})
 }

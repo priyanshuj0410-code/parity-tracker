@@ -48,3 +48,6 @@ out/
 src/data/
 src/feeds/spot-v1.json
 public/logos/
+
+# written by the build: the app shell the page function serves
+api/_shell.js

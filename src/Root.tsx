@@ -8,7 +8,7 @@ import { SiteSearch } from './components/SiteSearch'
 import { TabBar } from './components/TabBar'
 import { ThemeToggle } from './components/ThemeToggle'
 import { correctionHref } from './lib/contact'
-import { SOURCE_DATE } from './lib/data'
+import { sourceDate, useLoaded } from './lib/data'
 import { href, useRoute } from './lib/router'
 import { Companies } from './pages/Companies'
 import { Company } from './pages/Company'
@@ -44,6 +44,8 @@ export default function Root() {
   const section = SECTION[route[0] ?? ''] ?? ''
   const at = (name: string) => (section === name ? 'on' : undefined)
   const online = useSyncExternalStore(onConnection, () => navigator.onLine)
+  useLoaded('core', false)
+  const collected = sourceDate()
   const [announce, setAnnounce] = useState('')
   const first = useRef(true)
   const where = route.join('/')
@@ -78,7 +80,7 @@ export default function Root() {
           </div>
         </div>
       </header>
-      {!online && <p className="offline-bar" role="status">Offline. Showing data collected {SOURCE_DATE}.</p>}
+      {!online && <p className="offline-bar" role="status">{collected ? `Offline. Showing data collected ${collected}.` : 'Offline. Showing saved data.'}</p>}
       <ErrorBoundary quiet={null}><Suspense fallback={<StripSkeleton />}><MarketStrip current={route[0] === 'index' ? route[1] : undefined} /></Suspense></ErrorBoundary>
       <main id="content" tabIndex={-1} className="wrap">
         <ErrorBoundary key={where}><Suspense fallback={<PageSkeleton />}><Page route={route} /></Suspense></ErrorBoundary>
@@ -86,7 +88,7 @@ export default function Root() {
       <footer className="site-footer">
         <div className="wrap">
           <img src={mark} alt="" width="834" height="619" />
-          <span>By The Equal Lens, from companies' own gender pay filings, collected {SOURCE_DATE}. Not investment advice.</span>
+          <span>By The Equal Lens, from companies' own gender pay filings{collected && `, collected ${collected}`}. Not investment advice.</span>
           <span className="footer-links"><a className="go" href={correctionHref()}>Report a correction</a><InstallLink /></span>
         </div>
       </footer>
