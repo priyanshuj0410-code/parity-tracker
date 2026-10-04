@@ -86,6 +86,11 @@ for s,i in info.items():
         indexes=[k for k,v in idx_members.items() if s in v],
         marketCapCr=round(mcap[s]/1e7) if s in mcap else None,publicFloatPct=shp.get(s,{}).get('public'),
         years=years,filings={f"{int(k)-1}-{k[2:]}":v for k,v in sorted(fl.items())})
+# Why a company has no figure for the latest year, read from its own documents (listed too recently, financial year
+# not ended, no employees): an input, pulled with pnpm data inputs pull (decision 0015).
+REASONS=os.path.join(HERE,'reasons.json')
+for s_,r_ in (json.load(open(REASONS)) if os.path.exists(REASONS) else {}).items():
+    if s_ in companies and companies[s_]['years'].get(YEARS[-1],{}).get('w') is None: companies[s_]['noDataReason']=r_
 import statistics
 for s_,c in companies.items():
     vals={y:v['w'] for y,v in c['years'].items() if v.get('w') is not None}
