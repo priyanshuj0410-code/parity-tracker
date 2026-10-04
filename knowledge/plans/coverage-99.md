@@ -73,3 +73,25 @@ Members are the union of each market's shown indexes. "Accounted for" counts a c
   - Records loaded; **release held for the owner.** Publish stops at the Spot the Stereotype feed gate: 3 items change (FTSE 100 pence and top quarter, ASX 200 top quarter). The answers children see are unchanged (87, 33, 34), and one rule line moves from 13.0% to 13.1%. Approving changes to a children's feed is the owner's call, so it was not done overnight: `pnpm data publish --approve-feed`, then promote.
   - Open, all sites that block scripts: UK Bridgepoint, Coca-Cola HBC, Energean, Plus500, Shaftesbury Capital; Australia Auckland Airport, Arafura, Antam, Infratil, Karoon, Mesoblast, Neuren, Pantoro, St Barbara, Spark. Each keeps its "no local employer files" reason, which the official data confirms.
   - Company-report group gaps found: Atalaya Mining and Foresight Group (UK, in `uk_reports.json`, used once #38 lands). Contact Energy and Meridian report FY2026 only, a year Australia's market does not have yet, so not used.
+- **Japan read** (269 companies, 108 agents, every batch independently checked): 185 with figures, 57 verified reasons (mostly holding companies exempt from publishing their own pay ratio), 26 open. Stored in `jp/jp_reports.json`. With #38: 137 more shares of pay (227 to 364 of 496), nothing lost.
+
+## Morning checklist for the owner (6 October 2026)
+1. **Review and merge #38** (company-report sources, UI). Then the Japan figures, the UK company-report figures (Atalaya Mining, Foresight Group) and the rest go out in one release.
+2. **Approve the Spot feed change** (3 items; the answers stay 87, 33 and 34; one rule line goes from 13.0% to 13.1%). After #38: rebuild Japan, load it, `pnpm data publish --approve-feed`, preview, promote. The release also carries the UK and Australian matching fixes and reasons, and the Vedanta Power reason.
+3. **Browser downloads** into `~/Downloads/nivel-reports/`, for sites that block scripts:
+   - EU: E.ON, Ericsson, ArcelorMittal, SAP, Allianz, Iberdrola, Mercedes-Benz, Airbus.
+   - India: Schaeffler India, Ather Energy, CMPDI, Emmvee, HEG Advanced Materials, and ITC Hotels' BRSR.
+   - UK: Bridgepoint, Coca-Cola HBC, Energean, Plus500, Shaftesbury Capital.
+   - Australia: Auckland Airport, Arafura, Antam, Infratil, Karoon, Mesoblast, Neuren, Pantoro, St Barbara, Spark New Zealand.
+   - Japan: Daiwa House, Suntory Beverage & Food, Oriental Land, Ebara, Sankyo, Omron, Panasonic, TDK, Kyushu FG, Shimano, Mitsubishi Corporation, SBI Shinsei Bank, Resona, JR East, JAL, TEPCO.
+4. **Decide on EDINET** (the FSA's filing system) for Japanese securities reports. It was not in the approved sources, and it holds every report that company sites block or do not post, so it would close most of Japan's 62 open companies.
+5. **Decide on the publish check order.** Publish checks shares of pay before `shared_scale.py` runs, which rejects correct EU and Japanese pay ratios above 100%. The workaround (load after shared scale) works. Moving the check would mean removing it from its current place, which the safety classifier blocked, so it is your call.
+
+## Projected once 1 and 2 are done
+| Market | Figure | Accounted-for share |
+|---|---|---|
+| India | 475 of 496 | 98.8% (6 open, all blocked downloads) |
+| UK | 198 of 350 | 100% |
+| Australia | 211 of 300 | 100% |
+| Japan | 364 of 496 | 87.5% (62 open: blocked sites, or reports not on company sites) |
+| EU | 73 of 103 | 92.2% (8 open, all blocked downloads) |
