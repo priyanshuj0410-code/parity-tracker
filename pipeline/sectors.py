@@ -4,9 +4,10 @@ Each market labels industries its own way (NSE industries, FTSE/ICB-style names 
 reports, GICS for ASX and Euro Stoxx, TSE 33 sectors for Japan). Labels are matched by rule,
 then Japanese sectors that mix GICS sectors (electric appliances, transportation equipment,
 wholesale trade, information and communication, precision instruments, services, other
-products) are split by company.
+products) are split by company, in the input sector_overrides.json (symbol to sector).
 
-Run from the repo root on an assembled release (pnpm data publish does): python3 pipeline/sectors.py <data dir>
+Run from the repo root on an assembled release (pnpm data publish does, and copies sector_overrides.json in from
+Firestore's inputs): python3 pipeline/sectors.py <data dir>
 """
 import json, re, sys
 
@@ -24,33 +25,6 @@ RULES = [
     ('Industrials', r'capital goods|construction|engineering|industrial|aerospace|defen|transport|shipping|airline|marine|rail|logistics|machinery|shipbuild|trading compan|wholesale|services|electrical|electronic equipment|warehous|diversified'),
 ]
 
-OVERRIDES = {
-    'TSE-6902': 'Consumer Discretionary', 'TSE-6752': 'Consumer Discretionary', 'TSE-6753': 'Consumer Discretionary',
-    'TSE-6758': 'Consumer Discretionary', 'TSE-7731': 'Consumer Discretionary', 'TSE-4385': 'Consumer Discretionary',
-    'TSE-4661': 'Consumer Discretionary', 'TSE-4755': 'Consumer Discretionary',
-    'TSE-6954': 'Industrials', 'TSE-6504': 'Industrials', 'TSE-6501': 'Industrials', 'TSE-6479': 'Industrials',
-    'TSE-6503': 'Industrials', 'TSE-6594': 'Industrials', 'TSE-6506': 'Industrials', 'TSE-7912': 'Industrials',
-    'TSE-7911': 'Industrials',
-    'TSE-6146': 'Information Technology', 'TSE-4902': 'Information Technology', 'TSE-4307': 'Information Technology',
-    'TSE-3697': 'Information Technology', 'TSE-4704': 'Information Technology',
-    'TSE-4751': 'Communication Services', 'TSE-2432': 'Communication Services', 'TSE-4324': 'Communication Services',
-    'TSE-9766': 'Communication Services', 'TSE-4689': 'Communication Services', 'TSE-3659': 'Communication Services',
-    'TSE-7974': 'Communication Services', 'TSE-9602': 'Communication Services',
-    'TSE-6178': 'Financials', 'TSE-2413': 'Health Care',
-    # TOPIX 500 additions
-    'TSE-6849': 'Health Care', 'TSE-6869': 'Health Care', 'TSE-7459': 'Health Care', 'TSE-2784': 'Health Care',
-    'TSE-9987': 'Health Care', 'TSE-8129': 'Health Care',
-    'TSE-6674': 'Industrials', 'TSE-6845': 'Industrials', 'TSE-7012': 'Industrials',
-    'TSE-6952': 'Consumer Discretionary', 'TSE-6632': 'Consumer Discretionary', 'TSE-6923': 'Consumer Discretionary',
-    'TSE-6592': 'Consumer Discretionary',
-    'TSE-3132': 'Information Technology', 'TSE-3107': 'Information Technology', 'TSE-8060': 'Information Technology',
-    'TSE-3626': 'Information Technology', 'TSE-8056': 'Information Technology', 'TSE-2327': 'Information Technology',
-    'TSE-4768': 'Information Technology', 'TSE-4684': 'Information Technology', 'TSE-4733': 'Information Technology',
-    'TSE-4716': 'Information Technology', 'TSE-3923': 'Information Technology', 'TSE-3994': 'Information Technology',
-    'TSE-3774': 'Information Technology', 'TSE-9759': 'Information Technology', 'TSE-3769': 'Financials',
-    'TSE-7729': 'Information Technology', 'TSE-1605': 'Energy',
-}
-
 
 def sector(industry):
     s = industry.lower()
@@ -58,6 +32,7 @@ def sector(industry):
 
 
 companies = json.load(open(sys.argv[1] + '/companies.json'))
+OVERRIDES = json.load(open(sys.argv[1] + '/sector_overrides.json'))
 out, unmatched = {}, []
 for sym, c in sorted(companies.items()):
     out[sym] = OVERRIDES.get(sym) or sector(c['industry'])

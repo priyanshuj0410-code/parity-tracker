@@ -2,7 +2,7 @@
 type: runbook
 title: India data pipeline
 description: How the India dataset (BRSR filings for every Nifty 500 company, footprints for the Nifty and BSE indexes, and the index funds and ETFs that track them) is fetched, cleaned and turned into the app's JSON, and how to refresh it.
-updated: 2026-10-03
+updated: 2026-10-04
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/04793a6e-433c-4a37-9cb0-b1494804cf0c
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/d0a4b836-049d-4e53-98d6-9bdf266cd884
@@ -15,16 +15,19 @@ plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/f4ecafb2-e14b-40cc-b5d5-9ac2384f4f9b
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/3e2cafdb-a457-426b-89bc-ce3a1d7b8740
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/9e814581-34cc-49dc-a1ea-75698f44c744
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/25f85b77-2bcc-40a5-9ef9-0ac94da273e0
 ---
 
 # India data pipeline
 
 Scripts are in `pipeline/india/` (Python 3 standard library plus `curl`). The output is loaded into Firestore and reaches the site through a release, with no merge: see [data-backend.md](data-backend.md). Display rules are in [../design.md](../design.md).
 
+**Inputs are not in git.** Index member lists, figures read by hand from reports, name maps and overrides (every data file under `pipeline/` outside `equal50/`) live in Firestore `inputs/` ([data-backend.md](data-backend.md#pipeline-inputs), PARITY-80). Before running any market's pipeline, `pnpm data inputs pull` from the repo root writes them into `pipeline/`. After changing one, such as a member list after a rebalance or a figure read from a report, `pnpm data inputs push pipeline/<file>` stores it. No PR is needed.
+
 ## Refresh steps
 **On hold for NSE steps.** NSE's website terms need its written consent for scripted collection. Do not run any step that calls `nseindia.com` until consent or a licence is recorded here ([legal review](../reviews/legal-review-2026-10.md#3-nse-data-and-index-names), [PARITY-66](https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/d0a4b836-049d-4e53-98d6-9bdf266cd884)).
 
-Run these in a scratch folder with the scripts copied in.
+Run these in a scratch folder with the scripts and inputs copied in.
 
 1. **Constituents:**
    - Download `ind_nifty50list.csv` and `ind_niftynext50list.csv` from `https://nsearchives.nseindia.com/content/indices/`, saved as `n50.csv` and `nn50.csv`.
@@ -44,7 +47,7 @@ Run these in a scratch folder with the scripts copied in.
 4. **Market cap:**
    - Download `PR{DDMMYY}.zip` from `nsearchives.nseindia.com/archives/equities/bhavcopy/pr/`.
    - Unzip `mcap{DDMMYYYY}.csv`.
-   - Update the file name in `build_data.py`.
+   - Leave it in the scratch folder: `build_data.py` reads the latest `mcap*.csv` there.
 5. **Extract:** `python3 extract_all.py` writes `company_years.json` with one record per company-year.
 6. **Build:** `python3 build_data.py` writes `out/companies.json` and `out/indexes.json`. From the repo root, `pnpm data load IN <scratch>/out/companies.json <scratch>/out/indexes.json`.
 7. **Index funds and ETFs** (`pipeline/funds/`):
@@ -67,7 +70,7 @@ Run these in a scratch folder with the scripts copied in.
 - **Boards:** totals outside 6–20 are discarded as filing errors.
 
 ## EU pipeline (Euro Stoxx 50): live
-Scripts and verified values are in `pipeline/eu/`. `eu_build.py` turns `eu_values.json` into `eu_companies.json` and `eu_indexes.json`; from the repo root, `pnpm data load EU <scratch>/eu_companies.json <scratch>/eu_indexes.json`.
+Scripts are in `pipeline/eu/`; the verified values (`eu_values.json`) and headcounts (`eu_headcount.json`) are inputs. `eu_build.py` turns `eu_values.json` into `eu_companies.json` and `eu_indexes.json`; from the repo root, `pnpm data load EU <scratch>/eu_companies.json <scratch>/eu_indexes.json`.
 
 - **Measure:** the CSRD ESRS S1-16 unadjusted gender pay gap, from each company's own sustainability statement. It shows like Japan's, as women's average pay as a share of men's, with parity at 100%. The index is an equal-weighted average.
 - **France, Netherlands, Italy:**
@@ -115,7 +118,7 @@ Scripts are in `pipeline/au/`.
 1. **Members:** `asx200.json` is parsed from the Wikipedia S&P/ASX 200 table (as of 5 April 2026). Refresh it after each quarterly rebalance.
 2. **Data:** download `https://www.wgea.gov.au/sites/default/files/documents/Employer-Gender-Pay-Gaps-Spreadsheet.xlsx`. WGEA replaces it each March, so archive every release locally: the Wayback Machine only holds the current one.
 3. **Load:** `python3 au_load.py` reads the employer, corporate group and group info sheets into `wgea.json`.
-4. **Match:** `python3 au_match.py` auto-matches names (first-token index, overlap score ≥ 0.75). Manual fixes are the `OVR`, `REJECT` and `FUNDS` sets in `au_build.py`.
+4. **Match:** `python3 au_match.py` auto-matches names (first-token index, overlap score ≥ 0.75). Manual fixes are in the input `au/au_overrides.json`: `match` (code to group or employer name), `reject` and `funds`.
 5. **Build:** `python3 au_build.py`, then from the repo root `pnpm data load AU <scratch>/au_companies.json <scratch>/au_indexes.json`.
 
 Australia rules:
@@ -128,7 +131,7 @@ Scripts are in `pipeline/uk/`.
 
 1. **Members:** `ftse100.json` is parsed from the Wikipedia FTSE 100 constituents table (members after the 1 October 2026 changes). Refresh it after each quarterly review.
 2. **Data:** download `https://gender-pay-gap.service.gov.uk/viewing/download-data/{year}` for every year from 2017, saved as `gpg{year}.csv`. The year is the April snapshot year.
-3. **Mapping:** `uk_map.py` holds a name regex per FTSE company, with exclusions. Trusts have no staff. Prudential plc has no UK filer since the M&G demerger.
+3. **Mapping:** the input `uk/uk_map.json` holds a name regex per FTSE company, with exclusions. Trusts have no staff. Prudential plc has no UK filer since the M&G demerger.
 4. **Build:** `python3 uk_build.py`, then from the repo root `pnpm data load GB <scratch>/uk_companies.json <scratch>/uk_indexes.json`.
 
 UK rules:
@@ -146,7 +149,7 @@ The US is limited to board seats ([plan](../plans/us-indexes.md), PARITY-6). Scr
 
 ## Shared scale for Japan and the EU (PARITY-20)
 `pnpm data publish` runs it on every release, then `sectors.py`, on the assembled data: `python3 pipeline/shared_scale.py <data dir>`.
-- `pipeline/eu/eu_workforce.py` holds ESRS S1-6 headcount by gender (women, men) per EU company and year, read by hand from the same CSRD statements as the pay gap. Percent-only disclosures (ING, Saint-Gobain, Vinci, Siemens Energy) are stored as shares. Not found: Deutsche Bank, Air Liquide, EssilorLuxottica.
+- The input `eu/eu_headcount.json` holds ESRS S1-6 headcount by gender (women, men) per EU company and year, read by hand from the same CSRD statements as the pay gap. Percent-only disclosures (ING, Saint-Gobain, Vinci, Siemens Energy) are stored as shares. Not found: Deutsche Bank, Air Liquide, EssilorLuxottica. Publish reads it from Firestore, so a newly read headcount needs only `inputs push`, then publish.
 - `shared_scale.py` sets each Japanese and EU company-year's `w` to women's share of pay, S = E·W/(E·W + 1 − E), with W = 1 − `gapMean` and E = `fPerm` (Japan, regular staff) or `fAll` (EU). Without E, `w` is empty and a note explains why; the pay ratio stays in `gapMean`.
 - It then recomputes the Nikkei 225 and Euro Stoxx 50 headlines (equal-weighted mean S), `payRatio`, `workforce`, sector averages and like-for-like change. It is idempotent: it reads `gapMean`, `fPerm` and `fAll`, never `w`.
 - Results on 2 October 2026: Nikkei 225 19.1% (105 companies), Euro Stoxx 50 37.3% in 2025 (28 companies), +0.2 pp like for like on 24.
@@ -154,7 +157,7 @@ The US is limited to board seats ([plan](../plans/us-indexes.md), PARITY-6). Scr
 ## Shared sectors
 `pnpm data publish` runs `python3 pipeline/sectors.py <data dir>` on every release. It writes `sectors.json`, mapping every company to one of 11 GICS-style sectors.
 - Each exchange's own labels are matched by rule (NSE industries, UK report sectors, GICS for ASX and Euro Stoxx, Nikkei's 36 groups). The script fails if any label is unmatched.
-- Nikkei groups that mix sectors are split by company in `OVERRIDES` (for example Sony and Panasonic to Consumer Discretionary, Hitachi and FANUC to Industrials, Nintendo to Communication Services).
+- Nikkei groups that mix sectors are split by company in the input `sector_overrides.json`, which publish reads from Firestore (for example Sony and Panasonic to Consumer Discretionary, Hitachi and FANUC to Industrials, Nintendo to Communication Services).
 - See [../decisions/0001-comparable-parity-measures.md](../decisions/0001-comparable-parity-measures.md) for how sectors and the shared scales are used.
 
 ## Spot the Stereotype feed (PARITY-52)

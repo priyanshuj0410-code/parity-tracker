@@ -12,6 +12,7 @@ import { pathToFileURL } from 'node:url'
 import { DATA_API_FILES, buildManifest, buildSummary, companyFile } from '../../src/feeds/data-api.ts'
 import { SITE, SPOT_SCHEMA, buildSpot, checkSpot, mergeSpot } from '../../src/feeds/spot.ts'
 import { blobId, commit, get, getMany, list, readRelease } from './firestore.mjs'
+import { input } from './inputs.mjs'
 
 const DATA = 'src/data'
 const SPOT = 'src/feeds/spot-v1.json'
@@ -135,9 +136,10 @@ async function pageMeta(core, companies) {
 
 export async function publish({ collected, approveFeed = false }) {
   const id = releaseId()
-  const [companyDocs, indexDocs, marketDocs, logoDocs, datasets, feed, liveChannel, staging] = await Promise.all([
+  const [companyDocs, indexDocs, marketDocs, logoDocs, datasets, feed, liveChannel, staging, sectorOverrides, euHeadcount] = await Promise.all([
     list('companies'), list('indexes'), list('markets'), list('logos'),
     getMany(['datasets/funds', 'datasets/simulations', 'datasets/logos']), get('feeds/spot-v1'), get('channels/live'), get('channels/staging'),
+    input('sector_overrides.json'), input('eu/eu_headcount.json'),
   ])
   const parse = (docs) => sortKeys(Object.fromEntries(docs.map((d) => [d.id, JSON.parse(d.json)])))
   const markets = Object.fromEntries(Object.entries(parse(marketDocs)).sort(([, a], [, b]) => a.order - b.order))
@@ -153,6 +155,8 @@ export async function publish({ collected, approveFeed = false }) {
 
   const dir = mkdtempSync(join(tmpdir(), 'nivel-release-'))
   for (const [name, value] of Object.entries(data)) writeFileSync(join(dir, `${name}.json`), JSON.stringify(value))
+  writeFileSync(join(dir, 'sector_overrides.json'), sectorOverrides)
+  writeFileSync(join(dir, 'eu_headcount.json'), euHeadcount)
   execFileSync('python3', ['pipeline/shared_scale.py', dir], { stdio: ['ignore', 'ignore', 'inherit'] })
   execFileSync('python3', ['pipeline/sectors.py', dir], { stdio: ['ignore', 'ignore', 'inherit'] })
   const read = (name) => readFileSync(join(dir, `${name}.json`), 'utf8')

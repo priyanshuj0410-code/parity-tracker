@@ -8,6 +8,7 @@ plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/aa1e98d8-d58d-4a3e-8d0b-eccea0459975
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/8ff4741b-d95e-4f6d-a59b-a80a0ce8056d
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/b98b37f6-08c0-4d83-b520-c1833aba2285
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/25f85b77-2bcc-40a5-9ef9-0ac94da273e0
 ---
 
 # Comparable parity measures across markets
@@ -58,7 +59,7 @@ Rules:
 ## Consequences and limits
 - **Bases still differ.** Hourly against annual pay, and part-time staff in or out, move W by a few points. The app says to treat small cross-market gaps as noise.
 - **India's W is approximate, and sometimes not comparable.** Wage totals cover all employees while the staff share is permanent staff only. Where the derivation lands outside 30–130% (eight companies on 2 October 2026, such as Britannia at 277%, whose wider staff is 40% women against 10.5% of permanent staff), W is marked not comparable and left out of rankings, medians and the map. Share of pay is unaffected because India reports it directly. Reported W elsewhere runs from 34% to 123%, so 130% is a generous ceiling (PARITY-23).
-- **EU workforce split is hand-read.** ESRS S1-6 headcount by gender was read from each statement (`pipeline/eu/eu_workforce.py`). It was not found for Deutsche Bank, Air Liquide and EssilorLuxottica, which keep a pay gap but no share of pay. A web search summary put Deutsche Bank at 63% women; it was not credible and was not used.
+- **EU workforce split is hand-read.** ESRS S1-6 headcount by gender was read from each statement (the input `eu/eu_headcount.json`, see [data-backend.md](../playbooks/data-backend.md#pipeline-inputs)). It was not found for Deutsche Bank, Air Liquide and EssilorLuxottica, which keep a pay gap but no share of pay. A web search summary put Deutsche Bank at 63% women; it was not credible and was not used.
 - **Japan's share of pay covers 105 of 152 companies**, those that disclose women's share of regular staff. The Nikkei 225 headline is 19.1%, against a 71.9% pay ratio.
 - **Japan's E and W cover different groups.** E is regular staff and W is all workers. The alternative (regular-staff W) would break consistency with the Japan headline.
 
