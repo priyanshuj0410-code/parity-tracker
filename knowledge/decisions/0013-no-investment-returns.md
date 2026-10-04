@@ -22,4 +22,4 @@ supersedes: the returns sections of decisions/0008 and 0009 (Parity 50)
 Returns were behind several open questions for counsel: research and adviser rules, the 2024 association rule for registered partners, and NSE's derived-data terms. Without them those questions narrow; see [counsel questions](../reviews/counsel-questions-2026-10.md).
 
 ## Still in the pipeline
-The return calculations in `pipeline/equal50/` (`parity50_v2.py`, the backfill and price fetchers) still exist for the record but feed nothing published. Deleting them is a follow-up.
+The return calculations in `pipeline/equal50/` (`parity50_v2.py`, the backfill and price fetchers), the saved results and the research write-ups stay as they are, by the owner's choice on 4 October 2026. They feed nothing published; the same price downloader also supplies the market values behind the Parity 50's weights.

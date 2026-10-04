@@ -40,5 +40,16 @@ plane_issues:
 - Part failed: "This part didn't load." (or "loads when you're back online") with Try again.
 - Page failed: "Something went wrong" or "You're offline", with Try again (retries in place) and Go to indexes; it retries by itself on reconnect.
 
-## Next
-- Split each page's code into its own chunk; after this change, the app's own code (about 430 KB raw) is the largest thing a first visit waits for.
+## Tried and not shipped: one chunk per page (PARITY-81, 4 October 2026)
+Lazy-loading each page cut the main file from 430 KB to 233 KB (125 KB to 73 KB compressed), with each page's code preloaded in its prerendered HTML and other pages fetched once the data was in. Both builds were served compressed, as Vercel does, in a fresh browser, timed to first real content:
+
+| Page | One file, 400 kbit/s, 400 ms | Split | One file, 4G, phone CPU at a quarter speed | Split |
+|---|---|---|---|---|
+| Home | 5.3 s | 6.4 s | 6.4 s | 6.5 s |
+| A company | 5.3 s | 6.0 s | 6.7 s | 6.4 s |
+| Nifty 50 | 5.4 s | 6.4 s | 6.1 s | 6.1 s |
+| Companies | 12.8 s | 13.6 s | 7.0 s | 6.8 s |
+
+On a slow link the extra requests cost more than the smaller file saves; on a fast link with a slow phone the difference is noise. The app stays one file.
+
+**A measurement artefact to know about:** in these tests the first layout of every page took 1.2 seconds (4.7 with the slowed processor), all of it in Chrome's `FontCache::GetFontPlatformData`: the headless browser, started with a fresh profile on macOS, looking up system fonts. With the font cache warm, the whole page's layout takes 7 ms. Visitors' phones do not pay this, so the times above are about a second too slow for both builds alike, and there is no processor-time problem to fix. Warm the browser with one page before timing another.
