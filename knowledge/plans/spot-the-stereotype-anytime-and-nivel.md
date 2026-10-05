@@ -379,6 +379,10 @@ One static file at `https://nivel-equal-lens.vercel.app/feeds/spot/v1.json`, wit
 - **A Play link** in the header menu and the footer.
 - **The Method page** says the same figures are played in the game.
 - **Until anytime play ships,** the links go to the game's home and the night sign-up.
+- **Built (PARITY-53, 5 October 2026):**
+  - Anytime play is live, so the links go straight to `https://stereotype.vercel.app/?play=work&from=nivel&item=<id>`; the game's home is the night door.
+  - Pattern details are in `design.md` (Guess, Guess first, Play page).
+  - Nivel's markets door waits for the markets.
 
 ### 6.2 In the game (proposed)
 - **A deep link:** `/?play=work&from=nivel&item=<feed id>`. The `item` names the figure the reader just guessed in Nivel, so the set starts after it instead of repeating it.

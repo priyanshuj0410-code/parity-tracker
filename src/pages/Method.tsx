@@ -1,6 +1,6 @@
 import { Eq, Frac, Step, Steps } from '../components/Formula'
 import { CORRECTIONS_EMAIL, correctionHref } from '../lib/contact'
-import { usePageTitle } from '../lib/router'
+import { href, usePageTitle } from '../lib/router'
 import { MARKET, companies, indexes, sourceDate, useStage } from '../lib/data'
 import { inr, pct } from '../lib/format'
 
@@ -152,6 +152,12 @@ export function Method() {
       <section>
         <h2>What this is not</h2>
         <p>Not an ESG rating and not investment advice. Arithmetic on companies' own published figures, each linked to its filing.</p>
+      </section>
+
+      <section>
+        <h2>The same figures, played</h2>
+        <p>Spot the Stereotype, The Equal Lens's game, plays these figures as questions. Each one carries its source and rule, and only reported figures covering at least 90% of the payroll go in.</p>
+        <p><a className="go" href={href('play')}>Play three</a></p>
       </section>
 
       <section>
