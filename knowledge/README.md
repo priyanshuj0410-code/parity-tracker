@@ -30,6 +30,7 @@ The app was renamed from Parity Tracker to Nivel on 2 October 2026 ([decisions/0
 - [decisions/0014-data-separate-from-app.md](decisions/0014-data-separate-from-app.md): the app holds no data; edge functions serve releases and page previews; promote moves a pointer, with no rebuild
 - [decisions/0015-coverage-accounted-for.md](decisions/0015-coverage-accounted-for.md): coverage means every company has a figure or a verified company-side reason; company reports are a fallback with their basis shown
 - [decisions/0016-static-releases.md](decisions/0016-static-releases.md): the site reads releases from static files on the nivel-data Vercel project, never Firestore, so a quota cannot take it down
+- [decisions/0017-markets-architecture.md](decisions/0017-markets-architecture.md): proposed. Nivel's markets use Thoth's engine as a shared package, with Nivel's own sign-in, ledger and database, and no shared pool
 - [plans/coverage-99.md](plans/coverage-99.md): overnight plan and log for 99% coverage in every live market
 - [decisions/0010-fund-footprint-method.md](decisions/0010-fund-footprint-method.md): fund footprints: attribution by market cap, a 60% coverage floor, comparison only with each fund's Tier 1 benchmark, and no ranking
 - [plans/us-indexes.md](plans/us-indexes.md): adding the S&P 500 and Dow as a limited-data market, measured by women's share of board seats
@@ -37,6 +38,9 @@ The app was renamed from Parity Tracker to Nivel on 2 October 2026 ([decisions/0
 - [plans/nivel-play-and-markets.md](plans/nivel-play-and-markets.md): Nivel's play side (Spot the Stereotype) and its prediction markets on a shared engine
 - [plans/spot-the-stereotype-anytime-and-nivel.md](plans/spot-the-stereotype-anytime-and-nivel.md): for the game team, anytime play without the discussion steps, the Nivel feed for a workplace theme, and bringing Nivel's readers to play
 - [plans/mit-solve-application.md](plans/mit-solve-application.md): the draft MIT Solve 2027 application and the plan to submit it by 2 November 2026
+- [research/norm-markets-evidence.md](research/norm-markets-evidence.md): evidence brief on misperceived norms about women's work, what to forecast and what not to, and neutral wording
+- [research/resolution-sources.md](research/resolution-sources.md): the dated publications markets can resolve against, with schedules
+- [plans/markets-evaluation.md](plans/markets-evaluation.md): evaluation design for norm forecasting, with a comparison group, sample size, analysis plan and claims
 - [research/personas-and-journeys.md](research/personas-and-journeys.md): proto-personas and customer journeys for Nivel, Spot the Stereotype and the markets, with the plan to validate them
 - [research/solve-innovation-assessment.md](research/solve-innovation-assessment.md): competitors, past Solver teams and literature, scored on Solve's Innovative Approach criterion
 - [research/solve-winning-pitches.md](research/solve-winning-pitches.md): what six winning Solve applications have in common, the AI for Humanity Prize, and how Nivel's draft compares
