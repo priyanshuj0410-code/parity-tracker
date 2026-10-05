@@ -1,8 +1,8 @@
 ---
 type: decision
 title: Nivel's markets run on Thoth's engine as a package, with Nivel's own accounts, ledger and database
-description: How Nivel would host play-money prediction markets. It reuses Thoth's tested engine as a shared package, keeps its own sign-in, ledger and Postgres database, never shares a pool or an operator with Thoth, and keeps the static site independent. Proposed; needs the owner's choices below and counsel's answers before anything goes live.
-status: proposed
+description: How Nivel hosts play-money prediction markets. It reuses Thoth's tested engine as a shared package, keeps its own sign-in, ledger and Postgres database, never shares a pool or an operator with Thoth, and keeps the static site independent. Accepted by the owner on 5 October 2026; sign-in and resolution are still to choose, and nothing goes live before counsel answers.
+status: accepted
 updated: 2026-10-05
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/ce4141c0-7f43-42bf-9dd1-81fe9784d7e5
@@ -13,7 +13,7 @@ plane_issues:
 
 # Nivel's markets: Thoth's engine as a package, Nivel's own everything else
 
-**Status: proposed.**
+**Status: accepted** by the owner on 5 October 2026: option 1, and yes-or-no thresholds first. Sign-in and resolution are still open (below). Going live still waits on counsel (PARITY-51) and the safeguarding review (PARITY-49).
 - Plan: [Nivel play and markets](../plans/nivel-play-and-markets.md).
 - Legal: [Online Gaming Act check](../reviews/gaming-act-check-2026-10.md), awaiting counsel.
 - What to ask and how: [evidence brief](../research/norm-markets-evidence.md) and [resolution sources](../research/resolution-sources.md).
@@ -49,7 +49,7 @@ plane_issues:
 | 2. Nivel calls Thoth's running service | The least new code | One operator for two unrelated organisations: shared personal data, shared compliance, and in effect a merged pool. Ruled out by rule 6 and by data protection |
 | 3. Rebuild the engine on Firestore | One backend for Nivel | Duplicates the pricing and ledger logic. Firestore's free plan caps writes at 20,000 a day, and a quota outage has happened before |
 
-## Decision (proposed)
+## Decision
 
 **The engine (Thoth repo):**
 - **THOTH-4:** extract `lib/market.ts` and `lib/wallet.ts` into a package that does not depend on any storage. It holds:
@@ -90,10 +90,10 @@ plane_issues:
 - **A second free database to watch.** Markets write little, so Neon's free plan should hold, and a cold start delays only a trade, never a page.
 - **Separate pools are permanent** until counsel says otherwise. "Two entry points, one pool" (THOTH-6) waits on counsel.
 
-## Owner decisions needed
-1. **Approve option 1:** a shared package with separate accounts, ledger and database.
-2. **Sign-in:**
+## Owner decisions
+1. **Option 1:** a shared package with separate accounts, ledger and database. **Approved, 5 October 2026.**
+2. **Sign-in, open:**
    - **Neon Auth,** as Thoth uses, with the same code path.
    - **Firebase Auth,** in Nivel's existing Firebase project, which keeps one vendor for Nivel.
-3. **First question format:** yes-or-no thresholds now, brackets later. The alternative is to build brackets first.
-4. **Who resolves markets,** and the grace period when a source is late (PARITY-48).
+3. **First question format:** yes-or-no thresholds now, brackets later. **Approved, 5 October 2026.**
+4. **Who resolves markets,** and the grace period when a source is late (PARITY-48). **Open.**
