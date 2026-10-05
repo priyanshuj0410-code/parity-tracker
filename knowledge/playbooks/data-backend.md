@@ -2,8 +2,9 @@
 type: runbook
 title: Data backend
 description: How Nivel's data gets from a pipeline to the live site without a merge. Pipelines load records into Firestore, `pnpm data publish` freezes them into a checked release with a preview, and `pnpm data promote` takes it live.
-updated: 2026-10-04
+updated: 2026-10-05
 plane_issues:
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/7424a532-a7b5-453f-8f99-52a34bf1bf39
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/b8e24bab-221d-4ed9-99f5-434428caaa1b
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/459f7fb5-a97a-4064-be30-d339eaaedfd9
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/90451686-6a03-48ed-b2e7-993e5649a10b
@@ -34,6 +35,7 @@ Why and what: [decision 0011](../decisions/0011-data-backend.md) (records and re
 | Index funds and ETFs, Parity 50 | `pnpm data put datasets funds <file>`, `pnpm data put datasets simulations <file>` |
 | Logos | `pnpm data logos public/logos src/data/logos.json` |
 | One index record | `pnpm data put indexes <id> <file>`, `pnpm data rm indexes <id>` |
+| A market's records as stored, to correct and load again | `pnpm data dump <market> <dir>` writes `companies.json` and `indexes.json`, the files `load` takes |
 
 Every change reaches the site only through publish and promote.
 
