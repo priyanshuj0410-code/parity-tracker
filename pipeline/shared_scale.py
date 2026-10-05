@@ -58,12 +58,16 @@ for c in companies.values():
             continue
         w_par = 1 - y['gapMean']
         e = y.get('fPerm') if c['country'] == 'JP' else y.get('fAll')
+        ns = NO_SPLIT[c['country']]
+        note = y.get('note') or ''
         if e is None or not 0 < e < 1:
-            y['w'], y['wKind'], y['note'] = None, None, NO_SPLIT[c['country']]
+            # Keep a builder's more specific note ("publishes the share only for the whole group") after the general one.
+            y['w'], y['wKind'] = None, None
+            y['note'] = note if note.startswith(ns) else f'{ns}. {note}' if note else ns
         else:
             y['w'], y['wKind'] = rd(e * w_par / (e * w_par + 1 - e)), 'reported'
-            if y.get('note') in NO_SPLIT.values():
-                y['note'] = ''
+            if note.startswith(ns):
+                y['note'] = note[len(ns) + 2:]
 
 
 def recompute(ix_id, years):
