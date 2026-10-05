@@ -4,6 +4,7 @@ title: Nivel design system
 description: Visual and writing rules for Nivel (formerly Parity Tracker), derived from The Equal Lens brand package (minimal register) plus a validated chart palette.
 updated: 2026-10-05
 plane_issues:
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/cb3c3975-004a-4ba9-8c8f-346b9bd9713f
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/77409619-e627-469b-8529-9a2a961f852a
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/39903f09-b70b-48dd-88c7-a10bce33c7c6
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/ccb18646-56ef-40e7-8091-87a1a83f7f23
@@ -132,7 +133,15 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
 ## 5. Components
 - **Stat tile:** label (Poppins 500, 13px, `--soft`), value (Poppins 600, 32–44px, `--ink`), one line of context. Never a gauge or ring.
 - **Change label (PARITY-25):** a filled triangle plus signed percentage points (pp) in coloured text, 13px Poppins 600, with no fill, so it never looks tappable: `--good` for rises, `--bad` for falls. The triangle and sign mean it never relies on colour alone. Flat (|change| < 0.05 pp) shows "no change" in `--soft`; missing shows "n/a" in `--muted`.
-- **Data badge:** `Reported`, `Rescaled`, `Estimated` (sun-deep text on tint), `Basis changed`, `Missing`. Every number that is not cleanly reported carries one.
+- **Data badge:** `Reported`, `Rescaled`, `Estimated` (sun-deep text on tint), `Company report` (sun-deep, like Estimated), `Basis changed`, `Missing`. Every number that is not cleanly reported carries one.
+- **Company-report figures (PARITY-92, [decision 0015](decisions/0015-coverage-accounted-for.md)):** where the statutory source has nothing, a figure can come from the company's own report. It always says so, in the same places a statutory figure names its source, with no new visual style:
+  - the `Company report` badge, whose tooltip is the year's note ("The company's own group-wide figures (…), not a UK gender pay gap filing");
+  - the Basis column of the years table ("Whole group, worldwide (company report)");
+  - Calculations: "The company's own Annual Report 2025, page 64 (the whole group, worldwide)" as the source line, with the report's title and page as a link, and inputs labelled for what they are ("Mean pay gap, whole group", "Women in the group's workforce");
+  - Sources: one sentence saying no local employer files, so these are the company's own figures and not the statutory ones, with the document linked. Japan names the document per figure ("Women in regular staff: 31.0%, from the company's ESG Data Book 2025, page 12 (the listed company's regular staff)").
+  - India's annual-report filings list as "BRSR, in the company's annual report: PDF", with no empty XBRL link.
+  - Company-report years stay out of UK index headlines and like-for-like change, which keep the statutory basis; Australian headlines are payroll-weighted from WGEA data and do not include them either.
+- **Download dates come from the data:** Japan's source line gives the day the MHLW open data was downloaded, from the record, not fixed text.
 - **Status chip** (coverage map): `Live`, `Planned`, `Limited data`, with text labels, not colour alone.
 - **Tables (data tables, `table.data`):**
   - 8px by 12px cells, tabular figures, `--tint` header row with 12px `--soft` labels; the sorted column's label turns `--ink`

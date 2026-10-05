@@ -1,8 +1,9 @@
-import csv, glob, json, re
+import csv, glob, json, os, re
 members=json.load(open('jp_members.json')); codes={c['code'] for c in members}
 rows={}
 # The latest MHLW open data download in the folder (99_YYYYMMDD_utf8_bom.csv), so a refresh needs no code change.
 DOWNLOAD=max(glob.glob('99_*_utf8_bom.csv'))
+DOWNLOADED=f'{DOWNLOAD[3:7]}-{DOWNLOAD[7:9]}-{DOWNLOAD[9:11]}'
 for r in csv.reader(open(DOWNLOAD,encoding='utf-8-sig')):
     for c in re.findall(r'[0-9A-Z]{4}',(r[9] or '')):
         if c in codes: rows.setdefault(c,[]).append(r)
@@ -32,10 +33,37 @@ for c in members:
     rec['years']['latest']=dict(w=rd(ratio/100),wKind='reported',fPerm=rd(regular/100) if regular is not None else None,fAll=None,permHeadcount=None,headcount=None,board=board,boardWomen=boardWomen,payrollCr=None,dq=1,
         note='',boundary='Listed company (own employees)',basisChange=False,topQuartile=None,gapMean=rd(1-ratio/100),gapMedian=None,bonusGapMean=None,entityCount=1,
         ratioRegular=rd(reg/100) if ok(reg) else None,ratioNonRegular=rd(non/100) if ok(non) else None,managerShare=rd(mgr/100) if mgr is not None and 0<=mgr<=100 else None,
-        boardShareReported=rd(bshare/100) if bshare is not None and 0<=bshare<=100 else None,period=r[219].strip(),asOf=r[222].strip(),updated=r[235].strip())
+        boardShareReported=rd(bshare/100) if bshare is not None and 0<=bshare<=100 else None,period=r[219].strip(),asOf=r[222].strip(),updated=r[235].strip(),downloaded=DOWNLOADED)
     rec['entities']=[dict(name=r[0].strip(),size=r[6].strip(),link='https://positive-ryouritsu.mhlw.go.jp/positivedb/')]
     rec['entitiesYear']='latest'
     companies[key]=rec
+# Figures from the companies' own reports where the database has none (decision 0015): the pay ratio of a company not in
+# the database, and the share of women in regular staff when the database does not give it. Like the database, only the
+# listed company's own staff count; a share for the whole group is noted but not used. An input, keyed by securities code.
+SCOPE={'parent regular':"the listed company's regular staff",'parent all':"all the listed company's staff"}
+doc=lambda s,fields,scope: dict(title=s['title'],url=s['url'],page=s.get('page'),fields=fields,scope=scope)
+for code,o in (json.load(open('jp_reports.json')) if os.path.exists('jp_reports.json') else {}).items():
+    rec=companies.get('TSE-'+code)
+    if not rec: continue
+    y=rec['years'].get('latest')
+    ok=lambda v: v is not None and 20<=v<=150
+    if y is None and ok(o.get('ratio')) and o.get('ratioSource'):
+        y=rec['years']['latest']=dict(w=rd(o['ratio']/100),wKind='reported',fPerm=None,fAll=None,permHeadcount=None,headcount=None,board=None,boardWomen=None,payrollCr=None,dq=1,
+            note="From the company's own report: it is not in the labour ministry's database",boundary='Listed company (own employees), company report',basisChange=False,
+            topQuartile=None,gapMean=rd(1-o['ratio']/100),gapMedian=None,bonusGapMean=None,entityCount=1,
+            ratioRegular=rd(o['ratioRegular']/100) if ok(o.get('ratioRegular')) else None,ratioNonRegular=rd(o['ratioNonRegular']/100) if ok(o.get('ratioNonRegular')) else None,
+            managerShare=None,boardShareReported=None,period=o.get('period') or '',reportSources=[doc(o['ratioSource'],['ratio'],"the listed company's own employees")])
+        rec['noDataReason']=None
+    # A reason (no share for the listed company, or exempt from a pay ratio) can come with a ratio the company does publish.
+    if o['status']=='reason':
+        if y: y['note']=o['reason']
+        else: rec['noDataReason']=o['reason']
+        continue
+    if y is None or y.get('fPerm') is not None or o.get('share') is None: continue
+    if o.get('shareScope') in SCOPE and 0<o['share']<1:
+        y['fPerm']=rd(o['share'])
+        y.setdefault('reportSources',[]).append(doc(o['shareSource'],['fPerm'],SCOPE[o['shareScope']]))
+    else: y['note']=(y['note']+'; ' if y['note'] else '')+"Publishes women's share of staff only for the whole group, not the listed company"
 def avg(v): v=[x for x in v if x is not None]; return (sum(v)/len(v),len(v)) if v else (None,0)
 def make_index(ix_id,name,as_of,ids):
     cs=[companies['TSE-'+c] for c in ids if companies['TSE-'+c]['years']]

@@ -55,6 +55,14 @@ for c in ftse:
             bonusGapMean=rd(sum(e['n']*e['bg'] for e in bgs)/sum(e['n'] for e in bgs)) if bgs else None,entityCount=len(ents))
         rec['entities']=[dict(name=e['name'],size=e['size'],link=e['link']) for e in sorted(ents,key=lambda e:-e['n'])]
         rec['entitiesYear']=y
+    # Where no UK employer in the group files, the company's own group-wide figures from its annual report (decision 0015).
+    for y,o in ((o['year'],o) for o in REPORTS['figures'].get(n,[])):
+        if y in rec['years']: continue
+        f,g=o['womenShare'],o['gapMean']/100
+        rec['years'][y]=dict(w=rd(f*(1-g)/(f*(1-g)+(1-f))),wKind='reported',fPerm=None,fAll=rd(f),permHeadcount=None,headcount=None,board=None,boardWomen=None,payrollCr=None,dq=1,
+            note=f"The company's own group-wide figures ({o['basis']}), not a UK gender pay gap filing",boundary='Whole group, worldwide (company report)',basisChange=True,
+            topQuartile=None,gapMean=rd(g),gapMedian=None,bonusGapMean=None,entityCount=0,
+            reportSources=[dict(title=o['title'],url=o['url'],page=o.get('page'),fields=['gapMean','fAll'],scope='the whole group, worldwide')])
     if not rec['years']: rec['ukStatus']='No UK employer in the group files a gender pay gap report (fewer than 250 UK staff per employer, or staff mostly outside the UK)'
     # A verified reason, read from the company's own documents, for a latest year with no filing.
     if n in REPORTS['reasons'] and YEARS[-1] not in rec['years']: rec['ukStatus']=REPORTS['reasons'][n]
@@ -66,7 +74,8 @@ def make_index(ix_id,name,as_of):
     members=[companies[k] for k in keys]
     idx_years={}
     for y in YEARS:
-        cs=[c for c in members if y in c['years']]
+        # Company-report years (group-wide, not UK staff) stay out of the index, which is on the statutory basis.
+        cs=[c for c in members if y in c['years'] and not c['years'][y].get('reportSources')]
         if not cs: continue
         sec={}
         for c in cs: sec.setdefault(c['industry'],[]).append(c['years'][y]['w'])
@@ -76,7 +85,7 @@ def make_index(ix_id,name,as_of):
             sectors=sorted([dict(industry=k,w=rd(avg(v)),payrollShare=None,companies=len(v)) for k,v in sec.items()],key=lambda x:-x['w']))
     yoy={}
     for y0,y1 in zip(YEARS,YEARS[1:]):
-        both=[c for c in members if y0 in c['years'] and y1 in c['years'] and not c['years'][y1]['basisChange']]
+        both=[c for c in members if y0 in c['years'] and y1 in c['years'] and not c['years'][y1]['basisChange'] and not c['years'][y1].get('reportSources') and not c['years'][y0].get('reportSources')]
         if both:
             a=avg([c['years'][y0]['w'] for c in both]); b=avg([c['years'][y1]['w'] for c in both])
             yoy[f"{y0}>{y1}"]=dict(**{'from':rd(a),'to':rd(b)},change=rd(b-a),companies=len(both))

@@ -1,8 +1,9 @@
-import { boardShare } from '../lib/data'
+import { boardShare, longDate } from '../lib/data'
 import { pct } from '../lib/format'
 import type { Company } from '../types'
 import { DataBadge } from './Badge'
 import { ParityTrack } from './ParityTrack'
+import { ReportRef, fromReport } from './ReportSource'
 
 export function JapanGlance({ c }: { c: Company }) {
   const y = c.years.latest
@@ -37,14 +38,19 @@ export function JapanGlance({ c }: { c: Company }) {
 export function JapanSources({ c }: { c: Company }) {
   const y = c.years.latest
   const entity = c.entities?.[0]
+  const ratioDoc = fromReport(y.reportSources, 'ratio'), shareDoc = fromReport(y.reportSources, 'fPerm')
   return (
         <ul className="tight">
-          <li><strong>Source:</strong> the Ministry of Health, Labour and Welfare's women's advancement database, open data downloaded on 2 October 2026. <a href="https://positive-ryouritsu.mhlw.go.jp/positivedb/" target="_blank" rel="noreferrer">Database</a></li>
+          {ratioDoc
+            ? <li><strong>Source:</strong> the company is not in the labour ministry's women's advancement database, so its pay ratio is from its own <ReportRef s={ratioDoc} /> ({ratioDoc.scope}).</li>
+            : <li><strong>Source:</strong> the Ministry of Health, Labour and Welfare's women's advancement database, open data downloaded on {y.downloaded ? longDate(y.downloaded) : '2 October 2026'}. <a href="https://positive-ryouritsu.mhlw.go.jp/positivedb/" target="_blank" rel="noreferrer">Database</a></li>}
           {entity && <li><strong>Reporting employer:</strong> {entity.name} ({entity.size})</li>}
           {y.period && <li><strong>Pay period:</strong> {y.period}</li>}
           {y.updated && <li><strong>Last updated by the company:</strong> {y.updated}</li>}
           <li><strong>Scope:</strong> the listed company's own employees; for holding companies, often head office only.</li>
-          <li><strong>Women in regular staff:</strong> {y.fPerm != null ? `${pct(y.fPerm)}, from the same database.` : 'not disclosed, so no share of pay and not in the Nikkei 225 headline.'}</li>
+          <li><strong>Women in regular staff:</strong> {y.fPerm == null ? 'not disclosed, so no share of pay and not in the Nikkei 225 headline.'
+            : shareDoc ? <>{pct(y.fPerm)}, from the company's <ReportRef s={shareDoc} /> ({shareDoc.scope}).</>
+              : `${pct(y.fPerm)}, from the same database.`}</li>
         </ul>
   )
 }

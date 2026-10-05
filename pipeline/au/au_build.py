@@ -29,6 +29,14 @@ for a in asx:
     if not m:
         rec['noDataReason']=REPORTS['reasons'].get(code) or ('Investment company, fund or externally managed trust: few or no employees of its own' if code in FUNDS
             else 'No Australian employer in the group reports to WGEA (fewer than 100 Australian staff, or operations mostly outside Australia)')
+        # Where no Australian employer reports to WGEA, the company's own group-wide figures from its annual report (decision 0015).
+        for o in REPORTS['figures'].get(code,[]):
+            f,g=o['womenShare'],o['gapMean']/100
+            rec['years'][o['year']]=dict(w=rd(f*(1-g)/(f*(1-g)+(1-f))),wKind='reported',fPerm=None,fAll=rd(f),permHeadcount=None,headcount=None,board=None,boardWomen=None,payrollCr=None,dq=1,
+                note=f"The company's own group-wide figures ({o['basis']}), not a WGEA report",boundary='Whole group, worldwide (company report)',basisChange=True,
+                topQuartile=None,gapMean=rd(g),gapMedian=None,bonusGapMean=None,entityCount=0,
+                reportSources=[dict(title=o['title'],url=o['url'],page=o.get('page'),fields=['gapMean','fAll'],scope='the whole group, worldwide')])
+            rec['noDataReason']=None
         companies[key]=rec; continue
     kind,name=m
     if kind=='G':

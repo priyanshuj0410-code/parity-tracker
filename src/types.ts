@@ -28,6 +28,20 @@ export interface CompanyYear {
   period?: string
   asOf?: string
   updated?: string
+  /** Japan: the day the labour ministry's open data was downloaded (YYYY-MM-DD). */
+  downloaded?: string
+  /** Figures taken from the company's own reports because the statutory source has none for them (decision 0015). */
+  reportSources?: ReportSource[]
+}
+
+/** One company document a year's figures were read from; `fields` names which figures (gapMean, fAll, fPerm, ratio). */
+export interface ReportSource {
+  title: string
+  url: string
+  page?: number | null
+  fields: string[]
+  /** Who the figures cover, in plain words ("the whole group, worldwide", "the listed company's regular staff"). */
+  scope: string
 }
 
 export interface Entity {
