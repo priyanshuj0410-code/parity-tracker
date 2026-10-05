@@ -52,6 +52,9 @@ public/logos/
 # written by the build: the app shell the page function serves
 api/_shell.js
 
+# the static data site (decision 0016): written and deployed by pnpm data publish, promote and rollback
+.data-site/
+
 # pipeline inputs (hand-read figures, maps, index members): Firestore inputs/, pulled with pnpm data inputs pull
 pipeline/**/*.json
 pipeline/**/*.csv

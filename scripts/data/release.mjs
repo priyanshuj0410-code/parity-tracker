@@ -13,6 +13,7 @@ import { DATA_API_FILES, buildManifest, buildSummary, companyFile } from '../../
 import { SITE, SPOT_SCHEMA, buildSpot, checkSpot, mergeSpot } from '../../src/feeds/spot.ts'
 import { blobId, commit, get, getMany, list, readRelease } from './firestore.mjs'
 import { input } from './inputs.mjs'
+import * as site from './site.mjs'
 
 const DATA = 'src/data'
 const SPOT = 'src/feeds/spot-v1.json'
@@ -221,6 +222,13 @@ export async function publish({ collected, approveFeed = false }) {
   await commit(writes)
   console.log(text)
 
+  // The static data site serves the new release as staging, next to the live one (decision 0016).
+  site.addRelease(id, { files, logos: Object.fromEntries(logoDocs.map((d) => [d.id, d.png])), collected, status: 'staging' })
+  if (liveChannel) await site.ensureRelease(liveChannel.release)
+  site.setChannel('staging', { release: id, collected })
+  site.prune(new Set([id, liveChannel?.release, liveChannel?.previous?.[0]].filter(Boolean)))
+  site.deploy()
+
   const url = `${SITE}/?release=${id}`
   await commit([{ update: `releases/${id}`, data: { preview: url } }])
   console.log(`\nPreview: ${url}\nCheck it, then: pnpm data promote ${id}`)
@@ -232,6 +240,12 @@ export async function promote(id) {
   if (!id) throw new Error('Nothing is staged. Run pnpm data publish first.')
   const { meta, files } = await readRelease(id, { only: (p) => p === SPOT })
   if (meta.status !== 'staging') throw new Error(`Release ${id} is ${meta.status}, not staging`)
+  // The static site first: if its deploy fails, Firestore still says staging and promote can run again.
+  await site.ensureRelease(id)
+  site.setChannel('live', { release: id, collected: meta.collected })
+  if (staging?.release === id) site.setChannel('staging', null)
+  site.prune(new Set([id, live?.release, staging?.release !== id && staging?.release].filter(Boolean)))
+  site.deploy()
   const writes = [
     { set: 'channels/live', data: { release: id, previous: live ? [live.release, ...(live.previous ?? [])].slice(0, 20) : [], updated: new Date() } },
     { update: `releases/${id}`, data: { status: 'live', promoted: new Date() } },
@@ -240,19 +254,24 @@ export async function promote(id) {
   if (live) writes.push({ update: `releases/${live.release}`, data: { status: 'retired' } })
   if (staging?.release === id) writes.push({ delete: 'channels/staging' })
   await commit(writes)
-  console.log(`Release ${id} is live${live ? ` (was ${live.release})` : ''}. The site serves it within about five minutes, as edge caches refresh.`)
+  console.log(`Release ${id} is live${live ? ` (was ${live.release})` : ''}. The site serves it within about three minutes, as edge caches refresh.`)
 }
 
 export async function rollback() {
   const live = await get('channels/live')
   const [back, ...rest] = live?.previous ?? []
   if (!back) throw new Error('No earlier release to return to')
+  const [backRelease, staging] = await Promise.all([get(`releases/${back}`), get('channels/staging')])
+  await site.ensureRelease(back)
+  site.setChannel('live', { release: back, collected: backRelease.collected })
+  site.prune(new Set([back, live.release, staging?.release].filter(Boolean)))
+  site.deploy()
   await commit([
     { set: 'channels/live', data: { release: back, previous: rest, updated: new Date() } },
     { update: `releases/${back}`, data: { status: 'live' } },
     { update: `releases/${live.release}`, data: { status: 'rolled back' } },
   ])
-  console.log(`Live release is ${back} again (${live.release} rolled back). The site follows within about five minutes.`)
+  console.log(`Live release is ${back} again (${live.release} rolled back). The site follows within about three minutes.`)
 }
 
 export async function status() {
