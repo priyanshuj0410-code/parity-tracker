@@ -55,7 +55,6 @@ function check({ companies, indexes, markets, logoMap, logoFiles }) {
     if (!m) { problems.push(`company ${key}: market ${c.country} is not live`); continue }
     const odd = Object.keys(c.years ?? {}).filter((y) => !m.years.includes(y))
     if (odd.length) problems.push(`company ${key}: years ${odd} are not ${c.country} years`)
-    for (const [y, v] of Object.entries(c.years ?? {})) if (v.w != null && !(v.w >= 0 && v.w <= 1)) problems.push(`company ${key} ${y}: share of pay ${v.w}`)
     for (const id of c.indexes ?? []) if (!indexes[id]) problems.push(`company ${key}: index ${id} does not exist`)
   }
   for (const [id, ix] of Object.entries(indexes)) {
@@ -162,6 +161,11 @@ export async function publish({ collected, approveFeed = false }) {
   execFileSync('python3', ['pipeline/sectors.py', dir], { stdio: ['ignore', 'ignore', 'inherit'] })
   const read = (name) => readFileSync(join(dir, `${name}.json`), 'utf8')
   const companies = JSON.parse(read('companies')), indexes = JSON.parse(read('indexes'))
+  // Checked here, on what is published: Japanese and EU records hold a pay ratio in `w` until shared_scale.py
+  // turns it into a share, and a ratio above 1 (women paid more) is correct (owner's choice, PARITY-94).
+  for (const [key, c] of Object.entries(companies)) {
+    for (const [y, v] of Object.entries(c.years ?? {})) if (v.w != null && !(v.w >= 0 && v.w <= 1)) problems.push(`company ${key} ${y}: share of pay ${v.w}`)
+  }
 
   const { items: current, skipped } = buildSpot({ indexes, companies })
   const { items: spot, changes: feedChanges } = mergeSpot(current, JSON.parse(feed.json))

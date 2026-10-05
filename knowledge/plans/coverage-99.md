@@ -11,6 +11,7 @@ plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/b9a4d982-563d-420d-a543-0df9d9238cbf
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/cb3c3975-004a-4ba9-8c8f-346b9bd9713f
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/63876b77-0485-4f55-b912-c3337e1b9dfa
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/c28ef6bf-a0a1-41de-8d63-8f91ab8ef68a
 ---
 
 # Coverage to 99% accounted for
@@ -100,7 +101,7 @@ Members are the union of each market's shown indexes. "Accounted for" counts a c
    - India: Schaeffler India, Ather Energy, CMPDI, Emmvee, HEG Advanced Materials, and ITC Hotels' BRSR.
    - Japan, the integrated report or ESG data with the share of women in the listed company's staff: Suntory Beverage & Food, Ebara, Sankyo, Omron, Panasonic, TDK, Shimano, Mitsubishi Corporation, JR East, JAL (and Asahi, unless EDINET has it).
    - UK and Australia: none needed; their blocked companies are accounted for from official data.
-3. **Publish check order:** publish checks shares of pay before `shared_scale.py` runs. The workaround (load EU and Japanese records after shared scale) works; moving the check is the owner's call.
+3. **Publish check order:** done. On 6 October the owner chose to move the check after `shared_scale.py` (PARITY-94). EU and Japanese builder output now loads as it is.
 
 ## Projected once 1 is done
 | Market | Figure | Accounted-for share | Open |
