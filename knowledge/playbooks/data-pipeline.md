@@ -2,8 +2,9 @@
 type: runbook
 title: India data pipeline
 description: How the India dataset (BRSR filings for every Nifty 500 company, footprints for the Nifty and BSE indexes, and the index funds and ETFs that track them) is fetched, cleaned and turned into the app's JSON, and how to refresh it.
-updated: 2026-10-04
+updated: 2026-10-05
 plane_issues:
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/7424a532-a7b5-453f-8f99-52a34bf1bf39
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/04793a6e-433c-4a37-9cb0-b1494804cf0c
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/d0a4b836-049d-4e53-98d6-9bdf266cd884
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/aa1e98d8-d58d-4a3e-8d0b-eccea0459975
@@ -50,7 +51,12 @@ Run these in a scratch folder with the scripts and inputs copied in.
    - Unzip `mcap{DDMMYYYY}.csv`.
    - Leave it in the scratch folder: `build_data.py` reads the latest `mcap*.csv` there.
 5. **Extract:** `python3 extract_all.py` writes `company_years.json` with one record per company-year.
-6. **Build:** `python3 build_data.py` writes `out/companies.json` and `out/indexes.json`. From the repo root, `pnpm data load IN <scratch>/out/companies.json <scratch>/out/indexes.json`.
+6. **Build:** `python3 build_data.py` writes `out/companies.json` and `out/indexes.json`. From the repo root, `pnpm data load IN <scratch>/out/companies.json <scratch>/out/indexes.json`. Copy `india_calc.py` in with the scripts: it holds the arithmetic `build_data.py` shares with the rebuild below.
+   - **Without the filings** (NSE downloads on hold), a correction to stored records goes through `rebuild_records.py`:
+     1. `pnpm data dump IN <dir>` writes the stored records.
+     2. `python3 rebuild_records.py <dir> --check` must report 0 differences: the rebuild reproduces the records.
+     3. `python3 rebuild_records.py <dir>` applies `wage_units.json` and redoes basis flags, payroll weights and every index's figures.
+     4. `pnpm data load IN <dir>/out/companies.json <dir>/out/indexes.json`.
 7. **Index funds and ETFs** (`pipeline/funds/`):
    - Download AMFI's scheme list from `https://portal.amfiindia.com/spages/NAVAll.txt`. The `www.amfiindia.com` address now redirects there.
    - `python3 parse_amfi.py NAVAll.txt amfi_schemes.json` turns it into one row per scheme plan, with category and fund house. On 2 October 2026: 14,366 plans, 3,386 schemes, 55 fund houses.
@@ -62,7 +68,13 @@ Run these in a scratch folder with the scripts and inputs copied in.
      - Active funds need each fund house's monthly portfolio file (PARITY-37) and are not in this list.
 
 ## Cleaning rules (in code)
-- **Units:** payroll per head must be ₹1.5 lakh to ₹75 lakh. Values that only fit after ×1e7 (crore) or ×1e5 (lakh) are rescaled (`dq` 2).
+- **Units (PARITY-95):** BRSR wage totals carry no unit, and companies file in rupees, thousands, lakh, millions or crore. `extract_all.py` takes the unit from evidence, in this order:
+  1. The filing's own median pay × headcount. A unit giving ₹1.5 lakh to ₹75 lakh a head that lands within 0.5 to 3 times it; the one nearest 1.3 times, as means exceed medians.
+  2. The same company's payroll in a neighbouring year, where that year's medians settled it, if exactly one unit lands within half to double it.
+  3. The old order: rupees, then crore, then lakh, at ₹1 lakh to ₹1 crore a head.
+
+  A rescaled total is `dq` 2. A total equal to the headcount is a pasted headcount and is not used. Million and crore readings both fit a head for most companies, so step 1 matters: before it, Bata India's ₹302 crore read as ₹3,018 crore.
+- **Wage units input:** `india/wage_units.json` records readings settled by hand, each with the filed number, its unit, `column: prior` when it comes from the next filing's prior-year column, and the evidence. `build_data.py` applies it over the extraction.
 - **Estimates:** missing wage totals are estimated from median pay × headcount by category (`dq` 3, `wKind: estimated`). An estimate is kept only if it passes the per-head check. Estimates are never joined to reported trend lines.
 - **Earlier years:** each filing's prior-year column fills the previous year when that year has no reported value.
 - **Basis changes:** payroll outside 0.55–1.8×, headcount outside 0.6–1.6×, or a boundary switch versus the previous reported year sets `basisChange`. Those pairs are left out of like-for-like YoY.
@@ -192,4 +204,13 @@ Scripts are in `pipeline/logos/`. They edit the pulled `public/logos/{safe}.png`
 - **Unparseable files:** Torrent Pharma's FY2021-22 XBRL is malformed, and M&M's FY2023-24 file on NSE is near empty.
 - **No BRSR yet:** ENRIN and VAML.
 - **Missing wage totals:** ITC and IndiGo file no wage totals. ITC is estimated in every year; IndiGo has no usable estimate.
+- **Wage units settled by hand (PARITY-95, 5 October 2026):**
+  - 15 company-years were read ten times too high or too low: Aether, Bata, Bosch, CESC, Firstsource, Gabriel, IndiGo, LG Electronics, Motherson Sumi Wiring, PI Industries, Schaeffler and Signature Global. All are in millions; each is in `india/wage_units.json` with its evidence.
+  - Every one was checked against the company's audited employee benefits expense. IndiGo was checked against market-data summaries only, as its results page did not load.
+  - Polycab filed exactly 10000.00 for FY2023-24 and FY2024-25, a placeholder, so those payrolls are left out. CESC's 10000.00 is a rounded figure and fits as millions.
+- **Wages far from employee costs, unit not in question:**
+  - Gabriel's FY2024-25 wages (₹117 crore) are 51% of its expense (₹232 crore).
+  - Bata's FY2025-26 wages (₹302 crore) are 67% of its expense, down from 92%; it ran a voluntary retirement scheme that year.
+  - Tech Mahindra's FY2024-25 total is in thousands and covers the group (₹27,915 crore against ₹17,107 crore standalone). The record keeps the median-based estimate, but a re-extraction would read the group figure.
+- **Calendar-year companies:** Schaeffler India's year runs January to December, and its filings carry Nivel's April-to-March labels.
 - **Sensex list:** verified current on 2 October 2026 (PARITY-27). The last change took effect on 22 December 2025: InterGlobe Aviation in, Tata Motors Passenger Vehicles out. The June 2026 review (notice 20260522-16, effective 22 June 2026) made no Sensex changes. The July 2026 notice (20260710-37) touched only the IPO indices. The next review is due in December 2026, announced in November.
