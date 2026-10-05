@@ -713,3 +713,22 @@ html.theme-changing, html.theme-changing * { transition: none !important; }
 }
 @keyframes sk-sheen { from { background-position: 100% 0; } to { background-position: 0 0; } }
 .sk-failed { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13px; color: var(--soft); }
+
+/* Guess first and Play (PARITY-53): a guess out of 100 before a figure is shown. */
+.guess { display: grid; gap: 10px; margin-top: 6px; }
+.guess-q { margin: 0; font: 600 16px/1.4 var(--font-display); color: var(--ink); }
+.guess-row { display: flex; align-items: center; gap: 16px; }
+.guess-row input[type="range"] { flex: 1; min-width: 0; height: 44px; margin: 0; accent-color: var(--violet); cursor: pointer; }
+.guess-row input[type="range"]:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; border-radius: 8px; }
+.guess-value { min-width: 3ch; text-align: right; font: 600 32px/1 var(--font-display); color: var(--ink); font-variant-numeric: tabular-nums; }
+.guess-scale { display: flex; justify-content: space-between; margin-right: calc(3ch + 16px); font-size: 12px; color: var(--muted); }
+.guess-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-top: 4px; }
+.guess-actions .btn-primary { min-height: 36px; padding: 8px 16px; font-size: 14px; }
+a.btn-primary { display: inline-flex; align-items: center; text-decoration: none; }
+.guess-result { margin: 8px 0 0; font-weight: 600; }
+.play { max-width: 680px; }
+.play-answer { display: grid; gap: 6px; }
+.play-answer:focus { outline: none; }
+.play-of { margin-left: 6px; font: 400 14px var(--font-body); color: var(--soft); }
+/* While a guess is open, the index strip keeps the current index's figure out of view. */
+html[data-guess] .strip-item.on .strip-val, html[data-guess] .strip-item.on .strip-chg { visibility: hidden; }

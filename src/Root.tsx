@@ -17,6 +17,7 @@ import { Home } from './pages/Home'
 import { IndexPage } from './pages/IndexPage'
 import { Method } from './pages/Method'
 import { NotFound } from './pages/NotFound'
+import { Play } from './pages/Play'
 import { SimulationPage } from './pages/SimulationPage'
 
 function Page({ route }: { route: string[] }) {
@@ -28,6 +29,7 @@ function Page({ route }: { route: string[] }) {
   if (head === 'companies') return <Companies />
   if (head === 'compare') return <Compare tab={arg} focus={sub} />
   if (head === 'method') return <Method />
+  if (head === 'play') return <Play />
   return <NotFound />
 }
 
@@ -38,7 +40,7 @@ const onConnection = (cb: () => void) => {
 }
 
 const PAGED = new Set(['company', 'index', 'simulation'])
-const SECTION: Record<string, string> ={ index: '', simulation: '', company: 'companies', companies: 'companies', compare: 'compare', method: 'method' }
+const SECTION: Record<string, string> ={ index: '', simulation: '', company: 'companies', companies: 'companies', compare: 'compare', method: 'method', play: 'play' }
 
 export default function Root() {
   const route = useRoute()
@@ -80,6 +82,7 @@ export default function Root() {
             <a href={href('companies')} className={at('companies')}>Companies</a>
             <a href={href('compare')} className={at('compare')}>Compare</a>
             <a href={href('method')} className={at('method')}>Method</a>
+            <a href={href('play')} className={at('play')}>Play</a>
           </nav>
           <div className="header-actions">
             <SiteSearch />
@@ -96,7 +99,7 @@ export default function Root() {
         <div className="wrap">
           <img src={mark} alt="" width="834" height="619" />
           <span>By The Equal Lens, from companies' own gender pay filings{collected && `, collected ${collected}`}. Not investment advice.</span>
-          <span className="footer-links"><a className="go" href={correctionHref()}>Report a correction</a><InstallLink /></span>
+          <span className="footer-links"><a className="go" href={href('play')}>Play</a><a className="go" href={correctionHref()}>Report a correction</a><InstallLink /></span>
         </div>
       </footer>
       <TabBar section={section} />

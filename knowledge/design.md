@@ -4,6 +4,7 @@ title: Nivel design system
 description: Visual and writing rules for Nivel (formerly Parity Tracker), derived from The Equal Lens brand package (minimal register) plus a validated chart palette.
 updated: 2026-10-05
 plane_issues:
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/bd128ee2-934e-4d5e-93c2-b0078d245c88
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/f3cd339a-5e02-4cdc-9542-b4072d9a274b
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/cb3c3975-004a-4ba9-8c8f-346b9bd9713f
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/77409619-e627-469b-8529-9a2a961f852a
@@ -198,6 +199,21 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
 - **Scale card (company overview):** label, big value, the basis in one muted line, a parity track with its own scale (0%, parity, maximum), and the market percentile in violet ("Higher than 66% of companies in the UK").
 - **Reported tiles:** "as reported" shows only figures a company actually reports (no derived ratios), as a two-column grid on phones (24px values), with a data tag only when a figure is not cleanly reported.
 - **Link card:** a card that is one link, with a title, one sentence and a violet "Open →".
+- **Guess (PARITY-53):**
+  - **The control:** the question (Poppins 600, 16px); a native range slider from 0 to 100 in violet with a 44px hit area; the chosen value beside it (Poppins 600, 32px); a 0, 50, 100 scale (12px, muted); then Reveal (`.btn-primary`) and, where it applies, Skip (`.btn-quiet`).
+  - **The answer:** "You guessed ₹30. ₹9 too high." in words, never a score, rank or streak.
+  - **While a guess is open,** the index strip hides the current index's value, so the answer is not in view.
+  - **References checked on Lazyweb:** Huckleberry's and Spring Health's slider questions, each with its value shown and a Next or Skip.
+- **Guess first (PARITY-53):** on the Nifty 50, Sensex and Nifty Next 50 Overview, the headline card asks first, once per device.
+  - Guessing or skipping is remembered (`nivel-guess-first`), so a returning reader always sees the number.
+  - When storage is closed, the number shows.
+  - After a guess, the card ends with "Play the workplace set", a link into Spot the Stereotype.
+- **Play page (`/play`, PARITY-53):**
+  - Three of the Spot feed's figures, the same for everyone on a given day.
+  - Each is guessed, then revealed: the figure out of 100, how close the guess was, the source line and rule, the discussion question, Next figure, and "See the figures" to its Nivel page.
+  - The end card links to the game's workplace set (`from=nivel` and the last item's id) and to hosting a game night.
+  - "Play" sits last in the header nav and first in the footer links. The phone tab bar keeps its four items.
+  - Nothing is sent or kept.
 - **Share image (`public/og.jpg`, PARITY-24, redone for PARITY-83):** 1200 by 630. Left, on `--paper`: the new Nivel mark with the two-line brand, the two-tone Home headline (Poppins 600, 54px), one Nunito Sans line naming the five markets, and the six flagship indexes as white pills. Right, 470px wide: The Equal Lens's Nivel illustration (`Solutions/Nivel.png`, Lensy with a magnifier), cropped to keep Lensy and the lens in view. No figures or counts, so it never goes stale. Rendered from HTML with headless Chrome and saved as a JPEG (about 160 KB).
 - **Install popover (PARITY-18, timing changed in PARITY-24):** never a permanent button. Once per device, 3 seconds after the reader opens a second page, where the browser can install the app (or on iOS Safari), a card appears bottom-right (above the tab bar on phones): the app icon, "Install Nivel", one line, and Install (or Show me how on iOS) plus Not now. There is no separate close button: Not now is the one way out. It is marked seen as soon as it appears, so it never returns; after that a quiet "Install the app" link in the footer is the only route.
 - **Dropdown (PARITY-19):** replaces native selects. It also takes an icon trigger and a right-aligned menu, used for the theme menu. A 32px pill button with an optional muted prefix ("Sort") and a chevron that flips when open; the menu is a card (12px radius, shadow) with 8px-radius options, `--tint` for the active option, violet text and a check for the selected one. Full keyboard support (arrows, Home, End, Enter, Escape) with listbox semantics.

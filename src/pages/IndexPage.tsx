@@ -9,6 +9,7 @@ import { ParityTrack } from '../components/ParityTrack'
 import { SectorBars } from '../components/SectorBars'
 import { DataTable, type Column } from '../components/DataTable'
 import { EmptyState } from '../components/EmptyState'
+import { GUESS_FIRST, GuessFirst } from '../components/GuessFirst'
 import { Tabs } from '../components/Tabs'
 import { indexPoints, summarise } from '../lib/compare'
 import { boardShare, companies, indexMarket, indexes, payRatio, simulationOf, useLoaded, useStage, workforce, yoyChange } from '../lib/data'
@@ -84,6 +85,17 @@ export function IndexPage({ id, tab }: { id: string; tab?: string }) {
       { key: 'chg', label: 'Like-for-like change', right: true, render: (k) => { const i = xs.indexOf(k); const yy = i > 0 ? ix.yoy[`${xs[i - 1]}>${k}`] : undefined; return yy ? <><Change value={yy.change} /><span className="sub">{yy.companies} companies</span></> : 'n/a' } },
     ]} />
   )
+  const headline = (
+    <>
+      <div className="tile-label">{m.headlineLabel} · {fy(LATEST)}</div>
+      <div className="tile-value hero">{pct(y.headline)}</div>
+      <div className="tile-context">{PREV
+        ? <><Change value={ch ? ch.change : null} /> <span className="muted">since {fy(PREV)}, {ch?.companies ?? 0} companies like for like</span></>
+        : <span className="muted">First snapshot</span>}</div>
+      <ParityTrack value={y.headline} parity={m.parity} />
+      <div className="tile-context muted">{uk ? m.coverage(y.companiesCovered) : `${m.coverage(y.companiesCovered)} · ${pct(y.reportedPayrollShare, 0)} of payroll reported`}</div>
+    </>
+  )
   const pts = indexPoints(ix.id)
   const sE = summarise(pts.map((p) => p.e))
   const sW = summarise(pts.map((p) => p.w))
@@ -101,15 +113,9 @@ export function IndexPage({ id, tab }: { id: string; tab?: string }) {
       {current[0] === 'overview' && <>
       <section>
         <div className="grid g2">
-          <div className="card">
-            <div className="tile-label">{m.headlineLabel} · {fy(LATEST)}</div>
-            <div className="tile-value hero">{pct(y.headline)}</div>
-            <div className="tile-context">{PREV
-              ? <><Change value={ch ? ch.change : null} /> <span className="muted">since {fy(PREV)}, {ch?.companies ?? 0} companies like for like</span></>
-              : <span className="muted">First snapshot</span>}</div>
-            <ParityTrack value={y.headline} parity={m.parity} />
-            <div className="tile-context muted">{uk ? m.coverage(y.companiesCovered) : `${m.coverage(y.companiesCovered)} · ${pct(y.reportedPayrollShare, 0)} of payroll reported`}</div>
-          </div>
+          {GUESS_FIRST.has(ix.id)
+            ? <GuessFirst name={ix.name} answer={Math.round(y.headline * 100)} item={ix.id === 'nifty50' ? `nv-in-nifty50-payshare-${LATEST}` : undefined}>{headline}</GuessFirst>
+            : <div className="card">{headline}</div>}
           {uk ? (
             <div className="card">
               <div className="tile-label">{eu ? 'Coverage' : 'Pay structure'} · {fy(LATEST)}</div>
