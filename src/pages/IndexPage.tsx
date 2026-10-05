@@ -66,7 +66,7 @@ export function IndexPage({ id, tab }: { id: string; tab?: string }) {
     ...(jp || eu
       ? [
           { key: 'pay', label: 'Wage parity', right: true, render: (r: Row) => pct(payRatio(r.co, r.co.years[LATEST]), 0), sort: (r: Row) => payRatio(r.co, r.co.years[LATEST]) },
-          ...(jp ? [{ key: 'b', label: 'Women on board', priority: 3 as const, right: true, render: (r: Row) => pct(boardShare(r.co.years[LATEST]) ?? r.co.years[LATEST]?.boardShareReported), sort: (r: Row) => boardShare(r.co.years[LATEST]) ?? r.co.years[LATEST]?.boardShareReported ?? null }] : []),
+          ...(jp ? [{ key: 'b', label: 'Women officers', priority: 3 as const, right: true, render: (r: Row) => pct(boardShare(r.co.years[LATEST]) ?? r.co.years[LATEST]?.boardShareReported), sort: (r: Row) => boardShare(r.co.years[LATEST]) ?? r.co.years[LATEST]?.boardShareReported ?? null }] : []),
         ]
       : uk
       ? [
@@ -120,13 +120,13 @@ export function IndexPage({ id, tab }: { id: string; tab?: string }) {
                     <tr><td>{m.workforceLabel}</td><td className="r nowrap"><strong>{pct(y.workforce)}</strong></td></tr>
                     <tr><td>Pay gap verified from company statements</td><td className="r nowrap"><strong>{y.verified} of 50</strong></td></tr>
                     <tr><td>Of those, with a workforce split too</td><td className="r nowrap"><strong>{y.companiesCovered}</strong></td></tr>
-                    <tr><td>Excluded (adjusted gap only, partial scope, not material) or not located</td><td className="r nowrap"><strong>{(y.excluded ?? 0) + (y.unresolved ?? 0)}</strong></td></tr>
+                    <tr><td>Excluded (adjusted gap only, partial scope, not material) or not yet read</td><td className="r nowrap"><strong>{(y.excluded ?? 0) + (y.unresolved ?? 0)}</strong></td></tr>
                   </tbody>
                 ) : jp ? (
                   <tbody>
                     <tr><td>{m.workforceLabel}</td><td className="r nowrap"><strong>{pct(y.workforce)}</strong></td></tr>
                     <tr><td>Women in management</td><td className="r nowrap"><strong>{pct(y.managers)}</strong></td></tr>
-                    <tr><td>Women on boards</td><td className="r nowrap"><strong>{pct(y.boards)}</strong></td></tr>
+                    <tr><td>Women among officers<span className="sub">Directors, auditors and executive officers</span></td><td className="r nowrap"><strong>{pct(y.boards)}</strong></td></tr>
                   </tbody>
                 ) : (
                   <tbody>
