@@ -3,8 +3,9 @@ type: plan
 title: Spot the Stereotype anytime play and the Nivel connection
 description: Plan for The Equal Lens's game team. A one-person mode of Spot the Stereotype on the same reviewed banks without the discussion steps, Nivel's prediction markets as the place the discussion continues, a workplace theme fed by Nivel's figures through a versioned feed, and the entry points that bring Nivel's readers to play.
 status: draft
-updated: 2026-10-03
+updated: 2026-10-05
 plane_issues:
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/4ca8bbd0-8c4e-499a-aa6b-2dc922da4b08
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/a7d95186-1e6e-4db7-a8ea-2e8f2b947b04
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/3e2cafdb-a457-426b-89bc-ce3a1d7b8740
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/bd128ee2-934e-4d5e-93c2-b0078d245c88
@@ -232,6 +233,30 @@ From Nivel's data collected on 1 October 2026. Questions are drafts for the game
 - **UK questions say "in the average company",** as every company counts equally. **The Australian question says each company is weighted by its wage bill**, which gives 34; counting people instead would give 37.
 - **Japan's id carries its period,** 2025, the year 143 of the 152 reports start.
 - **Pairs are ids** in `nivel.pair`, so neither item's reveal gives away the other's answer. The UK and Australian staff-overall figures sit in `source.rule`.
+
+**The feed at 24 items (PARITY-86, 5 October 2026).** The feed holds 16 new items and corrected text for the 8 above; the answers of the 8 did not change.
+
+| Market | New items (answer) |
+|---|---|
+| India | Nifty 500 share of pay (19) and gap split (82); Nifty 500 textiles (34), paired with chemicals (6); Nifty 500 consumer durables (10); Nifty Bank (23), paired with Oil & Gas (8); PSU Bank (26); Pharma (15); Realty (16); MNC (13) |
+| UK | FTSE 350 pence per £1 an hour (85) and best-paid quarter (31) |
+| Australia | ASX 200 cents per $1, full-time equivalent (84) |
+| Japan | Nikkei 225 yen per ¥100, all staff (71); women among officers (18) |
+
+- **Two review passes** checked every item: three agents read accuracy, rules and the set as a whole, then two more read the rewrites.
+- **Corrections to all 8 published items:**
+  - India's rules now say what is weighted and that the rest of a payroll is Nivel's estimate.
+  - The healthcare question names its three drug makers and two hospital groups.
+  - The UK's "2025" is the reporting year, with pay as at April 2025, and 52 of the 82 gaps blend several UK employers.
+  - Australia's wage-bill weights are Nivel's estimates.
+  - Discussions that stated a stereotype as fact were rewritten.
+- **Accepted to reach 24 (owner's call):** the Nifty 500, FTSE 350, PSU Bank and oil and gas items ask questions close to ones already in the feed. The game should not deal the Nifty 50 and Nifty 500 versions, or the FTSE 100 and FTSE 350 versions, in one set.
+- **Still out:**
+  - Nifty IT and FMCG are below the 90% bar.
+  - The EU's pay basis differs by company, and five statements are unread.
+  - The TOPIX 500 would repeat the Nikkei 225.
+  - Japan's employment parity mixes regular and all staff.
+  - Nivel's ASX top 300 is not the official index.
 
 ### 4.3 Writing rules for Nivel items
 - **The stats bank's rules apply in full:**

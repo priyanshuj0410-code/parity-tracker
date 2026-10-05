@@ -1,4 +1,4 @@
-import type { Company, IndexData } from '../types.ts'
+import type { Company, CompanyYear, IndexData } from '../types.ts'
 
 /**
  * Spot the Stereotype's feed of round 1 figures, version 1 (PARITY-52). The contract is section 5 of
@@ -93,117 +93,267 @@ function owned(ix: IndexData, companies: Record<string, Company>, y: string, ind
   return { n, nReported, share: all ? reported / all : 0 }
 }
 
-function coverageLine(n: number, nReported: number, share: number): string {
-  return nReported === n ? `All ${count(n)} reported directly.` : `${nReported} of ${n} companies reported directly, ${pct(share, 0)} of the payroll.`
+/**
+ * Who has figures. `members` is the index's size when some members have none; the share is then of their payroll.
+ * The rest of the payroll with figures is Nivel's estimate, and says so (plan section 4.3).
+ */
+function coverageLine(n: number, nReported: number, share: number, members = n): string {
+  // A share that rounds to 100% with an estimate in it is not all of the payroll.
+  const payroll = `${share < 1 && share >= 0.995 ? 'over 99%' : pct(share, 0)} of ${n < members ? 'their' : 'the'} payroll`
+  const rest = n - nReported
+  const estimates = rest === 1 ? " The other one is Nivel's estimate." : ` The other ${count(rest)} are Nivel's estimates.`
+  if (n < members) return `${n} of its ${members} companies have figures, ${rest ? `${nReported} reported directly, ${payroll}.${estimates}` : 'all reported directly.'}`
+  return rest ? `${nReported} of ${n} companies reported directly, ${payroll}.${estimates}` : `All ${count(n)} reported directly.`
 }
 
 type Built = { draft: Draft } | { skip: string }
 
-function india({ indexes, companies }: Data): Built[] {
-  const ix = indexes.nifty50
+const BRSR = (y: string) => `Nivel by The Equal Lens, from the companies' BRSR filings, ${y}.`
+// How build_data.py weights a company (decision 0010), and what the share leaves out (PARITY-86 review).
+const SLICE = 'the slice of the company an index fund owns times its median yearly wage bill since 2022-23'
+const WEIGHTING = `Nivel's arithmetic: women's share of each company's pay, weighted by ${SLICE}.`
+const SECTORS = "Sectors are NSE's."
+const MIXES = 'It counts all pay, so it reflects both how many women are employed and what they are paid. It does not compare pay for the same job.'
+const fundOwns = (y: string) => `Out of every ₹100 of their wage bill that a fund tracking the index owns, how many rupees went to women in ${y}?`
+const membersOf = (ix: IndexData) => ix.constituents.length + ix.missing.length
+
+/** An Indian index's share of pay and the split of its gap, or why they are left out. */
+function indiaIndex(ix: IndexData, companies: Record<string, Company>, [payshare, gapsplit]: [string, string?]): Built[] {
   const y = latest(ix)
   const v = ix.years[y]
-  const line = `Nivel by The Equal Lens, from the companies' BRSR filings, ${y}.`
-  const weighting = "Nivel's arithmetic, weighting each company by how much of it the index holds."
-  const mixes = 'It mixes fewer women employed with lower pay per woman, and does not compare pay for the same job.'
   const all = owned(ix, companies, y)
+  if (all.share < MIN_REPORTED) return [{ skip: `${ix.name} ${y}: reported figures cover ${pct(all.share, 0)} of the payroll` }]
+  const coverage = coverageLine(all.n, all.nReported, all.share, membersOf(ix))
+  const out: Built[] = [{ draft: {
+    slot: `in-${ix.id}-payshare`, period: y, market: 'IN', value: v.headline,
+    question: `If you own a ${ix.name} index fund, you own a slice of each company's wage bill. Out of every ₹100 of that wage bill in ${y}, how many rupees went to women?`,
+    discussion: payshare, line: BRSR(y), rule: `${WEIGHTING} ${coverage} ${MIXES}`,
+    page: `index/${ix.id}`, saw: `Women's share of pay (payroll you own) · ${fyShort(y)}: ${pct(v.headline)}`,
+  } }]
+  if (gapsplit && v.representationShare != null && v.payShare != null) out.push({ draft: {
+    slot: `in-${ix.id}-gapsplit`, period: y, market: 'IN', value: v.representationShare,
+    question: `Women get less than half of the wage bill a ${ix.name} index fund owns. That shortfall has two causes: fewer women employed, and less pay for each woman employed. Out of every ₹100 of the shortfall in ${y}, how many rupees come from fewer women employed?`,
+    discussion: gapsplit, line: BRSR(y),
+    rule: `Nivel's split of the shortfall from half the wage bill. The part from fewer women employed is half less women's share of permanent staff, weighted the same way; the rest is women paid less on average. Each company is weighted by ${SLICE}. ${coverage} It does not compare pay for the same job.`,
+    page: `index/${ix.id}`, saw: `${pct(v.representationShare, 0)} too few women employed, ${pct(v.payShare, 0)} women paid less on average (${fyShort(y)})`,
+  } })
+  return out
+}
+
+/**
+ * Sectors of an Indian index: [slot, industry, who the members are, discussion, pair]. Only a sector whose every member
+ * has figures, so the count in the question is the whole sector.
+ */
+function indiaSectors(ix: IndexData, companies: Record<string, Company>, sectors: [string, string, (symbols: string[]) => string, string, string?][]): Built[] {
+  const y = latest(ix)
+  const v = ix.years[y]
   const out: Built[] = []
-  if (all.share < MIN_REPORTED) return [{ skip: `Nifty 50 ${y}: reported figures cover ${pct(all.share, 0)} of the payroll` }]
-  const coverage = coverageLine(all.n, all.nReported, all.share)
-  out.push({ draft: {
-    slot: 'in-nifty50-payshare', period: y, market: 'IN', value: v.headline,
-    question: `If you own a Nifty 50 index fund, you own a slice of each company's wage bill. Out of every ₹100 of that wage bill in ${y}, how many rupees went to women?`,
-    discussion: 'Is the gap about what women are paid, or about who gets hired?',
-    line, rule: `${weighting} ${coverage} ${mixes}`,
-    page: 'index/nifty50', saw: `Women's share of pay (payroll you own) · ${fyShort(y)}: ${pct(v.headline)}`,
-  } })
-  if (v.representationShare != null && v.payShare != null) out.push({ draft: {
-    slot: 'in-nifty50-gapsplit', period: y, market: 'IN', value: v.representationShare,
-    question: `A Nifty 50 index fund owns a slice of each company's wage bill, and women get less than half of it. Nivel splits that shortfall into two causes: fewer women employed, and less pay for each woman employed. Out of every ₹100 of the shortfall in ${y}, how many rupees come from fewer women employed?`,
-    discussion: 'Which is harder to change: who gets hired, or what they are paid?',
-    line, rule: `Nivel's split of the gap to half the wage bill, using permanent staff and weighting each company by how much of it the index holds. ${coverage} It does not compare pay for the same job.`,
-    page: 'index/nifty50', saw: `${pct(v.representationShare, 0)} too few women employed, ${pct(v.payShare, 0)} women paid less on average (${fyShort(y)})`,
-  } })
-  // IT and autos, the plan's first pair, miss the 90% bar: Tech Mahindra's and Mahindra & Mahindra's figures are estimates.
-  const sectors: [string, string, string, string, string][] = [
-    ['in-nifty50-health', 'Healthcare', 'healthcare companies', "Many people picture healthcare as women's work. What might explain this figure?", 'in-nifty50-metals'],
-    ['in-nifty50-metals', 'Metals & Mining', 'metals and mining companies', 'Why might metal and mining companies employ and pay so few women, and what would change it?', 'in-nifty50-health'],
-  ]
-  for (const [slot, industry, plural, discussion, pair] of sectors) {
+  for (const [slot, industry, who, discussion, pair] of sectors) {
     const s = v.sectors.find((x) => x.industry === industry)
     const cov = owned(ix, companies, y, industry)
-    if (!s || cov.n !== s.companies) { out.push({ skip: `${slot}: sector ${industry} not found or its companies do not match` }); continue }
+    const members = ix.constituents.filter((c) => companies[c.symbol]?.industry === industry).map((c) => c.symbol)
+    if (!s || cov.n !== s.companies || members.length !== s.companies) { out.push({ skip: `${slot}: sector ${industry} not found, or not every member has figures` }); continue }
     if (cov.share < MIN_REPORTED) { out.push({ skip: `${slot}: reported figures cover ${pct(cov.share, 0)} of the payroll` }); continue }
     out.push({ draft: {
       slot, period: y, market: 'IN', value: s.w, pair,
-      question: `The Nifty 50 includes ${count(s.companies)} ${plural}. Out of every ₹100 of their wage bill that a Nifty 50 index fund owns, how many rupees went to women in ${y}?`,
-      discussion, line, rule: `${weighting} ${coverageLine(cov.n, cov.nReported, cov.share)} ${mixes}`,
-      page: 'index/nifty50/sectors', saw: `Sectors · ${fyShort(y)}: ${industry}, women's share of pay ${pct(s.w)}`,
+      question: `The ${ix.name} includes ${who(members)}. Out of every ₹100 of their wage bill that a ${ix.name} index fund owns, how many rupees went to women in ${y}?`,
+      discussion, line: BRSR(y), rule: `${WEIGHTING} ${SECTORS} ${coverageLine(cov.n, cov.nReported, cov.share)} ${MIXES}`,
+      page: `index/${ix.id}/sectors`, saw: `Sectors · ${fyShort(y)}: ${industry}, women's share of pay ${pct(s.w)}`,
     } })
   }
   return out
 }
 
-function uk({ indexes }: Data): Built[] {
-  const y = latest(indexes.ftse100)
-  const v = indexes.ftse100.years[y]
-  if (v.gapMean == null || v.topQuartile == null || v.workforce == null) return [{ skip: `FTSE 100 ${y}: pay structure missing` }]
+const plain = (plural: string) => (symbols: string[]) => `${count(symbols.length)} ${plural}`
+// Healthcare is drug makers and hospital groups, which players picture differently. Named only when every member is
+// one or the other, so a new kind of member falls back to "healthcare companies".
+const DRUG_MAKERS = new Set(['SUNPHARMA', 'CIPLA', 'DRREDDY', 'DIVISLAB', 'LUPIN', 'ZYDUSLIFE', 'TORNTPHARM', 'MANKIND', 'AUROPHARMA', 'ALKEM'])
+const HOSPITALS = new Set(['APOLLOHOSP', 'MAXHEALTH', 'FORTIS', 'MEDANTA', 'NH'])
+function healthcare(symbols: string[]): string {
+  const h = symbols.filter((s) => HOSPITALS.has(s)).length
+  const d = symbols.filter((s) => DRUG_MAKERS.has(s)).length
+  return h && d && h + d === symbols.length ? `${count(symbols.length)} healthcare companies: ${count(d)} drug makers and ${count(h)} hospital groups` : plain('healthcare companies')(symbols)
+}
+
+// Sector and theme indexes (PARITY-86): [index, who it holds given its size, discussion, pair, what the rule adds].
+// Below the 90% bar and left out: Nifty IT in 2025-26 (Tech Mahindra's and Coforge's figures are estimates), Nifty FMCG
+// every year (ITC's).
+const SUB_INDEXES: [string, (n: number) => string, string, string?, string?][] = [
+  ['niftybank', (n) => `The Nifty Bank index holds ${count(n)} listed banks.`, 'Which jobs in a bank do people picture women doing, and which men?', 'niftyoilgas'],
+  ['niftyoilgas', (n) => `The Nifty Oil & Gas index holds ${count(n)} oil and gas companies.`, 'What would an oil and gas company need to change to employ more women?', 'niftybank'],
+  ['niftypsubank', (n) => `The Nifty PSU Bank index holds ${count(n)} public sector banks.`, 'What would make the best-paid jobs in a bank as open to women as the jobs people start in?'],
+  ['niftypharma', (n) => `The Nifty Pharma index holds ${count(n)} pharmaceutical companies.`, "A medicine maker needs scientists, factory staff and sales teams. Would you expect women's share to differ between them, and why?"],
+  ['niftyrealty', (n) => `The Nifty Realty index holds ${count(n)} real estate companies.`, 'What jobs does a real estate company have besides building, and who holds them?', undefined,
+    'One of them also ran paper mills during the year, and their staff are counted.'],
+  ['niftymnc', (n) => `The Nifty MNC index holds ${count(n)} companies that are majority foreign-owned or have a promoter registered abroad.`, 'Do foreign-owned companies hire differently in India? What would you need to know to tell?', undefined,
+    'A few members report on a calendar year.'],
+]
+
+function india(data: Data): Built[] {
+  const { indexes, companies } = data
+  const out: Built[] = [
+    ...indiaIndex(indexes.nifty50, companies, ['Who should watch a figure like this most closely: employees, investors or the companies themselves?', 'Which is harder to change: who gets hired, or what they are paid?']),
+    // IT and autos, the plan's first pair, miss the 90% bar: Tech Mahindra's and Mahindra & Mahindra's figures are estimates.
+    ...indiaSectors(indexes.nifty50, companies, [
+      ['in-nifty50-health', 'Healthcare', healthcare, 'Did this figure match what you expected? Where did that expectation come from?', 'in-nifty50-metals'],
+      ['in-nifty50-metals', 'Metals & Mining', plain('metals and mining companies'), 'What rules, facilities or habits might keep women out of metals and mining work?', 'in-nifty50-health'],
+    ]),
+    ...indiaIndex(indexes.nifty500, companies, ['Which jobs in a large company are most often done by women, and how are they paid?', 'Which would you tackle first in your own workplace: hiring or pay, and why?']),
+    ...indiaSectors(indexes.nifty500, companies, [
+      ['in-nifty500-textiles', 'Textiles', plain('textile companies'), 'What makes a job in a textile company pay more, and who gets those jobs?', 'in-nifty500-chemicals'],
+      ['in-nifty500-chemicals', 'Chemicals', plain('chemical companies'), 'If you ran a chemical company, which would you measure first: who applies, who is hired, who is promoted or who stays?', 'in-nifty500-textiles'],
+      ['in-nifty500-durables', 'Consumer Durables', plain("consumer durables companies, NSE's group for makers and sellers of goods such as appliances, paints, footwear and jewellery"),
+        'Shop floors, factories and design studios all sit in this group. Where would you expect women\'s share to be highest, and why?'],
+    ]),
+  ]
+  for (const [id, who, discussion, pair, adds] of SUB_INDEXES) {
+    const ix = indexes[id]
+    const y = latest(ix)
+    const all = owned(ix, companies, y)
+    if (all.share < MIN_REPORTED) { out.push({ skip: `${ix.name} ${y}: reported figures cover ${pct(all.share, 0)} of the payroll` }); continue }
+    out.push({ draft: {
+      slot: `in-${id}-payshare`, period: y, market: 'IN', value: ix.years[y].headline, pair: pair && `in-${pair}-payshare`,
+      question: `${who(membersOf(ix))} ${fundOwns(y)}`,
+      discussion, line: BRSR(y), rule: [WEIGHTING, coverageLine(all.n, all.nReported, all.share, membersOf(ix)), adds, MIXES].filter(Boolean).join(' '),
+      page: `index/${id}`, saw: `Women's share of pay (payroll you own) · ${fyShort(y)}: ${pct(ix.years[y].headline)}`,
+    } })
+  }
+  return out
+}
+
+/** A FTSE index's average hourly pay gap and its best-paid quarter, with what to ask after each. */
+function ftse(ix: IndexData, [pence, top]: [string, string]): Built[] {
+  const y = latest(ix)
+  const v = ix.years[y]
+  if (v.gapMean == null || v.topQuartile == null || v.workforce == null) return [{ skip: `${ix.name} ${y}: pay structure missing` }]
   const n = v.companiesReported
   const line = `The UK government's gender pay gap service, averaged by Nivel by The Equal Lens, ${y}.`
+  // A year is the service's reporting year: pay on the snapshot date in April, reported up to a year later.
+  const basis = `${n} of the ${membersOf(ix)} companies have a report on the service. A group with several UK employers counts once, its employers' figures averaged by size. UK staff, pay in April ${y}.`
   return [
     { draft: {
-      slot: 'gb-ftse100-pence', period: y, market: 'GB', value: 1 - v.gapMean,
-      question: `In ${y}, ${n} FTSE 100 companies reported their UK gender pay gaps. In the average company, for every £1 a man earned an hour, how many pence did a woman earn?`,
-      discussion: 'If men and women get the same pay for the same job, why can the average gap still be large?',
-      line, rule: `£1 less the average of each company's mean hourly pay gap, ${pct(v.gapMean)}, each company counting equally. UK staff only. It compares all men with all women, not pay for the same job.`,
-      page: 'index/ftse100', saw: `Pay structure · ${y}: mean pay gap ${pct(v.gapMean)}`,
+      slot: `gb-${ix.id}-pence`, period: y, market: 'GB', value: 1 - v.gapMean,
+      question: `For ${y}, ${n} ${ix.name} companies reported their UK gender pay gaps. In the average company, for every £1 an hour that men earned on average, how many pence an hour did women earn?`,
+      discussion: pence,
+      line, rule: `£1 less the average of each company's mean hourly pay gap, ${pct(v.gapMean)}, each company counting equally. ${basis} It compares all men with all women, not pay for the same job.`,
+      page: `index/${ix.id}`, saw: `Pay structure · ${y}: mean pay gap ${pct(v.gapMean)}`,
     } },
     { draft: {
-      slot: 'gb-ftse100-topquarter', period: y, market: 'GB', value: v.topQuartile,
-      question: `In ${y}, ${n} FTSE 100 companies reported who sits in each quarter of their UK pay scale. In the average company, out of every 100 people in the best-paid quarter, how many were women?`,
-      discussion: 'Why are fewer women in the best-paid quarter than in the company as a whole?',
-      line, rule: `Nivel's average of each company's share of women in its best-paid quarter, each company counting equally. UK staff only. Women were ${Math.round(v.workforce * 100)} of every 100 UK staff overall, averaged the same way.`,
-      page: 'index/ftse100', saw: `Pay structure · ${y}: women in the top pay quarter ${pct(v.topQuartile)}`,
+      slot: `gb-${ix.id}-topquarter`, period: y, market: 'GB', value: v.topQuartile,
+      question: `For ${y}, ${n} ${ix.name} companies reported how many women are in each quarter of their UK staff, ranked by hourly pay. In the average company, out of every 100 people in the best-paid quarter, how many were women?`,
+      discussion: top,
+      line, rule: `Nivel's average of each company's share of women in its best-paid quarter, each company counting equally. ${basis} Women were ${Math.round(v.workforce * 100)} of every 100 UK staff overall, averaged the same way. It ranks staff by hourly pay; it does not show job titles or pay for the same job.`,
+      page: `index/${ix.id}`, saw: `Pay structure · ${y}: women in the top pay quarter ${pct(v.topQuartile)}`,
     } },
+  ]
+}
+
+function uk({ indexes }: Data): Built[] {
+  return [
+    ...ftse(indexes.ftse100, ['What would you need to know to tell whether this gap comes from pay for the same job or from who does which job?', 'Why are fewer women in the best-paid quarter than in the company as a whole?']),
+    ...ftse(indexes.ftse350, ['If a company wanted to close this gap, where should it look first?', 'What helps or holds back women moving into the best-paid jobs?']),
   ]
 }
 
 function australia({ indexes }: Data): Built[] {
   const y = latest(indexes.asx200)
   const v = indexes.asx200.years[y]
-  if (v.topQuartile == null || v.workforce == null) return [{ skip: `ASX 200 ${y}: pay structure missing` }]
-  return [{ draft: {
-    slot: 'au-asx200-topquarter', period: y, market: 'AU', value: v.topQuartile,
-    question: `${v.companiesReported} ASX 200 companies report their Australian staff to the Workplace Gender Equality Agency. Weighting each company by its wage bill, out of every 100 people in the best-paid quarter of jobs in ${y}, how many were women?`,
-    discussion: 'What would it take for the best-paid quarter to look like the whole workforce?',
-    line: `Australia's Workplace Gender Equality Agency, averaged by Nivel by The Equal Lens, ${y}.`,
-    rule: `Nivel's average of each company's share of women in its best-paid quarter, weighted by its Australian wage bill. Australian staff only, groups as they report. Women were ${Math.round(v.workforce * 100)} of every 100 Australian staff overall, weighted the same way.`,
-    page: 'index/asx200', saw: `Pay structure · ${fyShort(y)}: women in the top pay quarter ${pct(v.topQuartile)}`,
-  } }]
+  if (v.topQuartile == null || v.workforce == null || v.gapMean == null) return [{ skip: `ASX 200 ${y}: pay structure missing` }]
+  const n = v.companiesReported
+  const line = `Australia's Workplace Gender Equality Agency, averaged by Nivel by The Equal Lens, ${y}.`
+  // au_build.py weights by headcount times average pay; for some groups the headcount is the middle of WGEA's size band.
+  const weight = "weighted by its Australian wage bill, which Nivel estimates from headcount and average pay"
+  const scope = `${n} of the ${membersOf(indexes.asx200)} companies have a report. Australian staff only, each company as the agency records it.`
+  return [
+    { draft: {
+      slot: 'au-asx200-topquarter', period: y, market: 'AU', value: v.topQuartile,
+      question: `${n} ASX 200 companies report their Australian staff to the Workplace Gender Equality Agency. Ranking staff by pay and weighting each company by its estimated wage bill, out of every 100 people in the best-paid quarter in ${y}, how many were women?`,
+      discussion: 'What does it take to get into the best-paid quarter of a company, and who decides?',
+      line, rule: `Nivel's average of each company's share of women in its best-paid quarter, ${weight}. ${scope} Women were ${Math.round(v.workforce * 100)} of every 100 Australian staff overall, weighted the same way. It ranks people by pay; it does not show job titles or pay for the same job.`,
+      page: 'index/asx200', saw: `Pay structure · ${fyShort(y)}: women in the top pay quarter ${pct(v.topQuartile)}`,
+    } },
+    // PARITY-86. Nivel's ASX top 300 is left out: it is the ASX 200 plus the next 100 in ASX's directory, not the S&P/ASX 300.
+    { draft: {
+      slot: 'au-asx200-cents', period: y, market: 'AU', value: 1 - v.gapMean,
+      question: `${n} ASX 200 companies report their Australian staff's pay to the Workplace Gender Equality Agency. Weighting each company by its estimated wage bill, and counting part-time pay as if it were full time, for every $1 a man earned in ${y}, how many cents did a woman earn?`,
+      discussion: 'Hours are already adjusted for here. What else could explain the gap?',
+      line, rule: `$1 less Nivel's average of each company's gap in average total pay, full-time equivalent: ${pct(v.gapMean)}. Each company is ${weight}. ${scope} It compares all men with all women, not pay for the same job.`,
+      page: 'index/asx200', saw: `Pay structure · ${fyShort(y)}: mean pay gap ${pct(v.gapMean)}`,
+    } },
+  ]
 }
 
-function japan({ indexes, companies }: Data): Built[] {
-  const v = indexes.nikkei225.years[latest(indexes.nikkei225)]
-  const rows = indexes.nikkei225.constituents.map((c) => companies[c.symbol]?.years.latest).filter((r) => r?.managerShare != null)
-  if (v.managers == null || !rows.length) return [{ skip: 'Nikkei 225: no manager shares' }]
+/**
+ * The year most of a Japanese index's figures belong to, or why the figure is left out: at least 80% must share it.
+ * Reports by the year their period starts; counts taken on a day (`asOf`) by that day's year.
+ */
+function japanYear(name: string, rows: CompanyYear[], on: 'period' | 'asOf' = 'period'): { year: string; most: number } | { skip: string } {
   const years = new Map<string, number>()
   for (const r of rows) {
-    const start = r?.period?.match(/(\d{4})/)?.[1]
+    // "2025年4月1日～…", "2026年6月期 (July 2025 to June 2026)": the start date, else the first year named.
+    const p = (on === 'asOf' ? r.asOf : r.period) ?? ''
+    const start = (p.match(/\([A-Za-z]* ?(\d{4}) to /) ?? p.match(/(\d{4})年\d{1,2}月\d{1,2}日～/) ?? p.match(/(\d{4})/))?.[1]
     if (start) years.set(start, (years.get(start) ?? 0) + 1)
   }
   const [year, most] = [...years].sort((a, b) => b[1] - a[1])[0] ?? ['', 0]
-  if (most / rows.length < 0.8) return [{ skip: `Nikkei 225: reporting periods are mixed (${year} for ${most} of ${rows.length})` }]
-  return [{ draft: {
-    slot: 'jp-nikkei225-managers', period: year, market: 'JP', value: v.managers,
-    question: `${rows.length} Nikkei 225 companies report to a Japanese government database how many of their managers are women. In the average company's latest report, mostly for ${year}, out of every 100 managers, how many were women?`,
-    discussion: 'What would need to change for more women to become managers?',
-    line: "Japan's Ministry of Health, Labour and Welfare database, averaged by Nivel by The Equal Lens.",
-    rule: `Nivel's average of each company's share of women among its managers, each company counting equally, using each employer's own definition of a manager. ${most} of the ${rows.length} reports start in ${year}.`,
-    page: 'index/nikkei225', saw: `Pay structure · latest: women in management ${pct(v.managers)}`,
-  } }]
+  return most / rows.length < 0.8 ? { skip: `${name}: reporting periods are mixed (${year} for ${most} of ${rows.length})` } : { year, most }
 }
 
-/** The current items, in the order the plan lists them, and the reason for each one left out. */
+const MHLW = "Japan's Ministry of Health, Labour and Welfare database, averaged by Nivel by The Equal Lens."
+const MHLW_AND_REPORTS = "Japan's Ministry of Health, Labour and Welfare database and the companies' own reports, averaged by Nivel by The Equal Lens."
+
+function japan({ indexes, companies }: Data): Built[] {
+  const rowsOf = (ix: IndexData, has: (r: CompanyYear) => boolean) =>
+    ix.constituents.map((c) => companies[c.symbol]?.years.latest).filter((r): r is CompanyYear => r != null && has(r))
+  const fromReports = (rows: CompanyYear[], field: string) => rows.filter((r) => r.reportSources?.some((s) => s.fields.includes(field))).length
+  const out: Built[] = []
+  const add = (ix: IndexData, rows: CompanyYear[], value: number | null | undefined, item: (year: string, most: number) => Omit<Draft, 'period' | 'market' | 'value'>, on: 'period' | 'asOf' = 'period') => {
+    if (value == null || !rows.length) return out.push({ skip: `${ix.name}: no figures for ${item('', 0).slot}` })
+    const p = japanYear(ix.name, rows, on)
+    if ('skip' in p) return out.push(p)
+    out.push({ draft: { ...item(p.year, p.most), period: p.year, market: 'JP', value } })
+  }
+  const nikkei = indexes.nikkei225
+  const n = nikkei.years.latest
+  const managers = rowsOf(nikkei, (r) => r.managerShare != null)
+  add(nikkei, managers, n.managers, (year, most) => ({
+    slot: 'jp-nikkei225-managers',
+    question: `${managers.length} Nikkei 225 companies report to a Japanese government database how many of their managers are women. In the average company's latest report, mostly for ${year}, out of every 100 managers, how many were women?`,
+    discussion: 'What would need to change for more women to become managers?',
+    line: MHLW,
+    rule: `Nivel's average of each company's share of women among its managers, each company counting equally, using each employer's own definition of a manager. ${managers.length} of the ${nikkei.constituents.length} companies have a figure; ${most} of the reports start in ${year}. It says nothing about pay.`,
+    page: 'index/nikkei225', saw: `Pay structure · latest: women in management ${pct(n.managers ?? 0)}`,
+  }))
+  // PARITY-86. Left out: the TOPIX 500, whose figures (11 managers in 100, ¥70) would ask the Nikkei 225's questions twice;
+  // and employment parity, as a company's own report can give women's share of all its staff rather than its regular staff.
+  const pay = rowsOf(nikkei, (r) => r.gapMean != null)
+  const payReports = fromReports(pay, 'ratio')
+  add(nikkei, pay.length === n.payRatioCompanies ? pay : [], n.payRatio, (year, most) => ({
+    slot: 'jp-nikkei225-pay',
+    question: `${pay.length} Nikkei 225 companies publish women's average yearly pay as a share of men's, counting all staff, part-time and contract included. In the average company's latest report, mostly for ${year}, for every ¥100 a man earned, how many yen did a woman earn?`,
+    discussion: 'Would you expect the figure to be higher or lower for regular staff alone? Why?',
+    line: MHLW_AND_REPORTS,
+    rule: `Nivel's average of each company's wage parity: women's average yearly pay as a share of men's, regular and non-regular staff together, each company counting equally. ${pay.length - payReports} figures are from the database and ${payReports} from the companies' own reports; ${nikkei.constituents.length - pay.length} of the ${nikkei.constituents.length} companies have none. ${most} of the ${pay.length} reports start in ${year}. It compares all men with all women, not pay for the same job.`,
+    page: 'index/nikkei225', saw: `Pay structure · latest: women earn ¥${Math.round((n.payRatio ?? 0) * 100)} for every ¥100 men earn`,
+  }))
+  // The database counts officers (役員): directors, auditors and executive officers, not board seats (PARITY-96).
+  const officers = rowsOf(nikkei, (r) => !!r.board || r.boardShareReported != null)
+  add(nikkei, officers, n.boards, (year, most) => ({
+    slot: 'jp-nikkei225-officers',
+    question: `${officers.length} Nikkei 225 companies report to a Japanese government database how many of their officers are women: directors, auditors and executive officers. In the average company's latest count, mostly from ${year}, out of every 100 officers, how many were women?`,
+    discussion: 'Who decides who becomes an officer, and how could that change?',
+    line: MHLW,
+    rule: `Nivel's average of each company's share of women among its officers, as each company counts them, each company counting equally. ${officers.length} of the ${nikkei.constituents.length} companies have a figure; ${most} of the counts are from ${year}. It counts officers, not board seats.`,
+    page: 'index/nikkei225', saw: `Pay structure · latest: women among officers ${pct(n.boards ?? 0)}`,
+  }), 'asOf')
+  return out
+}
+
+/**
+ * The current items, in the order the plan lists them, and the reason for each one left out. The EU has none yet
+ * (PARITY-86): each company defines the pay in its gap, one counted gap leaves out a staff group, and five Euro Stoxx 50
+ * statements are still unread.
+ */
 export function buildSpot(data: Data): { items: SpotItem[]; skipped: string[] } {
   const built = [...india(data), ...uk(data), ...australia(data), ...japan(data)]
   return {

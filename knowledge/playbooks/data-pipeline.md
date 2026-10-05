@@ -187,7 +187,7 @@ The build turns the site's data into `/feeds/spot/v1.json` for the game ([contra
 2. Read each listed item: the answer, the question's wording and the coverage in its rule.
 3. `pnpm data publish --approve-feed` records them in the release. Promoting the release adds them to `feeds/spot-v1`.
 
-The build recomputes the feed and stops if it differs from the release's, so a code change to `src/feeds/spot.ts` needs a release approved with `--approve-feed` too.
+Only `pnpm data publish` builds the feed, from the `src/feeds/spot.ts` on the machine that publishes; the app build does not. So a change to the items reaches the game only through a release approved with `--approve-feed`. Publish it from the branch that has the change, and merge that branch before anyone publishes from `main`, or that publish lists the new items as retired and stops.
 
 An item whose reported figures fall below 90% of the payroll drops out and is kept as retired; the build warns which ones it left out.
 
