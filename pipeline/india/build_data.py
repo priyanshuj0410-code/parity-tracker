@@ -1,5 +1,5 @@
 import json, csv, re, os, glob
-from india_calc import YEARS, UNITS, rd, unit_note, friendly, set_basis_and_weights, index_calc
+from india_calc import YEARS, UNITS, rd, unit_note, friendly, listed, set_basis_and_weights, index_calc
 cy=json.load(open('company_years.json')); meta=json.load(open('meta_all.json')); shp=json.load(open('shp.json'))
 # Figures read by hand from companies' own annual reports or BRSR PDFs on their websites, for filings missing from
 # the NSE XBRL set or unusable there (PARITY-69). NSE downloads are on hold (PARITY-66). A figure here is confirmed,
@@ -47,7 +47,7 @@ for f in sorted(glob.glob(os.path.join(HERE,'indexes','ind_*.csv'))):
     for r in rows:
         if r['Symbol'].strip() not in mcap: continue  # stale or placeholder symbols (MOTHERSUMI, DUMMYHEG) that no longer trade
         info.setdefault(r['Symbol'].strip(),{'name':r['Company Name'].strip(),'industry':r['Industry'].strip(),'isin':r['ISIN Code'].strip()})
-    idx_members[k]=[r['Symbol'].strip() for r in rows]
+    idx_members[k]=listed([r['Symbol'].strip() for r in rows])
 companies={}
 for s,i in info.items():
     ys=cy.get(s,{})

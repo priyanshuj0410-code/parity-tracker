@@ -38,7 +38,7 @@ Run these in a scratch folder with the scripts and inputs copied in.
      - Download `https://www.niftyindices.com/IndexConstituent/ind_{id}list.csv` for each index in `pipeline/india/indexes/`, saved there as `ind_{id}.csv`.
      - 29 lists download cleanly: the Nifty 100, 200 and 500; Midcap 100 and 150; Smallcap 100 and 250; LargeMidcap 250; MidSmallcap 400; and 19 sector and theme indexes.
      - Some names (Private Bank, India Consumption, Alpha 50 and others) return an HTML page instead of a list. Drop any file whose first line is not the `Company Name,...` header.
-     - `build_data.py` reads every list there: membership and footprint for each index, and name, industry and ISIN for each company.
+     - `build_data.py` reads every list there: membership and footprint for each index, and name, industry and ISIN for each company. NSE's placeholder symbols (`DUMMY…`, such as DUMMYHEG for the HEG demerger) are not members (PARITY-98).
    - Build the symbol list from the Nifty 500 plus the Sensex: `(tail -n +2 indexes/ind_nifty500.csv | cut -d, -f3; cat sensex.txt) | sort -u > syms_nse.txt`
    - The first run for the Nifty 500 fetched 401 new companies in about 40 minutes.
 2. **Filings:** `python3 fetch_all.py syms_nse.txt`
@@ -96,7 +96,7 @@ Scripts are in `pipeline/eu/`; the verified values (`eu_values.json`) and headco
   - `crawl.py` walks HTML report sites.
   - The WebFetch tool saves PDFs under 10 MB locally, which then go through pdftotext. This worked for BMW.
   - Allianz, SAP, Iberdrola and Mercedes return 403 to both routes.
-- **Status (2026-10-02, PARITY-8):** 31 of 50 verified, 12 excluded with stated reasons, 7 unresolved. Every company page shows its value with source link, or its reason.
+- **Status (2026-10-05):** 33 of 50 verified, 12 excluded with stated reasons, 5 not yet read. The market record no longer carries a count, as it went stale (PARITY-97). Every company page shows its value with source link, or its reason.
 - **Unresolved:**
   - Allianz, SAP, Iberdrola and Mercedes-Benz return 403 to scripts and to WebFetch.
   - AB InBev, Rheinmetall and Prosus have no locatable FY2025 report URL.

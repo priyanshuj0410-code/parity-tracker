@@ -10,7 +10,7 @@ Market caps are stored in whole crore, which moves an index's ₹ figures (payro
 and nothing else: every share cancels the market cap out.
 """
 import json, os, sys
-from india_calc import UNITS, unit_note, friendly, set_basis_and_weights, index_calc
+from india_calc import UNITS, unit_note, friendly, listed, set_basis_and_weights, index_calc
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 d = sys.argv[1]; check = '--check' in sys.argv
@@ -35,6 +35,7 @@ if not check:
     for line in apply_units(companies, json.load(open(os.path.join(HERE, 'wage_units.json')))): print(' ', line)
 set_basis_and_weights(companies)
 for ix in indexes.values():
+    ix['missing'] = listed(ix['missing'])
     members = [c['symbol'] for c in ix['constituents']]+ix['missing']
     mcap = {s: c['marketCapCr']*1e7 for s, c in companies.items() if c.get('marketCapCr')}
     shp = {s: {'public': c['publicFloatPct']} for s, c in companies.items() if c.get('publicFloatPct')}
