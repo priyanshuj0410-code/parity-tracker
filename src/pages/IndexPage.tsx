@@ -120,7 +120,7 @@ export function IndexPage({ id, tab }: { id: string; tab?: string }) {
                     <tr><td>{m.workforceLabel}</td><td className="r nowrap"><strong>{pct(y.workforce)}</strong></td></tr>
                     <tr><td>Pay gap verified from company statements</td><td className="r nowrap"><strong>{y.verified} of 50</strong></td></tr>
                     <tr><td>Of those, with a workforce split too</td><td className="r nowrap"><strong>{y.companiesCovered}</strong></td></tr>
-                    <tr><td>Excluded (adjusted gap only, partial scope, not material) or not located</td><td className="r nowrap"><strong>{(y.excluded ?? 0) + (y.unresolved ?? 0)}</strong></td></tr>
+                    <tr><td>Excluded (adjusted gap only, partial scope, not material) or not yet read</td><td className="r nowrap"><strong>{(y.excluded ?? 0) + (y.unresolved ?? 0)}</strong></td></tr>
                   </tbody>
                 ) : jp ? (
                   <tbody>
