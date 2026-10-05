@@ -2,6 +2,7 @@
  * pnpm data <command>: Nivel's data lives in Firestore, not in git. See knowledge/playbooks/data-backend.md.
  *
  *   load <market> <companies.json> <indexes.json> [--force]   replace one market's companies, upsert its indexes
+ *   dump <market> <dir>                                       write one market's companies and indexes as stored, for load
  *   put <collection> <id> <file.json>                         store one record (markets, indexes, datasets, feeds)
  *   get <collection> <id>                                     print one record
  *   rm <collection> <id>                                      delete one record
@@ -19,7 +20,7 @@
  *   status                                                    the live and staged releases
  */
 import { createHash } from 'node:crypto'
-import { readFileSync, readdirSync } from 'node:fs'
+import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { commit, get, getMany, list, where } from './firestore.mjs'
 import * as inputs from './inputs.mjs'
@@ -84,6 +85,16 @@ async function load(market, companies, indexes, { force = false } = {}) {
   await commit(writes)
   const few = (a) => (a.length ? `${a.length} (${a.slice(0, 6).join(', ')}${a.length > 6 ? ', …' : ''})` : '0')
   console.log(`${market}: ${few(tally.added)} added, ${few(tally.changed)} changed, ${few(tally.removed)} removed, ${tally.same} unchanged; indexes ${ixTally.join(', ') || 'unchanged'}`)
+}
+
+/** The inverse of load: a market's records as stored, so they can be corrected and loaded again without the raw sources. */
+async function dump(market, dir) {
+  const companies = Object.fromEntries((await where('companies', 'country', market)).map((d) => [d.id, JSON.parse(d.json)]).sort(([a], [b]) => (a < b ? -1 : 1)))
+  const indexes = Object.fromEntries((await where('indexes', 'country', market)).map((d) => [d.id, JSON.parse(d.json)]))
+  mkdirSync(dir, { recursive: true })
+  writeFileSync(join(dir, 'companies.json'), JSON.stringify(companies))
+  writeFileSync(join(dir, 'indexes.json'), JSON.stringify(indexes))
+  console.log(`${market}: ${Object.keys(companies).length} companies, ${Object.keys(indexes).length} indexes written to ${dir}`)
 }
 
 async function put(collection, id, value) {
@@ -158,6 +169,7 @@ const option = (name) => args.find((a) => a.startsWith(`--${name}=`))?.split('='
 const pos = args.filter((a) => !a.startsWith('--'))
 const commands = {
   load: () => load(pos[0], readJson(pos[1]), indexList(readJson(pos[2])), { force: flags.has('--force') }),
+  dump: () => dump(pos[0], pos[1]),
   put: () => put(pos[0], pos[1], readJson(pos[2])),
   get: async () => {
     const d = await get(`${pos[0]}/${pos[1]}`)
