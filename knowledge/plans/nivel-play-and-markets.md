@@ -85,7 +85,7 @@ The application draft is in [mit-solve-application.md](mit-solve-application.md)
   - The [evidence brief](../research/norm-markets-evidence.md) (PARITY-42).
   - The [resolution source catalogue](../research/resolution-sources.md) (PARITY-43).
   - The [evaluation design](markets-evaluation.md) (PARITY-45).
-- **Markets:** [decision 0017](../decisions/0017-markets-architecture.md) proposes the architecture.
+- **Markets:** [decision 0017](../decisions/0017-markets-architecture.md) sets the architecture, accepted on 5 October 2026.
   - Thoth's engine becomes a shared package (THOTH-4 and 5).
   - Nivel keeps its own sign-in, ledger and database, with no shared pool.
   - It waits on the owner's choices in that decision, counsel (PARITY-51) and the safeguarding review (PARITY-49).

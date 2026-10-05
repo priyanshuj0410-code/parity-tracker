@@ -30,7 +30,7 @@ The app was renamed from Parity Tracker to Nivel on 2 October 2026 ([decisions/0
 - [decisions/0014-data-separate-from-app.md](decisions/0014-data-separate-from-app.md): the app holds no data; edge functions serve releases and page previews; promote moves a pointer, with no rebuild
 - [decisions/0015-coverage-accounted-for.md](decisions/0015-coverage-accounted-for.md): coverage means every company has a figure or a verified company-side reason; company reports are a fallback with their basis shown
 - [decisions/0016-static-releases.md](decisions/0016-static-releases.md): the site reads releases from static files on the nivel-data Vercel project, never Firestore, so a quota cannot take it down
-- [decisions/0017-markets-architecture.md](decisions/0017-markets-architecture.md): proposed. Nivel's markets use Thoth's engine as a shared package, with Nivel's own sign-in, ledger and database, and no shared pool
+- [decisions/0017-markets-architecture.md](decisions/0017-markets-architecture.md): accepted. Nivel's markets use Thoth's engine as a shared package, with Nivel's own sign-in, ledger and database, and no shared pool
 - [plans/coverage-99.md](plans/coverage-99.md): overnight plan and log for 99% coverage in every live market
 - [decisions/0010-fund-footprint-method.md](decisions/0010-fund-footprint-method.md): fund footprints: attribution by market cap, a 60% coverage floor, comparison only with each fund's Tier 1 benchmark, and no ranking
 - [plans/us-indexes.md](plans/us-indexes.md): adding the S&P 500 and Dow as a limited-data market, measured by women's share of board seats
