@@ -3,8 +3,12 @@ type: plan
 title: Nivel play and prediction markets
 description: Plan for Nivel's two engagement layers, Spot the Stereotype (The Equal Lens's bias game) and prediction markets on women's pay, work and norms, hosted in Nivel on a prediction market engine shared with Thoth.
 status: planned
-updated: 2026-10-03
+updated: 2026-10-05
 plane_issues:
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/4313243b-a30d-45bb-986c-7fd3e4f349e0
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/119d2d51-b5bb-47a4-b0de-88529c71863f
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/395820c3-832b-44af-bdc1-6f583cef4ca2
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/ce4141c0-7f43-42bf-9dd1-81fe9784d7e5
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/66905658-70ce-4e96-a7c0-effb34139826
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/0d978739-fe5b-4c6a-967d-fcca1fb16b77
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/a7d95186-1e6e-4db7-a8ea-2e8f2b947b04
@@ -71,6 +75,20 @@ plane_issues:
 
 ## MIT Solve
 The application draft is in [mit-solve-application.md](mit-solve-application.md). It is for the 2027 Global Economic Prosperity Challenge, due 2 November 2026.
+
+## Where the work stands (5 October 2026)
+- **Play:** done on Nivel's side.
+  - The Spot feed holds 24 figures (PARITY-86).
+  - `/play`, Guess first and the Play links are live (PARITY-53).
+  - The game's side is BIAS-58 and BIAS-59.
+- **Evidence and measurement:** drafted for review.
+  - The [evidence brief](../research/norm-markets-evidence.md) (PARITY-42).
+  - The [resolution source catalogue](../research/resolution-sources.md) (PARITY-43).
+  - The [evaluation design](markets-evaluation.md) (PARITY-45).
+- **Markets:** [decision 0017](../decisions/0017-markets-architecture.md) proposes the architecture.
+  - Thoth's engine becomes a shared package (THOTH-4 and 5).
+  - Nivel keeps its own sign-in, ledger and database, with no shared pool.
+  - It waits on the owner's choices in that decision, counsel (PARITY-51) and the safeguarding review (PARITY-49).
 
 ## Steps
 - **In Nivel (PARITY):**
