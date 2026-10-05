@@ -46,18 +46,19 @@ for code,o in (json.load(open('jp_reports.json')) if os.path.exists('jp_reports.
     rec=companies.get('TSE-'+code)
     if not rec: continue
     y=rec['years'].get('latest')
-    if o['status']=='reason':
-        if y: y['note']=o['reason']
-        else: rec['noDataReason']=o['reason']
-        continue
     ok=lambda v: v is not None and 20<=v<=150
-    if y is None and ok(o.get('ratio')):
+    if y is None and ok(o.get('ratio')) and o.get('ratioSource'):
         y=rec['years']['latest']=dict(w=rd(o['ratio']/100),wKind='reported',fPerm=None,fAll=None,permHeadcount=None,headcount=None,board=None,boardWomen=None,payrollCr=None,dq=1,
             note="From the company's own report: it is not in the labour ministry's database",boundary='Listed company (own employees), company report',basisChange=False,
             topQuartile=None,gapMean=rd(1-o['ratio']/100),gapMedian=None,bonusGapMean=None,entityCount=1,
             ratioRegular=rd(o['ratioRegular']/100) if ok(o.get('ratioRegular')) else None,ratioNonRegular=rd(o['ratioNonRegular']/100) if ok(o.get('ratioNonRegular')) else None,
             managerShare=None,boardShareReported=None,period=o.get('period') or '',reportSources=[doc(o['ratioSource'],['ratio'],"the listed company's own employees")])
         rec['noDataReason']=None
+    # A reason (no share for the listed company, or exempt from a pay ratio) can come with a ratio the company does publish.
+    if o['status']=='reason':
+        if y: y['note']=o['reason']
+        else: rec['noDataReason']=o['reason']
+        continue
     if y is None or y.get('fPerm') is not None or o.get('share') is None: continue
     if o.get('shareScope') in SCOPE and 0<o['share']<1:
         y['fPerm']=rd(o['share'])
