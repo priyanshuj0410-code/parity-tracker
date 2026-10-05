@@ -1,7 +1,7 @@
 ---
 type: decision
 title: Nivel's markets run on Thoth's engine as a package, with Nivel's own accounts, ledger and database
-description: How Nivel hosts play-money prediction markets. It reuses Thoth's tested engine as a shared package, keeps its own sign-in, ledger and Postgres database, never shares a pool or an operator with Thoth, and keeps the static site independent. Accepted by the owner on 5 October 2026; sign-in and resolution are still to choose, and nothing goes live before counsel answers.
+description: How Nivel hosts play-money prediction markets. It reuses Thoth's tested engine as a shared package, keeps its own sign-in, ledger and Postgres database, never shares a pool or an operator with Thoth, and keeps the static site independent. Accepted by the owner on 5 October 2026, with Neon Auth for sign-in and the owner resolving markets with a 30-day grace period; nothing goes live before counsel answers.
 status: accepted
 updated: 2026-10-05
 plane_issues:
@@ -13,7 +13,7 @@ plane_issues:
 
 # Nivel's markets: Thoth's engine as a package, Nivel's own everything else
 
-**Status: accepted** by the owner on 5 October 2026: option 1, and yes-or-no thresholds first. Sign-in and resolution are still open (below). Going live still waits on counsel (PARITY-51) and the safeguarding review (PARITY-49).
+**Status: accepted** by the owner on 5 October 2026: option 1, yes-or-no thresholds first, Neon Auth for sign-in, and the owner resolving each market with a 30-day grace period. Going live still waits on counsel (PARITY-51) and the safeguarding review (PARITY-49).
 - Plan: [Nivel play and markets](../plans/nivel-play-and-markets.md).
 - Legal: [Online Gaming Act check](../reviews/gaming-act-check-2026-10.md), awaiting counsel.
 - What to ask and how: [evidence brief](../research/norm-markets-evidence.md) and [resolution sources](../research/resolution-sources.md).
@@ -69,7 +69,7 @@ plane_issues:
 
 **Nivel:**
 - **Its own Postgres** (a Neon project of its own), used for writes only. Reads of Nivel's figures stay on the static site.
-- **Sign-in:** Nivel's own (owner's choice below), giving a user id.
+- **Sign-in:** Neon Auth, in Nivel's own Neon project. It gives a user id, which the engine checks against the project's JWKS as Thoth's `lib/auth.ts` does.
 - **Adults only:** a date of birth at sign-up. Only "adult: yes" and the year are kept, and nothing is kept for anyone under 18.
 - **API:** `api/markets/*` functions using the package. Admin resolution follows Thoth's console pattern, under PARITY-48.
 - **Questions:**
@@ -92,8 +92,6 @@ plane_issues:
 
 ## Owner decisions
 1. **Option 1:** a shared package with separate accounts, ledger and database. **Approved, 5 October 2026.**
-2. **Sign-in, open:**
-   - **Neon Auth,** as Thoth uses, with the same code path.
-   - **Firebase Auth,** in Nivel's existing Firebase project, which keeps one vendor for Nivel.
+2. **Sign-in:** Neon Auth, the same vendor as the markets database, with Thoth's token check reused. Firebase Auth was the alternative. **Chosen, 5 October 2026.**
 3. **First question format:** yes-or-no thresholds now, brackets later. **Approved, 5 October 2026.**
-4. **Who resolves markets,** and the grace period when a source is late (PARITY-48). **Open.**
+4. **Resolution:** the owner resolves each market in an admin console, citing the source link. If the source is more than 30 days past its scheduled date, the market is voided and stakes return (PARITY-48). **Chosen, 5 October 2026.**

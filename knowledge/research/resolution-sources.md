@@ -14,7 +14,7 @@ For [Nivel play and markets](../plans/nivel-play-and-markets.md). What to ask, a
 
 ## The rule
 - **A question resolves only against a named, dated publication.** The source, its exact question or definition and its expected date are shown before anyone forecasts.
-- **If a release slips,** the market stays open until the publication appears. It is voided if the publication is cancelled or the measure changes definition. Templates set the grace period (PARITY-48).
+- **If a release slips,** the market stays open for up to 30 days past the scheduled date, then is voided and stakes return. It is also voided if the publication is cancelled or the measure changes definition. The owner resolves each market, citing the source link ([decision 0017](../decisions/0017-markets-architecture.md), PARITY-48).
 - **Schedules drift,** so each market records the schedule document it relied on and the date that document was read.
 
 ## Sources
