@@ -1,82 +1,62 @@
 /**
- * Serves Nivel's data from the releases in Firestore (decision 0014), for the edge functions in this folder
- * and for the dev server. Releases, their files and the live channel are public reads, so no key is needed.
- * A release's files never change, so they are cached for a year; only the live pointer is short-lived.
+ * Serves Nivel's data from the static data site (decisions 0014 and 0016), for the edge functions in this folder
+ * and for the dev server. The site holds the live, staged and previous releases as plain files, so serving never
+ * reads a database and no database quota can take it down. A release's files never change, so they are cached
+ * for a year; only the live pointer is short-lived.
  */
-const PROJECT = 'nivel-equal-lens'
-const DATABASE = 'default'
-const API = `https://firestore.googleapis.com/v1/projects/${PROJECT}/databases/${DATABASE}/documents`
+const ORIGIN = (typeof process !== 'undefined' && process.env?.NIVEL_DATA_ORIGIN) || 'https://nivel-data.vercel.app'
 const RELEASE_ID = /^\d{8}-\d{6}$/
 
 const LIVE_CACHE = { browser: 'public, max-age=60', cdn: 'public, s-maxage=120, stale-while-revalidate=86400' }
 const RELEASE_CACHE = { browser: 'public, max-age=31536000, immutable', cdn: 'public, s-maxage=31536000, immutable' }
 const LATEST_CACHE = { browser: 'public, max-age=300', cdn: 'public, s-maxage=300, stale-while-revalidate=86400' }
 
-function decode(v) {
-  if ('stringValue' in v) return v.stringValue
-  if ('integerValue' in v) return Number(v.integerValue)
-  if ('doubleValue' in v) return Number(v.doubleValue)
-  if ('booleanValue' in v) return v.booleanValue
-  if ('timestampValue' in v) return v.timestampValue
-  if ('nullValue' in v) return null
-  if ('arrayValue' in v) return (v.arrayValue.values ?? []).map(decode)
-  if ('mapValue' in v) return fields(v.mapValue.fields ?? {})
-  return null
-}
-const fields = (f) => Object.fromEntries(Object.entries(f).map(([k, x]) => [k, decode(x)]))
+const SAFE = /^[A-Za-z0-9._-]+(\/[A-Za-z0-9._-]+)*$/
 
-async function doc(path) {
-  const res = await fetch(`${API}/${path}`)
+/** A file from the static data site: text, bytes, or null if it does not exist. */
+async function get(path, bytes = false) {
+  if (!SAFE.test(path) || path.split('/').includes('..')) return null
+  const res = await fetch(`${ORIGIN}/${path}`)
   if (res.status === 404) return null
-  if (!res.ok) throw new Error(`Firestore ${path} returned ${res.status}`)
-  return fields((await res.json()).fields ?? {})
+  if (!res.ok) throw new Error(`Data site ${path} returned ${res.status}`)
+  return bytes ? new Uint8Array(await res.arrayBuffer()) : res.text()
 }
 
 /** The release live now: { release, collected }. */
 export async function live() {
-  const channel = await doc('channels/live')
-  if (!channel) throw new Error('No live release')
-  const rel = await release(channel.release)
-  return { release: channel.release, collected: rel.collected }
+  const text = await get('live.json')
+  if (!text) throw new Error('No live release')
+  return JSON.parse(text)
 }
 
 const releases = new Map()
-/** A release's manifest, kept in memory: releases never change once published. */
+/** A release's summary ({ id, collected, status }), kept in memory, or null if the data site does not hold it. */
 export async function release(id) {
   if (!RELEASE_ID.test(id)) return null
   if (!releases.has(id)) {
-    const rel = await doc(`releases/${id}`)
-    if (!rel) return null
+    const text = await get(`r/${id}/release.json`)
+    if (!text) return null
     if (releases.size > 8) releases.delete(releases.keys().next().value)
-    releases.set(id, { collected: rel.collected, status: rel.status, files: rel.files ?? {}, logoFiles: rel.logoFiles ?? {} })
+    releases.set(id, JSON.parse(text))
   }
   return releases.get(id)
 }
 
 const texts = new Map()
-/** A release file's text, joined from its content-addressed blobs, or null if the release has no such file. */
+/** A release file's text, or null if the release has no such file. */
 export async function file(id, path) {
-  const rel = await release(id)
-  const parts = rel?.files[path]
-  if (!parts) return null
+  if (!RELEASE_ID.test(id)) return null
   const key = `${id}/${path}`
   if (!texts.has(key)) {
-    const blobs = await Promise.all(parts.map((b) => doc(`blobs/${b}`)))
-    if (blobs.some((b) => !b)) throw new Error(`Release ${id}: ${path} is missing a blob`)
+    const text = await get(`r/${key}`)
+    if (text == null) return null
     if (texts.size > 64) texts.delete(texts.keys().next().value)
-    texts.set(key, blobs.map((b) => b.data).join(''))
+    texts.set(key, text)
   }
   return texts.get(key)
 }
 
-async function logo(id, name) {
-  const rel = await release(id)
-  const blob = rel?.logoFiles[name]
-  if (!blob) return null
-  const b64 = (await doc(`blobs/${blob}`))?.data
-  if (!b64) return null
-  return Uint8Array.from(atob(b64), (c) => c.charCodeAt(0))
-}
+const logo = (id, name) => (RELEASE_ID.test(id) ? get(`r/${id}/logos/${name}`, true) : null)
 
 const TYPES = { json: 'application/json; charset=utf-8', png: 'image/png' }
 

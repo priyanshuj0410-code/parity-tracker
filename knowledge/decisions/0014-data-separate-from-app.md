@@ -9,6 +9,8 @@ supersedes: the build-time pull in decisions/0011-data-backend.md and the static
 
 # Data served separately from the app
 
+> **Since 6 October 2026** the edge functions read releases from static files on the `nivel-data` Vercel project, not from Firestore ([decision 0016](0016-static-releases.md)), after a Firestore quota took the site down. Everything else here still holds.
+
 ## Why
 - **The owner's rule (4 October 2026):** keep data and app separate, for the long term, as data grows.
 - **Before this:** each build pulled the live release, compiled the market list, sectors, logo map and release date into the JavaScript, and wrote 8,818 HTML pages from the data. Every data release rebuilt and redeployed the whole app, and that work grew with every company and country.
