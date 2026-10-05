@@ -31,6 +31,10 @@ def friendly(n):
     if m: n = f"Restated in the next filing to {float(m.group(1))*100:.1f}%"
     return n
 
+def listed(symbols):
+    """Index members without NSE's placeholders, such as DUMMYHEG for the HEG demerger (PARITY-98)."""
+    return [s for s in symbols if not s.startswith('DUMMY')]
+
 def plausible(v):
     return v and v.get('payrollCr') and v.get('headcount') and 1.5e5 <= v['payrollCr']*1e7/v['headcount'] <= 7.5e6
 
