@@ -42,6 +42,11 @@ Members are the union of each market's shown indexes. "Accounted for" counts a c
   - Stop publishing for the day once reads pass about 35,000.
   - Blaze billing with a budget alert removes the hard stop (reads cost about $0.06 per 100,000 beyond the free quota). That is the owner's call.
 
+- **Release 20261005-125000 (live, 12:50 IST, after the quota reset):**
+  - Japan: 147 more shares of pay (Nikkei 225 now 172 of 225, TOPIX 500 371 of 492) and 52 verified reasons. Each figure cites its document and page, for example Toyota's securities report p.128 and Sustainability Data Book p.149.
+  - UK: Atalaya Mining and Foresight Group from their own reports, outside the FTSE headlines.
+  - Spot feed unchanged. It was the first release published to the static data site ([decision 0016](../decisions/0016-static-releases.md)).
+
 ## Waiting on the owner
 - **Browser downloads** (sites that block scripts) into `~/Downloads/nivel-reports/`: E.ON, Ericsson, ArcelorMittal, SAP, Allianz, Iberdrola, Mercedes-Benz, Schaeffler India, and the FY2025-26 BRSRs of ITC Hotels and Piramal Finance. More are added below as they are found.
 - **Merge PARITY-92's PR**, after which the fallback figures for Japan, the UK and Australia are loaded and released.
