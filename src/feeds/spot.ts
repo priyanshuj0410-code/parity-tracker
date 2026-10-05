@@ -322,7 +322,7 @@ function japan({ indexes, companies }: Data): Built[] {
     discussion: 'What would need to change for more women to become managers?',
     line: MHLW,
     rule: `Nivel's average of each company's share of women among its managers, each company counting equally, using each employer's own definition of a manager. ${managers.length} of the ${nikkei.constituents.length} companies have a figure; ${most} of the reports start in ${year}. It says nothing about pay.`,
-    page: 'index/nikkei225', saw: `Pay structure · latest: women in management ${pct(n.managers)}`,
+    page: 'index/nikkei225', saw: `Pay structure · latest: women in management ${pct(n.managers ?? 0)}`,
   }))
   // PARITY-86. Left out: the TOPIX 500, whose figures (11 managers in 100, ¥70) would ask the Nikkei 225's questions twice;
   // and employment parity, as a company's own report can give women's share of all its staff rather than its regular staff.
