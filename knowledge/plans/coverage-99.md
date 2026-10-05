@@ -36,6 +36,12 @@ Members are the union of each market's shown indexes. "Accounted for" counts a c
 5. **Japan (PARITY-91):** refresh the MHLW open data (goes live), then read company reports for women's share of regular staff and pay ratios (inputs; wait for PARITY-92).
 6. **PARITY-92:** the UI that shows a company-report source and basis per year, and the builders that use the fallback inputs. One PR for the owner to merge in the morning.
 
+- **#38 merged (6 October, owner).** Japan (147 more shares of pay, 52 reasons) and the UK's Atalaya Mining and Foresight Group were rebuilt and loaded.
+- **Outage, 6 October, about 10:45 to 12:30 IST.** Publishing that release hit Firestore's free daily quota (429). The day's publishes, loads and site traffic had used up 50,000 reads. Until the reset at midnight Pacific (12:30 IST), the live site returned 503 for any release file not already in its edge cache, including the new release's core data, so pages showed "This part didn't load". A one-off timer publishes and promotes the loaded release at 12:37 IST. Lessons:
+  - Each publish reads about 2,400 documents, and each new release starts with a cold edge cache that site traffic then fills from Firestore. Batch changes into fewer releases.
+  - Stop publishing for the day once reads pass about 35,000.
+  - Blaze billing with a budget alert removes the hard stop (reads cost about $0.06 per 100,000 beyond the free quota). That is the owner's call.
+
 ## Waiting on the owner
 - **Browser downloads** (sites that block scripts) into `~/Downloads/nivel-reports/`: E.ON, Ericsson, ArcelorMittal, SAP, Allianz, Iberdrola, Mercedes-Benz, Schaeffler India, and the FY2025-26 BRSRs of ITC Hotels and Piramal Finance. More are added below as they are found.
 - **Merge PARITY-92's PR**, after which the fallback figures for Japan, the UK and Australia are loaded and released.
