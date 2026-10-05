@@ -29,7 +29,7 @@ export function JapanGlance({ c }: { c: Company }) {
           <div className="card">
             <div className="tile-label">Women in management</div>
             <div className="tile-value">{pct(y.managerShare)}</div>
-            <div className="tile-context muted">Board: {y.board ? `${y.boardWomen} of ${y.board}` : pct(board)}</div>
+            <div className="tile-context muted">Officers: {y.board ? `${y.boardWomen} of ${y.board}` : pct(board)}</div>
           </div>
         </div>
   )

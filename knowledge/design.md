@@ -4,6 +4,7 @@ title: Nivel design system
 description: Visual and writing rules for Nivel (formerly Parity Tracker), derived from The Equal Lens brand package (minimal register) plus a validated chart palette.
 updated: 2026-10-05
 plane_issues:
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/f3cd339a-5e02-4cdc-9542-b4072d9a274b
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/cb3c3975-004a-4ba9-8c8f-346b9bd9713f
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/77409619-e627-469b-8529-9a2a961f852a
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/39903f09-b70b-48dd-88c7-a10bce33c7c6
@@ -142,6 +143,7 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
   - India's annual-report filings list as "BRSR, in the company's annual report: PDF", with no empty XBRL link.
   - Company-report years stay out of UK index headlines and like-for-like change, which keep the statutory basis; Australian headlines are payroll-weighted from WGEA data and do not include them either.
 - **Download dates come from the data:** Japan's source line gives the day the MHLW open data was downloaded, from the record, not fixed text.
+- **Japan counts officers, not boards (PARITY-96):** the labour ministry field counts directors, auditors and executive officers. Japan pages say "Women among officers", with that list as the sub-line, "Women officers" as a column and "Officers: x of y" on a company. India's board seats keep "Women on board".
 - **Status chip** (coverage map): `Live`, `Planned`, `Limited data`, with text labels, not colour alone.
 - **Tables (data tables, `table.data`):**
   - 8px by 12px cells, tabular figures, `--tint` header row with 12px `--soft` labels; the sorted column's label turns `--ink`
