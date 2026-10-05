@@ -16,6 +16,7 @@ plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/3e2cafdb-a457-426b-89bc-ce3a1d7b8740
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/9e814581-34cc-49dc-a1ea-75698f44c744
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/25f85b77-2bcc-40a5-9ef9-0ac94da273e0
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/c28ef6bf-a0a1-41de-8d63-8f91ab8ef68a
 ---
 
 # India data pipeline
@@ -156,7 +157,7 @@ Where the statutory source has nothing, figures from the company's own report ar
 
 ## Shared scale for Japan and the EU (PARITY-20)
 `pnpm data publish` runs it on every release, then `sectors.py`, on the assembled data: `python3 pipeline/shared_scale.py <data dir>`.
-- **Load EU and Japanese records after shared scale.** Their builders write the pay ratio into `w`, which is above 100% when women are paid more, and publish checks every share of pay before it runs `shared_scale.py`. So run `shared_scale.py` on the assembled data with the rebuilt market swapped in, then load that market's records (which then hold shares). This is how the first EU records were seeded. shared_scale is idempotent, so publish recomputes the same values.
+- **Load EU and Japanese builder output as it is.** Their builders write the pay ratio into `w`, which is above 100% when women are paid more. Publish checks every share of pay after `shared_scale.py` has turned those ratios into shares, so it checks what is published, for every market (PARITY-94, 6 October 2026). The check used to run before shared scale, which meant loading these markets after a local shared-scale run.
 - The input `eu/eu_headcount.json` holds ESRS S1-6 headcount by gender (women, men) per EU company and year, read by hand from the same CSRD statements as the pay gap. Percent-only disclosures (ING, Saint-Gobain, Vinci, Siemens Energy) are stored as shares. Not found: Deutsche Bank, Air Liquide, EssilorLuxottica. Publish reads it from Firestore, so a newly read headcount needs only `inputs push`, then publish.
 - `shared_scale.py` sets each Japanese and EU company-year's `w` to women's share of pay, S = E·W/(E·W + 1 − E), with W = 1 − `gapMean` and E = `fPerm` (Japan, regular staff) or `fAll` (EU). Without E, `w` is empty and a note explains why; the pay ratio stays in `gapMean`.
 - It then recomputes the Nikkei 225 and Euro Stoxx 50 headlines (equal-weighted mean S), `payRatio`, `workforce`, sector averages and like-for-like change. It is idempotent: it reads `gapMean`, `fPerm` and `fAll`, never `w`.
