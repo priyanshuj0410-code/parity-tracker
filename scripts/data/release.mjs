@@ -10,7 +10,8 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { DATA_API_FILES, buildManifest, buildSummary, companyFile } from '../../src/feeds/data-api.ts'
-import { SITE, SPOT_SCHEMA, buildSpot, checkSpot, mergeSpot } from '../../src/feeds/spot.ts'
+import { SPOT_SCHEMA, buildSpot, checkSpot, mergeSpot } from '../../src/feeds/spot.ts'
+import { PREVIEW_SITE } from '../../api/_data.js'
 import { blobId, commit, get, getMany, list, readRelease } from './firestore.mjs'
 import { input } from './inputs.mjs'
 import * as site from './site.mjs'
@@ -226,16 +227,17 @@ export async function publish({ collected, approveFeed = false }) {
   await commit(writes)
   console.log(text)
 
-  // The static data site serves the new release as staging, next to the live one (decision 0016).
-  site.addRelease(id, { files, logos: Object.fromEntries(logoDocs.map((d) => [d.id, d.png])), collected, status: 'staging' })
+  // The staged release goes only to the data site's protected staging deployment; the public one is unchanged until
+  // promote (decision 0016, PARITY-102).
+  site.addRelease(id, { files, logos: Object.fromEntries(logoDocs.map((d) => [d.id, d.png])), collected })
   if (liveChannel) await site.ensureRelease(liveChannel.release)
   site.setChannel('staging', { release: id, collected })
   site.prune(new Set([id, liveChannel?.release, liveChannel?.previous?.[0]].filter(Boolean)))
-  site.deploy()
+  site.deploy('staging')
 
-  const url = `${SITE}/?release=${id}`
+  const url = `${PREVIEW_SITE}/?release=${id}`
   await commit([{ update: `releases/${id}`, data: { preview: url } }])
-  console.log(`\nPreview: ${url}\nCheck it, then: pnpm data promote ${id}`)
+  console.log(`\nPreview (sign in to Vercel): ${url}\nCheck it, then: pnpm data promote ${id}`)
 }
 
 export async function promote(id) {

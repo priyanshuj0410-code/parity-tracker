@@ -6,7 +6,8 @@ import { handleData } from './api/_data.js'
 
 /**
  * The build holds no data (decision 0014). In development, the dev server answers the data paths the same way
- * the edge function does in production, from the live release (or `?release=`) in Firestore.
+ * the edge function does in production, from the public data site; with NIVEL_DATA_BYPASS set, `?release=` also
+ * reaches a staged release, since the dev server is private.
  */
 const devData = (): Plugin => ({
   name: 'nivel-dev-data',
@@ -17,7 +18,7 @@ const devData = (): Plugin => ({
       const url = new URL(req.url ?? '/', 'http://dev')
       const route = routes.find(([re]) => re.test(url.pathname))
       if (!route) return next()
-      const out: Response = await handleData(decodeURIComponent(url.pathname.replace(route[0], route[1])))
+      const out: Response = await handleData(decodeURIComponent(url.pathname.replace(route[0], route[1])), { preview: true })
       res.statusCode = out.status
       out.headers.forEach((v, k) => res.setHeader(k, v))
       res.end(Buffer.from(await out.arrayBuffer()))
