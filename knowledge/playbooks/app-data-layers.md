@@ -53,7 +53,7 @@ Running it: [data-backend.md](data-backend.md). Sharing it: [data API v1](../ref
    gcloud auth application-default login --impersonate-service-account=<app>-pipeline@<project>.iam.gserviceaccount.com
    ```
 4. **Rules: no public reads.** Since [0016](../decisions/0016-static-releases.md) only the data tools read Firestore, and they use the pipeline's credentials, which the rules do not govern. Live-state collections get their own per-user rules.
-   - **Do not copy Nivel's `firestore.rules`.** They still let anyone list every release, staged ones included, and read the publisher's username ([PARITY-101][p101]).
+   - **Nivel's `firestore.rules` deny everything** ([PARITY-101][p101]), so they can be copied once deployed. Until the owner deploys them, the live rules still let anyone list releases.
    - **Children's apps get no public reads at all.**
 5. **Serve releases as static files** ([0014](../decisions/0014-data-separate-from-app.md), [0016](../decisions/0016-static-releases.md)):
    - Publish writes the release to a static Vercel project (Nivel's is `nivel-data`).
@@ -63,7 +63,7 @@ Running it: [data-backend.md](data-backend.md). Sharing it: [data API v1](../ref
 6. **Firebase CLI:** always pass `--project` (and `--account` if several are signed in). The CLI's default project for the home folder belongs to another product.
 
 ## The toolkit to copy from Nivel
-**Remove Nivel's defaults first.** `scripts/data/firestore.mjs:9-10` falls back to Nivel's project and database, and `api/_data.js:7` to Nivel's data site. Make each throw when its variable is unset, and check the impersonated account's project before any write ([PARITY-101][p101]). Nothing is copied as it is.
+**Remove Nivel's defaults first.** `scripts/data/firestore.mjs` now throws unless `FIREBASE_PROJECT` and `FIRESTORE_DATABASE` are set ([PARITY-101][p101]), but `api/_data.js:7` still falls back to Nivel's data site. Check the impersonated account's project before any write. Nothing is copied as it is.
 
 | File | Reuse |
 |---|---|
@@ -112,7 +112,7 @@ The review ([PARITY-84][p84]) read Nivel at commit 10e7b22 on 4 October. Each ma
 | Finding | Status |
 |---|---|
 | **Major:** missing data and asset files return 200 HTML, cached as immutable | **Fixed.** On the live site, an unknown page, company or asset returns 404 with `max-age=0`, and a missing data, feed or logo file returns 404 as plain text. `public/sw.js` caches only successful responses, and `loadCompany` treats a 404 as no such company |
-| **Major:** Firestore rules expose staged releases and the publisher's username | **Open:** [PARITY-101][p101] (rules, signed reads, a role label, no default project) |
+| **Major:** Firestore rules expose staged releases and the publisher's username | **Built, not yet deployed:** [PARITY-101][p101]. The rules deny everything, every data-tool read is signed, new releases record `pipeline` instead of a username, and there is no default project. The owner deploys the rules. Older release documents keep their username until the owner scrubs them |
 | Decision 0014 serves any release, staged ones included | **Open:** [PARITY-102][p102] (serve only promoted releases; owner-only previews) |
 | Unknown pages are soft 404s | **Fixed:** pages must be listed in the release's `app/pages.json`, and `/company/NOPE` returns 404 |
 | Release id and data maps compiled into the bundle; `?r=` does not pin a release | **Fixed** by [0014](../decisions/0014-data-separate-from-app.md): the release id comes from the page's `nivel-release` tag, markets come from `core.json`, and files load from `/data/r/{release}/` |

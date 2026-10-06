@@ -6,7 +6,7 @@
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
-import { tmpdir, userInfo } from 'node:os'
+import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { DATA_API_FILES, buildManifest, buildSummary, companyFile } from '../../src/feeds/data-api.ts'
@@ -220,7 +220,7 @@ export async function publish({ collected, approveFeed = false }) {
   const text = [...head, ...lines].join('\n')
 
   const writes = fresh.map(([b, p]) => ({ set: `blobs/${b}`, data: { data: p } }))
-  writes.push({ set: `releases/${id}`, data: { status: 'staging', created: new Date(), by: userInfo().username, collected, base: liveChannel?.release ?? null, files: manifest, logos: logoManifest, logoFiles, counts, report: text } })
+  writes.push({ set: `releases/${id}`, data: { status: 'staging', created: new Date(), by: 'pipeline', collected, base: liveChannel?.release ?? null, files: manifest, logos: logoManifest, logoFiles, counts, report: text } })
   if (staging && staging.release !== liveChannel?.release) writes.push({ update: `releases/${staging.release}`, data: { status: 'discarded' } })
   writes.push({ set: 'channels/staging', data: { release: id, updated: new Date() } })
   await commit(writes)
