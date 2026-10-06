@@ -2,12 +2,13 @@
 type: review
 title: Questions for counsel, shareable version (3 October 2026)
 description: The 23 questions sent for legal review in one document, combining the legal review and the Gaming Act check with four new questions from 3 October 2026 (single NSE files, the open data API, children's games, estimates from faulty filings).
-updated: 2026-10-03
+updated: 2026-10-06
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/c08a5bb0-7bff-4ea0-8ced-6553033f6ecc
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/d0a4b836-049d-4e53-98d6-9bdf266cd884
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/a772b178-acfd-4d75-94de-018077b10426
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/0d978739-fe5b-4c6a-967d-fcca1fb16b77
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/db4c43c6-0bdb-4dec-a387-338867b35576
 ---
 
 # Questions for counsel, shareable version
@@ -31,5 +32,5 @@ plane_issues:
 ## Why the new questions
 - **3:** on 3 October 2026 the owner approved downloading 15 single BRSR files from NSE's archive for companies with no report elsewhere.
 - **5:** the [data API v1](../reference/data-api-v1.md) publishes index weights computed from NSE data and the Parity 50's simulated returns as open files.
-- **14:** the [data-layer playbook](../playbooks/app-data-layers.md) sets anonymous-only state for the children's games; counsel to confirm that keeps them outside the children's-data duties.
+- **14:** the children's games keep progress on the device or under a session id. A persistent session id is pseudonymous, not anonymous, so the [data-layer playbook](../playbooks/app-data-layers.md) treats it as a child's personal data until counsel confirms whether the children's-data duties apply (corrected 6 October 2026, PARITY-84).
 - **22:** [PARITY-69](../plans/five-market-depth.md) published an estimate for MMTC from its pay table after it filed zero wage totals.

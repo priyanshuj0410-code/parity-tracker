@@ -7,6 +7,7 @@ plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/997c6dda-88ad-486d-8634-571ca6978989
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/4a6b2d55-5d5f-4713-848c-561e3e343184
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/aa1e98d8-d58d-4a3e-8d0b-eccea0459975
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/db4c43c6-0bdb-4dec-a387-338867b35576
 ---
 
 # Nivel knowledge
@@ -16,7 +17,7 @@ The app was renamed from Parity Tracker to Nivel on 2 October 2026 ([decisions/0
 - [design.md](design.md): design system (Equal Lens minimal register, validated chart palette, voice)
 - [plane.config.md](plane.config.md): Plane workspace, project and state IDs
 - [playbooks/data-backend.md](playbooks/data-backend.md): load, publish, preview, promote and roll back data releases from Firestore, with no merge
-- [playbooks/app-data-layers.md](playbooks/app-data-layers.md): how Nivel, Spot the Stereotype and SwipeEd keep data and app layers apart, each in its own Firebase project
+- [playbooks/app-data-layers.md](playbooks/app-data-layers.md): how Nivel keeps data and app layers apart, a proposal for the other apps (SwipeEd and Spot the Stereotype have not adopted it), and the stricter rules for children's apps
 - [reference/data-api-v1.md](reference/data-api-v1.md): the public data API at /data/v1/ for Spot the Stereotype, SwipeEd and others
 - [playbooks/data-pipeline.md](playbooks/data-pipeline.md): how each market's dataset is built and refreshed, plus shared sectors and logos
 - [playbooks/deploy.md](playbooks/deploy.md): shipping to production from the CLI, and the free-plan upload limit
