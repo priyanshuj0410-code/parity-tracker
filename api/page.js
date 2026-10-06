@@ -3,7 +3,7 @@
  * with the page's own title, description and link-preview tags from the live release (or `?release=` for a
  * preview), the release id for the app, and preloads for the data the page needs first. Cached at the edge.
  */
-import { file, live, release } from './_data.js'
+import { file, live, protectedHost, release } from './_data.js'
 import shell from './_shell.js'
 
 export const config = { runtime: 'edge' }
@@ -14,7 +14,9 @@ const put = (html, pattern, value) => html.replace(pattern, (_, open, close) => 
 
 const pagesByRelease = new Map()
 
-async function pagesOf(id) {
+/** A release's page list. A staged release's (`preview`) is read each time, never kept in memory. */
+async function pagesOf(id, preview) {
+  if (preview) return JSON.parse(await file(id, 'app/pages.json', true))
   if (!pagesByRelease.has(id)) {
     if (pagesByRelease.size > 4) pagesByRelease.delete(pagesByRelease.keys().next().value)
     pagesByRelease.set(id, JSON.parse(await file(id, 'app/pages.json')))
@@ -49,8 +51,9 @@ export default async function handler(req) {
   let html = shell, status = 200, cdn = 'public, s-maxage=300, stale-while-revalidate=86400'
   try {
     const wanted = url.searchParams.get('release')
-    const id = wanted && (await release(wanted)) ? wanted : (await live()).release
-    const meta = lookup(await pagesOf(id), path)
+    const preview = protectedHost(req.url)
+    const id = wanted && (await release(wanted, preview)) ? wanted : (await live()).release
+    const meta = lookup(await pagesOf(id, preview && id === wanted), path)
     if (!meta) status = 404
     if (!meta?.home) {
       const title = `${meta ? meta.title : 'Page not found'} · Nivel`
