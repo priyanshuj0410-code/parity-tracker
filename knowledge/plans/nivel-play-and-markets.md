@@ -3,7 +3,7 @@ type: plan
 title: Nivel play and prediction markets
 description: Plan for Nivel's two engagement layers, Spot the Stereotype (The Equal Lens's bias game) and prediction markets on women's pay, work and norms, hosted in Nivel on a prediction market engine shared with Thoth.
 status: planned
-updated: 2026-10-05
+updated: 2026-10-06
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/4313243b-a30d-45bb-986c-7fd3e4f349e0
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/119d2d51-b5bb-47a4-b0de-88529c71863f
@@ -13,6 +13,7 @@ plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/0d978739-fe5b-4c6a-967d-fcca1fb16b77
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/a7d95186-1e6e-4db7-a8ea-2e8f2b947b04
   - https://app.plane.so/claude-pri/projects/18017c30-d8f6-436a-b4ca-a743d5317720/issues/d3d482ab-c1bf-43df-9a9b-3ea19e3d3564
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/22f00c69-4996-4ab0-8301-bb28ad98052b
 ---
 
 # Nivel play and prediction markets
@@ -98,7 +99,7 @@ The application draft is in [mit-solve-application.md](mit-solve-application.md)
   - Evaluation design.
   - MIT Solve application.
   - Spot the Stereotype in Nivel.
-  - Market templates and resolution workflow.
+  - [Market templates and resolution workflow](market-templates.md): spec written; the build is PARITY-44's.
   - Age gate and safeguarding review.
   - Personal calibration view.
   - Online Gaming Act check.
