@@ -41,6 +41,7 @@ The app was renamed from Parity Tracker to Nivel on 2 October 2026 ([decisions/0
 - [plans/mit-solve-application.md](plans/mit-solve-application.md): the draft MIT Solve 2027 application and the plan to submit it by 2 November 2026
 - [research/norm-markets-evidence.md](research/norm-markets-evidence.md): evidence brief on misperceived norms about women's work, what to forecast and what not to, and neutral wording
 - [research/resolution-sources.md](research/resolution-sources.md): the dated publications markets can resolve against, with schedules
+- [plans/market-templates.md](plans/market-templates.md): the spec for market templates (Nivel data, PLFS, norms), the subject format, closing, resolving and voiding, and the resolution log
 - [plans/markets-evaluation.md](plans/markets-evaluation.md): evaluation design for norm forecasting, with a comparison group, sample size, analysis plan and claims
 - [plans/queue-2026-10-06.md](plans/queue-2026-10-06.md): the two jobs queued for the 6 October usage reset (Thoth's engine package and the markets docs), with their prompts
 - [research/personas-and-journeys.md](research/personas-and-journeys.md): proto-personas and customer journeys for Nivel, Spot the Stereotype and the markets, with the plan to validate them
