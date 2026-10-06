@@ -59,7 +59,7 @@ Running it: [data-backend.md](data-backend.md). Sharing it: [data API v1](../ref
    - Publish writes the release to a static Vercel project (Nivel's is `nivel-data`).
    - Edge functions in the app's own project serve its files and fill each page's link-preview tags.
    - Promote rewrites `live.json`. Nothing is rebuilt, and there is no deploy hook.
-   - Serve only promoted releases, and keep previews of a staged release to the owner. Nivel's edge still serves a staged release to anyone with its id ([PARITY-102][p102]).
+   - Serve only promoted releases, and keep previews of a staged release to the owner. Nivel deploys a staged release only to a protected preview of its data site, and reads it only on its own protected addresses ([PARITY-102][p102]).
 6. **Firebase CLI:** always pass `--project` (and `--account` if several are signed in). The CLI's default project for the home folder belongs to another product.
 
 ## The toolkit to copy from Nivel
@@ -113,7 +113,7 @@ The review ([PARITY-84][p84]) read Nivel at commit 10e7b22 on 4 October. Each ma
 |---|---|
 | **Major:** missing data and asset files return 200 HTML, cached as immutable | **Fixed.** On the live site, an unknown page, company or asset returns 404 with `max-age=0`, and a missing data, feed or logo file returns 404 as plain text. `public/sw.js` caches only successful responses, and `loadCompany` treats a 404 as no such company |
 | **Major:** Firestore rules expose staged releases and the publisher's username | **Fixed:** [PARITY-101][p101]. The rules deny everything, and were deployed on 6 October 2026: unsigned reads of `channels` and `releases` return 403. Every data-tool read is signed, new releases record `pipeline` instead of a username, and there is no default project. Older release documents keep their username until the owner scrubs them |
-| Decision 0014 serves any release, staged ones included | **Open:** [PARITY-102][p102] (serve only promoted releases; owner-only previews) |
+| Decision 0014 serves any release, staged ones included | **Fixed:** [PARITY-102][p102]. The public data site and address serve only the live and previous releases. A staged release is behind Vercel Authentication; previews of it need the owner's bypass secret in Vercel |
 | Unknown pages are soft 404s | **Fixed:** pages must be listed in the release's `app/pages.json`, and `/company/NOPE` returns 404 |
 | Release id and data maps compiled into the bundle; `?r=` does not pin a release | **Fixed** by [0014](../decisions/0014-data-separate-from-app.md): the release id comes from the page's `nivel-release` tag, markets come from `core.json`, and files load from `/data/r/{release}/` |
 
