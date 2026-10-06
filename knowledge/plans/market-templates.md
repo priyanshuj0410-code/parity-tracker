@@ -238,7 +238,12 @@ The threshold comes from MoSPI's [October 2025 bulletin](https://www.mospi.gov.i
 The item says "should". The market asks what share of each group agreed, never whether the view is right (brief, section 3).
 
 ## 8. What the build needs (PARITY-44)
-PR #59 already has create, resolve with a source link, void, and the `overdue` flag. Still needed:
+**Built in PR #59** ([markets-api.md](../reference/markets-api.md)), as of 6 October 2026:
+- the template registry, the strict subject check, per-market details and one open market per subject;
+- closing times, resolving from the figure with the owner's confirmation, void reasons and the append-only log;
+- console accounts that cannot trade.
+
+**Still to build:** drafts for markets with no scheduled date, and the `admin_adjust` correction. The full list as specified:
 - **A template registry,** so the console builds each market from a template and the template's fields. No free-text markets.
 - **The stricter subject check** in section 2.
 - **Fields per market:** template, threshold, precision, schedule document, its link and version, the date read, closing time and resolution location. Nivel's own table, keyed by market id, since the engine never interprets them.
