@@ -53,7 +53,7 @@ Running it: [data-backend.md](data-backend.md). Sharing it: [data API v1](../ref
    gcloud auth application-default login --impersonate-service-account=<app>-pipeline@<project>.iam.gserviceaccount.com
    ```
 4. **Rules: no public reads.** Since [0016](../decisions/0016-static-releases.md) only the data tools read Firestore, and they use the pipeline's credentials, which the rules do not govern. Live-state collections get their own per-user rules.
-   - **Nivel's `firestore.rules` deny everything** ([PARITY-101][p101]), so they can be copied once deployed. Until the owner deploys them, the live rules still let anyone list releases.
+   - **Nivel's `firestore.rules` deny everything** ([PARITY-101][p101]). They were deployed on 6 October 2026, and unsigned reads now return 403. Copy them.
    - **Children's apps get no public reads at all.**
 5. **Serve releases as static files** ([0014](../decisions/0014-data-separate-from-app.md), [0016](../decisions/0016-static-releases.md)):
    - Publish writes the release to a static Vercel project (Nivel's is `nivel-data`).
@@ -112,8 +112,8 @@ The review ([PARITY-84][p84]) read Nivel at commit 10e7b22 on 4 October. Each ma
 | Finding | Status |
 |---|---|
 | **Major:** missing data and asset files return 200 HTML, cached as immutable | **Fixed.** On the live site, an unknown page, company or asset returns 404 with `max-age=0`, and a missing data, feed or logo file returns 404 as plain text. `public/sw.js` caches only successful responses, and `loadCompany` treats a 404 as no such company |
-| **Major:** Firestore rules expose staged releases and the publisher's username | **Built, not yet deployed:** [PARITY-101][p101]. The rules deny everything, every data-tool read is signed, new releases record `pipeline` instead of a username, and there is no default project. The owner deploys the rules. Older release documents keep their username until the owner scrubs them |
-| Decision 0014 serves any release, staged ones included | **Built:** [PARITY-102][p102]. The public data site and address serve only the live and previous releases. A staged release is behind Vercel Authentication, and previews need the owner's bypass secret in Vercel |
+| **Major:** Firestore rules expose staged releases and the publisher's username | **Fixed:** [PARITY-101][p101]. The rules deny everything, and were deployed on 6 October 2026: unsigned reads of `channels` and `releases` return 403. Every data-tool read is signed, new releases record `pipeline` instead of a username, and there is no default project. Older release documents keep their username until the owner scrubs them |
+| Decision 0014 serves any release, staged ones included | **Fixed:** [PARITY-102][p102]. The public data site and address serve only the live and previous releases. A staged release is behind Vercel Authentication; previews of it need the owner's bypass secret in Vercel |
 | Unknown pages are soft 404s | **Fixed:** pages must be listed in the release's `app/pages.json`, and `/company/NOPE` returns 404 |
 | Release id and data maps compiled into the bundle; `?r=` does not pin a release | **Fixed** by [0014](../decisions/0014-data-separate-from-app.md): the release id comes from the page's `nivel-release` tag, markets come from `core.json`, and files load from `/data/r/{release}/` |
 
