@@ -41,6 +41,7 @@ The app was renamed from Parity Tracker to Nivel on 2 October 2026 ([decisions/0
 - [research/norm-markets-evidence.md](research/norm-markets-evidence.md): evidence brief on misperceived norms about women's work, what to forecast and what not to, and neutral wording
 - [research/resolution-sources.md](research/resolution-sources.md): the dated publications markets can resolve against, with schedules
 - [plans/markets-evaluation.md](plans/markets-evaluation.md): evaluation design for norm forecasting, with a comparison group, sample size, analysis plan and claims
+- [plans/queue-2026-10-06.md](plans/queue-2026-10-06.md): the two jobs queued for the 6 October usage reset (Thoth's engine package and the markets docs), with their prompts
 - [research/personas-and-journeys.md](research/personas-and-journeys.md): proto-personas and customer journeys for Nivel, Spot the Stereotype and the markets, with the plan to validate them
 - [research/solve-innovation-assessment.md](research/solve-innovation-assessment.md): competitors, past Solver teams and literature, scored on Solve's Innovative Approach criterion
 - [research/solve-winning-pitches.md](research/solve-winning-pitches.md): what six winning Solve applications have in common, the AI for Humanity Prize, and how Nivel's draft compares
