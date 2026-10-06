@@ -9,6 +9,7 @@ plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/a772b178-acfd-4d75-94de-018077b10426
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/0d978739-fe5b-4c6a-967d-fcca1fb16b77
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/db4c43c6-0bdb-4dec-a387-338867b35576
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/77e2fcc4-1068-4086-a2c1-2d37bad5db68
 ---
 
 # Questions for counsel, shareable version
@@ -32,5 +33,8 @@ plane_issues:
 ## Why the new questions
 - **3:** on 3 October 2026 the owner approved downloading 15 single BRSR files from NSE's archive for companies with no report elsewhere.
 - **5:** the [data API v1](../reference/data-api-v1.md) publishes index weights computed from NSE data and the Parity 50's simulated returns as open files.
-- **14:** the children's games keep progress on the device or under a session id. A persistent session id is pseudonymous, not anonymous, so the [data-layer playbook](../playbooks/app-data-layers.md) treats it as a child's personal data until counsel confirms whether the children's-data duties apply (corrected 6 October 2026, PARITY-84).
+- **14:** the children's games keep progress on the device or under a session id. A persistent session id is pseudonymous, not anonymous, so the [data-layer playbook](../playbooks/app-data-layers.md) treats it as a child's personal data until counsel confirms whether the children's-data duties apply (corrected 6 October 2026, PARITY-84). The shared document names Spot the Stereotype here too, but Spot is adult content, so question 14 covers SwipeEd only ([markets safeguarding review](markets-safeguarding-2026-10.md), PARITY-49).
+
+## To add when the shared document is next sent
+- Five questions on the markets' age gate, retries, logs, breach reporting and timing: A to E in the [markets safeguarding review](markets-safeguarding-2026-10.md#8-open-questions-for-counsel) (PARITY-49).
 - **22:** [PARITY-69](../plans/five-market-depth.md) published an estimate for MMTC from its pay table after it filed zero wage totals.

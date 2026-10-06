@@ -9,6 +9,7 @@ plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/db4c43c6-0bdb-4dec-a387-338867b35576
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/0a029a2e-4cf0-416d-b597-5a9da58d51ef
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/6dd9ff11-979f-4664-a07e-03af2d1f7ce8
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/77e2fcc4-1068-4086-a2c1-2d37bad5db68
 ---
 
 # Separate data and app layers
@@ -74,7 +75,9 @@ Running it: [data-backend.md](data-backend.md). Sharing it: [data API v1](../ref
 | `scripts/serve-local.mjs` | Runs a build with the functions and rewrites, as Vercel does, before deploying |
 | Loading pattern | Two stages and per-item files, as in `src/lib/data.ts`, with skeletons and failed states from `src/components/Skeleton.tsx` and `ErrorBoundary.tsx` |
 
-## Children's apps (Spot the Stereotype, SwipeEd)
+## Children's apps (SwipeEd)
+SwipeEd is The Equal Lens's only app for children. Spot the Stereotype is adult content, for game nights of adults aged 20 to 35 ([markets safeguarding review](../reviews/markets-safeguarding-2026-10.md)), so this section does not bind it.
+
 - **The `child-safe-content` rules apply** to every item children see.
 - **Content passes the app's own gates,** not Nivel's release checks. For SwipeEd that means the helpline allowlist, word limits per age band, its lints and dedup. Add a per-scenario diff, and an explicit approval flag for any change to a safety beat, a helpline or the help sheet. A preview is not the child-safety review.
 - **No runtime promote for children's content.** With releases served at runtime no build gate sees the content, and a promote changes what children see within about five minutes. Content reaches children only through a build that ran the gates.

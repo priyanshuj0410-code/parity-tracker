@@ -14,6 +14,7 @@ plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/a7d95186-1e6e-4db7-a8ea-2e8f2b947b04
   - https://app.plane.so/claude-pri/projects/18017c30-d8f6-436a-b4ca-a743d5317720/issues/d3d482ab-c1bf-43df-9a9b-3ea19e3d3564
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/22f00c69-4996-4ab0-8301-bb28ad98052b
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/77e2fcc4-1068-4086-a2c1-2d37bad5db68
 ---
 
 # Nivel play and prediction markets
@@ -46,7 +47,7 @@ plane_issues:
   - A **workplace theme** draws on Nivel's figures. For example, women's share of the Nifty 50 payroll is guessed cold in the published-figure format, then revealed.
   - The theme is built in the game's own project, not from here.
   - **Anytime play,** a one-person mode without the discussion steps, sends its discussion to Nivel's markets. Nivel feeds the game fresh figures through `/feeds/spot/v1.json`, and readers reach the game from Guess first and a `/play` page. The full plan for the game team is [spot-the-stereotype-anytime-and-nivel.md](spot-the-stereotype-anytime-and-nivel.md) (PARITY-52 to 54).
-- **Safeguarding:** if young people play, The Equal Lens's child-safety rules apply. The play side never connects to markets or tokens for anyone under 18.
+- **Safeguarding:** Spot the Stereotype is adult content. SwipeEd, The Equal Lens's only app for children, never links to markets or tokens ([markets safeguarding review](../reviews/markets-safeguarding-2026-10.md)).
 
 ## Forecasting: prediction markets in Nivel
 - **Three loops:**
@@ -65,7 +66,7 @@ plane_issues:
 - A question resolves only against a named, dated publication, and the source is shown before anyone forecasts.
 
 ## Safeguards
-- **Adults only for markets.** Spot the Stereotype follows The Equal Lens's child-safety rules.
+- **Adults only for markets.** Under-18s are refused outright and nothing about them is kept. The draft [markets safeguarding review](../reviews/markets-safeguarding-2026-10.md) sets the age gate, retention, moderation and incident steps (PARITY-49).
 - **Neutral wording:** questions about norms describe beliefs without endorsing them, and every result links to its source.
 - **No individuals:** questions name companies or populations, never people.
 
@@ -100,7 +101,7 @@ The application draft is in [mit-solve-application.md](mit-solve-application.md)
   - MIT Solve application.
   - Spot the Stereotype in Nivel.
   - [Market templates and resolution workflow](market-templates.md): spec written; the build is PARITY-44's.
-  - Age gate and safeguarding review.
+  - [Age gate and safeguarding review](../reviews/markets-safeguarding-2026-10.md): drafted, awaiting the owner's sign-off.
   - Personal calibration view.
   - Online Gaming Act check.
 - **Shared engine (THOTH):**

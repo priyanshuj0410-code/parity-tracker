@@ -61,6 +61,7 @@ The app was renamed from Parity Tracker to Nivel on 2 October 2026 ([decisions/0
 - [reviews/design-audit-2026-10.md](reviews/design-audit-2026-10.md): design audit against Kite, Coin and Groww, with before and after screenshots
 - [reviews/legal-review-2026-10.md](reviews/legal-review-2026-10.md): the SEBI, NSE, DPDP and FCRA rules Nivel touches, what changed, and twelve questions for counsel
 - [reviews/gaming-act-check-2026-10.md](reviews/gaming-act-check-2026-10.md): why Nivel's play-money markets are an online social game under the 2025 Act, the build rules that keep them one, and seven questions for counsel
+- [reviews/markets-safeguarding-2026-10.md](reviews/markets-safeguarding-2026-10.md): draft for the owner's sign-off. The markets' 18+ gate, what data is kept and for how long, moderation of norm questions, deletion, incident steps and questions for counsel
 - [reviews/ux-audit-2026-10-02.md](reviews/ux-audit-2026-10-02.md): ship-readiness audit against Nielsen's heuristics, Apple HIG, Material 3, Gestalt and WCAG 2.2 AA, with a reusable checker
 
 Research history (the first tests that led to this app) lives in the Thoth repo under `knowledge/research/`.
