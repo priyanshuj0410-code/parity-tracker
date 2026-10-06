@@ -2,8 +2,9 @@
 type: runbook
 title: Data backend
 description: How Nivel's data gets from a pipeline to the live site without a merge. Pipelines load records into Firestore, `pnpm data publish` freezes them into a checked release with a preview, and `pnpm data promote` takes it live.
-updated: 2026-10-05
+updated: 2026-10-06
 plane_issues:
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/0a029a2e-4cf0-416d-b597-5a9da58d51ef
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/7424a532-a7b5-453f-8f99-52a34bf1bf39
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/b8e24bab-221d-4ed9-99f5-434428caaa1b
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/459f7fb5-a97a-4064-be30-d339eaaedfd9
@@ -67,11 +68,11 @@ What the pipelines read that is not code: index member lists, figures read by ha
 - **In the browser** the app loads `/data/r/{release}/app/core.json` (markets, indexes, simulations, sectors, logo map), then `v1/companies.json`, or one company's file first.
 - **`pnpm dev`** serves the data paths from the static site through the same handler; add `?release={id}` to a URL to see the staged release.
 - **Before deploying,** `pnpm build && node scripts/serve-local.mjs` runs the build with the functions and rewrites as Vercel does.
-- **Pipelines that read published data** (the funds builder, the logo pipeline) get a local copy with `node scripts/data/pull.mjs` (into `src/data/`, `src/feeds/` and `public/logos/`, none in git).
+- **Pipelines that read published data** (the funds builder, the logo pipeline) get a local copy with `node --env-file=.env scripts/data/pull.mjs` (into `src/data/`, `src/feeds/` and `public/logos/`, none in git). It needs the Google login below.
 
 ## Access
 - Writes use your Google login, impersonating `nivel-pipeline` (no keys): `gcloud auth application-default login --impersonate-service-account=nivel-pipeline@nivel-equal-lens.iam.gserviceaccount.com`. Run it again if a command reports an expired login.
-- The static data site is deployed with your Vercel CLI login (the `.data-site/` folder is linked to `nivel-data`). `firestore.rules` still makes `channels`, `releases` and `blobs` publicly readable, for `pull.mjs`. Deploy the rules after changing them: `firebase deploy --only firestore:rules --project nivel-equal-lens`. Always name the project: the Firebase CLI's active project for the home folder is another one (`praxis-2ffa8`), and even a `--dry-run` deploy creates a missing database there.
+- The static data site is deployed with your Vercel CLI login (the `.data-site/` folder is linked to `nivel-data`). `firestore.rules` makes nothing public ([PARITY-101](https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/0a029a2e-4cf0-416d-b597-5a9da58d51ef)): every data tool signs its reads. `FIREBASE_PROJECT` and `FIRESTORE_DATABASE` must be set in `.env`, since the tools have no default project. Deploy the rules after changing them: `firebase deploy --only firestore:rules --project nivel-equal-lens`. Always name the project: the Firebase CLI's active project for the home folder is another one (`praxis-2ffa8`), and even a `--dry-run` deploy creates a missing database there.
 - The database ID is `default`, not `(default)`, and it must be the **Standard** edition: Enterprise counts reads by size, and a few builds exhaust its free quota. If it ever needs recreating: `firebase firestore:databases:create default --location asia-south1 --edition standard --project nivel-equal-lens`, redeploy the rules, then `seed` from a pulled release and `verify`.
 
 ## Storage and quotas (Spark plan, free)

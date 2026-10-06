@@ -1,17 +1,11 @@
 rules_version = '2';
 
-// Published releases are public; the records behind them are not. Only the nivel-pipeline service account
-// writes, through IAM, which these rules do not govern. See knowledge/decisions/0011-data-backend.md.
+// Nothing is public. The site reads releases from the static data site (decision 0016), and the data tools read
+// and write as the nivel-pipeline service account, through IAM, which these rules do not govern (PARITY-101).
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /channels/{channel} {
-      allow get: if true;
-    }
-    match /releases/{release} {
-      allow read: if true;
-    }
-    match /blobs/{blob} {
-      allow get: if true;
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }

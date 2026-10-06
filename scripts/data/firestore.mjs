@@ -1,13 +1,19 @@
 /**
  * A small client for Nivel's Firestore over the REST API, so the build needs no SDK.
- * Signed calls borrow the person's own Google login (Application Default Credentials impersonating
- * nivel-pipeline); unsigned calls read only what the security rules make public (channels, releases, blobs).
+ * Every call borrows the person's own Google login (Application Default Credentials impersonating
+ * nivel-pipeline). The security rules make nothing public.
  */
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 
-export const PROJECT = process.env.FIREBASE_PROJECT ?? 'nivel-equal-lens'
-export const DATABASE = process.env.FIRESTORE_DATABASE ?? 'default'
+// No defaults, so a copied toolkit cannot write to Nivel's project by accident. `pnpm data` reads both from .env.
+function setting(name) {
+  const value = process.env[name]
+  if (!value) throw new Error(`${name} is not set. Add it to .env (see knowledge/playbooks/data-backend.md).`)
+  return value
+}
+export const PROJECT = setting('FIREBASE_PROJECT')
+export const DATABASE = setting('FIRESTORE_DATABASE')
 const ROOT = `projects/${PROJECT}/databases/${DATABASE}/documents`
 const API = `https://firestore.googleapis.com/v1/${ROOT}`
 const MAX_WRITES = 500
@@ -23,10 +29,10 @@ function authHeader() {
   return { Authorization: `Bearer ${token}` }
 }
 
-async function call(method, path, body, signed) {
+async function call(method, path, body) {
   const res = await fetch(API + path, {
     method,
-    headers: { 'Content-Type': 'application/json', ...(signed ? authHeader() : {}) },
+    headers: { 'Content-Type': 'application/json', ...authHeader() },
     body: body === undefined ? undefined : JSON.stringify(body),
   })
   if (res.status === 404 && method === 'GET') return null
@@ -66,28 +72,28 @@ const toDoc = (d) => ({ id: idOf(d.name), ...decodeFields(d.fields ?? {}) })
 const urlPath = (path) => '/' + path.split('/').map(encodeURIComponent).join('/')
 
 /** One document as { id, ...fields }, or null. `path` is "collection/id". */
-export async function get(path, { signed = true } = {}) {
-  const d = await call('GET', urlPath(path), undefined, signed)
+export async function get(path) {
+  const d = await call('GET', urlPath(path))
   return d && toDoc(d)
 }
 
 /** Several documents by path, in the order asked; missing ones come back null. */
-export async function getMany(paths, { signed = true } = {}) {
+export async function getMany(paths) {
   const found = new Map()
   for (let i = 0; i < paths.length; i += 100) {
-    const res = await call('POST', ':batchGet', { documents: paths.slice(i, i + 100).map((p) => `${ROOT}/${p}`) }, signed)
+    const res = await call('POST', ':batchGet', { documents: paths.slice(i, i + 100).map((p) => `${ROOT}/${p}`) })
     for (const r of res) if (r.found) found.set(r.found.name.slice(ROOT.length + 1), toDoc(r.found))
   }
   return paths.map((p) => found.get(p) ?? null)
 }
 
 /** Every document in a collection; `fields` limits what comes back. */
-export async function list(collection, { signed = true, fields = [] } = {}) {
+export async function list(collection, { fields = [] } = {}) {
   const out = []
   const mask = fields.map((f) => `&mask.fieldPaths=${encodeURIComponent(f)}`).join('')
   let pageToken = ''
   do {
-    const res = await call('GET', `${urlPath(collection)}?pageSize=300${mask}${pageToken && `&pageToken=${encodeURIComponent(pageToken)}`}`, undefined, signed)
+    const res = await call('GET', `${urlPath(collection)}?pageSize=300${mask}${pageToken && `&pageToken=${encodeURIComponent(pageToken)}`}`)
     out.push(...(res.documents ?? []).map(toDoc))
     pageToken = res.nextPageToken ?? ''
   } while (pageToken)
@@ -98,7 +104,7 @@ export async function list(collection, { signed = true, fields = [] } = {}) {
 export async function where(collection, field, value) {
   const res = await call('POST', ':runQuery', {
     structuredQuery: { from: [{ collectionId: collection }], where: { fieldFilter: { field: { fieldPath: field }, op: 'EQUAL', value: encode(value) } } },
-  }, true)
+  })
   return res.filter((r) => r.document).map((r) => toDoc(r.document))
 }
 
@@ -107,13 +113,13 @@ export async function where(collection, field, value) {
  * `only` limits the files read to those whose path passes it: a release holds thousands of small files.
  * Blobs are content-addressed, so each is checked against its id.
  */
-export async function readRelease(id, { signed = true, only = () => true, withLogos = false } = {}) {
-  const meta = await get(`releases/${id}`, { signed })
+export async function readRelease(id, { only = () => true, withLogos = false } = {}) {
+  const meta = await get(`releases/${id}`)
   if (!meta) throw new Error(`No release ${id}`)
   const wanted = Object.entries(meta.files).filter(([path]) => only(path))
   const logoParts = withLogos ? Object.values(meta.logos) : []
   const ids = [...new Set([...wanted.map(([, parts]) => parts), ...logoParts].flat())]
-  const docs = await getMany(ids.map((b) => `blobs/${b}`), { signed })
+  const docs = await getMany(ids.map((b) => `blobs/${b}`))
   const blobs = new Map(ids.map((b, i) => {
     if (!docs[i] || blobId(docs[i].data) !== b) throw new Error(`Release ${id}: blob ${b} is missing or damaged`)
     return [b, docs[i].data]

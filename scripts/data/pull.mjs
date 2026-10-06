@@ -3,7 +3,8 @@
  * pipeline): its files into src/data and src/feeds, its logos into public/logos. The app itself never needs
  * this; it reads releases over the network (decision 0014).
  * DATA_RELEASE names a release; otherwise the live one. DATA_OUT writes under another directory.
- * Reads are public, so no login is needed.
+ * Reads need the data tools' Google login, and FIREBASE_PROJECT and FIRESTORE_DATABASE from .env:
+ *   node --env-file=.env scripts/data/pull.mjs
  */
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
@@ -11,9 +12,9 @@ import { get, readRelease } from './firestore.mjs'
 
 const out = process.env.DATA_OUT ?? '.'
 {
-  const id = process.env.DATA_RELEASE || (await get('channels/live', { signed: false }))?.release
+  const id = process.env.DATA_RELEASE || (await get('channels/live'))?.release
   if (!id) throw new Error('No live release in Firestore')
-  const { meta, files, logos } = await readRelease(id, { signed: false, only: (p) => p.startsWith('src/'), withLogos: true })
+  const { meta, files, logos } = await readRelease(id, { only: (p) => p.startsWith('src/'), withLogos: true })
   for (const [path, text] of Object.entries(files)) {
     mkdirSync(dirname(join(out, path)), { recursive: true })
     writeFileSync(join(out, path), text)
