@@ -75,7 +75,7 @@ The backend for PARITY-44, built as [decision 0017](../decisions/0017-markets-ar
 
 ## Engine updates
 - **Refreshing the copy:** `scripts/sync-engine.sh <thoth-commit>` copies Thoth's `packages/market-engine/src` into `vendor/market-engine` and records the commit in `VERSION`.
-- **Re-pinning:** the copy is pinned to Thoth `eb4d5fc`, the commit on Thoth PR #45. Re-pin to the merged commit once that PR lands.
+- **Pinned to:** Thoth `01c17d7`, the merge of Thoth PR #45.
 
 ## Checks
 - `pnpm test:markets` runs 16 tests on the routes, using the engine's in-memory adapters. They cover:
