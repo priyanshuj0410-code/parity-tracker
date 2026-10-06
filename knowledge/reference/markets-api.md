@@ -62,7 +62,11 @@ The backend for PARITY-44, built as [decision 0017](../decisions/0017-markets-ar
   - `markets`, which holds each market's source and the link it resolved on;
   - `trades` and `positions`.
 - **Neon Auth's own records:** the sign-in identity.
-- **Deletion:** `forget` removes everything above except the sign-in identity, which is deleted in Neon Auth. Prices keep each trade's effect, which holds nothing personal.
+- **Deletion:** `forget` removes everything above except the sign-in identity. Prices keep each trade's effect, which holds nothing personal.
+
+**Two gaps, both to close before `MARKETS_ENABLED` is set** (found in the [safeguarding review](../reviews/markets-safeguarding-2026-10.md)):
+- **A refused under-18 keeps a sign-in identity.** The age step comes after sign-in, so Neon Auth already holds their identity. The pages will ask for the date of birth before an account is created, so an under-18 never gets one. The server check stays, because the page's check can be bypassed.
+- **`forget` leaves the sign-in identity.** Until it is deleted through Neon Auth's admin API, the owner deletes it in the Neon console.
 
 ## Engine updates
 - **Refreshing the copy:** `scripts/sync-engine.sh <thoth-commit>` copies Thoth's `packages/market-engine/src` into `vendor/market-engine` and records the commit in `VERSION`.
