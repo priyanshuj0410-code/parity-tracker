@@ -2,7 +2,7 @@
 type: research
 title: Resolution source catalogue for Nivel's markets
 description: The publications Nivel's markets can resolve against, with what each measures, its latest release, when the next one is due and where the schedule is set. A market opens only when its source has a named, dated release.
-updated: 2026-10-05
+updated: 2026-10-06
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/119d2d51-b5bb-47a4-b0de-88529c71863f
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/22f00c69-4996-4ab0-8301-bb28ad98052b
@@ -10,7 +10,7 @@ plane_issues:
 
 # Resolution source catalogue
 
-For [Nivel play and markets](../plans/nivel-play-and-markets.md). What to ask, and how, is in the [evidence brief](norm-markets-evidence.md); the market templates are PARITY-48.
+For [Nivel play and markets](../plans/nivel-play-and-markets.md). What to ask, and how, is in the [evidence brief](norm-markets-evidence.md); the market templates are in [market-templates.md](../plans/market-templates.md) (PARITY-48).
 
 ## The rule
 - **A question resolves only against a named, dated publication.** The source, its exact question or definition and its expected date are shown before anyone forecasts.

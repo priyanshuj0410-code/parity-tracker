@@ -7,6 +7,7 @@ plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/997c6dda-88ad-486d-8634-571ca6978989
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/4a6b2d55-5d5f-4713-848c-561e3e343184
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/aa1e98d8-d58d-4a3e-8d0b-eccea0459975
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/db4c43c6-0bdb-4dec-a387-338867b35576
 ---
 
 # Nivel knowledge
@@ -16,7 +17,7 @@ The app was renamed from Parity Tracker to Nivel on 2 October 2026 ([decisions/0
 - [design.md](design.md): design system (Equal Lens minimal register, validated chart palette, voice)
 - [plane.config.md](plane.config.md): Plane workspace, project and state IDs
 - [playbooks/data-backend.md](playbooks/data-backend.md): load, publish, preview, promote and roll back data releases from Firestore, with no merge
-- [playbooks/app-data-layers.md](playbooks/app-data-layers.md): how Nivel, Spot the Stereotype and SwipeEd keep data and app layers apart, each in its own Firebase project
+- [playbooks/app-data-layers.md](playbooks/app-data-layers.md): how Nivel keeps data and app layers apart, a proposal for the other apps (SwipeEd and Spot the Stereotype have not adopted it), and the stricter rules for children's apps
 - [reference/data-api-v1.md](reference/data-api-v1.md): the public data API at /data/v1/ for Spot the Stereotype, SwipeEd and others
 - [reference/markets-api.md](reference/markets-api.md): the play-money markets backend (off by default): endpoints, settings, the adult record and the owner's setup
 - [playbooks/data-pipeline.md](playbooks/data-pipeline.md): how each market's dataset is built and refreshed, plus shared sectors and logos
@@ -41,6 +42,7 @@ The app was renamed from Parity Tracker to Nivel on 2 October 2026 ([decisions/0
 - [plans/mit-solve-application.md](plans/mit-solve-application.md): the draft MIT Solve 2027 application and the plan to submit it by 2 November 2026
 - [research/norm-markets-evidence.md](research/norm-markets-evidence.md): evidence brief on misperceived norms about women's work, what to forecast and what not to, and neutral wording
 - [research/resolution-sources.md](research/resolution-sources.md): the dated publications markets can resolve against, with schedules
+- [plans/market-templates.md](plans/market-templates.md): the spec for market templates (Nivel data, PLFS, norms), the subject format, closing, resolving and voiding, and the resolution log
 - [plans/markets-evaluation.md](plans/markets-evaluation.md): evaluation design for norm forecasting, with a comparison group, sample size, analysis plan and claims
 - [plans/queue-2026-10-06.md](plans/queue-2026-10-06.md): the two jobs queued for the 6 October usage reset (Thoth's engine package and the markets docs), with their prompts
 - [research/personas-and-journeys.md](research/personas-and-journeys.md): proto-personas and customer journeys for Nivel, Spot the Stereotype and the markets, with the plan to validate them
@@ -60,6 +62,7 @@ The app was renamed from Parity Tracker to Nivel on 2 October 2026 ([decisions/0
 - [reviews/design-audit-2026-10.md](reviews/design-audit-2026-10.md): design audit against Kite, Coin and Groww, with before and after screenshots
 - [reviews/legal-review-2026-10.md](reviews/legal-review-2026-10.md): the SEBI, NSE, DPDP and FCRA rules Nivel touches, what changed, and twelve questions for counsel
 - [reviews/gaming-act-check-2026-10.md](reviews/gaming-act-check-2026-10.md): why Nivel's play-money markets are an online social game under the 2025 Act, the build rules that keep them one, and seven questions for counsel
+- [reviews/markets-safeguarding-2026-10.md](reviews/markets-safeguarding-2026-10.md): draft for the owner's sign-off. The markets' 18+ gate, what data is kept and for how long, moderation of norm questions, deletion, incident steps and questions for counsel
 - [reviews/ux-audit-2026-10-02.md](reviews/ux-audit-2026-10-02.md): ship-readiness audit against Nielsen's heuristics, Apple HIG, Material 3, Gestalt and WCAG 2.2 AA, with a reusable checker
 
 Research history (the first tests that led to this app) lives in the Thoth repo under `knowledge/research/`.
