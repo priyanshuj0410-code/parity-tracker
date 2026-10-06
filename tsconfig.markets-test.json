@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.node.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "allowImportingTsExtensions": false,
+    "outDir": ".markets-test",
+    "rootDir": ".",
+    "tsBuildInfoFile": null
+  },
+  "include": [
+    "api/_markets.ts",
+    "api/_markets.test.ts",
+    "vendor/**/*.ts"
+  ]
+}

@@ -19,6 +19,7 @@ The app was renamed from Parity Tracker to Nivel on 2 October 2026 ([decisions/0
 - [playbooks/data-backend.md](playbooks/data-backend.md): load, publish, preview, promote and roll back data releases from Firestore, with no merge
 - [playbooks/app-data-layers.md](playbooks/app-data-layers.md): how Nivel keeps data and app layers apart, a proposal for the other apps (SwipeEd and Spot the Stereotype have not adopted it), and the stricter rules for children's apps
 - [reference/data-api-v1.md](reference/data-api-v1.md): the public data API at /data/v1/ for Spot the Stereotype, SwipeEd and others
+- [reference/markets-api.md](reference/markets-api.md): the play-money markets backend (off by default): endpoints, settings, the adult record and the owner's setup
 - [playbooks/data-pipeline.md](playbooks/data-pipeline.md): how each market's dataset is built and refreshed, plus shared sectors and logos
 - [playbooks/deploy.md](playbooks/deploy.md): shipping to production from the CLI, and the free-plan upload limit
 - [decisions/0001-comparable-parity-measures.md](decisions/0001-comparable-parity-measures.md): the shared scales (employment parity, wage parity) that make every company and index comparable

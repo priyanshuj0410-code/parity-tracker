@@ -60,3 +60,6 @@ pipeline/**/*.json
 pipeline/**/*.csv
 pipeline/**/*.txt
 !pipeline/equal50/**
+
+# markets test build
+.markets-test/
