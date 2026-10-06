@@ -8,9 +8,12 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "data": "node --env-file-if-exists=.env scripts/data/cli.mjs"
+    "data": "node --env-file-if-exists=.env scripts/data/cli.mjs",
+    "test:markets": "tsc -p tsconfig.markets-test.json && node --test .markets-test/api/_markets.test.js"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.2.0",
+    "jose": "^6.2.12",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },

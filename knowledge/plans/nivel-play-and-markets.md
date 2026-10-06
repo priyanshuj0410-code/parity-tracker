@@ -88,7 +88,8 @@ The application draft is in [mit-solve-application.md](mit-solve-application.md)
 - **Markets:** [decision 0017](../decisions/0017-markets-architecture.md) sets the architecture, accepted on 5 October 2026.
   - Thoth's engine becomes a shared package (THOTH-4 and 5).
   - Nivel keeps its own sign-in, ledger and database, with no shared pool.
-  - It waits on the owner's choices in that decision, counsel (PARITY-51) and the safeguarding review (PARITY-49).
+  - Built so far (6 October 2026): the engine package (Thoth PR #45) and Nivel's backend, off by default ([markets-api.md](../reference/markets-api.md), PARITY-44). Next: the owner creates Nivel's Neon project; then the players' pages and the owner's console.
+  - Going live waits on counsel (PARITY-51) and the safeguarding review (PARITY-49).
 
 ## Steps
 - **In Nivel (PARITY):**
