@@ -736,14 +736,16 @@ html[data-guess] .strip-item.on .strip-val, html[data-guess] .strip-item.on .str
 /* Markets (PARITY-44): forms, the age step, the market page, the log and the owner's console. */
 .fields { display: grid; gap: 14px; margin: 14px 0; }
 .fields.two { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+/* Each field spans three shared rows (label, box, hint), so boxes line up across a row however long a label is. */
+.fields.two > label, .fields.two > .field { grid-row: span 3; grid-template-rows: subgrid; row-gap: 6px; }
 .fields .wide { grid-column: 1 / -1; }
-.fields label, .fields .field, .dob label { display: grid; gap: 6px; font: 500 13px var(--font-display); color: var(--soft); }
+.fields label, .fields .field, .dob label { display: grid; gap: 6px; align-content: start; font: 500 13px var(--font-display); color: var(--soft); }
 .fields input, .fields textarea, .dob input { font: 400 16px var(--font-body); color: var(--ink); background: var(--card); border: 1px solid var(--soft); border-radius: 8px; padding: 8px 12px; min-height: 44px; width: 100%; }
 .fields textarea { resize: vertical; }
+.fields input[readonly] { background: transparent; border-color: var(--mist); color: var(--soft); }
 .fields input:focus-visible, .fields textarea:focus-visible, .dob input:focus-visible { outline: 2px solid var(--violet); outline-offset: 1px; }
 .fields input[aria-invalid="true"], .dob input[aria-invalid="true"] { border-color: var(--bad-ink); }
 .fields .hint { font: 400 12px var(--font-body); color: var(--muted); }
-.field-note { align-self: end; margin: 0; }
 .dob { display: flex; gap: 12px; border: 0; padding: 0; margin: 14px 0; }
 .dob label { width: 4.5em; }
 .dob label.year { width: 6.5em; }
