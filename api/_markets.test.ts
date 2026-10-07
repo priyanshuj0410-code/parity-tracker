@@ -76,6 +76,7 @@ function ctx(enabled = true): TestCtx {
     verify: async (a) => (a?.startsWith('Bearer ') ? { sub: a.slice(7), email: `${a.slice(7)}@nivel.test` } : null),
     admins: ['owner@nivel.test'],
     enabled,
+    authUrl: 'https://auth.nivel.test/neondb/auth',
     now: clock,
   }
 }
@@ -253,7 +254,11 @@ test('resolve: after closing, from the figure, confirmed by the owner, logged on
   const page = await call(await playerRoute(req('GET', `/api/markets?market=${id}`), c))
   const log = page.body.log as LogEntry[]
   assert.deepEqual(log.map((e) => e.action), ['create', 'resolve'])
-  assert.deepEqual([log[1].figure, log[1].outcome, log[1].by], [35.1, 'yes', 'owner@nivel.test'])
+  assert.deepEqual([log[1].figure, log[1].outcome], [35.1, 'yes'])
+  // Players see "the owner", never the console user's email; the stored log keeps the email.
+  assert.deepEqual(log.map((e) => e.by), ['the owner', 'the owner'])
+  assert.ok(!JSON.stringify(page.body).includes('@'))
+  assert.equal(c.book.entries[1].by, 'owner@nivel.test')
   assert.equal((page.body.market as { status: string }).status, 'resolved')
 })
 
@@ -283,4 +288,11 @@ test('void needs a reason, and overdue and schedule checks are flagged', async (
   assert.equal((await adminRoute(req('POST', '/api/markets-admin', 'owner', { action: 'void', marketId: id }), c)).status, 400)
   assert.equal((await adminRoute(req('POST', '/api/markets-admin', 'owner', { action: 'void', marketId: id, reason: 'overdue' }), c)).status, 200)
   assert.deepEqual(c.book.entries.map((e) => [e.action, e.reason]), [['create', null], ['schedule-check', 'revised date 2026-11-17'], ['void', 'overdue']])
+})
+
+test('config says whether markets are set up and on, and where to sign in', async () => {
+  const config = async (c: TestCtx | null) => (await call(await playerRoute(req('GET', '/api/markets?view=config'), c))).body
+  assert.deepEqual(await config(null), { configured: false, enabled: false, authUrl: null })
+  assert.deepEqual(await config(ctx(false)), { configured: true, enabled: false, authUrl: 'https://auth.nivel.test/neondb/auth' })
+  assert.deepEqual(await config(ctx()), { configured: true, enabled: true, authUrl: 'https://auth.nivel.test/neondb/auth' })
 })

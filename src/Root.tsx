@@ -1,5 +1,5 @@
 import mark from './assets/nivel-mark.svg'
-import { Suspense, useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import { Suspense, lazy, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { InstallLink, InstallPrompt } from './components/InstallPrompt'
 import { MarketStrip } from './components/MarketStrip'
@@ -20,6 +20,11 @@ import { NotFound } from './pages/NotFound'
 import { Play } from './pages/Play'
 import { SimulationPage } from './pages/SimulationPage'
 
+// Markets (PARITY-44) load only when visited, so the data pages carry none of their code.
+const MarketPage = lazy(() => import('./pages/MarketPage').then((m) => ({ default: m.MarketPage })))
+const WalletPage = lazy(() => import('./pages/WalletPage').then((m) => ({ default: m.WalletPage })))
+const ConsolePage = lazy(() => import('./pages/ConsolePage').then((m) => ({ default: m.ConsolePage })))
+
 function Page({ route }: { route: string[] }) {
   const [head, arg, sub] = route
   if (!head) return <Home />
@@ -30,6 +35,9 @@ function Page({ route }: { route: string[] }) {
   if (head === 'compare') return <Compare tab={arg} focus={sub} />
   if (head === 'method') return <Method />
   if (head === 'play') return <Play />
+  if (head === 'market' && !arg) return <MarketPage />
+  if (head === 'wallet' && !arg) return <WalletPage />
+  if (head === 'console' && !arg) return <ConsolePage />
   return <NotFound />
 }
 
@@ -40,7 +48,7 @@ const onConnection = (cb: () => void) => {
 }
 
 const PAGED = new Set(['company', 'index', 'simulation'])
-const SECTION: Record<string, string> ={ index: '', simulation: '', company: 'companies', companies: 'companies', compare: 'compare', method: 'method', play: 'play' }
+const SECTION: Record<string, string> ={ index: '', simulation: '', company: 'companies', companies: 'companies', compare: 'compare', method: 'method', play: 'play', market: 'markets', wallet: 'markets', console: 'markets' }
 
 export default function Root() {
   const route = useRoute()

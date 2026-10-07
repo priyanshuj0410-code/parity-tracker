@@ -2,7 +2,7 @@
 type: design-system
 title: Nivel design system
 description: Visual and writing rules for Nivel (formerly Parity Tracker), derived from The Equal Lens brand package (minimal register) plus a validated chart palette.
-updated: 2026-10-05
+updated: 2026-10-07
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/bd128ee2-934e-4d5e-93c2-b0078d245c88
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/f3cd339a-5e02-4cdc-9542-b4072d9a274b
@@ -30,6 +30,7 @@ plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/5e3c90ab-26c8-4dca-9e8b-eff1cd6ecc37
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/9c902b7a-2193-4304-a208-7fcd1fdf3a69
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/aaaea5eb-fbaf-45a6-908c-d4d5d62baa25
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/ce4141c0-7f43-42bf-9dd1-81fe9784d7e5
 ---
 
 # Nivel design system
@@ -214,6 +215,24 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
   - The end card links to the game's workplace set (`from=nivel` and the last item's id) and to hosting a game night.
   - "Play" sits last in the header nav and first in the footer links. The phone tab bar keeps its four items.
   - Nothing is sent or kept.
+- **Markets (PARITY-44, adults only):** pages at `/market?id=`, `/wallet` and `/console`, loaded only when visited. Never linked from anything for children. **Checked on Lazyweb on 7 October 2026,** after the build:
+  - **Forecast card:** Polymarket, Yahoo Finance's prediction markets and Robinhood's event order screen. Each shows the question, the chance, Yes and No, and the closing date; Nivel's card does too. **Gap:** Robinhood shows the estimated cost and the payout before an order. Nivel's trade control does not yet ([PARITY-103](https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/2ce5e528-808f-464a-9aa1-b1b367ee3dc7)).
+  - **Date of birth:** Pinterest, Truth Social, F1 and Webtoon ask it as its own step, with a short note that it stays private and that members must be 18 or over. Nivel's step does the same, and lists what it keeps.
+  - **Sign-in:** Max, Fubo and Sephora use email and password, with a show-password toggle and a forgotten-password link. **Gap:** Nivel's account step has neither yet ([PARITY-104](https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/db81cad3-7d9c-4af3-af49-6d547aa3bc5d)).
+  - **Log:** ActiveCollab, incident.io and Google Home show a vertical timeline with times. Nivel's market log follows it.
+  - **Admin list:** Google Workspace's user list uses short text badges per row. Nivel's console does too, with one badge for the status ("Trading closed" once trading ends), plus Check due and Overdue.
+  - **Forecast card:** "Forecast for yes" (or "Final forecast for yes" once closed), the price as a hero number with " out of 100" in `--soft`, then "No: N out of 100. A winning share pays 1 Feather." and the closing time in IST. Never a gauge, a percentage or a probability bar.
+  - **Forecast block on an index page:** a link card under the headline section, only while `/api/markets` has an open market on that index's subject (`in:{index}:payshare:fy{next year}`). With markets off, unset or unreachable it renders nothing, so the page is unchanged.
+  - **Trade card:** Buy or Sell and Yes or No as two segmented controls, a shares field (10 to 1,000), a primary button that names the trade ("Buy 100 yes"), the balance beside it, and the result as one status sentence. Hidden once trading closes.
+  - **Date-of-birth step:** GOV.UK's memorable-date pattern: three labelled boxes (Day, Month, Year), numeric keypad, no pre-filled date and no calendar picker. The heading is "Your date of birth"; the screen never says what age passes. Under 18 shows "Markets are for adults. Nothing you entered was kept." with links back to the free pages, and no account offer.
+  - **Sign-in:** after the date of birth, a card with a New account or I have one switch, a "What Nivel keeps" disclosure (open on New account), email and password. Errors are one sentence in `--bad-ink`, announced with `role="alert"`.
+  - **Form fields:** a 13px Poppins 500 `--soft` label above a 44px field (16px text, so iOS does not zoom) with a `--soft` border, which passes 3:1 on card in both themes. Hints are 12px `--muted`.
+  - **Text button (`.btn-link`):** underlined violet text for secondary actions (Back, Cancel, I have an account), with a 44px hit area on phones.
+  - **Danger button (`.btn-danger`):** `--bad` fill with `--on-accent` text, only after a confirm step on a `--tint` panel ("This cannot be undone.").
+  - **Log (timeline):** oldest first, a 2px `--mist` rule with a ringed `--s1` dot per entry; the action in bold, its time in IST in `--soft`, then one sentence. Players see the console user as "the owner".
+  - **Detail list (`dl.details`):** the rules of a market in a two-column card (one column below 720px), long items across both.
+  - **Console rows:** one card per market, the question as a link, then flags as text badges: status, `Closed`, `Check due` (sun-deep) and `Overdue` (bad), so no flag rests on colour. Sorted overdue, check due, closed, then open. Each action opens its form inline under a hairline. Resolve stays disabled until trading closes; a mismatch shows the computed outcome on a tint panel with "Resolve no" to confirm.
+  - **Feathers are play money:** the wallet always carries the callout "Feathers are play money. You earn them by visiting and forecasting. You never buy them, never cash them out, and they win no prizes."
 - **Share image (`public/og.jpg`, PARITY-24, redone for PARITY-83):** 1200 by 630. Left, on `--paper`: the new Nivel mark with the two-line brand, the two-tone Home headline (Poppins 600, 54px), one Nunito Sans line naming the five markets, and the six flagship indexes as white pills. Right, 470px wide: The Equal Lens's Nivel illustration (`Solutions/Nivel.png`, Lensy with a magnifier), cropped to keep Lensy and the lens in view. No figures or counts, so it never goes stale. Rendered from HTML with headless Chrome and saved as a JPEG (about 160 KB).
 - **Install popover (PARITY-18, timing changed in PARITY-24):** never a permanent button. Once per device, 3 seconds after the reader opens a second page, where the browser can install the app (or on iOS Safari), a card appears bottom-right (above the tab bar on phones): the app icon, "Install Nivel", one line, and Install (or Show me how on iOS) plus Not now. There is no separate close button: Not now is the one way out. It is marked seen as soon as it appears, so it never returns; after that a quiet "Install the app" link in the footer is the only route.
 - **Dropdown (PARITY-19):** replaces native selects. It also takes an icon trigger and a right-aligned menu, used for the theme menu. A 32px pill button with an optional muted prefix ("Sort") and a chevron that flips when open; the menu is a card (12px radius, shadow) with 8px-radius options, `--tint` for the active option, violet text and a check for the selected one. Full keyboard support (arrows, Home, End, Enter, Escape) with listbox semantics.

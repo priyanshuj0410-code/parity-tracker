@@ -27,6 +27,36 @@ const devData = (): Plugin => ({
 })
 
 /**
+ * Development only, behind MARKETS_MOCK (PARITY-44): answers /api/markets, /api/markets-admin and a stand-in for
+ * Neon Auth from scripts/markets-mock.ts, so the market pages can be checked without Neon. `apply: 'serve'` and the
+ * module loaded inside the dev server keep it out of every build.
+ */
+const devMarkets = (): Plugin => ({
+  name: 'nivel-dev-markets',
+  apply: (_, { command }) => command === 'serve' && !!process.env.MARKETS_MOCK,
+  configureServer(server) {
+    let handle: Promise<(req: Request) => Promise<Response | null>> | null = null
+    server.middlewares.use(async (req, res, next) => {
+      if (!/^\/(api\/markets|__mock-auth\/)/.test(req.url ?? '')) return next()
+      handle ??= server.ssrLoadModule('/scripts/markets-mock.ts').then((m) => m.createMock(process.env))
+      const chunks: Buffer[] = []
+      for await (const c of req) chunks.push(c as Buffer)
+      const headers = new Headers()
+      for (const [k, v] of Object.entries(req.headers)) if (typeof v === 'string') headers.set(k, v)
+      const out = await (await handle)(new Request(`http://${req.headers.host}${req.url}`, {
+        method: req.method,
+        headers,
+        body: req.method === 'GET' || req.method === 'HEAD' ? undefined : Buffer.concat(chunks),
+      }))
+      if (!out) return next()
+      res.statusCode = out.status
+      out.headers.forEach((v, k) => res.setHeader(k, v))
+      res.end(Buffer.from(await out.arrayBuffer()))
+    })
+  },
+})
+
+/**
  * In production every page is served by the page function (api/page.js), which fills its title, link-preview
  * tags and data preloads. The built page becomes a module the function imports (api/_shell.js, not in git),
  * so it never fetches its own site, and no static index.html is left to bypass the function.
@@ -42,6 +72,6 @@ const shell = (): Plugin => ({
 
 // https://vite.dev/config/
 export default defineConfig(({ isSsrBuild }) => ({
-  plugins: [react(), devData(), ...(isSsrBuild ? [] : [shell()])],
+  plugins: [react(), devData(), devMarkets(), ...(isSsrBuild ? [] : [shell()])],
   build: { copyPublicDir: !isSsrBuild },
 }))
