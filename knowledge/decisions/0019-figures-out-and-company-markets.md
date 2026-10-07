@@ -1,7 +1,7 @@
 ---
 type: decision
 title: Figures that are out go to Guess, figures not out go to Forecast, and any covered company can have a market
-description: The owner's decisions of 7 October 2026. A release now includes a company's own annual report or BRSR, which refreshes its numbers. Play sorts every figure by whether it is out yet. Markets may ask about any covered company, as long-dated forecasts that settle when its report is out. The single-employer rule in the evidence brief is dropped.
+description: The owner's decisions of 7 October 2026, including the name of Nivel's play money, Lumens. A release now includes a company's own annual report or BRSR, which refreshes its numbers. Play sorts every figure by whether it is out yet. Markets may ask about any covered company, as long-dated forecasts that settle when its report is out. The single-employer rule in the evidence brief is dropped.
 status: accepted
 updated: 2026-10-07
 plane_issues:
@@ -39,6 +39,12 @@ A company's report coming out refreshes its figure. That in turn moves its index
 - **The owner's reasoning:** this is a game with play money, and anyone can estimate a company's women's share of staff from public sources such as LinkedIn. So the single-employer item comes off the evidence brief's do-not-ask list.
 
 The weekly cycle stays for figures that come out within a week; company markets run alongside it.
+
+**4. Nivel's play money is called Lumens** (one Lumen, many Lumens). It replaces Feathers, which stays Thoth's name.
+- **Not money:** nothing about it reads as money or a casino chip, as the [Gaming Act check](../reviews/gaming-act-check-2026-10.md) needs, and it has no history as a currency. Beads were considered and dropped for their past in the colonial trade.
+- **Separate pools:** a name that differs from Thoth's keeps the two pools visibly apart.
+- **The brand:** it explains itself through The Equal Lens. A lens gathers light, and you gather Lumens by reading the data well.
+- **Plain English:** it reads naturally in Indian, UK and Australian English.
 
 ## Consequences
 - **A watch per market:** every covered company needs an expected filing window, so Play can show "Out by September", and so new reports can be spotted. India's BRSR files can't be scripted from NSE or BSE until PARITY-66. The source is the company's own site or the owner's downloads.

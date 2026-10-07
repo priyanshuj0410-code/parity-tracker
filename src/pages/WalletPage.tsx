@@ -7,9 +7,9 @@ import { claim, fmt, forget, problem, signOut } from '../lib/markets'
 import { href, usePageTitle } from '../lib/router'
 import { useAccount } from '../lib/useAccount'
 
-/** Your Feathers (`/wallet`): balance, streak and the daily claim, then deleting your markets data. */
+/** Your Lumens (`/wallet`): balance, streak and the daily claim, then deleting your markets data. */
 export function WalletPage() {
-  usePageTitle('Your Feathers')
+  usePageTitle('Your Lumens')
   const acct = useAccount()
   const { config, account, wallet } = acct
   const [note, setNote] = useState<string | null>(null)
@@ -20,7 +20,7 @@ export function WalletPage() {
     try {
       const w = await claim()
       acct.setWallet(w)
-      setNote(w.claimed ? `${fmt(w.awarded ?? 0)} Feathers added. Day ${w.streak} of your streak.` : 'Already claimed today.')
+      setNote(w.claimed ? `${fmt(w.awarded ?? 0)} Lumens added. Day ${w.streak} of your streak.` : 'Already claimed today.')
     } catch (err) {
       setNote(problem(err))
     } finally {
@@ -32,10 +32,10 @@ export function WalletPage() {
   return (
     <>
       <section className="page-head">
-        <h1>Your Feathers</h1>
+        <h1>Your Lumens</h1>
         <p className="meta">Play money for Nivel's forecasts.</p>
       </section>
-      {loading ? <section><Skeleton line label="Loading your Feathers" /></section>
+      {loading ? <section><Skeleton line label="Loading your Lumens" /></section>
         : !config.configured || (!config.enabled && !account) ? (
           <section><EmptyState art="data" title="Markets are not open yet" actions={<a className="go" href={href('')}>Go to indexes</a>}>Every figure on Nivel stays open to all.</EmptyState></section>
         ) : <>
@@ -43,20 +43,20 @@ export function WalletPage() {
             <section>
               {wallet ? <>
                 <div className="grid g3">
-                  <div className="card"><div className="tile-label">Balance</div><div className="tile-value">{fmt(wallet.balance)}</div><p className="tile-context">Feathers</p></div>
+                  <div className="card"><div className="tile-label">Balance</div><div className="tile-value">{fmt(wallet.balance)}</div><p className="tile-context">Lumens</p></div>
                   <div className="card"><div className="tile-label">Streak</div><div className="tile-value">{wallet.streak}</div><p className="tile-context">{wallet.streak === 1 ? 'day' : 'days'} in a row</p></div>
                   <div className="card">
                     <div className="tile-label">Today</div>
                     {wallet.dailyClaimable
-                      ? <><p className="tile-context">50 Feathers, plus 10 for each day of your streak, up to 100.</p><button type="button" className="btn-primary" disabled={busy} onClick={claimToday}>Claim today's Feathers</button></>
+                      ? <><p className="tile-context">50 Lumens, plus 10 for each day of your streak, up to 100.</p><button type="button" className="btn-primary" disabled={busy} onClick={claimToday}>Claim today's Lumens</button></>
                       : <p className="tile-context">Claimed. The next claim opens at midnight IST.</p>}
                     <p className="small" role="status">{note}</p>
                   </div>
                 </div>
-                <p className="small muted">{fmt(wallet.lifetimeEarned)} Feathers earned in all.</p>
+                <p className="small muted">{fmt(wallet.lifetimeEarned)} Lumens earned in all.</p>
               </> : <Join key={account?.id ?? 'out'} account={account} onDone={() => void acct.refresh()} />}
               <div className="callout play-money">
-                <p><strong>Feathers are play money.</strong> You earn them by visiting and forecasting. You never buy them, never cash them out, and they win no prizes.</p>
+                <p><strong>Lumens are play money.</strong> You earn them by visiting and forecasting. You never buy them, never cash them out, and they win no prizes.</p>
               </div>
             </section>
           )}
@@ -86,7 +86,7 @@ function Forget({ onDone }: { onDone: () => void }) {
   return (
     <section id="delete">
       <h2>Delete my data</h2>
-      <p>Deletes your adult record, Feathers, trades and positions at once. Prices keep the effect of past trades, with no link to you.</p>
+      <p>Deletes your adult record, Lumens, trades and positions at once. Prices keep the effect of past trades, with no link to you.</p>
       <p>Your sign-in itself is deleted by the owner on request. Write to the grievance contact{GRIEVANCE_EMAIL ? <>: <a href={`mailto:${GRIEVANCE_EMAIL}?subject=${encodeURIComponent('Nivel markets: delete my sign-in')}`}>{GRIEVANCE_EMAIL}</a></> : ', named here before markets open'}.</p>
       {step === 'idle' && <button type="button" className="btn-quiet danger" onClick={() => setStep('confirm')}>Delete my data</button>}
       {step === 'confirm' && (

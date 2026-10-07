@@ -168,7 +168,7 @@ Add a row here before any market uses a new measure.
    - the release's own https link.
 
    For Nivel data the console reads the figure from the release itself, and nobody types it. The console works out yes or no from the threshold, and the owner confirms.
-4. **The engine pays** one Feather a winning share.
+4. **The engine pays** one Lumen a winning share.
 5. **Void and return every stake** when:
    - **overdue:** the release is more than 30 days past the scheduled date recorded when the market opened (PR #59 already flags this as `overdue`);
    - **cancelled:** the publication is cancelled;

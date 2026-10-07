@@ -39,7 +39,7 @@ Everything a user does was grouped by the question they ask:
 | Guess it | Guess first, the daily three, Spot the Stereotype reveals | Did I know it? |
 | Forecast it | Weekly markets on a figure's next release; prices; closing times; results | What will it be next? |
 | Compare | Countries, sectors, parity map | How does it stack up? |
-| Me | Feathers, positions, guesses, calibration, portfolio, account | How am I doing? |
+| Me | Lumens, positions, guesses, calibration, portfolio, account | How am I doing? |
 | Trust | Method, sources, the market log, corrections, data API | Can I believe this? |
 
 **What the map showed:**
@@ -105,7 +105,7 @@ Sports apps (Fixtured, FotMob, the MLS app) lay out results, today and what's co
 
 **Every figure card has four beats:**
 1. **Recall:** guess last period's value on a slider, then see the reveal. No account is needed.
-2. **Call it:** "Will it be at least X?" A forecast with Feathers. This is **the only sign-in trigger**: a sheet asks for the date of birth, then sign-in, then returns to the same card. Your position then shows on the card.
+2. **Call it:** "Will it be at least X?" A forecast with Lumens. This is **the only sign-in trigger**: a sheet asks for the date of birth, then sign-in, then returns to the same card. Your position then shows on the card.
 3. **Wait:** the release day, and the crowd's view ("62 out of 100 say yes").
 4. **Result:** the figure, who was right, and your gap.
 
@@ -155,7 +155,7 @@ Every story ends with a way back in: track these figures, or forecast the next o
 ### 3.4 Me: the same page signed in or out
 | Section | Holds | Signed out |
 |---|---|---|
-| My stats | Guess accuracy, streak, calibration (how far your beliefs sit from the data), forecast record, Feathers | Guesses and streak from this device; Feathers and forecasts show "Make a forecast to earn Feathers" |
+| My stats | Guess accuracy, streak, calibration (how far your beliefs sit from the data), forecast record, Lumens | Guesses and streak from this device; Lumens and forecasts show "Make a forecast to earn Lumens" |
 | My portfolio | The women's-pay footprint of the funds and stocks you hold | Works fully, on this device (CAS read on the device, PARITY-39) |
 | Preferences | Theme, default market | Works fully, on this device |
 | Account and Help | Sign in or out, delete my data; method and how the cycle works | "Sign in" |
