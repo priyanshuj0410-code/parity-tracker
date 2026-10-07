@@ -231,6 +231,12 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
   - **Danger button (`.btn-danger`):** `--bad` fill with `--on-accent` text, only after a confirm step on a `--tint` panel ("This cannot be undone.").
   - **Log (timeline):** oldest first, a 2px `--mist` rule with a ringed `--s1` dot per entry; the action in bold, its time in IST in `--soft`, then one sentence. Players see the console user as "the owner".
   - **Detail list (`dl.details`):** the rules of a market in a two-column card (one column below 720px), long items across both.
+  - **Proposals (decision 0018):**
+    - one card per proposal: the question, its facts line, Claude's rationale, and "Definition and sources" as a disclosure;
+    - Approve as the primary button, and Reject quiet, opening an optional reason field;
+    - decided proposals fold into "Decided in the last 14 days";
+    - a market not yet open shows the badge "Opens 21:00 IST, …";
+    - a prepared settlement sits on a `--tint` panel above Resolve, which starts filled with it, with the badge "Ready to settle" (sun-deep).
   - **Console rows:** one card per market, the question as a link, then flags as text badges: status, `Closed`, `Check due` (sun-deep) and `Overdue` (bad), so no flag rests on colour. Sorted overdue, check due, closed, then open. Each action opens its form inline under a hairline. Resolve stays disabled until trading closes; a mismatch shows the computed outcome on a tint panel with "Resolve no" to confirm.
   - **Feathers are play money:** the wallet always carries the callout "Feathers are play money. You earn them by visiting and forecasting. You never buy them, never cash them out, and they win no prizes."
 - **Share image (`public/og.jpg`, PARITY-24, redone for PARITY-83):** 1200 by 630. Left, on `--paper`: the new Nivel mark with the two-line brand, the two-tone Home headline (Poppins 600, 54px), one Nunito Sans line naming the five markets, and the six flagship indexes as white pills. Right, 470px wide: The Equal Lens's Nivel illustration (`Solutions/Nivel.png`, Lensy with a magnifier), cropped to keep Lensy and the lens in view. No figures or counts, so it never goes stale. Rendered from HTML with headless Chrome and saved as a JPEG (about 160 KB).

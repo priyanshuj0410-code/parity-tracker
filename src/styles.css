@@ -805,7 +805,13 @@ dl.details a, .timeline a { text-decoration: underline; text-underline-offset: 2
 .admin-row .actions-row { margin-top: 10px; }
 .admin-form { margin-top: 14px; }
 .admin-row .admin-form { padding-top: 14px; border-top: 1px solid var(--mist); }
-.admin-form.create { margin-top: 0; }
+.admin-row .settlement { margin: 10px 0 0; padding: 8px 12px; background: var(--tint); border-radius: 8px; color: var(--body); }
+.admin-row .settlement a, .proposal a { text-decoration: underline; text-underline-offset: 2px; }
+.proposal p { margin: 8px 0 0; }
+.proposal details, details.decided { margin-top: 8px; }
+.proposal summary, details.decided summary { display: flex; align-items: center; min-height: 44px; cursor: pointer; font: 500 13px var(--font-display); color: var(--soft); }
+.proposal dl.details { margin-bottom: 8px; }
+details.decided .admin-list { margin-top: 4px; }
 @media (max-width: 899px) {
   .btn-link::after, .btn-danger { min-height: 44px; }
   .btn-link::after { content: ''; position: absolute; inset: -12px -4px; }

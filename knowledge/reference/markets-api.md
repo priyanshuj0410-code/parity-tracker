@@ -13,7 +13,10 @@ plane_issues:
 
 The backend for PARITY-44, built as [decision 0017](../decisions/0017-markets-architecture.md) sets out.
 - **The engine:** a pinned copy of Thoth's `packages/market-engine` in `vendor/market-engine`. Its interface is in Thoth's `wiki/architecture/market-engine.md`.
-- **Nivel's code:** `api/_markets.ts` (routes, adult record, details and log) and `api/_market_rules.ts` (the [templates](../plans/market-templates.md) as code).
+- **Nivel's code:**
+  - `api/_markets.ts`: the routes, the adult record, market details, the log, proposals and settlements.
+  - `api/_market_rules.ts`: the [templates](../plans/market-templates.md) and the [weekly cycle](../decisions/0018-weekly-market-cycle.md) as code.
+  - `scripts/markets/cli.mjs` (`pnpm markets`): the Saturday run's tools.
 - **The pages (7 October 2026):** `/market?id=` (the market), `/wallet` (Feathers and deleting your data) and `/console` (the owner's console), in `src/pages/`, with the client in `src/lib/markets.ts`. Their design is in [design.md](../design.md), section 5, Markets. They go live after the owner's next `pnpm data publish` and promote, which lists them in the release's `app/pages.json`.
 - **Sign-in from the pages:** Neon Auth's own endpoints over fetch (`/sign-up/email`, `/sign-in/email`, `/get-session`, whose `set-auth-jwt` header carries the token for these functions), at the base URL from `?view=config`, so no rebuild is needed when it changes. Email and password, not Google, so the date of birth stays in memory with no redirect between the age step and the account.
 - **Local checks:** `MARKETS_MOCK=1 pnpm dev` serves both functions and a stand-in for Neon Auth from `scripts/markets-mock.ts`, on the engine's in-memory adapters with fixtures. `MARKETS_MOCK=off` is set up but switched off; `MARKETS_MOCK_USER=ana@nivel.test` (an adult) or `owner@nivel.test` (the console) starts signed in. Builds never load it.
@@ -30,8 +33,9 @@ The backend for PARITY-44, built as [decision 0017](../decisions/0017-markets-ar
 | `POST /api/markets` `{action: 'trade', marketId, side, shares}` | Signed-in adult | Buy (positive) or sell (negative) 10 to 1,000 shares, until the market's closing time |
 | `POST /api/markets` `{action: 'claim'}` | Signed-in adult | The daily grant: 50, plus 10 a streak day, up to 100 |
 | `POST /api/markets` `{action: 'forget'}` | Signed in | Deletes the player's adult record, wallet, ledger, trades and positions. Works even while markets are off |
-| `GET /api/markets-admin` | Owner | Every market with its details, holders, trades and flags: `closed`, `checkDue` (seven days before the scheduled date) and `overdue` (more than 30 days past it) |
-| `POST /api/markets-admin` `{action: 'create', template, subject, threshold, precision?, question, definition, releaseName, scheduledDate, scheduleDoc: {name, url, readOn}, resolutionLocation, source: {name, url}}` | Owner | Opens a yes-or-no market from a template, at 50 out of 100. The subject must fit the template's measure, and only one market per subject may be open. Closing time follows the template |
+| `GET /api/markets-admin` | Owner | Every market with its details, holders, trades, flags (`upcoming` until it opens, `closed`, `checkDue`, `overdue`) and any `settlement` Claude prepared, plus `proposals`: those waiting, and those decided in the last 14 days |
+| `POST /api/markets-admin` `{action: 'approve', proposalId}` | Owner | Opens the proposed market at 21:00 IST on its Sunday, or at once if later. Fails with `outside_week` unless the release falls Tuesday to Friday of that week, with `week_over` after its Saturday 09:00, and with `subject_taken` or `already_closed` |
+| `POST /api/markets-admin` `{action: 'reject', proposalId, reason?}` | Owner | Rejects it. The reason guides the next Saturday's proposals |
 | `POST /api/markets-admin` `{action: 'schedule-check', marketId, readOn, revisedDate?}` | Owner | Logs the seven-day re-read of the schedule document |
 | `POST /api/markets-admin` `{action: 'resolve', marketId, outcome, sourceUrl, releaseName, figure \| releaseId}` | Owner | After closing only. Works out yes or no from the figure and the threshold, at the source's precision. The owner's `outcome` must match, or it returns `409 outcome_mismatch` with the computed one. Nivel data takes a `releaseId` and reads the figure from that release, which needs 90% of payroll reported. Pays 1 per winning share |
 | `POST /api/markets-admin` `{action: 'void', marketId, reason, note?}` | Owner | Refunds every stake. `reason` is `overdue`, `cancelled`, `redefined`, `early` or `error` |
@@ -76,7 +80,8 @@ The backend for PARITY-44, built as [decision 0017](../decisions/0017-markets-ar
   - `wallets` and `ledger`, which has no money-in reason;
   - `markets`, which holds each market's source and the link it resolved on;
   - `trades` and `positions`.
-- **Market records:** `market_details` (each market's template fields) and `market_log`, which is append-only: a trigger refuses any edit or deletion. The log holds console users' emails, not players'.
+- **Proposals and settlements:** `market_proposals` holds each Saturday proposal's template fields, rationale and decision. `market_settlements` holds each prepared figure, source and outcome.
+- **Market records:** `market_details` (each market's template fields and `opens_at`) and `market_log`, which is append-only: a trigger refuses any edit or deletion. The log holds console users' emails, not players'.
 - **Neon Auth's own records:** the sign-in identity.
 - **Deletion:** `forget` removes everything above except the sign-in identity. Prices keep each trade's effect, which holds nothing personal.
 
@@ -89,7 +94,7 @@ The backend for PARITY-44, built as [decision 0017](../decisions/0017-markets-ar
 - **Pinned to:** Thoth `01c17d7`, the merge of Thoth PR #45.
 
 ## Checks
-- `pnpm test:markets` runs 17 tests on the routes, using the engine's in-memory adapters. They cover:
+- `pnpm test:markets` runs 22 tests on the routes, using the engine's in-memory adapters. They also cover the weekly cycle: no free create, approval only within the week, hidden until Sunday 21:00, rejection, and prepared settlements. The rest cover:
   - the age gate, under-18 refusal, adult-only wallets, public reads, the switch and deletion;
   - the admin allowlist and console accounts that cannot play;
   - template-only markets, one per subject, and closing times;

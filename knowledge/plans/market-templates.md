@@ -13,6 +13,15 @@ plane_issues:
 
 # Market templates and resolution workflow
 
+**Since 7 October 2026, markets run on the weekly cycle in [decision 0018](../decisions/0018-weekly-market-cycle.md):**
+- Claude proposes them each Saturday, the owner approves, they open at 21:00 IST on Sunday, and they settle by 09:00 IST the next Saturday.
+- A release must fall Tuesday to Friday of its week.
+- The official template covers any dated official release on women's work and pay, with the publisher's own precision.
+- Nivel data markets do not fit the weekly cycle (section 5).
+- The console has no create form.
+
+The rest of this spec still applies.
+
 The spec for [PARITY-48][p48]. The code is [PARITY-44][p44]'s. Built on:
 - [Decision 0017](../decisions/0017-markets-architecture.md): yes-or-no thresholds first; the owner resolves, citing the source link; 30 days' grace.
 - [Resolution sources](../research/resolution-sources.md): which publications a market may use.
