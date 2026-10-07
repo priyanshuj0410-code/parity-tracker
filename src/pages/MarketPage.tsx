@@ -64,7 +64,7 @@ export function MarketPage() {
           <div className="card">
             <div className="tile-label">{closed ? 'Final forecast for yes' : 'Forecast for yes'}</div>
             <div className="tile-value hero">{yes}<span className="play-of"> out of 100</span></div>
-            <p className="tile-context">No: {100 - yes} out of 100. A winning share pays 1 Feather.</p>
+            <p className="tile-context">No: {100 - yes} out of 100. A winning share pays 1 Lumen.</p>
             <p className="small market-state">
               {m.status === 'resolved' ? <strong>Resolved: {m.outcome}.</strong>
                 : m.status === 'void' ? <strong>Voided. Every stake was returned.</strong>
@@ -81,9 +81,9 @@ export function MarketPage() {
               <dl className="facts">
                 <div><dt>Yes shares</dt><dd>{fmt(held.sharesYes)}</dd></div>
                 <div><dt>No shares</dt><dd>{fmt(held.sharesNo)}</dd></div>
-                <div><dt>Feathers in</dt><dd>{fmt(held.costBasis)}</dd></div>
+                <div><dt>Lumens in</dt><dd>{fmt(held.costBasis)}</dd></div>
               </dl>
-              <a className="go" href={href('wallet')}>Your Feathers</a>
+              <a className="go" href={href('wallet')}>Your Lumens</a>
             </div>
           )}
         </div>
@@ -160,7 +160,7 @@ function TradeCard({ market, balance, onTraded }: { market: Market; balance: num
     setBusy(true)
     try {
       const r = await trade(market.id, side, dir === 'buy' ? n : -n)
-      setNote({ ok: true, text: `${dir === 'buy' ? 'Bought' : 'Sold'} ${fmt(n)} ${side} shares. Yes is now ${outOf100(r.priceYes)} out of 100. You have ${fmt(r.balance)} Feathers.` })
+      setNote({ ok: true, text: `${dir === 'buy' ? 'Bought' : 'Sold'} ${fmt(n)} ${side} shares. Yes is now ${outOf100(r.priceYes)} out of 100. You have ${fmt(r.balance)} Lumens.` })
       onTraded(r.balance)
     } catch (err) {
       setNote({ ok: false, text: problem(err) })
@@ -180,7 +180,7 @@ function TradeCard({ market, balance, onTraded }: { market: Market; balance: num
       </div>
       <div className="actions-row">
         <button type="submit" className="btn-primary" disabled={busy}>{dir === 'buy' ? 'Buy' : 'Sell'} {valid ? fmt(n) : ''} {side}</button>
-        <span className="small muted">You have {fmt(balance)} Feathers</span>
+        <span className="small muted">You have {fmt(balance)} Lumens</span>
       </div>
       <p className={note?.ok === false ? 'form-error' : 'small'} role="status">{note?.text}</p>
     </form>

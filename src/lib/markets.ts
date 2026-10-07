@@ -224,7 +224,7 @@ export function problem(err: unknown): string {
     forbidden: 'This account has no console access.',
     trading_closed: 'Trading has closed on this market.',
     market_closed: 'Trading has closed on this market.',
-    insufficient: 'Not enough Feathers for this trade.',
+    insufficient: 'Not enough Lumens for this trade.',
     oversell: 'You cannot sell more shares than you hold.',
     bad_shares: 'Trade between 10 and 1,000 shares.',
     no_market: 'This market does not exist.',

@@ -18,7 +18,7 @@ export function ForecastBlock({ subject }: { subject: string }) {
   return (
     <section>
       <a className="card forecast" href={`/market?id=${m.id}`}>
-        <div className="tile-label">Forecast with Feathers</div>
+        <div className="tile-label">Forecast with Lumens</div>
         <p className="guess-q">{m.question}</p>
         <div className="forecast-row">
           <span className="tile-value">{outOf100(m.priceYes)}<span className="play-of"> out of 100 for yes</span></span>

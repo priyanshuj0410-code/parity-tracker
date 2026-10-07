@@ -152,8 +152,8 @@ export function AccountStep({ head, create = false, onBack, onSignedIn }: {
           <ul className="tight small">
             <li>Your email and password, to sign you in.</li>
             <li>The year you were born. Never the full date.</li>
-            <li>Your Feathers, trades and positions.</li>
-            <li>Delete it all from Your Feathers at any time. Questions or complaints go to the grievance contact, then the Data Protection Board of India.</li>
+            <li>Your Lumens, trades and positions.</li>
+            <li>Delete it all from Your Lumens at any time. Questions or complaints go to the grievance contact, then the Data Protection Board of India.</li>
           </ul>
         </details>
       )}
