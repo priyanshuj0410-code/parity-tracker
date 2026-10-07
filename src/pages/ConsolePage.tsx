@@ -206,8 +206,8 @@ function VoidForm({ id, onDone }: { id: string; onDone: () => void }) {
 const TEMPLATES: { id: Template; label: string }[] = [{ id: 'nivel-data', label: 'Nivel data' }, { id: 'official', label: 'Official' }, { id: 'norm', label: 'Norm' }]
 
 const HINT: Record<Template, { subject: string; precision: string }> = {
-  'nivel-data': { subject: 'in:nifty50:payshare:fy2026-27', precision: 'Two decimals of a percentage, fixed.' },
-  official: { subject: 'in:women15plus:lfpr-cws:2026-10', precision: 'One decimal, fixed.' },
+  'nivel-data': { subject: 'in:nifty50:payshare:fy2026-27', precision: '2 decimals' },
+  official: { subject: 'in:women15plus:lfpr-cws:2026-10', precision: '1 decimal' },
   norm: { subject: 'in:men18plus:wvs-jobsscarce-agree:wave8', precision: '' },
 }
 
@@ -243,11 +243,11 @@ function CreateForm({ onCreated }: { onCreated: () => void }) {
     <form className="card admin-form create" onSubmit={submit}>
       <Segmented label="Template" value={template} onChange={setTemplate} options={TEMPLATES} />
       <div className="fields two">
-        <label>Subject<input required maxLength={80} placeholder={HINT[template].subject} value={f.subject ?? ''} onChange={set('subject')} /><span className="hint">market:population:measure:period</span></label>
+        <label className="wide">Subject<input required maxLength={80} placeholder={HINT[template].subject} value={f.subject ?? ''} onChange={set('subject')} /><span className="hint">market:population:measure:period</span></label>
         <label>Threshold<input type="number" step="any" min={0} max={100} required value={f.threshold ?? ''} onChange={set('threshold')} /><span className="hint">Set by the template's rule, once. {template === 'norm' ? 'Of every 100.' : 'A percentage.'}</span></label>
         {template === 'norm'
-          ? <label>Precision, decimals the publisher prints<input type="number" min={0} max={4} step={1} required value={f.precision ?? ''} onChange={set('precision')} /></label>
-          : <p className="small muted field-note">Precision: {HINT[template].precision}</p>}
+          ? <label>Precision<input type="number" min={0} max={4} step={1} required value={f.precision ?? ''} onChange={set('precision')} /><span className="hint">Decimals the publisher prints.</span></label>
+          : <label>Precision<input readOnly value={HINT[template].precision} /><span className="hint">Fixed by the template.</span></label>}
         <label className="wide">Question<input required maxLength={200} value={q} onChange={set('question')} aria-describedby="q-hint" /><span className="hint" id="q-hint">{q.length} of 200. "Will [figure] be at least [threshold] [for period]?"{q && !q.includes('at least') ? ' Needs "at least".' : ''}</span></label>
         <label className="wide">Definition, quoted from the source, with where it is printed<textarea required maxLength={2000} rows={3} value={f.definition ?? ''} onChange={set('definition')} /></label>
         <label>Source publisher and publication<input required maxLength={120} value={f.sourceName ?? ''} onChange={set('sourceName')} /></label>
