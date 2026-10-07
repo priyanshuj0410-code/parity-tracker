@@ -40,6 +40,7 @@ The app was renamed from Parity Tracker to Nivel on 2 October 2026 ([decisions/0
 - [plans/us-indexes.md](plans/us-indexes.md): adding the S&P 500 and Dow as a limited-data market, measured by women's share of board seats
 - [plans/fund-footprints.md](plans/fund-footprints.md): women's share of the payroll a mutual fund or personal portfolio owns
 - [plans/nivel-play-and-markets.md](plans/nivel-play-and-markets.md): Nivel's play side (Spot the Stereotype) and its prediction markets on a shared engine
+- [plans/data-visualisation.md](plans/data-visualisation.md): proposed visualisations for all 24 cases in the manner of The Pudding, with four signature forms (the Hundred, three marks, the ladder, the parity clock) and honesty rules
 - [plans/information-architecture.md](plans/information-architecture.md): agreed IA v2, with four tabs (Play as the default page, Track, Stories, Me), the affinity map, research evidence, addresses and the staged build
 - [plans/spot-the-stereotype-anytime-and-nivel.md](plans/spot-the-stereotype-anytime-and-nivel.md): for the game team, anytime play without the discussion steps, the Nivel feed for a workplace theme, and bringing Nivel's readers to play
 - [plans/mit-solve-application.md](plans/mit-solve-application.md): the draft MIT Solve 2027 application and the plan to submit it by 2 November 2026
