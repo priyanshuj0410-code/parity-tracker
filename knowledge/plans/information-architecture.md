@@ -85,7 +85,12 @@ flowchart TD
 - **Footer:** Method, How the cycle works, Data API, Report a correction, Privacy, and the theme control (Auto, Light, Dark).
 
 ### 3.1 Play: the week of figures, told like fixtures
-Sports apps (Fixtured, FotMob, the MLS app) lay out results, today and what's coming on one timeline. Nivel's weekly cycle has the same shape: releases are the fixtures, Saturday is results day, and Sunday 21:00 is kick-off.
+Sports apps (Fixtured, FotMob, the MLS app) lay out results, today and what's coming on one timeline. Nivel's weekly cycle has the same shape, with three moments:
+- **Sunday 21:00:** forecasting opens.
+- **A weekday:** a publisher puts its figure out, such as MoSPI's PLFS bulletin. That is the fixture, and trading closes the night before.
+- **Saturday:** results day.
+
+**Words in the interface:** say a figure is *out* ("PLFS out Tuesday"), never *release*. "Release" is used internally for two things: the publisher's publication a market settles on, and Nivel's own data release.
 
 | Part | What it holds |
 |---|---|
@@ -107,11 +112,25 @@ Before markets switch on, beat 2 is hidden, and Play still works as recall, reve
 ### 3.2 Track: one list, buckets, plot together
 **One row for everything:** an avatar, the name, a tag, the figure and its change. Type is never shown by colour alone.
 
+- **Every row shows its change.** For yearly figures it is like-for-like from the year before: the same companies in both years, as the data API's `yoy` gives it. For monthly series it is from the month before, until a year of history exists (PLFS's monthly series began in 2025).
+- **A country's figure is its broadest tracked index for now:** the Nifty 500 for India, the FTSE 350, ASX 300, TOPIX 500 and STOXX 600's 100 largest EU members. A figure across every covered company in the country would be a new calculation (owner decision).
+- **A sector's figure** is its companies within that market's broadest index, such as the 24 IT companies in the Nifty 500.
+
+Examples from Nivel's data of 5 October 2026:
+
+| Row | Figure | Change |
+|---|---|---|
+| Nifty 50 | 20.85% | +0.34 pts, 42 companies like-for-like |
+| Infosys | 29.15% | +0.09 pts |
+| India (Nifty 500) | 19.38% | +0.28 pts, 358 companies |
+| IT, India (24 companies) | 25.73% | +0.12 pts |
+| PLFS women's participation, October 2025 | 34.2% | +0.1 pts on September |
+
 | Type | Avatar | Tag (also gives scale) |
 |---|---|---|
 | Company | Its logo | `NSE`, `LSE`, `ASX` |
 | Index | Monogram tile, such as "N50" | `INDEX · 50` |
-| Country | Flag | `COUNTRY · 4 indexes` |
+| Country | Flag | `COUNTRY · NIFTY 500 BASIS` |
 | Sector | Sector glyph | `SECTOR · 23 cos` |
 | Official statistic | Publisher monogram | `PLFS · monthly` |
 
