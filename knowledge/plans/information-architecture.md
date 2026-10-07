@@ -18,7 +18,7 @@ plane_issues:
 
 # Information architecture v2
 
-Agreed with the owner on 7 October 2026 (PARITY-105). Play and the weekly markets ([decision 0018](../decisions/0018-weekly-market-cycle.md)) move from the edges of Nivel to its centre. The [design system](../design.md) still governs every page. The [personas and journeys](../research/personas-and-journeys.md) are the people this serves.
+Agreed with the owner on 7 October 2026 (PARITY-105). A shareable page with the diagram: https://claude.ai/artifact/4XTDh9jifb2JDZ6HLi8UBK (private until shared). Play and the weekly markets ([decision 0018](../decisions/0018-weekly-market-cycle.md)) move from the edges of Nivel to its centre. The [design system](../design.md) still governs every page. The [personas and journeys](../research/personas-and-journeys.md) are the people this serves.
 
 ## 1. The owner's decisions
 1. **At most four tabs:** Play, Track, Stories and Me.
