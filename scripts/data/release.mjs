@@ -10,6 +10,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { DATA_API_FILES, buildManifest, buildSummary, companyFile } from '../../src/feeds/data-api.ts'
+import { buildCountries } from '../../src/feeds/countries.ts'
 import { SPOT_SCHEMA, buildSpot, checkSpot, mergeSpot } from '../../src/feeds/spot.ts'
 import { PREVIEW_SITE } from '../../api/_data.js'
 import { blobId, commit, get, getMany, list, readRelease } from './firestore.mjs'
@@ -168,6 +169,12 @@ export async function publish({ collected, approveFeed = false }) {
     for (const [y, v] of Object.entries(c.years ?? {})) if (v.w != null && !(v.w >= 0 && v.w <= 1)) problems.push(`company ${key} ${y}: share of pay ${v.w}`)
   }
 
+  // Each market's figure across every covered company, recomputed on every publish (PARITY-114).
+  const countries = buildCountries(markets, companies)
+  for (const c of Object.values(countries)) {
+    for (const [y, v] of Object.entries(c.years)) if (!(v.headline >= 0 && v.headline <= 1)) problems.push(`country ${c.market} ${y}: share of pay ${v.headline}`)
+  }
+
   const { items: current, skipped } = buildSpot({ indexes, companies })
   const { items: spot, changes: feedChanges } = mergeSpot(current, JSON.parse(feed.json))
   problems.push(...checkSpot(spot).map((p) => `spot feed: ${p}`))
@@ -184,12 +191,13 @@ export async function publish({ collected, approveFeed = false }) {
   // What the site serves (decision 0014): the public API, the app's first file, page titles, the Spot feed.
   for (const name of DATA_API_FILES) files[`v1/${name}.json`] = read(name)
   files['v1/summary.json'] = JSON.stringify(buildSummary(markets, indexes))
+  files['v1/countries.json'] = JSON.stringify(countries)
   for (const [ix, value] of Object.entries(indexes)) files[`v1/indexes/${ix}.json`] = JSON.stringify(value)
   for (const [symbol, value] of Object.entries(companies)) files[`v1/companies/${companyFile(symbol)}.json`] = JSON.stringify(value)
   const meta = Object.fromEntries(Object.entries(files).filter(([p]) => /^v1\/[a-z]+\.json$/.test(p))
     .map(([p, text]) => [p.slice(3, -5), { bytes: Buffer.byteLength(text), sha256: createHash('sha256').update(text).digest('hex') }]))
   files['v1/manifest.json'] = JSON.stringify(buildManifest({ id, collected }, meta), null, 2) + '\n'
-  files['app/core.json'] = JSON.stringify({ release: { id, collected }, markets, indexes, simulations: data.simulations, sectors: JSON.parse(read('sectors')), logos: data.logos })
+  files['app/core.json'] = JSON.stringify({ release: { id, collected }, markets, indexes, countries, simulations: data.simulations, sectors: JSON.parse(read('sectors')), logos: data.logos })
   files['app/pages.json'] = JSON.stringify(await pageMeta(JSON.parse(files['app/core.json']), companies))
   files['feeds/spot/v1.json'] = JSON.stringify({ kind: 'nivel-spot-feed', version: 1, generatedAt: new Date().toISOString(), dataAsOf: collected, items: spot }, null, 2) + '\n'
   files['feeds/spot/v1.schema.json'] = JSON.stringify(SPOT_SCHEMA, null, 2) + '\n'

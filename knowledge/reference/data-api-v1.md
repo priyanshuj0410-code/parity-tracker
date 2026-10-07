@@ -20,6 +20,7 @@ Base URL: `https://nivel-equal-lens.vercel.app/data/v1/`. Plain static JSON, `Ac
 |---|---|---|
 | `manifest.json` | 2 KB | `api`, `version` (1), `release`, `collected` (YYYY-MM-DD), `generatedAt`, `attribution`, `files` |
 | `summary.json` | 4 KB | Per live market: `market`, `name`, `year`, `yearLabel`, `flagship`, and its shown indexes with `headline`, `companiesCovered`, `constituents`, `sinceLastYear` and the Nivel `url` |
+| `countries.json` | about 50 KB | Per live market (`IN`, `GB`, `AU`, `JP`, `EU`): women's share of pay across every company Nivel covers there, by year (`headline`, `companiesCovered`, `companiesReported`, `companiesInMarket`, `sectors`), a like-for-like `yoy` change, and its `weighting`. India weights by each company's payroll for the year; the others weight companies equally. Recomputed on every publish, so it moves when a company is added (PARITY-114) |
 | `markets.json` | 15 KB | Every market (live or not): labels, years, the indexes shown, reporting rules, sources |
 | `indexes/{id}.json` | 2 to 60 KB | One index: name, market, weighting, constituents and weights, figures per year (`headline`, coverage, sectors), like-for-like changes (`yoy`) |
 | `companies/{file}.json` | about 2.5 KB | One company: name, industry, exchange, indexes, figures per year, filings. `{file}` is the symbol with characters outside A–Z, a–z, 0–9, dot and hyphen replaced by `_` and their hex code (`M&M` is `M_26M`) |
