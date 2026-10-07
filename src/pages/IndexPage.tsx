@@ -9,6 +9,7 @@ import { ParityTrack } from '../components/ParityTrack'
 import { SectorBars } from '../components/SectorBars'
 import { DataTable, type Column } from '../components/DataTable'
 import { EmptyState } from '../components/EmptyState'
+import { ForecastBlock } from '../components/ForecastBlock'
 import { GUESS_FIRST, GuessFirst } from '../components/GuessFirst'
 import { Tabs } from '../components/Tabs'
 import { indexPoints, summarise } from '../lib/compare'
@@ -21,6 +22,9 @@ import type { Company, Sector } from '../types'
 import { NotFound } from './NotFound'
 
 interface Row { symbol: string; weight: number | null; co: Company }
+
+/** The financial year after an Indian year key: "2025-26" gives "2026-27", the year a forecast asks about. */
+const nextYear = (y: string) => { const a = Number(y.slice(0, 4)) + 1; return `${a}-${String((a + 1) % 100).padStart(2, '0')}` }
 
 export function IndexPage({ id, tab }: { id: string; tab?: string }) {
   useStage('core')
@@ -177,6 +181,7 @@ export function IndexPage({ id, tab }: { id: string; tab?: string }) {
           <a className="go" href={href('compare', 'countries')}>Compare markets</a>
         </p>
       </section>
+      {ix.country === 'IN' && <ForecastBlock subject={`in:${ix.id}:payshare:fy${nextYear(LATEST)}`} />}
 
       {xs.length < 2 ? (
         <section>

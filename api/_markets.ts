@@ -67,6 +67,8 @@ export interface Ctx {
   verify(authorization: string | null): Promise<Claims | null>
   admins: string[]
   enabled: boolean
+  // Neon Auth's base URL, which the pages sign in against.
+  authUrl: string
   now: () => Date
 }
 
@@ -227,6 +229,7 @@ export async function ctxFromEnv(env: Record<string, string | undefined> = proce
     verify: (a) => verify(a ?? undefined),
     admins: (env.ADMIN_EMAILS ?? '').split(',').map((e) => e.trim().toLowerCase()).filter(Boolean),
     enabled,
+    authUrl: auth,
     now: () => new Date(),
   }
 }
@@ -276,10 +279,17 @@ async function withDetails<M extends Market>(ctx: Ctx, markets: M[]): Promise<(M
   return markets.map((m) => ({ ...m, details: details.get(m.id) ?? null }))
 }
 
-// Players: GET ?subject= lists markets with their details (public; with the reader's position when signed in),
-// GET ?market= one market with its log, GET ?view=wallet, and POST actions age, trade, claim and forget.
+// Players see the console user as "the owner", never an email (templates, section 6, The log).
+const forPlayers = (log: LogEntry[]) => log.map((e) => ({ ...e, by: 'the owner' }))
+
+// Players: GET ?view=config says whether markets are set up and on, and where to sign in. GET ?subject= lists markets
+// with their details (public; with the reader's position when signed in), GET ?market= one market with its log,
+// GET ?view=wallet, and POST actions age, trade, claim and forget.
 export async function playerRoute(req: Request, ctx: Ctx | null): Promise<Response> {
   const q = new URL(req.url).searchParams
+  if (req.method === 'GET' && q.get('view') === 'config') {
+    return json(ctx ? { configured: true, enabled: ctx.enabled, authUrl: ctx.authUrl } : { configured: false, enabled: false, authUrl: null })
+  }
   if (!ctx) return req.method === 'GET' && !q.get('view') ? json({ markets: [] }) : json({ error: 'not_configured' }, 503)
   try {
     const claims = await ctx.verify(req.headers.get('authorization'))
@@ -296,7 +306,7 @@ export async function playerRoute(req: Request, ctx: Ctx | null): Promise<Respon
         const d = (await ctx.book.details([id])).get(id)
         const m = d && (await ctx.engine.markets(d.subject, reader)).find((x) => x.id === id)
         if (!d || !m) return json({ error: 'no_market' }, 404)
-        return json({ market: { ...m, details: d }, log: await ctx.book.history(id) })
+        return json({ market: { ...m, details: d }, log: forPlayers(await ctx.book.history(id)) })
       }
       const subject = q.get('subject') ?? ''
       if (!parseSubject(subject)) return json({ error: 'bad_request' }, 400)

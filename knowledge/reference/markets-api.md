@@ -2,7 +2,7 @@
 type: reference
 title: Markets API
 description: Nivel's play-money markets backend. Two edge functions on Thoth's shared engine (vendored), Nivel's own Neon database and Neon Auth, the adult record, the market templates and append-only log, the owner's console endpoints, the environment variables, and the owner's setup steps. Off unless MARKETS_ENABLED is set.
-updated: 2026-10-06
+updated: 2026-10-07
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/ce4141c0-7f43-42bf-9dd1-81fe9784d7e5
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/22f00c69-4996-4ab0-8301-bb28ad98052b
@@ -14,14 +14,17 @@ plane_issues:
 The backend for PARITY-44, built as [decision 0017](../decisions/0017-markets-architecture.md) sets out.
 - **The engine:** a pinned copy of Thoth's `packages/market-engine` in `vendor/market-engine`. Its interface is in Thoth's `wiki/architecture/market-engine.md`.
 - **Nivel's code:** `api/_markets.ts` (routes, adult record, details and log) and `api/_market_rules.ts` (the [templates](../plans/market-templates.md) as code).
-- **What's left:** the pages players use (sign-in, the age step and the market view) and the owner's console page.
+- **The pages (7 October 2026):** `/market?id=` (the market), `/wallet` (Feathers and deleting your data) and `/console` (the owner's console), in `src/pages/`, with the client in `src/lib/markets.ts`. Their design is in [design.md](../design.md), section 5, Markets. They go live after the owner's next `pnpm data publish` and promote, which lists them in the release's `app/pages.json`.
+- **Sign-in from the pages:** Neon Auth's own endpoints over fetch (`/sign-up/email`, `/sign-in/email`, `/get-session`, whose `set-auth-jwt` header carries the token for these functions), at the base URL from `?view=config`, so no rebuild is needed when it changes. Email and password, not Google, so the date of birth stays in memory with no redirect between the age step and the account.
+- **Local checks:** `MARKETS_MOCK=1 pnpm dev` serves both functions and a stand-in for Neon Auth from `scripts/markets-mock.ts`, on the engine's in-memory adapters with fixtures. `MARKETS_MOCK=off` is set up but switched off; `MARKETS_MOCK_USER=ana@nivel.test` (an adult) or `owner@nivel.test` (the console) starts signed in. Builds never load it.
 
 ## Endpoints
 
 | Path | Who | Does |
 |---|---|---|
 | `GET /api/markets?subject=…` | Anyone | Markets on a subject, each with its template details (threshold, definition, release, scheduled date, closing time). Shows the reader's position when they are signed in and recorded as an adult |
-| `GET /api/markets?market=…` | Anyone | One market with its details and its log |
+| `GET /api/markets?view=config` | Anyone | `{configured, enabled, authUrl}`: whether markets are set up and on, and Neon Auth's base URL (`NEON_AUTH_BASE_URL`, or null when not set up) |
+| `GET /api/markets?market=…` | Anyone | One market with its details and its log. Each entry's `by` is "the owner", never the console user's email |
 | `GET /api/markets?view=wallet` | Signed-in adult | Balance, lifetime earned, streak, and whether today's grant is claimable |
 | `POST /api/markets` `{action: 'age', birthDate}` | Signed in | 18 or over: keeps the year of birth and returns `{adult: true}`. Under 18: `403 under_18`, and nothing is kept |
 | `POST /api/markets` `{action: 'trade', marketId, side, shares}` | Signed-in adult | Buy (positive) or sell (negative) 10 to 1,000 shares, until the market's closing time |
@@ -70,7 +73,7 @@ The backend for PARITY-44, built as [decision 0017](../decisions/0017-markets-ar
 - **Deletion:** `forget` removes everything above except the sign-in identity. Prices keep each trade's effect, which holds nothing personal.
 
 **Two gaps, both to close before `MARKETS_ENABLED` is set** (found in the [safeguarding review](../reviews/markets-safeguarding-2026-10.md)):
-- **A refused under-18 keeps a sign-in identity.** The age step comes after sign-in, so Neon Auth already holds their identity. The pages will ask for the date of birth before an account is created, so an under-18 never gets one. The server check stays, because the page's check can be bypassed.
+- **A refused under-18 keeps a sign-in identity.** Closed for the pages' own flow (7 October 2026): they ask for the date of birth before an account is created, so an under-18 never gets one. Someone who makes an account outside the pages and is then refused still keeps it, so the server check stays.
 - **`forget` leaves the sign-in identity.** Until it is deleted through Neon Auth's admin API, the owner deletes it in the Neon console.
 
 ## Engine updates
@@ -78,11 +81,12 @@ The backend for PARITY-44, built as [decision 0017](../decisions/0017-markets-ar
 - **Pinned to:** Thoth `01c17d7`, the merge of Thoth PR #45.
 
 ## Checks
-- `pnpm test:markets` runs 16 tests on the routes, using the engine's in-memory adapters. They cover:
+- `pnpm test:markets` runs 17 tests on the routes, using the engine's in-memory adapters. They cover:
   - the age gate, under-18 refusal, adult-only wallets, public reads, the switch and deletion;
   - the admin allowlist and console accounts that cannot play;
   - template-only markets, one per subject, and closing times;
   - resolving from the figure, with the owner's confirmation and ties at the source's precision;
   - Nivel data read from the release at 90% reported;
-  - void reasons, schedule checks, overdue flags and the log.
+  - void reasons, schedule checks, overdue flags and the log, which players read without any email;
+  - the config view.
 - The engine's own 16 tests run in Thoth (`pnpm test:engine`).
