@@ -2,7 +2,7 @@
 type: reference
 title: Markets API
 description: Nivel's play-money markets backend. Two edge functions on Thoth's shared engine (vendored), Nivel's own Neon database and Neon Auth, the adult record, the market templates and append-only log, the owner's console endpoints, the environment variables, and the owner's setup steps. Off unless MARKETS_ENABLED is set.
-updated: 2026-10-06
+updated: 2026-10-07
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/ce4141c0-7f43-42bf-9dd1-81fe9784d7e5
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/22f00c69-4996-4ab0-8301-bb28ad98052b
@@ -54,10 +54,18 @@ The backend for PARITY-44, built as [decision 0017](../decisions/0017-markets-ar
 **Without the database and auth settings,** reads return no markets and everything else returns `503`. The site is unaffected either way: its pages never call these functions.
 
 ## The owner's setup
-1. In Neon, create a new project for Nivel, separate from Thoth's, in the region nearest India.
-2. Turn on Neon Auth in that project, and copy its base URL.
-3. In the Vercel project for Nivel, set `MARKETS_DATABASE_URL`, `NEON_AUTH_BASE_URL` and `ADMIN_EMAILS` for Production and Preview. Leave `MARKETS_ENABLED` unset.
-4. Redeploy. The first request creates the tables.
+**Done on 7 October 2026:**
+- **The Neon project** is "Nivel" (`rapid-lake-23769971`), in AWS Singapore (`aws-ap-southeast-1`, the nearest region to India), on Postgres 18, separate from Thoth's. The database is `neondb` on branch `production`.
+- **Neon Auth** is on, with Better Auth and email-and-password sign-in. Its base URL is `https://ep-steep-sea-b33juo9h.neonauth.c-4.ap-southeast-1.aws.neon.tech/neondb/auth`, and the key set is at `/.well-known/jwks.json`.
+- **Trusted domains:** `nivel-equal-lens.vercel.app`, and `nivel-priyanshuj0410-5861s-projects.vercel.app` for testing behind Vercel's login.
+- **Vercel Production** has `MARKETS_DATABASE_URL` (pooled, marked sensitive), `NEON_AUTH_BASE_URL` and `ADMIN_EMAILS`. `MARKETS_ENABLED` is unset. Preview has none of them.
+- **After redeploying,** the first request created the eight tables and the log's append-only trigger.
+
+**To repeat it, with the Neon CLI** (`npx -y neon@latest`, signed in with `neon login`):
+- `neon neon-auth status --project-id <id> --branch production`: shows the auth base URL.
+- `neon neon-auth domain add <https origin> --project-id <id> --branch production`: adds a trusted domain.
+- Pipe the connection string straight into Vercel, so it is never shown: `neon connection-string production --project-id <id> --pooled | vercel env add MARKETS_DATABASE_URL production --yes --sensitive`. Without `--yes`, `vercel env add` stops to ask for confirmation.
+- Redeploy production: `vercel redeploy <production deployment URL> --scope priyanshuj0410-5861s-projects`.
 
 ## Data kept
 - **Adult record (`players`):** user id and year of birth, for adults only.
