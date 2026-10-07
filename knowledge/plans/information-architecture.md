@@ -101,6 +101,8 @@ Sports apps (Fixtured, FotMob, the MLS app) lay out results, today and what's co
 | Coming up | Next week's figures, from "Opens Sunday 9pm" |
 | Game nights | Spot the Stereotype live sessions |
 
+**The rule ([decision 0019](../decisions/0019-figures-out-and-company-markets.md)):** a figure that is out is a Guess, and a figure not yet out is a Forecast. A figure moves from Forecast to Guess the day it comes out. A company's report coming out counts too, so a long-dated company forecast ("Infosys, FY2026-27, out by September 2027") sits in Forecast until then.
+
 **Every figure card has four beats:**
 1. **Recall:** guess last period's value on a slider, then see the reveal. No account is needed.
 2. **Call it:** "Will it be at least X?" A forecast with Feathers. This is **the only sign-in trigger**: a sheet asks for the date of birth, then sign-in, then returns to the same card. Your position then shows on the card.

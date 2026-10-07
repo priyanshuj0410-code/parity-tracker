@@ -37,4 +37,5 @@ plane_issues:
 
 ## To add when the shared document is next sent
 - Five questions on the markets' age gate, retries, logs, breach reporting and timing: A to E in the [markets safeguarding review](markets-safeguarding-2026-10.md#8-open-questions-for-counsel) (PARITY-49).
+- **F:** under the Online Gaming Act, do play-money markets on a single listed company's own figure (women's share of wages, settling on its BRSR or annual report) differ from markets on indexes or official statistics? Owner's position: no, because the money is play money and the figure can be estimated from public sources ([decision 0019](../decisions/0019-figures-out-and-company-markets.md), PARITY-117).
 - **22:** [PARITY-69](../plans/five-market-depth.md) published an estimate for MMTC from its pay table after it filed zero wage totals.
