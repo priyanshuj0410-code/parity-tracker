@@ -56,12 +56,11 @@ For the "forecast the norm" loop in [Nivel play and markets](../plans/nivel-play
 - **Your own bias:** after resolution, each player's estimates against the results, by topic ([PARITY-50](https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/8c45b074-94e8-4151-b8ad-2ba57a6e145d)).
 
 **Do not ask:**
-- **About a named person, or a single small company.** Index and population level only, as in the Spot feed.
+- **About a named person.** Companies are allowed since [decision 0019](../decisions/0019-figures-out-and-company-markets.md): the owner judged single-company markets fine for a play-money game.
 - **Whether a view is right.** No "should" questions: players forecast what people say, never what is good.
 - **About violence, harassment or abuse,** even where a survey asks (for example NFHS questions on attitudes to wife-beating). Turning them into a game trivialises them, and the play side's child-safety rules apply in spirit.
 - **Splits by religion or caste.** They invite ranking groups against each other, which the markets cannot moderate.
 - **Questions with no named, dated publication to resolve against.** A survey wave with no release date gets no market until it has one.
-- **Questions a player could move:** none about a single employer's own staff figures.
 
 ## 4. Wording: describe beliefs, never endorse them
 

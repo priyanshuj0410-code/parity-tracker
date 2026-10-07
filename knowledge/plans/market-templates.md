@@ -20,6 +20,9 @@ plane_issues:
 - Nivel data markets do not fit the weekly cycle (section 5).
 - The console has no create form.
 
+
+**Since [decision 0019](../decisions/0019-figures-out-and-company-markets.md):** any covered company may have a long-dated market that settles when its report is out. Trading closes at the end of its financial year, and its template is PARITY-117. The single-employer item is off the do-not-ask list.
+
 The rest of this spec still applies.
 
 The spec for [PARITY-48][p48]. The code is [PARITY-44][p44]'s. Built on:
