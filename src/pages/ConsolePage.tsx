@@ -4,23 +4,33 @@ import { EmptyState } from '../components/EmptyState'
 import { AccountStep } from '../components/Join'
 import { Segmented } from '../components/Segmented'
 import { Skeleton } from '../components/Skeleton'
-import { ApiError, adminAction, adminMarkets, figure, istDate, istTime, outOf100, problem, signOut, type AdminMarket, type Side, type Template } from '../lib/markets'
+import { ApiError, adminAction, adminConsole, figure, fmt, istDate, istTime, outOf100, problem, signOut, type AdminMarket, type Proposal, type Side } from '../lib/markets'
 import { usePageTitle } from '../lib/router'
 import { useAccount } from '../lib/useAccount'
 
 const today = () => new Date(Date.now() + 5.5 * 3_600_000).toISOString().slice(0, 10)
 
-// Needs the owner's attention first: overdue, then a schedule check due, then closed and waiting for the release.
-const rank = (m: AdminMarket) => (m.status !== 'open' && m.status !== 'resolving' ? 4 : m.overdue ? 0 : m.checkDue ? 1 : m.closed ? 2 : 3)
+// Needs the owner's attention first: overdue, then a settlement ready to confirm, then closed, then a schedule check.
+const rank = (m: AdminMarket) =>
+  m.status !== 'open' && m.status !== 'resolving' ? 5 : m.overdue ? 0 : m.closed && m.settlement ? 1 : m.closed ? 2 : m.checkDue ? 3 : 4
 
-/** The owner's console (`/console`, ADMIN_EMAILS only): every market with its flags, and create, schedule check, resolve and void. */
+/**
+ * The owner's console (`/console`, ADMIN_EMAILS only). Claude proposes the week's markets on Saturday; the owner
+ * approves or rejects each, and approved markets open at 21:00 IST on Sunday (decision 0018). Below, every market with
+ * its flags and any settlement Claude prepared, plus schedule check, resolve and void. There is no free create.
+ */
 export function ConsolePage() {
   usePageTitle('Markets console')
   const acct = useAccount()
   const [markets, setMarkets] = useState<AdminMarket[] | null>(null)
+  const [proposals, setProposals] = useState<Proposal[]>([])
   const [error, setError] = useState<string | null>(null)
   const load = useCallback(() => {
-    adminMarkets().then((ms) => { setError(null); setMarkets([...ms].sort((a, b) => rank(a) - rank(b))) }, (err) => setError(problem(err)))
+    adminConsole().then((r) => {
+      setError(null)
+      setMarkets([...r.markets].sort((a, b) => rank(a) - rank(b)))
+      setProposals(r.proposals)
+    }, (err) => setError(problem(err)))
   }, [])
   useEffect(() => { if (acct.account) load() }, [acct.account, load])
 
@@ -40,14 +50,27 @@ export function ConsolePage() {
       )
     }
     if (!markets) return <Skeleton line label="Loading markets" />
+    const waiting = proposals.filter((p) => p.status === 'proposed')
+    const decided = proposals.filter((p) => p.status !== 'proposed')
     return <>
       <section>
+        <div className="section-head"><h2>Proposals</h2><span className="meta">Claude proposes each Saturday by 09:00 IST · approved markets open Sunday 21:00 IST</span></div>
+        {waiting.length === 0 ? <p className="small">No proposals waiting. The next arrive on Saturday morning.</p> : (
+          <ul className="admin-list">{waiting.map((p) => <ProposalRow key={p.id} p={p} onChange={load} />)}</ul>
+        )}
+        {decided.length > 0 && (
+          <details className="decided">
+            <summary>Decided in the last 14 days ({decided.length})</summary>
+            <ul className="admin-list">{decided.map((p) => <ProposalRow key={p.id} p={p} onChange={load} />)}</ul>
+          </details>
+        )}
+      </section>
+      <section>
         <div className="section-head"><h2>Markets</h2><span className="meta">{markets.length} in all · {acct.config.enabled ? 'markets are on' : 'markets are off: players see none'}</span></div>
-        {markets.length === 0 ? <p className="small">No markets yet. Create the first below.</p> : (
+        {markets.length === 0 ? <p className="small">No markets yet. They open from approved proposals.</p> : (
           <ul className="admin-list">{markets.map((m) => <AdminRow key={m.id} m={m} onChange={load} />)}</ul>
         )}
       </section>
-      <section><h2>Create from a template</h2><CreateForm onCreated={load} /></section>
     </>
   }
 
@@ -73,7 +96,8 @@ function AdminRow({ m, onChange }: { m: AdminMarket; onChange: () => void }) {
       <div className="admin-top">
         <a className="admin-q" href={`/market?id=${m.id}`}>{m.question}</a>
         <span className="flags">
-          <span className="badge">{live && m.closed ? 'Trading closed' : STATUS[m.status]}{m.outcome ? `: ${m.outcome}` : ''}</span>
+          <span className="badge">{live && m.upcoming && d ? `Opens ${istTime(d.opensAt)}` : live && m.closed ? 'Trading closed' : STATUS[m.status]}{m.outcome ? `: ${m.outcome}` : ''}</span>
+          {live && m.closed && m.settlement && <span className="badge warn">Ready to settle</span>}
           {m.checkDue && <span className="badge warn">Check due</span>}
           {m.overdue && <span className="badge bad">Overdue</span>}
         </span>
@@ -82,6 +106,14 @@ function AdminRow({ m, onChange }: { m: AdminMarket; onChange: () => void }) {
         <code>{m.subject}</code> · Yes {outOf100(m.priceYes)} out of 100 · {m.holders} {m.holders === 1 ? 'holder' : 'holders'} · {m.trades} {m.trades === 1 ? 'trade' : 'trades'}
         {d && <> · closes {istTime(d.closesAt)} · release due {istDate(d.scheduledDate)}</>}
       </p>
+      {live && m.settlement && (
+        <p className="small settlement">
+          Prepared: {m.settlement.figure !== null && d ? figure(d, m.settlement.figure) : `release ${m.settlement.releaseId}`}
+          {m.settlement.outcome && <> against at least {d ? figure(d, d.threshold) : ''} gives <strong>{m.settlement.outcome}</strong></>}
+          {' · '}<a href={m.settlement.sourceUrl}>{m.settlement.releaseName}</a>
+          {m.settlement.note && <> · {m.settlement.note}</>}
+        </p>
+      )}
       {live && d && (
         <div className="actions-row">
           <button type="button" className="btn-quiet" aria-expanded={open === 'check'} onClick={() => setOpen(open === 'check' ? null : 'check')}>Schedule check</button>
@@ -91,7 +123,7 @@ function AdminRow({ m, onChange }: { m: AdminMarket; onChange: () => void }) {
         </div>
       )}
       {open === 'check' && <CheckForm id={m.id} onDone={onChange} />}
-      {open === 'resolve' && d && <ResolveForm m={m} onDone={onChange} />}
+      {open === 'resolve' && d && <ResolveForm key={m.settlement ? 'prepared' : 'blank'} m={m} onDone={onChange} />}
       {open === 'void' && <VoidForm id={m.id} onDone={onChange} />}
     </li>
   )
@@ -138,10 +170,12 @@ function CheckForm({ id, onDone }: { id: string; onDone: () => void }) {
 function ResolveForm({ m, onDone }: { m: AdminMarket; onDone: () => void }) {
   const d = m.details!
   const nivel = d.template === 'nivel-data'
-  const [outcome, setOutcome] = useState<Side>('yes')
-  const [value, setValue] = useState('')
-  const [sourceUrl, setSourceUrl] = useState('')
-  const [releaseName, setReleaseName] = useState(d.releaseName)
+  // Starts from the settlement Claude prepared, if any; the owner checks it and confirms.
+  const s = m.settlement
+  const [outcome, setOutcome] = useState<Side>(s?.outcome ?? 'yes')
+  const [value, setValue] = useState(s ? (nivel ? (s.releaseId ?? '') : s.figure !== null ? String(s.figure) : '') : '')
+  const [sourceUrl, setSourceUrl] = useState(s?.sourceUrl ?? '')
+  const [releaseName, setReleaseName] = useState(s?.releaseName ?? d.releaseName)
   const [mismatch, setMismatch] = useState<{ figure: number; outcome: Side } | null>(null)
   const { busy, run, out } = useAction(onDone)
   const send = (o: Side) => run(
@@ -203,65 +237,47 @@ function VoidForm({ id, onDone }: { id: string; onDone: () => void }) {
   )
 }
 
-const TEMPLATES: { id: Template; label: string }[] = [{ id: 'nivel-data', label: 'Nivel data' }, { id: 'official', label: 'Official' }, { id: 'norm', label: 'Norm' }]
-
-const HINT: Record<Template, { subject: string; precision: string }> = {
-  'nivel-data': { subject: 'in:nifty50:payshare:fy2026-27', precision: '2 decimals' },
-  official: { subject: 'in:women15plus:lfpr-cws:2026-10', precision: '1 decimal' },
-  norm: { subject: 'in:men18plus:wvs-jobsscarce-agree:wave8', precision: '' },
-}
-
-function CreateForm({ onCreated }: { onCreated: () => void }) {
-  const [template, setTemplate] = useState<Template>('nivel-data')
-  const [f, setF] = useState<Record<string, string>>({ readOn: today() })
-  const set = (k: string) => (e: { target: { value: string } }) => setF((x) => ({ ...x, [k]: e.target.value }))
-  const [busy, setBusy] = useState(false)
-  const [note, setNote] = useState<{ ok: boolean; text: string } | null>(null)
-  const submit = async (e: FormEvent) => {
-    e.preventDefault()
-    setBusy(true)
-    setNote(null)
-    try {
-      const r = await adminAction<{ id: string; closesAt: string }>({
-        action: 'create', template, subject: f.subject?.trim(), threshold: Number(f.threshold),
-        ...(template === 'norm' ? { precision: Number(f.precision) } : {}),
-        question: f.question?.trim(), definition: f.definition?.trim(), releaseName: f.releaseName?.trim(), scheduledDate: f.scheduledDate,
-        scheduleDoc: { name: f.docName?.trim(), url: f.docUrl?.trim(), readOn: f.readOn },
-        resolutionLocation: f.location?.trim(), source: { name: f.sourceName?.trim(), url: f.sourceUrl?.trim() },
-      })
-      setNote({ ok: true, text: `Opened at 50 out of 100. Trading closes at ${istTime(r.closesAt)}.` })
-      setF({ readOn: today() })
-      onCreated()
-    } catch (err) {
-      setNote({ ok: false, text: problem(err) })
-    } finally {
-      setBusy(false)
-    }
-  }
-  const q = f.question ?? ''
+function ProposalRow({ p, onChange }: { p: Proposal; onChange: () => void }) {
+  const [rejecting, setRejecting] = useState(false)
+  const [reason, setReason] = useState('')
+  const { busy, run, out } = useAction(onChange)
+  const b = p.body
+  const pct = (n: number) => `${fmt(n)}${b.template === 'norm' ? ' of every 100' : '%'}`
   return (
-    <form className="card admin-form create" onSubmit={submit}>
-      <Segmented label="Template" value={template} onChange={setTemplate} options={TEMPLATES} />
-      <div className="fields two">
-        <label className="wide">Subject<input required maxLength={80} placeholder={HINT[template].subject} value={f.subject ?? ''} onChange={set('subject')} /><span className="hint">market:population:measure:period</span></label>
-        <label>Threshold<input type="number" step="any" min={0} max={100} required value={f.threshold ?? ''} onChange={set('threshold')} /><span className="hint">Set by the template's rule, once. {template === 'norm' ? 'Of every 100.' : 'A percentage.'}</span></label>
-        {template === 'norm'
-          ? <label>Precision<input type="number" min={0} max={4} step={1} required value={f.precision ?? ''} onChange={set('precision')} /><span className="hint">Decimals the publisher prints.</span></label>
-          : <label>Precision<input readOnly value={HINT[template].precision} /><span className="hint">Fixed by the template.</span></label>}
-        <label className="wide">Question<input required maxLength={200} value={q} onChange={set('question')} aria-describedby="q-hint" /><span className="hint" id="q-hint">{q.length} of 200. "Will [figure] be at least [threshold] [for period]?"{q && !q.includes('at least') ? ' Needs "at least".' : ''}</span></label>
-        <label className="wide">Definition, quoted from the source, with where it is printed<textarea required maxLength={2000} rows={3} value={f.definition ?? ''} onChange={set('definition')} /></label>
-        <label>Source publisher and publication<input required maxLength={120} value={f.sourceName ?? ''} onChange={set('sourceName')} /></label>
-        <label>Source link<input type="url" required pattern="https://.*" placeholder="https://" value={f.sourceUrl ?? ''} onChange={set('sourceUrl')} /></label>
-        <label>Release that settles it<input required maxLength={200} value={f.releaseName ?? ''} onChange={set('releaseName')} /></label>
-        <label>Scheduled date<input type="date" required value={f.scheduledDate ?? ''} onChange={set('scheduledDate')} /></label>
-        <label>Schedule document, with its version<input required maxLength={200} value={f.docName ?? ''} onChange={set('docName')} /></label>
-        <label>Schedule document link<input type="url" required pattern="https://.*" placeholder="https://" value={f.docUrl ?? ''} onChange={set('docUrl')} /></label>
-        <label>Read on<input type="date" required value={f.readOn ?? ''} onChange={set('readOn')} /></label>
-        <label>Where the result is printed<input required maxLength={500} value={f.location ?? ''} onChange={set('location')} /></label>
+    <li className="card admin-row proposal">
+      <div className="admin-top">
+        <span className="admin-q">{b.question}</span>
+        <span className="flags"><span className="badge">{p.status === 'proposed' ? 'Proposed' : p.status === 'approved' ? 'Approved' : 'Rejected'}</span></span>
       </div>
-      <p className="small muted">Opens at 50 out of 100. Trading closes by the template's rule: 23:59 IST the day before the scheduled date, or the end of the financial year for Nivel data if earlier. Voids follow the standard reasons.</p>
-      <button type="submit" className="btn-primary" disabled={busy}>Open the market</button>
-      {note && <p className={note.ok ? 'small' : 'form-error'} role={note.ok ? 'status' : 'alert'}>{note.text}</p>}
-    </form>
+      <p className="small muted admin-meta">
+        <code>{b.subject}</code> · at least {pct(b.threshold)} · {b.releaseName}, due {istDate(b.scheduledDate)} · opens {istTime(p.opensAt)} · settles by {istTime(p.settleBy)}
+      </p>
+      <p className="small">{p.rationale}</p>
+      <details>
+        <summary>Definition and sources</summary>
+        <dl className="details small">
+          <dt>Definition</dt><dd>{b.definition}</dd>
+          <dt>Source</dt><dd><a href={b.source.url}>{b.source.name}</a></dd>
+          <dt>Schedule</dt><dd><a href={b.scheduleDoc.url}>{b.scheduleDoc.name}</a>, read on {istDate(b.scheduleDoc.readOn)}</dd>
+          <dt>Where it is printed</dt><dd>{b.resolutionLocation}</dd>
+        </dl>
+      </details>
+      {p.status === 'rejected' && p.reason && <p className="small muted">Rejected: {p.reason}</p>}
+      {p.status === 'proposed' && (
+        <div className="actions-row">
+          <button type="button" className="btn-primary" disabled={busy} onClick={() => void run({ action: 'approve', proposalId: p.id }, `Approved. Opens ${istTime(p.opensAt)}.`)}>Approve</button>
+          <button type="button" className="btn-quiet" aria-expanded={rejecting} onClick={() => setRejecting(!rejecting)}>Reject</button>
+        </div>
+      )}
+      {rejecting && p.status === 'proposed' && (
+        <form className="admin-form" onSubmit={(e) => { e.preventDefault(); void run({ action: 'reject', proposalId: p.id, ...(reason.trim() ? { reason: reason.trim() } : {}) }, 'Rejected.') }}>
+          <div className="fields">
+            <label>Why (optional, helps next Saturday's proposals)<input maxLength={500} value={reason} onChange={(e) => setReason(e.target.value)} /></label>
+          </div>
+          <button type="submit" className="btn-primary" disabled={busy}>Reject proposal</button>
+        </form>
+      )}
+      {out}
+    </li>
   )
 }

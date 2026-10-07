@@ -16,6 +16,7 @@ export interface Details {
   scheduleDoc: { name: string; url: string; readOn: string }
   closesAt: string
   resolutionLocation: string
+  opensAt: string
 }
 
 export interface Position { sharesYes: number; sharesNo: number; costBasis: number }
@@ -33,7 +34,42 @@ export interface Market {
   details: Details | null
 }
 
-export interface AdminMarket extends Market { holders: number; trades: number; closed: boolean; checkDue: boolean; overdue: boolean }
+export interface Settlement { marketId: string; figure: number | null; releaseId: string | null; sourceUrl: string; releaseName: string; outcome: Side | null; note: string | null }
+
+export interface AdminMarket extends Market {
+  holders: number
+  trades: number
+  upcoming: boolean
+  closed: boolean
+  checkDue: boolean
+  overdue: boolean
+  settlement: Settlement | null
+}
+
+// A market Claude proposes on Saturday for the owner to approve (decision 0018).
+export interface Proposal {
+  id: string
+  week: string
+  status: 'proposed' | 'approved' | 'rejected'
+  body: {
+    template: Template
+    subject: string
+    threshold: number
+    precision?: number
+    question: string
+    definition: string
+    releaseName: string
+    scheduledDate: string
+    scheduleDoc: { name: string; url: string; readOn: string }
+    resolutionLocation: string
+    source: { name: string; url: string }
+  }
+  rationale: string
+  marketId: string | null
+  reason: string | null
+  opensAt: string
+  settleBy: string
+}
 
 export interface LogEntry {
   action: 'create' | 'schedule-check' | 'resolve' | 'void'
@@ -171,7 +207,7 @@ export const trade = (marketId: string, side: Side, shares: number) =>
   api<{ priceYes: number; position: Position; balance: number }>('/api/markets', { action: 'trade', marketId, side, shares })
 export const claim = () => api<Wallet>('/api/markets', { action: 'claim' })
 export const forget = () => api<{ ok: true }>('/api/markets', { action: 'forget' })
-export const adminMarkets = () => api<{ markets: AdminMarket[] }>('/api/markets-admin').then((r) => r.markets)
+export const adminConsole = () => api<{ markets: AdminMarket[]; proposals: Proposal[] }>('/api/markets-admin')
 export const adminAction = <T = { ok: true }>(body: Record<string, unknown>) => api<T>('/api/markets-admin', body)
 
 /** One sentence for an API error. */

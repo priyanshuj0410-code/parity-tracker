@@ -17,6 +17,8 @@ For [Nivel play and markets](../plans/nivel-play-and-markets.md). What to ask, a
 - **If a release slips,** the market stays open for up to 30 days past the scheduled date, then is voided and stakes return. It is also voided if the publication is cancelled or the measure changes definition. The owner resolves each market, citing the source link ([decision 0017](../decisions/0017-markets-architecture.md), PARITY-48).
 - **Schedules drift,** so each market records the schedule document it relied on and the date that document was read.
 
+**Widened on 7 October 2026** ([decision 0018](../decisions/0018-weekly-market-cycle.md)): weekly markets may use any official statistics release on women's work and pay that publishes to a calendar, in India or elsewhere, such as MoSPI, the Labour Bureau, ONS, ABS, WGEA, Japan's statistics bureau and Eurostat. The Saturday run checks each one's calendar and records it in the proposal. Add a row here when a new source is first used.
+
 ## Sources
 
 | Source | What a market can use | Latest release | Next release and its schedule | Fit |

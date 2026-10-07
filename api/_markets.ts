@@ -5,7 +5,7 @@
 import { neon } from '@neondatabase/serverless'
 import { EngineError, createEngine, graceOver, migrate, neonAuthVerifier, postgresLedger, postgresStore } from '../vendor/market-engine/index.js'
 import type { Claims, Db, Engine, Market, Side } from '../vendor/market-engine/index.js'
-import { PRECISION, TEMPLATES, VOID_REASONS, checkDue, closesAt, fitsTemplate, nivelFigure, outcomeFor, parseSubject } from './_market_rules.js'
+import { PRECISION, TEMPLATES, VOID_REASONS, checkDue, closesAt, fitsTemplate, inWeek, nivelFigure, opensAt, outcomeFor, parseSubject, settleBy } from './_market_rules.js'
 import type { Template, VoidReason } from './_market_rules.js'
 
 // Adults only. A row means "adult: yes"; the year of birth is all that is kept, and nothing is kept for anyone
@@ -29,6 +29,33 @@ export interface Details {
   scheduleDoc: { name: string; url: string; readOn: string }
   closesAt: string
   resolutionLocation: string
+  // Players see the market and trade only from here (decision 0018: 21:00 IST on its Sunday).
+  opensAt: string
+}
+
+// A market Claude proposes on Saturday for the week opening on `week` (a Sunday). The owner approves or rejects it;
+// approval opens it at 21:00 IST that Sunday (decision 0018). `body` holds the template fields of section 1.
+export interface Proposal {
+  id: string
+  week: string
+  status: 'proposed' | 'approved' | 'rejected'
+  body: Record<string, unknown>
+  rationale: string
+  marketId: string | null
+  reason: string | null
+  proposedAt: string
+  decidedAt: string | null
+}
+
+// A settlement Claude prepares on Saturday from the published figure, for the owner to confirm in the console.
+export interface Settlement {
+  marketId: string
+  figure: number | null
+  releaseId: string | null
+  sourceUrl: string
+  releaseName: string
+  outcome: 'yes' | 'no' | null
+  note: string | null
 }
 
 export type LogAction = 'create' | 'schedule-check' | 'resolve' | 'void'
@@ -56,6 +83,10 @@ export interface Book {
   save(d: Details): Promise<void>
   log(e: Omit<LogEntry, 'at'>): Promise<void>
   history(marketId: string): Promise<LogEntry[]>
+  // Proposals still waiting, and those decided in the last 14 days.
+  proposals(): Promise<Proposal[]>
+  decide(id: string, status: 'approved' | 'rejected', marketId: string | null, reason: string | null, by: string): Promise<void>
+  settlements(marketIds: string[]): Promise<Map<string, Settlement>>
 }
 
 export interface Ctx {
@@ -110,16 +141,52 @@ export function postgresBook(db: Db): Book {
         scheduleDoc: { name: r.schedule_doc as string, url: r.schedule_url as string, readOn: day(r.schedule_read_on) as string },
         closesAt: iso(r.closes_at) as string,
         resolutionLocation: r.resolution_location as string,
+        opensAt: (iso(r.opens_at) ?? iso(r.created_at)) as string,
       }]))
     },
     async save(d) {
       await db.query(
         `INSERT INTO market_details (market_id, template, subject, threshold, precision, definition, release_name, scheduled_date,
-           schedule_doc, schedule_url, schedule_read_on, closes_at, resolution_location)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
+           schedule_doc, schedule_url, schedule_read_on, closes_at, resolution_location, opens_at)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`,
         [d.marketId, d.template, d.subject, d.threshold, d.precision, d.definition, d.releaseName, d.scheduledDate,
-          d.scheduleDoc.name, d.scheduleDoc.url, d.scheduleDoc.readOn, d.closesAt, d.resolutionLocation],
+          d.scheduleDoc.name, d.scheduleDoc.url, d.scheduleDoc.readOn, d.closesAt, d.resolutionLocation, d.opensAt],
       )
+    },
+    async proposals() {
+      const rows = await db.query(
+        `SELECT * FROM market_proposals WHERE status = 'proposed' OR decided_at > now() - interval '14 days' ORDER BY week DESC, proposed_at`,
+      )
+      return rows.map((r) => ({
+        id: r.id as string,
+        week: day(r.week) as string,
+        status: r.status as Proposal['status'],
+        body: r.body as Record<string, unknown>,
+        rationale: r.rationale as string,
+        marketId: (r.market_id as string | null) ?? null,
+        reason: (r.reason as string | null) ?? null,
+        proposedAt: iso(r.proposed_at) as string,
+        decidedAt: iso(r.decided_at),
+      }))
+    },
+    async decide(id, status, marketId, reason, by) {
+      await db.query(
+        `UPDATE market_proposals SET status = $2, market_id = $3, reason = $4, decided_by = $5, decided_at = now() WHERE id = $1`,
+        [id, status, marketId, reason, by],
+      )
+    },
+    async settlements(ids) {
+      if (ids.length === 0) return new Map()
+      const rows = await db.query('SELECT * FROM market_settlements WHERE market_id = ANY($1)', [ids])
+      return new Map(rows.map((r) => [r.market_id as string, {
+        marketId: r.market_id as string,
+        figure: r.figure == null ? null : Number(r.figure),
+        releaseId: (r.release_id as string | null) ?? null,
+        sourceUrl: r.source_url as string,
+        releaseName: r.release_name as string,
+        outcome: (r.outcome as 'yes' | 'no' | null) ?? null,
+        note: (r.note as string | null) ?? null,
+      }]))
     },
     async log(e) {
       await db.query(
@@ -196,6 +263,30 @@ async function setup(db: Db): Promise<void> {
       by_email text NOT NULL
     )`,
     'CREATE INDEX IF NOT EXISTS market_log_market_idx ON market_log (market_id, id)',
+    'ALTER TABLE market_details ADD COLUMN IF NOT EXISTS opens_at timestamptz',
+    // Written by `pnpm markets propose` and `pnpm markets settle` on Saturdays (decision 0018).
+    `CREATE TABLE IF NOT EXISTS market_proposals (
+      id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+      week date NOT NULL,
+      status text NOT NULL DEFAULT 'proposed' CHECK (status IN ('proposed','approved','rejected')),
+      body jsonb NOT NULL,
+      rationale text NOT NULL,
+      market_id uuid,
+      reason text,
+      proposed_at timestamptz NOT NULL DEFAULT now(),
+      decided_at timestamptz,
+      decided_by text
+    )`,
+    `CREATE TABLE IF NOT EXISTS market_settlements (
+      market_id uuid PRIMARY KEY,
+      figure numeric,
+      release_id text,
+      source_url text NOT NULL,
+      release_name text NOT NULL,
+      outcome text CHECK (outcome IN ('yes','no')),
+      note text,
+      prepared_at timestamptz NOT NULL DEFAULT now()
+    )`,
     // Append-only: no entry is ever edited or deleted.
     `CREATE OR REPLACE FUNCTION market_log_append_only() RETURNS trigger LANGUAGE plpgsql AS $$
      BEGIN RAISE EXCEPTION 'market_log is append-only'; END $$`,
@@ -279,6 +370,9 @@ async function withDetails<M extends Market>(ctx: Ctx, markets: M[]): Promise<(M
   return markets.map((m) => ({ ...m, details: details.get(m.id) ?? null }))
 }
 
+// A market reaches players only from its opening time (decision 0018).
+const opened = (ctx: Ctx, d: Details) => ctx.now().getTime() >= Date.parse(d.opensAt)
+
 // Players see the console user as "the owner", never an email (templates, section 6, The log).
 const forPlayers = (log: LogEntry[]) => log.map((e) => ({ ...e, by: 'the owner' }))
 
@@ -304,13 +398,14 @@ export async function playerRoute(req: Request, ctx: Ctx | null): Promise<Respon
       if (id !== null) {
         if (!UUID.test(id)) return json({ error: 'bad_request' }, 400)
         const d = (await ctx.book.details([id])).get(id)
-        const m = d && (await ctx.engine.markets(d.subject, reader)).find((x) => x.id === id)
+        const m = d && opened(ctx, d) ? (await ctx.engine.markets(d.subject, reader)).find((x) => x.id === id) : undefined
         if (!d || !m) return json({ error: 'no_market' }, 404)
         return json({ market: { ...m, details: d }, log: forPlayers(await ctx.book.history(id)) })
       }
       const subject = q.get('subject') ?? ''
       if (!parseSubject(subject)) return json({ error: 'bad_request' }, 400)
-      return json({ markets: await withDetails(ctx, await ctx.engine.markets(subject, reader)) })
+      const markets = await withDetails(ctx, await ctx.engine.markets(subject, reader))
+      return json({ markets: markets.filter((m) => m.details && opened(ctx, m.details)) })
     }
     if (req.method !== 'POST') return json({ error: 'method_not_allowed' }, 405)
     if (!claims) return json({ error: 'unauthenticated' }, 401)
@@ -337,7 +432,7 @@ export async function playerRoute(req: Request, ctx: Ctx | null): Promise<Respon
       if (b.side !== 'yes' && b.side !== 'no') return json({ error: 'bad_request' }, 400)
       if (typeof b.shares !== 'number') return json({ error: 'bad_request' }, 400)
       const d = (await ctx.book.details([b.marketId])).get(b.marketId)
-      if (!d) return json({ error: 'no_market' }, 400)
+      if (!d || !opened(ctx, d)) return json({ error: 'no_market' }, 400)
       if (ctx.now().getTime() >= Date.parse(d.closesAt)) return json({ error: 'trading_closed' }, 400)
       return json(await ctx.engine.trade(claims.sub, b.marketId, b.side as Side, b.shares))
     }
@@ -350,9 +445,68 @@ export async function playerRoute(req: Request, ctx: Ctx | null): Promise<Respon
 
 const NO_LOG = { figure: null, threshold: null, outcome: null, sourceUrl: null, releaseName: null, releaseId: null, scheduleDoc: null, readOn: null, reason: null }
 
-// The owner's console: GET lists every market with its details and flags; POST create (from a template only),
-// schedule-check, resolve (from the figure, confirmed by the owner) and void (with a reason). Every action is logged.
-// Works while markets are off, so markets can be prepared dark.
+/**
+ * Opens a market from a proposal's template fields (section 1 of the templates), visible to players from `opens`.
+ * Returns the error code when the fields fail a template rule, the weekly window or one-market-per-subject.
+ */
+async function openMarket(ctx: Ctx, b: Record<string, unknown>, week: string, by: string): Promise<{ id: string; details: Details } | { error: string; status: number }> {
+  const now = ctx.now()
+  const opens = new Date(Math.max(opensAt(week).getTime(), now.getTime()))
+  const template = TEMPLATES.find((t) => t === b.template)
+  const subject = typeof b.subject === 'string' ? parseSubject(b.subject) : null
+  const doc = (b.scheduleDoc ?? {}) as Record<string, unknown>
+  const src = (b.source ?? {}) as Record<string, unknown>
+  const given = Number.isInteger(b.precision) && (b.precision as number) >= 0 && (b.precision as number) <= 4 ? (b.precision as number) : null
+  const precision = template ? (PRECISION[template] ?? given) : null
+  const ok =
+    template && subject && fitsTemplate(template, subject) && precision !== null &&
+    typeof b.threshold === 'number' && b.threshold > 0 && b.threshold < 100 &&
+    text(b.question, 200) && b.question.includes('at least') &&
+    text(b.definition, 2000) && text(b.releaseName, 200) && text(b.resolutionLocation, 500) &&
+    typeof b.scheduledDate === 'string' && DATE.test(b.scheduledDate) &&
+    text(doc.name, 200) && typeof doc.url === 'string' && HTTPS.test(doc.url) && typeof doc.readOn === 'string' && DATE.test(doc.readOn) &&
+    text(src.name, 120) && typeof src.url === 'string' && HTTPS.test(src.url)
+  if (!ok || !template || !subject || precision === null) return { error: 'bad_request', status: 400 }
+  // The source publishes Tuesday to Friday of the market's week, so it settles by Saturday 09:00 IST.
+  if (!inWeek(week, b.scheduledDate as string)) return { error: 'outside_week', status: 400 }
+  const subjectId = b.subject as string
+  // One open market per subject while markets are yes-or-no.
+  const taken = (await ctx.engine.adminMarkets()).some((m) => m.subject === subjectId && (m.status === 'open' || m.status === 'resolving'))
+  if (taken) return { error: 'subject_taken', status: 409 }
+  const close = closesAt(template, subject, b.scheduledDate as string)
+  if (close.getTime() <= opens.getTime()) return { error: 'already_closed', status: 400 }
+  const id = await ctx.engine.createMarket({
+    subject: subjectId,
+    question: b.question as string,
+    criteria: b.definition as string,
+    category: template,
+    resolutionDate: new Date(b.scheduledDate as string).toISOString(),
+    priorYes: 0.5,
+    source: { name: src.name as string, url: src.url as string },
+  })
+  const details: Details = {
+    marketId: id,
+    template,
+    subject: subjectId,
+    threshold: b.threshold as number,
+    precision,
+    definition: b.definition as string,
+    releaseName: b.releaseName as string,
+    scheduledDate: new Date(b.scheduledDate as string).toISOString(),
+    scheduleDoc: { name: doc.name as string, url: doc.url as string, readOn: doc.readOn as string },
+    closesAt: close.toISOString(),
+    resolutionLocation: b.resolutionLocation as string,
+    opensAt: opens.toISOString(),
+  }
+  await ctx.book.save(details)
+  await ctx.book.log({ ...NO_LOG, marketId: id, subject: subjectId, action: 'create', threshold: details.threshold, scheduleDoc: details.scheduleDoc.name, readOn: details.scheduleDoc.readOn, by })
+  return { id, details }
+}
+
+// The owner's console: GET lists every market with its details, flags and any prepared settlement, and the week's
+// proposals; POST approve or reject a proposal, schedule-check, resolve (from the figure, confirmed by the owner) and
+// void (with a reason). There is no free create: markets come only from approved proposals (decision 0018). Every
+// action is logged. Works while markets are off, so the weekly cycle can run dark.
 export async function adminRoute(req: Request, ctx: Ctx | null): Promise<Response> {
   if (!ctx) return json({ error: 'not_configured' }, 503)
   try {
@@ -364,65 +518,38 @@ export async function adminRoute(req: Request, ctx: Ctx | null): Promise<Respons
 
     if (req.method === 'GET') {
       const markets = await withDetails(ctx, await ctx.engine.adminMarkets())
+      const settlements = await ctx.book.settlements(markets.map((m) => m.id))
+      const proposals = await ctx.book.proposals()
       return json({
         markets: markets.map((m) => ({
           ...m,
+          upcoming: !!m.details && !opened(ctx, m.details),
           closed: !!m.details && now.getTime() >= Date.parse(m.details.closesAt),
-          checkDue: m.status === 'open' && !!m.details && checkDue(m.details.scheduledDate, now),
+          checkDue: m.status === 'open' && !!m.details && checkDue(m.details.scheduledDate, m.details.scheduleDoc.readOn, now),
           overdue: m.status === 'open' && graceOver(m.resolutionDate, now),
+          settlement: settlements.get(m.id) ?? null,
         })),
+        proposals: proposals.map((p) => ({ ...p, opensAt: opensAt(p.week).toISOString(), settleBy: settleBy(p.week).toISOString() })),
       })
     }
     if (req.method !== 'POST') return json({ error: 'method_not_allowed' }, 405)
     const b = await body(req)
 
-    if (b.action === 'create') {
-      const template = TEMPLATES.find((t) => t === b.template)
-      const subject = typeof b.subject === 'string' ? parseSubject(b.subject) : null
-      const doc = (b.scheduleDoc ?? {}) as Record<string, unknown>
-      const src = (b.source ?? {}) as Record<string, unknown>
-      const given = Number.isInteger(b.precision) && (b.precision as number) >= 0 && (b.precision as number) <= 4 ? (b.precision as number) : null
-      const precision = template ? (PRECISION[template] ?? given) : null
-      const ok =
-        template && subject && fitsTemplate(template, subject) && precision !== null &&
-        typeof b.threshold === 'number' && b.threshold > 0 && b.threshold < 100 &&
-        text(b.question, 200) && b.question.includes('at least') &&
-        text(b.definition, 2000) && text(b.releaseName, 200) && text(b.resolutionLocation, 500) &&
-        typeof b.scheduledDate === 'string' && DATE.test(b.scheduledDate) && Date.parse(b.scheduledDate) > now.getTime() &&
-        text(doc.name, 200) && typeof doc.url === 'string' && HTTPS.test(doc.url) && typeof doc.readOn === 'string' && DATE.test(doc.readOn) &&
-        text(src.name, 120) && typeof src.url === 'string' && HTTPS.test(src.url)
-      if (!ok || !template || !subject || precision === null) return json({ error: 'bad_request' }, 400)
-      const subjectId = b.subject as string
-      // One open market per subject while markets are yes-or-no.
-      const taken = (await ctx.engine.adminMarkets()).some((m) => m.subject === subjectId && (m.status === 'open' || m.status === 'resolving'))
-      if (taken) return json({ error: 'subject_taken' }, 409)
-      const close = closesAt(template, subject, b.scheduledDate as string)
-      if (close.getTime() <= now.getTime()) return json({ error: 'already_closed' }, 400)
-      const id = await ctx.engine.createMarket({
-        subject: subjectId,
-        question: b.question as string,
-        criteria: b.definition as string,
-        category: template,
-        resolutionDate: new Date(b.scheduledDate as string).toISOString(),
-        priorYes: 0.5,
-        source: { name: src.name as string, url: src.url as string },
-      })
-      const details: Details = {
-        marketId: id,
-        template,
-        subject: subjectId,
-        threshold: b.threshold as number,
-        precision,
-        definition: b.definition as string,
-        releaseName: b.releaseName as string,
-        scheduledDate: new Date(b.scheduledDate as string).toISOString(),
-        scheduleDoc: { name: doc.name as string, url: doc.url as string, readOn: doc.readOn as string },
-        closesAt: close.toISOString(),
-        resolutionLocation: b.resolutionLocation as string,
+    if (b.action === 'approve' || b.action === 'reject') {
+      if (typeof b.proposalId !== 'string' || !UUID.test(b.proposalId)) return json({ error: 'bad_request' }, 400)
+      const p = (await ctx.book.proposals()).find((x) => x.id === b.proposalId)
+      if (!p) return json({ error: 'no_proposal' }, 404)
+      if (p.status !== 'proposed') return json({ error: 'already_decided' }, 409)
+      if (b.action === 'reject') {
+        const reason = typeof b.reason === 'string' && b.reason.trim() ? b.reason.trim().slice(0, 500) : null
+        await ctx.book.decide(p.id, 'rejected', null, reason, by)
+        return json({ ok: true })
       }
-      await ctx.book.save(details)
-      await ctx.book.log({ ...NO_LOG, marketId: id, subject: subjectId, action: 'create', threshold: details.threshold, scheduleDoc: details.scheduleDoc.name, readOn: details.scheduleDoc.readOn, by })
-      return json({ id, closesAt: details.closesAt })
+      if (now.getTime() >= settleBy(p.week).getTime()) return json({ error: 'week_over' }, 409)
+      const made = await openMarket(ctx, p.body, p.week, by)
+      if ('error' in made) return json({ error: made.error }, made.status)
+      await ctx.book.decide(p.id, 'approved', made.id, null, by)
+      return json({ id: made.id, opensAt: made.details.opensAt, closesAt: made.details.closesAt })
     }
 
     if (typeof b.marketId !== 'string' || !UUID.test(b.marketId)) return json({ error: 'bad_request' }, 400)
