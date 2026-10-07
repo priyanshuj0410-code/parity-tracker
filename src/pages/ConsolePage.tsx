@@ -73,14 +73,13 @@ function AdminRow({ m, onChange }: { m: AdminMarket; onChange: () => void }) {
       <div className="admin-top">
         <a className="admin-q" href={`/market?id=${m.id}`}>{m.question}</a>
         <span className="flags">
-          <span className="badge">{STATUS[m.status]}{m.outcome ? `: ${m.outcome}` : ''}</span>
-          {live && m.closed && <span className="badge">Closed</span>}
+          <span className="badge">{live && m.closed ? 'Trading closed' : STATUS[m.status]}{m.outcome ? `: ${m.outcome}` : ''}</span>
           {m.checkDue && <span className="badge warn">Check due</span>}
           {m.overdue && <span className="badge bad">Overdue</span>}
         </span>
       </div>
       <p className="small muted admin-meta">
-        <code>{m.subject}</code> · Yes {outOf100(m.priceYes)} out of 100 · {m.holders} holders · {m.trades} trades
+        <code>{m.subject}</code> · Yes {outOf100(m.priceYes)} out of 100 · {m.holders} {m.holders === 1 ? 'holder' : 'holders'} · {m.trades} {m.trades === 1 ? 'trade' : 'trades'}
         {d && <> · closes {istTime(d.closesAt)} · release due {istDate(d.scheduledDate)}</>}
       </p>
       {live && d && (

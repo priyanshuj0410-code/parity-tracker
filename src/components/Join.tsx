@@ -60,9 +60,9 @@ export function Join({ account, onDone }: { account: Account | null; onDone: () 
           <h2 ref={head} tabIndex={-1}>Markets are for adults</h2>
           <p>Nothing you entered was kept.</p>
           {account && <p className="small">To delete your sign-in, write to the grievance contact{GRIEVANCE_EMAIL ? <>: <a href={`mailto:${GRIEVANCE_EMAIL}`}>{GRIEVANCE_EMAIL}</a></> : ', named here before markets open'}.</p>}
+          {/* No link to /play: Spot the Stereotype is for adults too. */}
           <div className="actions-row">
             <a className="go" href={href('')}>Go to indexes</a>
-            <a className="go" href={href('play')}>Guess the figure</a>
           </div>
         </div>
       )}
