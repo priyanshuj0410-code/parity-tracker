@@ -43,6 +43,7 @@ def is_latest(fy):  # FY2025-26 or later (a calendar 2025 report counts: it is t
 
 def reporting_year(t):
     """'2025-26', 'CY2025', '~2025-26' when only inferred from FY mentions, 'unread', or None."""
+    t = t.replace('‐', '-').replace('‑', '-')  # Unicode and non-breaking hyphens (Mastek prints "2025‑26")
     m = re.search(r'Financial\s+year\s+(?:for\s+which\s+(?:the\s+)?(?:BRSR\s+|report(?:ing)?)|reported)([\s\S]{0,220})', t, re.I)
     if not m:
         # No Section A label: the latest year the report mentions at least twice. A BRSR names its own year and the one
@@ -72,6 +73,9 @@ def reporting_year(t):
     if s and int(s.group(2)) == (int(s.group(1)) + 1) % 100: return f'{s.group(1)}-{s.group(2)}'
     if y and re.search(r'Jan', w, re.I) and re.search(r'Dec', w, re.I): return f'CY{max(y)}'
     if len(y) > 1 and y[1] == y[0] + 1: return f'{y[0]}-{str(y[1])[2:]}'  # "April 1, 2025 to March 31, 2026"
+    # A transitional year longer than twelve months is the year it ends in: Siemens' "October 1, 2024 - March 31, 2026
+    # (18 Months Period)" is its FY2025-26 filing.
+    if len(y) > 1 and max(y) - min(y) >= 2: return f'{max(y) - 1}-{str(max(y))[2:]}'
     if y: return f'{min(y)}-{str(min(y) + 1)[2:]}' if len(set(y)) > 1 or re.search(r'April|01[./-]04', w, re.I) else f'{y[0] - 1}-{str(y[0])[2:]}'
     # A two-column layout can push the value past the label's window ("1st January to 31st December 2023" a few lines down).
     far = re.search(r'January[\s\S]{0,40}?(?:to|-|–)[\s\S]{0,12}?December\s*(?:\d{1,2}(?:st|nd|rd|th)?)?,?\s*(20[12]\d)', t[m.start(1):m.start(1) + 900], re.I)
