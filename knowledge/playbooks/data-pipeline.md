@@ -19,6 +19,7 @@ plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/25f85b77-2bcc-40a5-9ef9-0ac94da273e0
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/c28ef6bf-a0a1-41de-8d63-8f91ab8ef68a
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/59edeb77-637d-4ab4-924e-43b8a22072b5
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/2b377e00-9ef4-4fc1-9acd-77a811cf248f
 ---
 
 # India data pipeline
@@ -75,7 +76,10 @@ Run these in a scratch folder with the scripts and inputs copied in.
   3. The old order: rupees, then crore, then lakh, at ₹1 lakh to ₹1 crore a head.
 
   A rescaled total is `dq` 2. A total equal to the headcount is a pasted headcount and is not used. Million and crore readings both fit a head for most companies, so step 1 matters: before it, Bata India's ₹302 crore read as ₹3,018 crore.
-- **Wage units input:** `india/wage_units.json` records readings settled by hand, each with the filed number, its unit, `column: prior` when it comes from the next filing's prior-year column, and the evidence. `build_data.py` applies it over the extraction.
+- **Wage units input:** `india/wage_units.json` records readings settled by hand, each with the filed number, its unit, `column: prior` when it comes from the next filing's prior-year column, and the evidence. `build_data.py` applies it over the extraction; `rebuild_records.py` and the BRSR build's `to_records.py` apply it to the stored records.
+  - `unit: null` drops the payroll. `filed` is then the filed figure where it is known exactly, else null.
+  - A total confirmed as genuine, however high or low a head, has `unit: rupees` and `filed` equal to the stored total. It changes nothing, and it records that the year was checked (PARITY-131).
+  - Only a year with a reported share takes the entry's `dq` and note. A share left out or estimated keeps its own.
 - **Estimates:** missing wage totals are estimated from median pay × headcount by category (`dq` 3, `wKind: estimated`). An estimate is kept only if it passes the per-head check. Estimates are never joined to reported trend lines.
 - **Earlier years:** each filing's prior-year column fills the previous year when that year has no reported value.
 - **Basis changes:** payroll outside 0.55–1.8×, headcount outside 0.6–1.6×, or a boundary switch versus the previous reported year sets `basisChange`. Those pairs are left out of like-for-like YoY.
@@ -219,6 +223,8 @@ Scripts are in `pipeline/logos/`. They edit the pulled `public/logos/{safe}.png`
   - 15 company-years were read ten times too high or too low: Aether, Bata, Bosch, CESC, Firstsource, Gabriel, IndiGo, LG Electronics, Motherson Sumi Wiring, PI Industries, Schaeffler and Signature Global. All are in millions; each is in `india/wage_units.json` with its evidence.
   - Every one was checked against the company's audited employee benefits expense. IndiGo was checked against market-data summaries only, as its results page did not load.
   - Polycab filed exactly 10000.00 for FY2023-24 and FY2024-25, a placeholder, so those payrolls are left out. CESC's 10000.00 is a rounded figure and fits as millions.
+- **Payrolls outside ₹1.5 lakh to ₹75 lakh a head (PARITY-131, 12 October 2026):** all 62 stored company-years are settled in `india/wage_units.json`. 16 were PARITY-95's, which had never reached Firestore. 11 more are genuine. 35 have no usable total: median estimates kept where no total was filed, a month's wages, a headcount, a digit too many. Details, index moves and follow-ups: [research/india-payroll-units-2026-10.md](../research/india-payroll-units-2026-10.md).
+  - `extract_all.py`'s prior-column merge (`W=p['W'] or y['W']`) keeps a year's median estimate as its payroll under the next filing's "payroll total missing" note. 98 such years sit inside the band.
 - **Wages far from employee costs, unit not in question:**
   - Gabriel's FY2024-25 wages (₹117 crore) are 51% of its expense (₹232 crore).
   - Bata's FY2025-26 wages (₹302 crore) are 67% of its expense, down from 92%; it ran a voluntary retirement scheme that year.

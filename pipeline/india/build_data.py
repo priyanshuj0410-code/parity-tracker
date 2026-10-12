@@ -21,7 +21,10 @@ for s_,ys_ in AR.items():
 for s_,ys_ in json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'wage_units.json'))).items():
     for y_,u in ys_.items():
         if y_ not in cy.get(s_,{}): continue
-        cy[s_][y_].update(W=u['filed']*UNITS[u['unit']] if u['unit'] else None,dq=2 if u['unit'] not in (None,'rupees') else 1,
+        W_=u['filed']*UNITS[u['unit']] if u['unit'] else None
+        # A reading that gives the extracted payroll confirms it (a genuinely high or low pay per head) and changes nothing.
+        if (round(W_/1e7) if W_ else None)==(round(cy[s_][y_]['W']/1e7) if cy[s_][y_].get('W') else None): continue
+        cy[s_][y_].update(W=W_,dq=2 if u['unit'] not in (None,'rupees') else 1,
             note=('from next year filing (prior-year column); ' if u.get('column')=='prior' else '')+unit_note(u['unit']))
 mcap={}
 # The latest NSE market-cap file in the folder (mcapDDMMYYYY.csv), so a refresh needs no code change.
