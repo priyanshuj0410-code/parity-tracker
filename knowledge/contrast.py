@@ -96,7 +96,7 @@ for theme, t in THEMES.items():
 
     print(f"\n=== {theme.upper()}: NON-TEXT (3:1) ===")
     for g in GROUNDS:
-        check(theme, f"--line-control (pill edge) on {g}", "--line-control", g, 3.0)
+        check(theme, f"--line-control (control edge: pills, search, select, dd, icon and quiet buttons) on {g}", "--line-control", g, 3.0)
     check(theme, "--soft (field edge) on --card", "--soft", "--card", 3.0)
     for g in GROUNDS:
         check(theme, f"--violet (focus ring) on {g}", "--violet", g, 3.0)

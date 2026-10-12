@@ -70,7 +70,7 @@ Source: The Equal Lens brand package (`equal-lens` skill, `references/brand.md` 
 | `--violet-deep` | `#42266B` | Hover on links and buttons |
 | `--mist` | `#E7E0F1` | Hairline rules, chart gridlines |
 | `--line` | `#E7DEF4` | Card borders |
-| `--line-control` | `#9181AF` | The edge of a pill filter: 3.3 on paper, 3.5 on card, 3.1 on tint, so the pill reads as a control without its label. Dark: `#7A6D96`. `--line` stays the hairline for cards, rules and the other controls |
+| `--line-control` | `#9181AF` | The edge of a control whose edge is how it is found: pill filters, the search field and selects, `.dd-btn`, `.btn-icon` and `.btn-quiet`. 3.3 on paper, 3.5 on card, 3.1 on tint. Dark: `#7A6D96`. Hover darkens it to `--soft`. `--line` stays the hairline for cards, rules and panels |
 | `--tint` | `#F4F0FA` | Chips, table header fill, selected row |
 | `--good` | `#0F6E56` | Text for increases (teal deep) |
 | `--bad` | `#A9442F` | Text for decreases (coral deep, 5.3 on tint) |
