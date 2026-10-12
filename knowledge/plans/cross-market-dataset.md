@@ -35,7 +35,7 @@ The Parity dataset began as India's BRSR filer build ([india-brsr-1000.md](india
    - the data points each measure needs;
    - for each market, whether each data point is readily available (disclosed), computable (and from what, exact or approximate), or not available at all.
 
-   It starts from Nivel's own measures and widens to the least common multiple of every regime ([../research/gender-disclosure-crosswalk.md](../research/gender-disclosure-crosswalk.md), to come).
+   It starts from Nivel's own measures and widens to the least common multiple of every regime: [../research/gender-disclosure-crosswalk.md](../research/gender-disclosure-crosswalk.md), built 12 October 2026 with 324 data points and 33 measures; 125 more items found in the classification wait for the next pass.
 7. **Later, not now:** use that table to ask organisations to share the data points as their own systems report them. The data points therefore get stable ids and definitions, so a company can be asked for exactly them.
 
 ## Order of work
