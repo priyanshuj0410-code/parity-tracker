@@ -19,16 +19,20 @@ indexes = json.load(open(os.path.join(d, 'indexes.json')))
 was = json.loads(json.dumps([companies, indexes]))
 
 def apply_units(companies, units):
-    """Each corrected reading: the filed number in the unit the evidence shows, or no payroll when `unit` is null."""
+    """Each corrected reading: the filed number in the unit the evidence shows, or no payroll when `unit` is null (with
+    `filed` null when no total was filed). A reading that gives the stored payroll confirms it and changes nothing."""
     done = []
     for s, ys in units.items():
         for y, u in ys.items():
             v = companies.get(s, {}).get('years', {}).get(y)
             if v is None: raise SystemExit(f'wage_units.json: no record for {s} {y}')
-            v['payrollCr'] = round(u['filed']*UNITS[u['unit']]/1e7) if u['unit'] else None
-            v['dq'] = 2 if u['unit'] not in (None, 'rupees') else 1
-            v['note'] = friendly(('from next year filing (prior-year column); ' if u.get('column') == 'prior' else '')+unit_note(u['unit']))
-            done.append(f'{s} {y}: {u["filed"]:g} in {u["unit"]}, ₹{v["payrollCr"]:,} crore' if u['unit'] else f'{s} {y}: {u["filed"]:g} unusable, no payroll')
+            p = round(u['filed']*UNITS[u['unit']]/1e7) if u['unit'] else None
+            if v.get('payrollCr') == p: continue
+            v['payrollCr'] = p
+            if v.get('wKind') == 'reported':  # a share left out or estimated keeps its own dq and note
+                v['dq'] = 2 if u['unit'] not in (None, 'rupees') else 1
+                v['note'] = friendly(('from next year filing (prior-year column); ' if u.get('column') == 'prior' else '')+unit_note(u['unit']))
+            done.append(f'{s} {y}: {u["filed"]:g} in {u["unit"]}, ₹{p:,} crore' if u['unit'] else f'{s} {y}: no usable total, no payroll')
     return done
 
 if not check:
