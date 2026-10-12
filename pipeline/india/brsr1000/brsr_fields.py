@@ -71,6 +71,12 @@ def reporting_year(t):
     y = [int(a) for a in re.findall(r'(?<!\d)(20[12]\d)(?!\d)', w) if 2020 <= int(a) <= 2027]
     s = re.search(r'(?<!\d)(20[12]\d)\s*[-–/]\s*(?:20)?(\d\d)(?!\d)', w)
     if s and int(s.group(2)) == (int(s.group(1)) + 1) % 100: return f'{s.group(1)}-{s.group(2)}'
+    # Numeric dates: Elantas Beck's "01.01.2025 - 31.12.2025" has no month names for the Jan/Dec check below.
+    d = re.search(r'(?<!\d)0?1([./-])(0?[14])\1(20[12]\d)\s*(?:to|-|–)\s*(3[01])([./-])(\d\d)\5(20[12]\d)(?!\d)', w, re.I)
+    if d:
+        m1, y1, d2, m2, y2 = int(d.group(2)), int(d.group(3)), int(d.group(4)), int(d.group(6)), int(d.group(7))
+        if (m1, d2, m2) == (1, 31, 12) and y2 == y1: return f'CY{y1}'
+        if (m1, d2, m2) == (4, 31, 3) and y2 == y1 + 1: return f'{y1}-{str(y2)[2:]}'
     if y and re.search(r'Jan', w, re.I) and re.search(r'Dec', w, re.I): return f'CY{max(y)}'
     if len(y) > 1 and y[1] == y[0] + 1: return f'{y[0]}-{str(y[1])[2:]}'  # "April 1, 2025 to March 31, 2026"
     # A transitional year longer than twelve months is the year it ends in: Siemens' "October 1, 2024 - March 31, 2026
