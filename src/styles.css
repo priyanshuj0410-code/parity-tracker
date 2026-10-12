@@ -9,6 +9,7 @@
   --violet-deep: #42266B;
   --mist: #E7E0F1;
   --line: #E7DEF4;
+  --line-control: #9181AF;
   --tint: #F4F0FA;
   --stage: #F4F0FA;
   --good: #0F6E56;
@@ -32,7 +33,7 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --paper: #16111E; --card: #1F1829; --ink: #F2EEF8; --body: #CEC5DD; --soft: #AA9CC6; --muted: #9B8FB4;
-    --violet: #C3A8F0; --violet-deep: #D7C4F7; --mist: #2C2339; --line: #352B45; --tint: #2A2138; --stage: #ECE6F5;
+    --violet: #C3A8F0; --violet-deep: #D7C4F7; --mist: #2C2339; --line: #352B45; --tint: #2A2138; --stage: #ECE6F5; --line-control: #7A6D96;
     --good: #4CC79A; --bad: #FF8A6E; --sun-deep: #F2C05C;
     --s1: #9F78DD; --s2: #0BA0AD; --s3: #DA5D8A;
     --on-accent: #16111E; --shadow: rgba(0, 0, 0, .45);
@@ -43,7 +44,7 @@
 }
 :root[data-theme="dark"] {
   --paper: #16111E; --card: #1F1829; --ink: #F2EEF8; --body: #CEC5DD; --soft: #AA9CC6; --muted: #9B8FB4;
-  --violet: #C3A8F0; --violet-deep: #D7C4F7; --mist: #2C2339; --line: #352B45; --tint: #2A2138; --stage: #ECE6F5;
+  --violet: #C3A8F0; --violet-deep: #D7C4F7; --mist: #2C2339; --line: #352B45; --tint: #2A2138; --stage: #ECE6F5; --line-control: #7A6D96;
   --good: #4CC79A; --bad: #FF8A6E; --sun-deep: #F2C05C;
   --s1: #9F78DD; --s2: #0BA0AD; --s3: #DA5D8A;
   --on-accent: #16111E; --shadow: rgba(0, 0, 0, .45);
@@ -137,7 +138,7 @@ strong { color: var(--ink); font-weight: 700; }
 .spark-empty { display: inline-block; width: 96px; }
 
 .pills { display: flex; flex-wrap: wrap; gap: 6px; }
-.pill { font: 500 13px var(--font-display); padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--body); cursor: pointer; }
+.pill { font: 500 13px var(--font-display); padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line-control); background: var(--card); color: var(--body); cursor: pointer; }
 @media (hover: hover) { .pill:hover { border-color: var(--soft); color: var(--ink); } }
 .pill.on { background: var(--violet); border-color: var(--violet); color: var(--on-accent); }
 .theme-toggle, .icon-btn { flex: none; display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 10px; border: 0; background: transparent; color: var(--body); cursor: pointer; }

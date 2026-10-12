@@ -70,6 +70,7 @@ Source: The Equal Lens brand package (`equal-lens` skill, `references/brand.md` 
 | `--violet-deep` | `#42266B` | Hover on links and buttons |
 | `--mist` | `#E7E0F1` | Hairline rules, chart gridlines |
 | `--line` | `#E7DEF4` | Card borders |
+| `--line-control` | `#9181AF` | The edge of a pill filter: 3.3 on paper, 3.5 on card, 3.1 on tint, so the pill reads as a control without its label. Dark: `#7A6D96`. `--line` stays the hairline for cards, rules and the other controls |
 | `--tint` | `#F4F0FA` | Chips, table header fill, selected row |
 | `--good` | `#0F6E56` | Text for increases (teal deep) |
 | `--bad` | `#A9442F` | Text for decreases (coral deep, 5.3 on tint) |
@@ -98,6 +99,7 @@ Every light text token passes WCAG AA (4.5:1) on card, paper and tint. The 2026-
 | `--muted` | `#9B8FB4` | 6.2 (5.1 on tint) |
 | `--violet` | `#C3A8F0` | 9.0 |
 | `--mist` / `--line` / `--tint` | `#2C2339` / `#352B45` / `#2A2138` | rules, borders, fills |
+| `--line-control` | `#7A6D96` | 3.9 (3.2 on tint) |
 | `--good` / `--bad` | `#4CC79A` / `#FF8A6E` | 8.8 / 8.0 |
 | `--sun-deep` | `#F2C05C` | 11.0 |
 | `--on-accent` | `#16111E` | text on violet pills (9.0) |
@@ -298,7 +300,7 @@ The internal dashboard (section 8) has its own scale of six sizes.
   - coloured by direction from first to last point (`--good`, `--bad`, `--muted`)
   - always paired with an explicit number or table, never on its own
   - only reported values are plotted
-- **Pill filters:** 999px radius, white with `--line` border; selected is violet fill with white text and `aria-pressed`. Used for index filters instead of selects. On phones, a filter group is one row that scrolls sideways rather than wrapping onto several lines.
+- **Pill filters:** 999px radius, white with a `--line-control` border (3:1 on paper, card and tint in both themes, because a pill is a control and its edge is part of how it is found); selected is violet fill with white text and `aria-pressed`. Used for index filters instead of selects. On phones, a filter group is one row that scrolls sideways rather than wrapping onto several lines.
 - **Explainer disclosure:** definitions that every visitor does not need sit in a collapsed "What the numbers mean" disclosure (violet summary with a chevron) under the page lead, not as a paragraph above the controls.
 - **Cross-market rule:** every headline is now women's share of pay with parity at 50% (Japan and the EU since PARITY-20), so index headlines can sit side by side. Rankings across markets still use the market percentile, and the basis is always stated nearby.
 
