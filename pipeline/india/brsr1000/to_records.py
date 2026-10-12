@@ -309,6 +309,32 @@ def shift_calendar(s):
     report.setdefault('calendarShifted', []).append(s)
 
 prior_of, group, gone, added_est, sym_of = {}, set(), set(), set(), {}  # prior_of[(symbol, year)]: the next year's filing's prior-year column
+reason_of = {}  # reason_of[(symbol, year)]: the next year's filing's own words on restating that year, or None
+
+RESTATE = re.compile(r'restat|redefin|(?-i:\bISF\b)|Industry Standards|methodolog|calculation method|not comparable|reclassif|regroup', re.I)
+NOT_COMPARABLE = re.compile(r'not comparable|merged entity|demerg|amalgamat', re.I)
+
+def restatement_note(k):
+    """The FY2025-26 filing's own words on a restated or not comparable prior year, from the 45 lines after its wage
+    share table (KPR Mill: "FY24-25 restated by redefining wages as per ISF"), or None."""
+    p = P('latest', 'txt', k + '.txt')
+    if not os.path.exists(p): return None
+    t = open(p, errors='ignore').read()
+    m = re.search(r'Gross wages paid to females', t)
+    if not m: return None
+    hits = [l.strip() for l in t[m.start(): m.start() + 4000].splitlines()[:45] if RESTATE.search(l) and not re.search(r'escalat|grievance', l, re.I)]
+    hits.sort(key=lambda l: not re.search(r'restat|not comparable', l, re.I))
+    return re.sub(r'\s+', ' ', hits[0]).strip(' *.')[:160] if hits else None
+
+def staff_split(v):
+    """India's BRSR staff categories by gender, for the company page and its insights: permanent employees, permanent
+    workers and key managerial personnel."""
+    hc = v.get('headcount') or {}
+    def split(src):
+        wn, mn, tot = num(g(src, 'women')), num(g(src, 'men')), num(g(src, 'total'))
+        return {'women': wn, 'men': mn if mn is not None else tot - wn if tot is not None and wn is not None and tot >= wn else None}
+    out = {name: split(src) for name, src in (('employees', hc.get('permEmployees')), ('workers', hc.get('permWorkers')), ('kmp', v.get('kmp')))}
+    return {k: x for k, x in out.items() if x['women'] is not None and x['men'] is not None and x['women'] + x['men'] > 0} or None
 
 for k, v in sorted(Q.items()):
     if v['status'] == 'merged': continue
@@ -334,6 +360,9 @@ for k, v in sorted(Q.items()):
             if lv: c['years'][LATEST]['levels'] = lv
             if fn: c['years'][LATEST]['functions'] = fn
             report['finerAdded'] += bool(lv or fn)
+            sp = staff_split(rs[LATEST])
+            if sp: c['years'][LATEST]['staff'] = sp
+            reason_of[(nm, prev(LATEST))] = restatement_note(k)
         sym_of[k] = nm
         if c['years']: group.add(nm)  # a listed company with no BRSR year yet is no filer
         if k in left: gone.add(nm)
@@ -357,12 +386,14 @@ for k, v in sorted(Q.items()):
         if py not in years:
             years[py] = dict(w=rd(p), wKind='reported', fPerm=None, fAll=None, permHeadcount=None, headcount=None, board=None, boardWomen=None,
                              payrollCr=None, dq=1, note='Taken from the prior-year column of the next filing', boundary=years[y]['boundary'], _prior=None, _payEst=False)
-        elif years[py]['w'] is not None and abs(years[py]['w'] - p) > 0.005:
-            years[py]['note'] = '. '.join(filter(None, [years[py]['note'], f'Restated in the next filing to {p * 100:.1f}%']))
+    if LATEST in rs: reason_of[(sym, prev(LATEST))] = restatement_note(k)
     jumps(years)
     lv, fn = finer(last)
     if lv: years[max(rs)]['levels'] = lv
     if fn: years[max(rs)]['functions'] = fn
+    for y, r in rs.items():
+        sp = staff_split(r)
+        if sp: years[y]['staff'] = sp
     rec = dict(symbol=sym, name=name, industry=ind, isin=i.get('isin'), cin=i.get('cin') or v.get('cin'), country='IN', exchange='NSE' if i.get('nse') else 'BSE',
                indexes=[], marketCapCr=None, publicFloatPct=None, years={y: years[y] for y in sorted(years)},
                filings={max(rs): filing(v)}, payrollWeightCr=None, payrollWeightBasis=None)
@@ -397,6 +428,43 @@ for s in stored:  # a stored restatement ("Restated in the next filing to 16.5%"
         if m: prior_of.setdefault((s, y), float(m.group(1)) / 100)
 for c in new.values():
     for r in c['years'].values(): r.pop('_prior', None)
+
+# A merger or demerger breaks each surviving party's figures in the first year that includes it (relations.break_fy),
+# for the group's arithmetic and for restatements; the records keep their own basis flags.
+breaks = {}
+for e in EV:
+    y = REL.break_fy(e)
+    for x in [p for side in ('from', 'to') if e['kind'] != 'merger' or side == 'to' for p in e[side]]:
+        s = sym_of.get(x.get('key'))
+        if s and y in YEARS: breaks[(s, y)] = e['kind']
+report['breaks'] = sorted(f'{s} {y} {k}' for (s, y), k in breaks.items())
+
+def restate(s, y, R):
+    """Decision 0020: a later filing supersedes an earlier one for the same year, unless it says they are not
+    comparable. Rounding (under 0.1 pp, or 0.5 pp against a whole percent) changes nothing; a merger, demerger, boundary
+    change or the filing's own "not comparable" keeps the filed figure and breaks the change; an unexplained move of 5
+    points or more is held for a reading check; anything else replaces the year's figure, keeps the filed one, and
+    breaks the change into it, since the year is now on the next year's basis."""
+    c = companies[s]; r, n = c['years'].get(y), c['years'].get(nxt(y))
+    if not r or r.get('w') is None or r.get('wKind') != 'reported' or 'wFiled' in r: return
+    d, why = R - r['w'], reason_of.get((s, y))
+    whole = any(abs(x * 100 - round(x * 100)) < 1e-6 for x in (R, r['w']))
+    old = re.sub(r'\.?\s*Restated in the next filing to [0-9.]+%', '', r.get('note') or '').strip()
+    if abs(d) < (0.005 if whole else 0.001): r['note'] = old; return
+    if (s, nxt(y)) in breaks or (n and r.get('boundary') and n.get('boundary') and r['boundary'] != n['boundary']) or (why and NOT_COMPARABLE.search(why)):
+        r['note'] = old
+        if n:
+            n['basisChange'] = True
+            n['note'] = '. '.join(filter(None, [n.get('note'), f"Not comparable with {fy_label(y)}" + (f': "{why}"' if why else '')]))
+        prior_of.pop((s, y), None); report.setdefault('notComparable', []).append([s, y, r['w'], rd(R), why]); return
+    if abs(d) >= 0.05 and not why: report.setdefault('restatementsHeld', []).append([s, y, r['w'], rd(R)]); return
+    r.update(wFiled=r['w'], w=rd(R), restatedIn=nxt(y), basisChange=True,
+             note='. '.join(filter(None, [old, f"Restated in the {fy_label(nxt(y))} filing; filed as {r['w'] * 100:.1f}%" + (f' ("{why}")' if why else '')])))
+    if why: r['restatedNote'] = why
+    report.setdefault('restated', []).append([s, y, r['wFiled'], r['w'], why])
+
+fy_label = lambda y: f'FY{y[5:]}'
+for (s, y), R in sorted(prior_of.items()): restate(s, y, R)
 for s in group:
     if 'brsrall' not in companies[s]['indexes']: companies[s]['indexes'].append('brsrall')
 unmapped = sorted({c['industry'] for c in companies.values() if not sector(c['industry'])})
@@ -406,15 +474,6 @@ assert not unmapped, f'industries sectors.py cannot map: {unmapped}'
 def W(s, y): return (companies[s]['years'].get(y) or {}).get('w')
 def R(s, y): return companies[s]['years'].get(y) or {}
 
-# A merger or demerger breaks each surviving party's figures in the first year that includes it (relations.break_fy),
-# for the group's arithmetic only: the records keep their own basis flags.
-breaks = {}
-for e in EV:
-    y = REL.break_fy(e)
-    for x in [p for side in ('from', 'to') if e['kind'] != 'merger' or side == 'to' for p in e[side]]:
-        s = sym_of.get(x.get('key'))
-        if s and y in YEARS: breaks[(s, y)] = e['kind']
-report['breaks'] = sorted(f'{s} {y} {k}' for (s, y), k in breaks.items())
 broken = lambda s, y: R(s, y).get('basisChange') or (s, y) in breaks
 members = sorted(group)  # one order, so the bootstrap draws the same rows every run
 
@@ -562,6 +621,11 @@ for k, ix in stored_ix.items():
     key = lambda yrs, chg: ({y: (v['headline'], v['companiesCovered'], v['companiesReported']) for y, v in yrs.items()}, {p: (v['change'], v['companies']) for p, v in chg.items()})
     if key(res, yy) == key(ix['years'], ix['yoy']): indexes[k] = ix
     else: indexes[k] = dict(ix, years=res, yoy=yy); report.setdefault('indexesChanged', []).append(k)
+
+# A figure under an open data check (Nivel's stored value against the build's reading, or a one-year move of more than
+# 15 points) is marked, so the profile's insights leave it alone until the owner settles it.
+for s, y, *_ in report['crossCheck'] + report.get('jumps', []):
+    if companies[s]['years'].get(y): companies[s]['years'][y]['held'] = True
 
 os.makedirs(os.path.join(dump, 'out'), exist_ok=True)
 json.dump(companies, open(os.path.join(dump, 'out', 'companies.json'), 'w'), separators=(',', ':'))

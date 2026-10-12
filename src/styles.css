@@ -826,3 +826,10 @@ details.decided .admin-list { margin-top: 4px; }
 }
 .btn-danger:active { transform: scale(.96); }
 @media (prefers-reduced-motion: reduce) { .btn-danger:active { transform: none; } }
+
+/* What stands out (PARITY-134): rule-picked sentences as rows in one card, a quiet tab link at each row's end. */
+.card.insights { list-style: none; margin: 0 0 8px; padding: 4px 20px; display: grid; }
+.card.insights li { display: flex; justify-content: space-between; align-items: baseline; gap: 4px 16px; padding: 12px 0; color: var(--ink); font-size: 15px; }
+.card.insights li + li { border-top: 1px solid var(--mist); }
+.card.insights li .go { flex: none; }
+@media (max-width: 720px) { .card.insights li { flex-direction: column; } }

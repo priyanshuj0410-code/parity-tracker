@@ -1,5 +1,6 @@
 import { use, useSyncExternalStore } from 'react'
 import { companyFile } from '../feeds/data-api'
+import { buildContext, insights, type Insight, type InsightContext } from './insights'
 import type { Company, CompanyYear, IndexData, Simulation, Yoy } from '../types'
 
 /**
@@ -275,6 +276,7 @@ export function dataLabel(y?: CompanyYear): { label: string; tone: Tone } {
   if (!y || y.w == null) return { label: 'Missing', tone: 'bad' }
   if (y.wKind === 'estimated') return { label: 'Estimated', tone: 'warn' }
   if (y.reportSources?.length) return { label: 'Company report', tone: 'warn' }
+  if (y.restatedIn) return { label: 'Restated', tone: 'warn' }
   if (y.basisChange) return { label: 'Basis changed', tone: 'warn' }
   if (y.dq === 2) return { label: 'Rescaled', tone: 'warn' }
   return { label: 'Reported', tone: 'ok' }
@@ -297,6 +299,13 @@ export const isGroup = (ix?: IndexData): boolean => ix?.kind === 'group'
 export function publishedChange(ix: IndexData | undefined, key: string): Yoy | undefined {
   const ch = ix?.yoy[key]
   return ch && ch.shown !== false ? ch : undefined
+}
+
+let insightContext: InsightContext | null = null
+/** A company's rule-based insights (src/lib/insights.ts), measured against every company: call once companies have landed. */
+export function companyInsights(c: Company): Insight[] {
+  insightContext ??= buildContext(Object.values(companies), MARKET, sectorBySymbol, Object.values(indexes), INDEX_ORDER)
+  return insights(c, insightContext)
 }
 
 /**

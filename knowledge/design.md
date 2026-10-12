@@ -35,6 +35,7 @@ plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/f47ab7b6-a46f-4d22-83d5-5131790b6a49
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/59edeb77-637d-4ab4-924e-43b8a22072b5
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/711021a8-d0d6-401b-85fc-b60c501dfad7
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/e5e1c562-93d5-4ea0-9dac-976ea4ed89f0
 ---
 
 # Nivel design system
@@ -167,7 +168,7 @@ The internal dashboard (section 8) has its own scale of six sizes.
 ## 5. Components
 - **Stat tile:** label (Poppins 500, 13px, `--soft`), value (Poppins 600, 32-44px, `--ink`), one line of context. Never a gauge or ring.
 - **Change label (PARITY-25):** a filled triangle plus signed percentage points (pp) in coloured text, 13px Poppins 600, with no fill, so it never looks tappable: `--good` for rises, `--bad` for falls. The triangle and sign mean it never relies on colour alone. Flat (|change| < 0.05 pp) shows "no change" in `--soft`; missing shows "n/a" in `--muted`.
-- **Data badge:** `Reported`, `Rescaled`, `Estimated` (sun-deep text on tint), `Company report` (sun-deep, like Estimated), `Basis changed`, `Missing`. Every number that is not cleanly reported carries one.
+- **Data badge:** `Reported`, `Rescaled`, `Estimated` (sun-deep text on tint), `Company report` (sun-deep, like Estimated), `Restated` (sun-deep; [decision 0020](decisions/0020-restatements.md): the tooltip gives the filed figure and the restating filing's own words), `Basis changed`, `Missing`. Every number that is not cleanly reported carries one.
 - **Company-report figures (PARITY-92, [decision 0015](decisions/0015-coverage-accounted-for.md)):** where the statutory source has nothing, a figure can come from the company's own report. It always says so, in the same places a statutory figure names its source, with no new visual style:
   - the `Company report` badge, whose tooltip is the year's note ("The company's own group-wide figures (…), not a UK gender pay gap filing");
   - the Basis column of the years table ("Whole group, worldwide (company report)");
@@ -318,6 +319,11 @@ The internal dashboard (section 8) has its own scale of six sizes.
     - The strip's "Level only" is `.strip-chg.held` (`--soft`, 500); the Home card uses `chg flat` and its coverage line reads "96% of staff with known payroll".
     - The trend is chained: the latest year is the pooled figure and each earlier year is the next year less its like-for-like change, so filers joining never read as a change in pay (the sparkline follows the changes).
     - India's gaps line reads "No BRSR figure" on every Indian index, in place of the old "No WGEA report".
+- **What stands out (PARITY-134, [plans/profile-insights.md](plans/profile-insights.md)):** up to three sentences at the top of a company's Overview, above the shared scales, chosen by fixed rules (`src/lib/insights.ts`), never by a model.
+  - **Form:** an h2 "What stands out", then a card holding the sentences as rows with hairline dividers (body text, `--ink` numbers inside the sentence, no icons, no colour beyond text tokens). A row whose figures sit on another tab ends with a quiet link naming it ("Trend", "Peers", "Calculations"); on phones the link drops under the sentence.
+  - **Under the card:** "How these are chosen", a link to the rules on Method (`#insights`).
+  - **When it shows:** only once every company has loaded (the rules compare against the market), and only when a rule fires. No empty state: a company with nothing notable has no block.
+  - **Sentences:** lead with the number, 20 words or fewer, the market's own basis named where it matters ("average hourly pay" in the UK), an older year prefixed ("FY25:").
 - **Older latest year (India):** a company whose newest filing is older than the market's latest year shows that figure everywhere with an "FY25 figure" sub-line, and its Overview says so once under the heading ("No FY26 BRSR yet: showing FY25"), with the record's reason when it has one ("No FY26 BRSR filed", "Merged into Coforge").
 - **Levels and functions (India, PARITY-129):** a chart frame on the company Overview, "Women at each level", only for companies that report finer levels or job functions; nothing shows for the rest.
   - One bar row per level (single hue, series 1, a 2px ink tick at 50% parity, 0-100%), labelled in the company's own words, which wrap rather than truncate. Order: top, senior, middle and junior management, then the company's own order.

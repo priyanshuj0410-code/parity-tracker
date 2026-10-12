@@ -188,6 +188,9 @@ export function Calculations({ c, pt }: { c: Company; pt?: Point }) {
             <Step n={++n} title={`Change since ${m.label(prev)}`} resultLabel="Like for like" result={`${change > 0 ? '+' : change < 0 ? '−' : ''}${Math.abs(change * 100).toFixed(1)} pp`}>
               <p>This year minus last year, when both share a reporting basis.</p>
               <Eq lhs={`${pct(c.years[year].w)} − ${pct(c.years[prev].w)}`} steps={[`${change > 0 ? '+' : change < 0 ? '−' : ''}${Math.abs(change * 100).toFixed(1)} percentage points`]} />
+              {c.years[prev].restatedIn === year && c.years[prev].wFiled != null && (
+                <p className="small muted">{m.label(prev)} as restated in the {m.label(year)} filing; first filed as {pct(c.years[prev].wFiled)}{c.years[prev].restatedNote ? ` ("${c.years[prev].restatedNote}")` : ''}.</p>
+              )}
             </Step>
           )}
 
@@ -209,14 +212,16 @@ export function Calculations({ c, pt }: { c: Company; pt?: Point }) {
         </Steps>
       </section>
 
-      {(note || y.basisChange || y.wKind === 'estimated' || y.dq === 2 || payEst) && (
+      {(note || y.basisChange || y.wKind === 'estimated' || y.dq === 2 || payEst || y.restatedIn) && (
         <section>
           <h2>Checks on this filing</h2>
           <ul className="tight">
+            {y.restatedIn && y.wFiled != null && <li><strong>Restated:</strong> filed as {pct(y.wFiled)}; the {m.label(y.restatedIn)} filing restates it to {pct(y.w)}{y.restatedNote ? ` ("${y.restatedNote}")` : ''}. Nivel shows the restated figure.</li>}
             {y.wKind === 'estimated' && <li><strong>Estimated:</strong> no wage total filed, so estimated from median pay and headcount by gender.</li>}
             {payEst && <li><strong>Payroll estimated:</strong> no wage total filed, so payroll is median pay times headcount. Women's share is as filed.</li>}
             {y.dq === 2 && <li><strong>Rescaled:</strong> wages filed in the wrong unit.</li>}
-            {y.basisChange && <li><strong>Basis changed:</strong> payroll, headcount or scope jumped, so not compared like for like.</li>}
+            {y.basisChange && !y.restatedIn && <li><strong>Basis changed:</strong> payroll, headcount or scope jumped, so not compared like for like.</li>}
+            {y.restatedIn && <li><strong>Basis changed:</strong> on the {m.label(y.restatedIn)} filing's basis, so not compared like for like with the year before.</li>}
             {note && <li><strong>Note:</strong> {note}.</li>}
           </ul>
         </section>
