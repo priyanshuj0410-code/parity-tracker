@@ -112,6 +112,31 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
 - Headings use Poppins 600, never 700, with −0.01em tracking: h1 26–36px, h2 20px. This matches the restrained weights of investing apps (audit 2026-10).
 - **12px floor everywhere (PARITY-28):** no text is smaller than 12px on any screen. That covers chart axes and reference labels, badges, scale ticks, tooltips, the quadrant labels, formula labels and monogram letters. Phones had the floor first (PARITY-24); desktop followed.
 
+### Type scale (reader app, PARITY-132)
+
+Sixteen named sizes: fourteen fixed and two fluid. They are the sizes the app's stylesheet (`src/styles.css`) sets today, grouped by job; no other size is allowed, and a new one is a new row here first. Poppins is the face for labels, figures and headings, Nunito Sans for running text; weights follow the rules above. Below 900px means the phone layout.
+
+| Name | Size | Used for |
+|---|---|---|
+| Micro | 12px | The floor: chart axes and labels, badges, table headers, scale ticks, the ⌘K hint, hints and sub-lines. |
+| Small | 13px | Pills, strip items, tile labels, segmented options, quiet buttons, tooltips, the formula, the footer. |
+| Body | 14px | Running text in cards, meta lines, table cells, legends, nav links, form text. |
+| Card title | 15px | The install prompt's title, step heads, the search sheet's Cancel link, and chart frame titles below 900px. |
+| Sub-head | 16px | `h3`, chart frame titles, the sub-heads on a company page (`h-sub`), and the text in the search field and the form fields (16px, so iOS does not zoom). |
+| Row figure | 17px | The figure that ends a market-list row. |
+| Lead | 18px | The page lead, an input's value in a calculation, and the brand name below 900px. |
+| Brand | 19px | The brand name in the desktop header. |
+| Section | 20px | `h2`. |
+| Fact | 22px | A fact in a market's facts list, and the value of a tile that has none. |
+| Tile, phone | 24px | A tile's value below 900px. |
+| Scale value, phone | 30px | The scale card's value on the company overview below 900px. |
+| Answer | 32px | The value the reader has chosen in the guess. |
+| Tile | 34px | A tile's value. |
+| Page title | 26px to 36px, fluid (`clamp(26px, 3.6vw, 36px)`) | `h1`. |
+| Hero | 44px to 64px, fluid (`clamp(44px, 7vw, 64px)`) | The headline number at the top of an index page and a market page. |
+
+The internal dashboard (section 8) has its own scale of six sizes.
+
 ## 4. Layout
 - Max content width 1120px, 16px side gutter on phones, 24px from 720px up.
 - Cards: white, 1px `--line` border, 12px radius, no shadow.
