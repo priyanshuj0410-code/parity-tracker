@@ -118,7 +118,9 @@ per_head = lambda r, n: 1.5e5 <= r / n <= 7.5e6
 FIXES = {('MFSL', '2024-25'): (0.23, 'Axis Max Life, the subsidiary this record follows, as its filing gives'),
          ('MFSL', '2023-24'): (0.217, 'Axis Max Life, the subsidiary this record follows, as its filing gives'),
          ('TITAGARH', '2024-25'): (0.0514, "Corrected to the filing's FY2024-25 column"),
-         ('TDPOWERSYS', '2024-25'): (0.072, "Corrected to the filing's figure"), ('UNITDSPR', '2024-25'): (0.22, "Corrected to the filing's figure")}
+         ('TDPOWERSYS', '2024-25'): (0.072, "Corrected to the filing's figure"), ('UNITDSPR', '2024-25'): (0.22, "Corrected to the filing's figure"),
+         # PARITY-131: the FY2023-24 BRSR prints 14.9% (the FY2024-25 prior-year column 14.93%); the stored figure was a 1.
+         ('INDIAMART', '2023-24'): (0.149, "Corrected to the filing's figure")}
 NOTE = {'crore': 'Wages were filed in crore instead of rupees, so we rescaled them', 'lakh': 'Wages were filed in lakh instead of rupees, so we rescaled them',
         'million': 'Wages were filed in millions of rupees instead of rupees, so we rescaled them',
         'thousand': 'Wages were filed in thousands of rupees instead of rupees, so we rescaled them'}
@@ -269,11 +271,14 @@ for s, ys in (load(os.path.join(HERE, '..', 'wage_units.json'), {}) or {}).items
         p = round(u['filed'] * UNITS[u['unit']] / 1e7) if u['unit'] else None
         if r.get('payrollCr') == p: continue
         report['fixes'].append([s, y, 'payrollCr', r.get('payrollCr'), p])
-        r.update(payrollCr=p, dq=2 if u['unit'] not in (None, 'rupees') else 1,
-                 note=friendly(('from next year filing (prior-year column); ' if u.get('column') == 'prior' else '') + unit_note(u['unit'])))
+        r['payrollCr'] = p
+        if r.get('wKind') == 'reported':  # a year whose share is estimated or left out keeps its own badge and note
+            r.update(dq=2 if u['unit'] not in (None, 'rupees') else 1,
+                     note=friendly(('from next year filing (prior-year column); ' if u.get('column') == 'prior' else '') + unit_note(u['unit'])))
 for (s, y), (w, note) in FIXES.items():
     r = companies.get(s, {}).get('years', {}).get(y)
-    if r and r.get('w') != w: report['fixes'].append([s, y, r.get('w'), w]); r.update(w=w, wKind='reported', note=note)
+    if r and r.get('w') != w:
+        report['fixes'].append([s, y, r.get('w'), w]); r.update(w=w, wKind='reported', note=note, dq=1 if r.get('dq') == 4 else r.get('dq'))
 for s, c in companies.items():  # a wage total filed as the headcount is no payroll
     for y, r in c['years'].items():
         if r.get('payrollCr') and r['payrollCr'] in (r.get('headcount'), r.get('permHeadcount')):
