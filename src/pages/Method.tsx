@@ -1,8 +1,8 @@
 import { Eq, Frac, Step, Steps } from '../components/Formula'
 import { CORRECTIONS_EMAIL, correctionHref } from '../lib/contact'
 import { href, usePageTitle } from '../lib/router'
-import { MARKET, companies, indexes, sourceDate, useStage } from '../lib/data'
-import { inr, pct } from '../lib/format'
+import { MARKET, companies, indexes, isGroup, sourceDate, useStage } from '../lib/data'
+import { crore, inr, pct } from '../lib/format'
 
 
 const EXAMPLE_OF: [string, string, string, string, string][] = [
@@ -19,6 +19,7 @@ const EXAMPLES = EXAMPLE_OF.flatMap(([code, symbol, inputs, wNote, eNote]) => {
   const w = 1 - y.gapMean
   return [{ code, name: c.name, inputs, wNote, eNote, gap: y.gapMean, w, e, s: (e * w) / (e * w + 1 - e) }]
 })
+const croreOf = (rupees: number | null): string => crore(rupees == null ? null : Math.round(rupees / 1e7))
 
 export function Method() {
   useStage('core')
@@ -33,7 +34,13 @@ export function Method() {
   const latest = all.map((c) => c.years[LATEST]).filter(Boolean)
   const estimated = latest.filter((y) => y.wKind === 'estimated').length
   const rescaled = latest.filter((y) => y.dq === 2).length
-  const missing = all.filter((c) => c.years[LATEST]?.w == null).length
+  const missing = latest.filter((y) => y.w == null).length
+  const older = all.filter((c) => !c.years[LATEST] && Object.keys(c.years).length).length
+  const unfiled = all.filter((c) => !Object.keys(c.years).length).length
+  const levels = all.filter((c) => Object.values(c.years).some((y) => y.levels?.length || y.functions?.length)).length
+  const group = Object.values(indexes).find((ix) => isGroup(ix) && ix.country === 'IN')
+  const gy = group?.years[LATEST]
+  const top10 = (group?.constituents ?? []).map((k) => k.weight ?? 0).sort((a, b) => b - a).slice(0, 10).reduce((a, b) => a + b, 0)
   const basis = all.reduce((n, c) => n + IN.years.filter((k) => c.years[k]?.basisChange).length, 0)
   const uk = Object.values(companies).filter((c) => c.country === 'GB')
   const ukCovered = uk.filter((c) => c.years[GB.latest]).length
@@ -57,12 +64,24 @@ export function Method() {
           <li><strong>UK groups are matched by name.</strong> Reports come from legal employers, so subsidiaries with unrelated names can be missed. Every match is listed on the company page.</li>
           <li><strong>UK pay is hourly.</strong> Women work more part-time, so their share of annual pay is lower. Employers are weighted by size-band midpoints; each FTSE 100 company counts equally.</li>
           <li><strong>Filings contain errors.</strong> In {fy(LATEST)}, {rescaled} companies filed wages in the wrong unit (rescaled), {estimated} needed estimates from median pay, and {missing} have no usable wage data. Each is badged.</li>
+          {older > 0 && <li><strong>{older} companies have no {fy(LATEST)} BRSR yet.</strong> Each shows its latest figure, labelled with its year.</li>}
+          {unfiled > 0 && <li><strong>{unfiled} companies have no BRSR figures,</strong> such as new listings. Each page says why.</li>}
+          {group && gy?.companiesWithoutPayroll != null && <li><strong>{gy.companiesWithoutPayroll} companies have no payroll figure.</strong> {group.name} leaves them out of its ₹ figures, so its coverage is the share of staff whose payroll is known.</li>}
           <li><strong>Reporting bases change.</strong> {basis} company-years jumped in payroll, headcount or scope. They stay in trends, not in like-for-like comparisons.</li>
           <li><strong>Contract workers are mostly missing.</strong> BRSR wages cover the company's own payroll. Over 1.3 million contract workers in the Nifty 50 and Next 50 are largely outside it; 5% of them are women.</li>
           <li><strong>Scope differs.</strong> Some file for the parent only (standalone), others for the group (consolidated).</li>
-          <li><strong>Ownership uses market cap.</strong> Free float is approximated by public shareholding.</li>
+          {group
+            ? <li><strong>Market cap weights the indexes only.</strong> Free float is approximated by public shareholding. {group.name} uses payroll, so companies outside the indexes carry no market cap.</li>
+            : <li><strong>Ownership uses market cap.</strong> Free float is approximated by public shareholding.</li>}
           <li><strong>Index membership is a snapshot,</strong> as of 30 September 2026. The Sensex last changed in December 2025: InterGlobe Aviation replaced Tata Motors Passenger Vehicles.</li>
+          {group && <li><strong>{group.name} is not an index.</strong> No fund tracks it. It holds every BRSR filer; merged, delisted and insolvent companies leave it.</li>}
           <li><strong>Small moves are noise.</strong> Year-on-year changes under 0.5 points are within reporting differences.</li>
+          {group && (
+            <>
+              <li><strong>A change for {group.name} needs fresh filings.</strong> It is held back when over 30% of payroll, a top-10 payer or a whole industry is carried forward.</li>
+              <li><strong>Its change carries a range</strong> from resampling, with the companies compared and the basis changes left out. A range that crosses zero is labelled not distinguishable from zero.</li>
+            </>
+          )}
         </ul>
       </section>
 
@@ -92,6 +111,32 @@ export function Method() {
         <p style={{ marginTop: 16 }}>We rank by share, not rupee gap: a rupee gap rewards companies that employ few people.</p>
       </section>
 
+      {group && gy && (
+        <section>
+          <h2>Every filer, weighted by payroll</h2>
+          <p>{group.name} counts each company by its whole payroll, not a fund's slice. Example: {fy(LATEST)} filings, {gy.companiesCovered.toLocaleString('en-IN')} companies.</p>
+          <Steps>
+            <Step n={1} title="Total payroll" resultLabel="A year" result={croreOf(gy.ownedPayroll)}>
+              <p>Every company's yearly wage bill, summed.</p>
+              <Eq lhs="total payroll" steps={['Σ company payroll', croreOf(gy.ownedPayroll)]} />
+            </Step>
+            <Step n={2} title="Paid to women" resultLabel="A year" result={croreOf(gy.womenWages)}>
+              <p>Each company's payroll times women's share of its wages, summed.</p>
+              <Eq lhs="paid to women" steps={["Σ company payroll × women's share", croreOf(gy.womenWages)]} />
+            </Step>
+            <Step n={3} title="Women's share of pay" resultLabel="Parity is 50%" result={pct(gy.headline)}>
+              <p>Women get ₹{Math.round(gy.headline * 100)} of every ₹100 these companies pay.</p>
+              <Eq lhs="women's share" steps={[<Frac key="1" top="paid to women" bottom="total payroll" />, <Frac key="2" top={croreOf(gy.womenWages)} bottom={croreOf(gy.ownedPayroll)} />, pct(gy.headline)]} />
+            </Step>
+          </Steps>
+          <ul className="tight" style={{ marginTop: 16 }}>
+            <li><strong>{IN.workforceLabel}:</strong> {pct(gy.workforce)}, total women ÷ total permanent staff.</li>
+            {gy.medianCompany && <li><strong>Median company:</strong> {pct(gy.medianCompany.w)} of pay, {pct(gy.medianCompany.fPerm)} of staff. It sits beside both figures, as the 10 largest payrolls hold {pct(top10, 0)} of the total.</li>}
+            <li><strong>Coverage:</strong> {pct(gy.staffWithPayrollShare, 0)} of staff work at companies with a payroll figure. Of the payroll, {pct(gy.carriedPayrollShare)} is carried forward, {pct(gy.weightEstimatedPayrollShare)} has an estimated weight and {pct(gy.estimatedPayrollShare)} an estimated share of pay.</li>
+          </ul>
+        </section>
+      )}
+
       <section>
         <h2>From each market's disclosure to women's share of pay</h2>
         <p>India reports women's share of wages directly. Elsewhere it comes from women's share of staff (E) and women's average pay as a share of men's (W). Examples use real companies' latest figures.</p>
@@ -115,7 +160,7 @@ export function Method() {
           {Object.values(MARKET).flatMap((m) => m.sources.map((x) => (
             <li key={m.code + x.label}><strong>{x.label}:</strong> {x.text.replace('{firstYear}', m.label(m.years[0])).replace('{latestYear}', m.label(m.latest))}</li>
           )))}
-          <li><strong>Collected:</strong> {sourceDate()}.</li>
+          <li><strong>Collected:</strong> {sourceDate()}.{group && ` Late ${fy(LATEST)} BRSRs join the next release.`}</li>
         </ul>
       </section>
 
@@ -123,9 +168,18 @@ export function Method() {
         <h2>How we clean it</h2>
         <ul className="tight">
           <li><strong>Units:</strong> payroll per head must fall between ₹1.5 lakh and ₹75 lakh a year. Values filed in crore or lakh are rescaled and badged.</li>
-          <li><strong>Fixed weights:</strong> each company's index weight uses its median reported payroll across years, so one bad filing cannot swing an index.</li>
-          <li><strong>Estimates:</strong> missing wage totals are estimated from median pay and headcount by gender, badged, and never joined to a reported trend.</li>
+          <li><strong>Fixed weights:</strong> each company's index weight uses its median reported payroll across years, so one bad filing cannot swing an index.{group && ` ${group.name} uses each year's payroll.`}</li>
+          <li><strong>Estimates:</strong> a missing wage total is estimated from median pay and headcount by gender. Where the share of pay is estimated too, it is badged and never joined to a reported trend.</li>
+          <li><strong>Prior-year columns:</strong> a year not read from its own filing comes from the next filing's prior-year column, and its note says so.{group && ` ${group.name} measures each company's change within its ${fy(LATEST)} filing, against that column.`}</li>
           <li><strong>Permanent staff:</strong> the workforce share uses permanent staff, as contract wages are not in the totals.</li>
+          {levels > 0 && <li><strong>Levels and functions:</strong> {levels} companies report women by level (senior, middle, junior management) or job function (STEM, sales). Rows keep the company's own labels, matched to a standard level or function.</li>}
+          {group && (
+            <>
+              <li><strong>Carried forward:</strong> in {group.name}, a company with no {fy(LATEST)} BRSR stands in with its {fy(IN.prev)} figures. Its pay share moves with the reporters' like-for-like change; its staff share stays. Figures older than {fy(IN.prev)} count as uncovered.</li>
+              <li><strong>Stand-in weights:</strong> a stand-in's weight is its last payroll, grown with the reporters' payroll.</li>
+              <li><strong>Modelled shares:</strong> a company with no pay share and no earlier year gets one from its staff share, outside the 50 largest payrolls. No company page shows it, and no estimate enters the change.</li>
+            </>
+          )}
           <li><strong>UK basis changes:</strong> if under 70% of a group's weighted UK employers carry over with the same size band, the pair is not compared like for like.</li>
         </ul>
       </section>
@@ -138,8 +192,9 @@ export function Method() {
           <li><strong>Wage parity (W):</strong> women's average pay as a share of men's (parity 100%). UK: hourly. Australia: full-time equivalent. Japan: annual, all workers. EU: as each company defines it. India: derived from the wage and staff shares, so approximate. Outside 30–130% it is marked not comparable and left out of wage rankings and the map.</li>
           <li><strong>Women's share of pay:</strong> E×W ÷ (E×W + 1 − E). The headline for Japan and the EU. It matches India's reported share and the UK and Australian employer-level figures.</li>
           <li><strong>Market percentile:</strong> wage parity rank within the company's own market.</li>
-          <li><strong>Sectors:</strong> exchange labels mapped to 11 shared sectors; mixed Nikkei groups are split company by company.</li>
+          <li><strong>Sectors:</strong> exchange labels{group && ", or the BRSR's NIC code for companies outside the indexes,"} mapped to 11 shared sectors; mixed Nikkei groups are split company by company.</li>
           <li><strong>Medians:</strong> country and sector comparisons use the median company and the middle half, so extreme filings don't move them.</li>
+          {group && <li><strong>India covers more companies.</strong> Its market medians span every BRSR filer; other markets cover index members only.</li>}
         </ul>
         <p className="small muted">Pay bases still differ, so small gaps between markets are noise.</p>
       </section>

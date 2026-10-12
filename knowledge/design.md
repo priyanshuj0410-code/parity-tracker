@@ -2,7 +2,7 @@
 type: design-system
 title: Nivel design system
 description: Visual and writing rules for Nivel (formerly Parity Tracker), derived from The Equal Lens brand package (minimal register) plus a validated chart palette.
-updated: 2026-10-07
+updated: 2026-10-12
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/bd128ee2-934e-4d5e-93c2-b0078d245c88
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/f3cd339a-5e02-4cdc-9542-b4072d9a274b
@@ -167,7 +167,7 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
   - the whole row opens the company, with the name link kept for keyboard and screen-reader users
   - **list state lives in the URL** (PARITY-24): a page's main list keeps its sort (`sort=-e`), its index filter (`index=all`), its search (`q=`) and Show all (`all=1`) in the URL's query string (`/companies?index=all&sort=-e`), written with `replaceState` so it adds no history entries. Back returns to the same list, in the same order, at the same scroll position, and the URL can be shared. Compare's filters and the map's Chart or Table choice work the same way.
   - **Show all:** on phones a long list shows its first 20 (index pages) or 30 (Companies, parity map) rows, then a full-width "Show all 225" row button.
-  - **empty state:** a filtered list with no rows says what was searched, suggests a ticker or sector, and offers Clear search (and Search all indexes when one index is selected). Never "0 companies" over an empty card.
+  - **empty state:** a filtered list with no rows says what was searched, suggests a ticker or sector, and offers Clear search (and Search all companies when one index is selected). The first index pill is "All": index members in every market plus every Indian BRSR filer. Never "0 companies" over an empty card.
   - Home's pace of change is a small table (market, median change, companies compared, rose / fell, years to parity), shown as detail cards on phones.
   - a one-line key sits under long lists: "≈ means estimated or derived rather than reported. pp means percentage points.
 - **Meter (inline data bar):** the value, then a 52px by 6px `--line` track with a `--s1` fill and a 2px ink tick at parity. Employment parity and share of pay run 0–100% (tick at 50%); wage parity runs 0–140% (tick at 100%). Replaces bare percentages wherever a value has a parity point.
@@ -274,6 +274,29 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
   - only reported values are plotted
 - **Pill filters:** 999px radius, white with `--line` border; selected is violet fill with white text and `aria-pressed`. Used for index filters instead of selects. On phones, a filter group is one row that scrolls sideways rather than wrapping onto several lines.
 - **Explainer disclosure:** definitions that every visitor does not need sit in a collapsed "What the numbers mean" disclosure (violet summary with a chevron) under the page lead, not as a paragraph above the controls.
+- **Group (India's All BRSR filers, PARITY-129):** a group is not an index. No fund holds it, and every company counts by its own payroll (`kind: 'group'` on the index record). It reuses the index page and Home card with these changes, and no new colour or component:
+  - **Names:** "Group · India" in search, "weighted by payroll" in the meta line, counts with Indian digit grouping ("1,150 companies").
+  - **Headline:** the record's own label, "Women's share of pay (all payroll)", with the context line "₹19 of every ₹100 these companies pay" and a second line "Median company 8.4%".
+  - **Change label, held back:** when the method withholds the change (`shown: false`), the Home card and strip show "Level only" in `--soft`, and the index page gives the reason in one line ("Change held back: 34% of payroll carried forward").
+  - **Change label, with a range:** a shown change keeps the coloured triangle, then "range +0.2 to +0.4 pp" and "841 companies like for like, 75 basis changes left out" in `--soft`. When the range crosses zero it adds "not distinguishable from zero".
+  - **Total payroll card** (in place of "For every ₹10 lakh invested"): Total payroll, Paid to women and Gap to parity in ₹ crore a year, then Employment parity (permanent staff) with its median company and its change.
+  - **Coverage card** (`dl.details`): reported, carried forward from FY25, estimated share of pay, estimated weight, no payroll figure (left out of the ₹ figures), staff with known payroll, and left the group (merged, delisted or insolvent, each named). The detail lives on Method.
+  - **Companies tab:** every member, those without payroll too (weight "n/a"); a company still on FY25 shows that figure with an "FY25 figure" sub-line; weights under 0.1% read "<0.1%".
+  - **Never:** a Guess first card, a forecast block or a next-year range.
+  - **Built 12 October 2026:**
+    - Coverage is its own section, "Coverage, FY26", a `dl.details` card with a Method link under it.
+    - Biggest moves covers the 50 largest payrolls and leaves out moves over 15 pp, as the change does, and says so.
+    - A held-back year in the trend table reads "n/a" with a "Held back" sub-line; a shown one carries its range under the company count.
+    - The strip's "Level only" is `.strip-chg.held` (`--soft`, 500); the Home card uses `chg flat` and its coverage line reads "96% of staff with known payroll".
+    - The trend is chained: the latest year is the pooled figure and each earlier year is the next year less its like-for-like change, so filers joining never read as a change in pay (the sparkline follows the changes).
+    - India's gaps line reads "No BRSR figure" on every Indian index, in place of the old "No WGEA report".
+- **Older latest year (India):** a company whose newest filing is older than the market's latest year shows that figure everywhere with an "FY25 figure" sub-line, and its Overview says so once under the heading ("No FY26 BRSR yet: showing FY25"), with the record's reason when it has one ("No FY26 BRSR filed", "Merged into Coforge").
+- **Levels and functions (India, PARITY-129):** a chart frame on the company Overview, "Women at each level", only for companies that report finer levels or job functions; nothing shows for the rest.
+  - One bar row per level (single hue, series 1, a 2px ink tick at 50% parity, 0–100%), labelled in the company's own words, which wrap rather than truncate. Order: top, senior, middle and junior management, then the company's own order.
+  - Functions (STEM, sales, operations) are a second set behind a "Levels | Functions" segmented control when both exist.
+  - The sub-line gives the row's scope when it is not all staff ("managers only"), and the frame's subtitle the source ("Annual report, page 137"). The table view lists women, men and share.
+- **India's BRSR sources without an XBRL file:** "FY26 BRSR, company website: PDF", "FY26 BRSR, in the annual report: PDF", "FY25 BRSR, filed with the exchange: PDF", or "FY26 BRSR (copy not linked)" when no public copy exists. Never an empty link.
+- **India's tickers:** a filer listed only on BSE reads "BSE: 500123", and a symbol another market already uses reads as its NSE symbol ("NSE: BCG"). A former name shows in the meta line ("Formerly Tata Motors Ltd") and is searchable.
 - **Cross-market rule:** every headline is now women's share of pay with parity at 50% (Japan and the EU since PARITY-20), so index headlines can sit side by side. Rankings across markets still use the market percentile, and the basis is always stated nearby.
 
 ## 6. Charts

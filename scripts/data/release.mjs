@@ -49,6 +49,7 @@ function pieces(text) {
 function check({ companies, indexes, markets, logoMap, logoFiles }) {
   const problems = []
   const live = Object.fromEntries(Object.entries(markets).filter(([, m]) => m.status === 'live'))
+  const freeFloat = new Set(Object.keys(indexes).filter((id) => /free-float/.test(indexes[id].weighting ?? '')))
   for (const [key, c] of Object.entries(companies)) {
     const missing = ['symbol', 'name', 'country', 'industry', 'indexes', 'years'].filter((f) => c[f] == null)
     if (missing.length) problems.push(`company ${key}: no ${missing.join(', ')}`)
@@ -58,12 +59,36 @@ function check({ companies, indexes, markets, logoMap, logoFiles }) {
     const odd = Object.keys(c.years ?? {}).filter((y) => !m.years.includes(y))
     if (odd.length) problems.push(`company ${key}: years ${odd} are not ${c.country} years`)
     for (const id of c.indexes ?? []) if (!indexes[id]) problems.push(`company ${key}: index ${id} does not exist`)
+    const weighted = (c.indexes ?? []).filter((id) => freeFloat.has(id))
+    if (c.marketCapCr == null && weighted.length) problems.push(`company ${key}: no market cap, but in ${weighted.join(', ')}`)
+    for (const [y, v] of Object.entries(c.years ?? {})) {
+      const bad = [...(v.levels ?? []), ...(v.functions ?? [])].filter((r) => r.share != null && !(r.share >= 0 && r.share <= 1))
+      if (bad.length) problems.push(`company ${key} ${y}: level or function shares ${bad.map((r) => r.share)} are not 0 to 1`)
+    }
   }
   for (const [id, ix] of Object.entries(indexes)) {
     if (ix.id !== id) problems.push(`index ${id}: id is ${ix.id}`)
     if (!live[ix.country]) problems.push(`index ${id}: market ${ix.country} is not live`)
     const absent = ix.constituents.filter((k) => !companies[k.symbol]).map((k) => k.symbol)
     if (absent.length) problems.push(`index ${id}: no company records for ${few(absent)}`)
+    for (const [key, ch] of Object.entries(ix.yoy ?? {})) {
+      if (ch.shown !== undefined && typeof ch.shown !== 'boolean') problems.push(`index ${id} ${key}: shown is ${ch.shown}`)
+      if (ch.interval && !(ch.interval[0] <= ch.interval[1])) problems.push(`index ${id} ${key}: range ${ch.interval} is not in order`)
+    }
+    const latest = live[ix.country]?.latest, y = ix.years[latest]
+    if (freeFloat.has(id) && y) {
+      const n = ix.constituents.filter((k) => { const c = companies[k.symbol]; return c?.years?.[latest]?.w != null && c.payrollWeightCr > 0 }).length
+      if (n !== y.companiesCovered) problems.push(`index ${id}: ${y.companiesCovered} companies covered in ${latest}, but ${n} members have a share of pay and a payroll weight`)
+    }
+    if (ix.kind !== 'group') continue
+    const sum = ix.constituents.reduce((n, k) => n + (k.weight ?? 0), 0)
+    if (Math.abs(sum - 1) > 0.001) problems.push(`index ${id}: weights sum to ${sum.toFixed(4)}`)
+    const unknown = [...ix.missing, ...(ix.left ?? [])].filter((s) => !companies[s])
+    if (unknown.length) problems.push(`index ${id}: missing or left with no company records: ${few(unknown)}`)
+    for (const [y, v] of Object.entries(ix.years)) {
+      const odd = ['carriedPayrollShare', 'estimatedPayrollShare', 'weightEstimatedPayrollShare', 'staffWithPayrollShare'].filter((f) => v[f] != null && !(v[f] >= 0 && v[f] <= 1))
+      if (odd.length) problems.push(`index ${id} ${y}: ${odd.map((f) => `${f} ${v[f]}`).join(', ')}`)
+    }
   }
   for (const m of Object.values(live)) {
     if (!m.years.includes(m.latest) || (m.prev && !m.years.includes(m.prev))) problems.push(`market ${m.code}: latest or previous year not in its years`)
@@ -76,6 +101,17 @@ function check({ companies, indexes, markets, logoMap, logoFiles }) {
   const absentLogos = [...new Set(Object.values(logoMap))].filter((f) => !logoFiles.has(f))
   if (absentLogos.length) problems.push(`logos: map names files with no logo record: ${few(absentLogos)}`)
   return problems
+}
+
+/** A group's coverage and its change, as decision 10 publishes them (knowledge/plans/india-brsr-1000.md). */
+function groupLines(ix, m) {
+  const y = ix.years[m.latest], ch = ix.yoy[`${m.prev}>${m.latest}`]
+  const out = [`    payroll carried forward ${pct(y.carriedPayrollShare)}, share of pay estimated ${pct(y.estimatedPayrollShare)}, weight estimated ${pct(y.weightEstimatedPayrollShare)}; staff with known payroll ${pct(y.staffWithPayrollShare)}`]
+  if (!ch) return [...out, `    no ${m.prev} to ${m.latest} change`]
+  const carried = [...(ch.carriedTop10 ?? []), ...(ch.carriedIndustries ?? [])]
+  out.push(`    change ${pts(ch.change)} over ${ch.companies} companies, range ${ch.interval ? ch.interval.map(pts).join(' to ') : 'n/a'}, ${ch.basisChanges ?? 0} basis changes left out`
+    + `: ${ch.shown === false ? 'held back' : 'shown'}${ch.distinguishable === false ? ', not distinguishable from zero' : ''}${carried.length ? `; carried: ${few(carried)}` : ''}`)
+  return out
 }
 
 /** What a reader would notice against the live release: companies, figures, coverage and headlines. */
@@ -112,6 +148,10 @@ function report({ companies, indexes, markets }, base) {
         }
       }
       out.push(line)
+      if (ix.kind === 'group') out.push(...groupLines(ix, m))
+    }
+    for (const ix of Object.values(indexes).filter((x) => x.kind === 'group' && x.country === m.code && !m.indexes.includes(x.id))) {
+      out.push(`  ${ix.name}: not in the market's indexes, so the site does not list it`)
     }
     lines.push(...out)
   }
@@ -170,7 +210,7 @@ export async function publish({ collected, approveFeed = false }) {
   }
 
   // Each market's figure across every covered company, recomputed on every publish (PARITY-114).
-  const countries = buildCountries(markets, companies)
+  const countries = buildCountries(markets, companies, indexes)
   for (const c of Object.values(countries)) {
     for (const [y, v] of Object.entries(c.years)) if (!(v.headline >= 0 && v.headline <= 1)) problems.push(`country ${c.market} ${y}: share of pay ${v.headline}`)
   }

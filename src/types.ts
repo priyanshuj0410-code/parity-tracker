@@ -32,6 +32,23 @@ export interface CompanyYear {
   downloaded?: string
   /** Figures taken from the company's own reports because the statutory source has none for them (decision 0015). */
   reportSources?: ReportSource[]
+  /** India: the company's own finer levels (senior, middle, junior management, grades) and job functions, by gender. */
+  levels?: LevelRow[]
+  functions?: LevelRow[]
+}
+
+/** One level or job function as the company reports it: its own label, the standard it maps to, and women's share (0 to 1). */
+export interface LevelRow {
+  level?: string
+  function?: string
+  standard?: string | null
+  women?: number
+  men?: number
+  share?: number
+  /** Who the row covers when it is not all staff ("permanent employees", "new hires"). */
+  scope?: string
+  /** Where the company reports it, with the page. */
+  where?: string
 }
 
 /** One company document a year's figures were read from; `fields` names which figures (gapMean, fAll, fPerm, ratio). */
@@ -54,6 +71,8 @@ export interface Filing {
   xbrl: string
   pdf: string
   submitted: string
+  /** India, without an NSE XBRL file: where the BRSR PDF is ('annualReport' when it sits inside the annual report). */
+  kind?: 'exchange' | 'website' | 'annualReport'
 }
 
 export interface Company {
@@ -72,6 +91,12 @@ export interface Company {
   filings: Record<string, Filing>
   payrollWeightCr: number | null
   payrollWeightBasis: string | null
+  isin?: string | null
+  cin?: string | null
+  /** The company's former name, when it changed. */
+  formerly?: string
+  /** India: why the latest figure is not the market's latest year ("No FY26 BRSR filed", "Merged into …"). */
+  latestNote?: string
 }
 
 export interface Sector {
@@ -103,6 +128,21 @@ export interface IndexYear {
   verified?: number
   excluded?: number
   unresolved?: number
+  /** A group (kind 'group'): its payroll is all its companies' payroll, and missing reports are handled by decision 10. */
+  carryForwardHeadline?: number
+  /** The year's own pooled figure; `headline` is chained from the latest year by the like-for-like changes. */
+  pooledHeadline?: number
+  /** Filers queued but not read yet, so in no figure. */
+  companiesUnread?: number
+  companiesCarried?: number
+  companiesEstimated?: number
+  companiesUncovered?: number
+  companiesWithoutPayroll?: number
+  carriedPayrollShare?: number
+  estimatedPayrollShare?: number
+  weightEstimatedPayrollShare?: number
+  staffWithPayrollShare?: number | null
+  medianCompany?: { w: number | null; fPerm: number | null }
 }
 
 export interface Yoy {
@@ -110,6 +150,16 @@ export interface Yoy {
   to: number
   change: number
   companies: number
+  /** A group's change: a bootstrap range, whether it differs from zero, and whether it is published at all. */
+  interval?: [number, number]
+  distinguishable?: boolean
+  shown?: boolean
+  carriedTop10?: string[]
+  carriedIndustries?: string[]
+  basisChanges?: number
+  staffChange?: number | null
+  staffCompanies?: number
+  staffBasisChanges?: number
 }
 
 export interface IndexData {
@@ -124,6 +174,12 @@ export interface IndexData {
   missing: string[]
   years: Record<string, IndexYear>
   yoy: Record<string, Yoy>
+  /** 'group': every filer, weighted by its own payroll, held by no fund (India's All BRSR filers). */
+  kind?: 'group'
+  /** Overrides the market's headline label. */
+  headlineLabel?: string
+  /** Companies that left a group: merged, delisted or insolvent. */
+  left?: string[]
 }
 
 export interface SimHolding { symbol: string; sector: string; w: number; e: number | null; sim: number; parent: number }

@@ -53,6 +53,20 @@ def predecessors(key, events):
     """Listed companies merged into this one: their ranks stand in for its own before the merger."""
     return [x for e in events if e['kind'] == 'merger' and any(t.get('key') == key for t in e['to']) for x in e['from']]
 
+def fy_of(day):
+    """The April-March year a date falls in: '2025-26' for 1 October 2025."""
+    y, m = int(day[:4]), int(day[5:7])
+    return f'{y if m >= 4 else y - 1}-{str((y if m >= 4 else y - 1) + 1)[2:]}'
+
+def break_fy(e):
+    """The first year whose figures include the change: the later of the year of the scheme's appointed date and the
+    year of the first report out after it took effect (reports come about five months after the year ends); without an
+    appointed date, that first report. None without an effective date."""
+    d = e.get('effective')
+    if not d: return None
+    back = f"{int(d[:4]) - (1 if int(d[5:7]) <= 5 else 0)}-{(int(d[5:7]) - 6) % 12 + 1:02d}-01"  # five months earlier
+    return max(fy_of(e['appointed']), fy_of(back)) if e.get('appointed') else fy_of(back)
+
 def merged_away(key, events):
     """The merger that absorbed this company, or None."""
     return next((e for e in events if e['kind'] == 'merger' and any(x.get('key') == key for x in e['from'])), None)

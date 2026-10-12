@@ -3,15 +3,30 @@ import { DataTable } from '../components/DataTable'
 import { ParityTrack } from '../components/ParityTrack'
 import { Sparkline } from '../components/Sparkline'
 import { TableSkeleton } from '../components/Skeleton'
-import { INDEX_ORDER, MARKET, MARKETS, companies, indexes, simulations, useLoaded, useStage, yoyChange, type Market, type MarketRecord, type MarketStatus } from '../lib/data'
+import { INDEX_ORDER, MARKET, MARKETS, companies, indexes, isGroup, publishedChange, simulations, useLoaded, useStage, yoyChange, type Market, type MarketRecord, type MarketStatus } from '../lib/data'
 import { pct } from '../lib/format'
 import { href, usePageTitle } from '../lib/router'
+import type { IndexData, Yoy } from '../types'
 
 const STATUS: Record<MarketStatus, string> = { live: 'Live', planned: 'Planned', limited: 'Limited data' }
 
 /** The live market's indexes as shown above; a market without them keeps its own list. */
 const marketIndexes = (m: MarketRecord): string =>
   MARKET[m.code] ? MARKET[m.code].indexes.map((id) => indexes[id].name).join(', ') : m.reporting.indexes ?? ''
+
+/** A market's group (India's All BRSR filers), when it shows one. */
+const groupOf = (m: Market): IndexData | undefined => m.indexes.map((id) => indexes[id]).find(isGroup)
+
+const count = (n: number) => n.toLocaleString('en-IN')
+const members = (ix: IndexData) => ix.constituents.length + ix.missing.filter((s) => !ix.left?.includes(s)).length
+const pp = (v: number) => { const r = Math.round(v * 1000) / 10; return `${r > 0 ? '+' : r < 0 ? '−' : ''}${Math.abs(r).toFixed(1)}` }
+
+/** What follows a card's change: the base year, then the group's range, which may not tell the change from zero. */
+function since(prev: string, ch?: Yoy): string {
+  if (!ch?.interval) return `since ${prev}, same companies`
+  const range = `since ${prev}, range ${pp(ch.interval[0])} to ${pp(ch.interval[1])} pp`
+  return ch.distinguishable === false ? `${range}, not distinguishable from zero` : range
+}
 
 interface PaceRow { m: Market; n: number; up: number; down: number; median: number; years: number | null }
 
@@ -23,7 +38,7 @@ function pace(m: Market): PaceRow | null {
     .sort((a, b) => a - b)
   if (!changes.length) return null
   const median = changes[Math.floor(changes.length / 2)]
-  const level = indexes[m.flagship].years[m.latest].headline
+  const level = (groupOf(m) ?? indexes[m.flagship]).years[m.latest].headline
   return {
     m, n: changes.length, median,
     up: changes.filter((v) => v >= 0.0005).length,
@@ -36,6 +51,8 @@ export function Home() {
   useStage('core')
   const ready = useLoaded('companies')
   usePageTitle('')
+  const groups = INDEX_ORDER.map((id) => indexes[id]).filter(isGroup)
+  const paced = Object.values(MARKET).flatMap((m) => { const g = groupOf(m); return g ? [`${m.name}: ${g.name}`] : [] })
   return (
     <>
       <section>
@@ -51,7 +68,8 @@ export function Home() {
             {INDEX_ORDER.filter((id) => indexes[id].country === m.code).map((id) => {
               const ix = indexes[id]
               const y = ix.years[m.latest]
-              const ch = ix.yoy[`${m.prev}>${m.latest}`]
+              const key = `${m.prev}>${m.latest}`
+              const ch = publishedChange(ix, key)
               return (
                 <a key={id} className="card" href={href('index', id)}>
                   <div className="tile-label">{ix.name} · {m.label(m.latest)}</div>
@@ -59,11 +77,15 @@ export function Home() {
                     <div className="tile-value">{pct(y.headline)}</div>
                     <Sparkline values={m.years.map((k) => ix.years[k]?.headline ?? null)} width={110} height={34} label={`${ix.name} trend`} />
                   </div>
-                  <div className="tile-context">{m.prev
-                    ? <><Change value={ch ? ch.change : null} /> <span className="muted">since {m.label(m.prev)}, same companies</span></>
-                    : <span className="muted">First snapshot</span>}</div>
+                  <div className="tile-context">{!m.prev
+                    ? <span className="muted">First snapshot</span>
+                    : ix.yoy[key]?.shown === false
+                      ? <span className="chg flat">Level only</span>
+                      : <><Change value={ch ? ch.change : null} /> <span className="muted">{since(m.label(m.prev), ch)}</span></>}</div>
                   <ParityTrack value={y.headline} parity={m.parity} />
-                  <div className="tile-context muted">{y.companiesCovered} of {ix.constituents.length + ix.missing.length} companies covered</div>
+                  <div className="tile-context muted">{isGroup(ix) && y.staffWithPayrollShare != null
+                    ? `${pct(y.staffWithPayrollShare, 0)} of staff with known payroll`
+                    : `${count(y.companiesCovered)} of ${count(members(ix))} companies covered`}</div>
                 </a>
               )
             })}
@@ -104,11 +126,11 @@ export function Home() {
           initial={{ key: 'market', dir: 1 }} columns={[
             { key: 'market', label: 'Market', render: (r) => <strong>{r.m.name}</strong>, sort: (r) => Object.keys(MARKET).indexOf(r.m.code) },
             { key: 'median', label: 'Median change', right: true, mobile: 'value', render: (r) => <Change value={r.median} /> },
-            { key: 'n', label: 'Compared like for like', right: true, render: (r) => `${r.n} companies, ${r.m.label(r.m.prev)} to ${r.m.label(r.m.latest)}` },
+            { key: 'n', label: 'Compared like for like', right: true, render: (r) => `${count(r.n)} companies, ${r.m.label(r.m.prev)} to ${r.m.label(r.m.latest)}` },
             { key: 'split', label: 'Rose / fell', right: true, render: (r) => `${r.up} / ${r.down}` },
             { key: 'years', label: 'Years to parity at this pace', right: true, render: (r) => (r.years == null ? 'not on track' : `about ${r.years}`) },
           ]} />}
-        <p className="small muted" style={{ marginTop: 10 }}>Like for like: the same companies in both years. Years to parity: time for an index to reach 50% at the median pace.</p>
+        <p className="small muted" style={{ marginTop: 10 }}>Like for like: the same companies in both years. Years to parity: time for an index to reach 50% at the median pace{paced.length ? ` (${paced.join('; ')})` : ''}.</p>
       </section>
 
       <section>
@@ -126,7 +148,7 @@ export function Home() {
       <section>
         <h2>How to read this</h2>
         <ul className="tight">
-          <li><strong>Headline:</strong> women's share of the payroll you own. Parity is 50%.</li>
+          <li><strong>Headline:</strong> women's share of the payroll you own{groups.length ? `; for ${groups.map((g) => g.name).join(', ')}, of all their payroll` : ''}. Parity is 50%.</li>
           <li><strong>Like for like:</strong> only companies that reported in both years on the same basis.</li>
           <li><strong>Sources:</strong> every number links to its filing. Estimates carry a badge.</li>
         </ul>
