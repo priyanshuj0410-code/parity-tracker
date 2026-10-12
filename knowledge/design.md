@@ -34,11 +34,12 @@ plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/7b06f399-403a-4106-8d7e-7bd9697da393
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/f47ab7b6-a46f-4d22-83d5-5131790b6a49
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/59edeb77-637d-4ab4-924e-43b8a22072b5
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/711021a8-d0d6-401b-85fc-b60c501dfad7
 ---
 
 # Nivel design system
 
-The brand reads "Nivel" in the header next to the Nivel mark, and "Nivel by The Equal Lens" in the install manifest. Brand files (the mark in colour, black and white, the app tiles, and the Lensy illustrations) are in `Nivel/` at the repo root; the app uses copies in `src/assets/nivel-mark.svg`, `public/favicon.svg`, `public/icons/` and `public/illustrations/`.
+The brand reads "Nivel" in the header next to the Nivel mark, and "Nivel by The Equal Lens" in the install manifest. The Lensy illustrations are in `Nivel/` at the repo root, and the app uses copies in `public/illustrations/`. The current mark's copies are `src/assets/nivel-mark.svg`, `public/favicon.svg` and `public/icons/` (see the logo note below). `Nivel/` also still holds the earlier two-figure mark (violet `#9F7DE0` and lime `#D1F246`: `Nivel.svg` and its white, black, white-ground and black-ground versions), which no screen, icon or manifest uses.
 
 **The logo (from 3 October 2026):** the source is The Equal Lens's `Solutions/Nivel - Logo.svg` (1254 by 1254, transparent; white- and black-ground versions beside it): an N of four nodes with a dashed teal parity line. Its dark outline (`#200E2B`) blends into dark grounds while the lilac, violet and teal fills stay legible, so one transparent file serves both themes. Every use is derived from it:
 - **Header and footer mark** (`src/assets/nivel-mark.svg`): the SVG cropped to the artwork with an 8-unit margin (viewBox `209 301 834 619`), 32px tall in the header (28px on phones) and 24px in the footer.
@@ -51,7 +52,7 @@ Source: The Equal Lens brand package (`equal-lens` skill, `references/brand.md` 
 ## 1. Register
 **Minimal register.** The data is the hero.
 - Warm paper background.
-- The Nivel mark in the header corner: two figures forming an N, violet `#9F7DE0` and lime `#D1F246`. The same colour mark works on light and dark.
+- The Nivel mark in the header corner: an N of four nodes with a dashed teal parity line (the logo note above). One transparent file serves light and dark.
 - Hairline rules.
 - Violet only in headings and the primary series.
 - Lensy appears only in empty and not-yet states, as the supplied illustrations, never as decoration. Baloo 2 is not loaded.
@@ -69,15 +70,16 @@ Source: The Equal Lens brand package (`equal-lens` skill, `references/brand.md` 
 | `--violet-deep` | `#42266B` | Hover on links and buttons |
 | `--mist` | `#E7E0F1` | Hairline rules, chart gridlines |
 | `--line` | `#E7DEF4` | Card borders |
+| `--line-control` | `#9181AF` | The edge of a control whose edge is how it is found: pill filters, the search field and selects, `.dd-btn`, `.btn-icon` and `.btn-quiet`. 3.3 on paper, 3.5 on card, 3.1 on tint. Dark: `#7A6D96`. Hover darkens it to `--soft`. `--line` stays the hairline for cards, rules and panels |
 | `--tint` | `#F4F0FA` | Chips, table header fill, selected row |
 | `--good` | `#0F6E56` | Text for increases (teal deep) |
 | `--bad` | `#A9442F` | Text for decreases (coral deep, 5.3 on tint) |
 | `--sun-deep` | `#8A5D00` | Estimated or flagged data labels (5.1 on tint) |
 | `--stage` | `#F4F0FA` | Tile behind empty-state illustrations. Dark: `#ECE6F5`, light on purpose, because the illustrations' black outlines vanish on dark |
 | `--bad-ink` | `#A9442F` | Text on `--bad-bg` (5.1:1). Dark: `#FF8A6E` |
+| `--dot-dim` | `#9286AE` at 28% | Context dots on the parity map. Dark: `#9B8FB4` at 22% |
 
 Every light text token passes WCAG AA (4.5:1) on card, paper and tint. The 2026-10 audit found the earlier `--muted` and `--soft` at 3.0 to 4.4 (PARITY-24); check any new text colour against all three surfaces before adding it.
-| `--dot-dim` | violet-grey at 28% | Context dots on the parity map (dark: 22%) |
 
 ### Dark theme (PARITY-10)
 **Switching:**
@@ -85,7 +87,7 @@ Every light text token passes WCAG AA (4.5:1) on card, paper and tint. The 2026-
 - The choice persists in `localStorage` (`pt-theme`).
 - A pre-paint script in `index.html` applies it before first render, so there's no flash.
 - `?theme=dark` or `?theme=light` in the URL forces a theme, for screenshots and shared links.
-- Dark mode uses the reversed (white) logo.
+- Dark mode uses the same transparent mark as light: its dark outline blends into the dark ground and the fills stay legible (the logo note above). The app uses no reversed or white logo.
 
 | Token | Dark value | WCAG on page (#16111E) |
 |---|---|---|
@@ -97,6 +99,7 @@ Every light text token passes WCAG AA (4.5:1) on card, paper and tint. The 2026-
 | `--muted` | `#9B8FB4` | 6.2 (5.1 on tint) |
 | `--violet` | `#C3A8F0` | 9.0 |
 | `--mist` / `--line` / `--tint` | `#2C2339` / `#352B45` / `#2A2138` | rules, borders, fills |
+| `--line-control` | `#7A6D96` | 3.9 (3.2 on tint) |
 | `--good` / `--bad` | `#4CC79A` / `#FF8A6E` | 8.8 / 8.0 |
 | `--sun-deep` | `#F2C05C` | 11.0 |
 | `--on-accent` | `#16111E` | text on violet pills (9.0) |
@@ -108,8 +111,33 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
 - **Nunito Sans** (400/600/700): body copy and table cells.
 - Hero numbers use Poppins 600 with proportional figures. Tables use tabular figures.
 - Headings are sentence case. Two-tone headlines use ink for the first half and `.accent` (violet) for the second.
-- Headings use Poppins 600, never 700, with −0.01em tracking: h1 26–36px, h2 20px. This matches the restrained weights of investing apps (audit 2026-10).
+- Headings use Poppins 600, never 700, with −0.01em tracking: h1 26-36px, h2 20px. This matches the restrained weights of investing apps (audit 2026-10).
 - **12px floor everywhere (PARITY-28):** no text is smaller than 12px on any screen. That covers chart axes and reference labels, badges, scale ticks, tooltips, the quadrant labels, formula labels and monogram letters. Phones had the floor first (PARITY-24); desktop followed.
+
+### Type scale (reader app, PARITY-132)
+
+Sixteen named sizes: fourteen fixed and two fluid. They are the sizes the app's stylesheet (`src/styles.css`) sets today, grouped by job; no other size is allowed, and a new one is a new row here first. Poppins is the face for labels, figures and headings, Nunito Sans for running text; weights follow the rules above. Below 900px means the phone layout.
+
+| Name | Size | Used for |
+|---|---|---|
+| Micro | 12px | The floor: chart axes and labels, badges, table headers, scale ticks, the ⌘K hint, hints and sub-lines. |
+| Small | 13px | Pills, strip items, tile labels, segmented options, quiet buttons, tooltips, the formula, the footer. |
+| Body | 14px | Running text in cards, meta lines, table cells, legends, nav links, form text. |
+| Card title | 15px | The install prompt's title, step heads, the search sheet's Cancel link, and chart frame titles below 900px. |
+| Sub-head | 16px | `h3`, chart frame titles, the sub-heads on a company page (`h-sub`), and the text in the search field and the form fields (16px, so iOS does not zoom). |
+| Row figure | 17px | The figure that ends a market-list row. |
+| Lead | 18px | The page lead, an input's value in a calculation, and the brand name below 900px. |
+| Brand | 19px | The brand name in the desktop header. |
+| Section | 20px | `h2`. |
+| Fact | 22px | A fact in a market's facts list, and the value of a tile that has none. |
+| Tile, phone | 24px | A tile's value below 900px. |
+| Scale value, phone | 30px | The scale card's value on the company overview below 900px. |
+| Answer | 32px | The value the reader has chosen in the guess. |
+| Tile | 34px | A tile's value. |
+| Page title | 26px to 36px, fluid (`clamp(26px, 3.6vw, 36px)`) | `h1`. |
+| Hero | 44px to 64px, fluid (`clamp(44px, 7vw, 64px)`) | The headline number at the top of an index page and a market page. |
+
+The internal dashboard (section 8) has its own scale of six sizes.
 
 ## 4. Layout
 - Max content width 1120px, 16px side gutter on phones, 24px from 720px up.
@@ -137,7 +165,7 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
 - **Card grids** use `auto-fill`, so a market with one index keeps a normal-width card.
 
 ## 5. Components
-- **Stat tile:** label (Poppins 500, 13px, `--soft`), value (Poppins 600, 32–44px, `--ink`), one line of context. Never a gauge or ring.
+- **Stat tile:** label (Poppins 500, 13px, `--soft`), value (Poppins 600, 32-44px, `--ink`), one line of context. Never a gauge or ring.
 - **Change label (PARITY-25):** a filled triangle plus signed percentage points (pp) in coloured text, 13px Poppins 600, with no fill, so it never looks tappable: `--good` for rises, `--bad` for falls. The triangle and sign mean it never relies on colour alone. Flat (|change| < 0.05 pp) shows "no change" in `--soft`; missing shows "n/a" in `--muted`.
 - **Data badge:** `Reported`, `Rescaled`, `Estimated` (sun-deep text on tint), `Company report` (sun-deep, like Estimated), `Basis changed`, `Missing`. Every number that is not cleanly reported carries one.
 - **Company-report figures (PARITY-92, [decision 0015](decisions/0015-coverage-accounted-for.md)):** where the statutory source has nothing, a figure can come from the company's own report. It always says so, in the same places a statutory figure names its source, with no new visual style:
@@ -170,7 +198,7 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
   - **empty state:** a filtered list with no rows says what was searched, suggests a ticker or sector, and offers Clear search (and Search all companies when one index is selected). The first index pill is "All": index members in every market plus every Indian BRSR filer. Never "0 companies" over an empty card.
   - Home's pace of change is a small table (market, median change, companies compared, rose / fell, years to parity), shown as detail cards on phones.
   - a one-line key sits under long lists: "≈ means estimated or derived rather than reported. pp means percentage points.
-- **Meter (inline data bar):** the value, then a 52px by 6px `--line` track with a `--s1` fill and a 2px ink tick at parity. Employment parity and share of pay run 0–100% (tick at 50%); wage parity runs 0–140% (tick at 100%). Replaces bare percentages wherever a value has a parity point.
+- **Meter (inline data bar):** the value, then a 52px by 6px `--line` track with a `--s1` fill and a 2px ink tick at parity. Employment parity and share of pay run 0-100% (tick at 50%); wage parity runs 0-140% (tick at 100%). Replaces bare percentages wherever a value has a parity point.
 - **Tabs:** underline tabs for sections that have their own URL (company pages: Overview, Trend, Peers, Calculations, Sources; index pages: Overview, Companies, Sectors; Compare: Countries, Sectors, Parity map). The first tab is the page's base URL. 14px Poppins 500, `--soft`, active `--violet` with a 2px underline and `aria-current="page"`. They scroll sideways on phones, where each tab is 44px tall, and the row scrolls itself to keep the current tab in view. Switching tabs follows the section tab change rule in Layout.
 - **Feedback and motion (PARITY-82):**
   - **Hover only where a pointer can hover** (`@media (hover: hover)`), so a tap on a phone never leaves a control looking hovered.
@@ -272,7 +300,7 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
   - coloured by direction from first to last point (`--good`, `--bad`, `--muted`)
   - always paired with an explicit number or table, never on its own
   - only reported values are plotted
-- **Pill filters:** 999px radius, white with `--line` border; selected is violet fill with white text and `aria-pressed`. Used for index filters instead of selects. On phones, a filter group is one row that scrolls sideways rather than wrapping onto several lines.
+- **Pill filters:** 999px radius, white with a `--line-control` border (3:1 on paper, card and tint in both themes, because a pill is a control and its edge is part of how it is found); selected is violet fill with white text and `aria-pressed`. Used for index filters instead of selects. On phones, a filter group is one row that scrolls sideways rather than wrapping onto several lines.
 - **Explainer disclosure:** definitions that every visitor does not need sit in a collapsed "What the numbers mean" disclosure (violet summary with a chevron) under the page lead, not as a paragraph above the controls.
 - **Group (India's All BRSR filers, PARITY-129):** a group is not an index. No fund holds it, and every company counts by its own payroll (`kind: 'group'` on the index record). It reuses the index page and Home card with these changes, and no new colour or component:
   - **Names:** "Group · India" in search, "weighted by payroll" in the meta line, counts with Indian digit grouping ("1,150 companies").
@@ -292,7 +320,7 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
     - India's gaps line reads "No BRSR figure" on every Indian index, in place of the old "No WGEA report".
 - **Older latest year (India):** a company whose newest filing is older than the market's latest year shows that figure everywhere with an "FY25 figure" sub-line, and its Overview says so once under the heading ("No FY26 BRSR yet: showing FY25"), with the record's reason when it has one ("No FY26 BRSR filed", "Merged into Coforge").
 - **Levels and functions (India, PARITY-129):** a chart frame on the company Overview, "Women at each level", only for companies that report finer levels or job functions; nothing shows for the rest.
-  - One bar row per level (single hue, series 1, a 2px ink tick at 50% parity, 0–100%), labelled in the company's own words, which wrap rather than truncate. Order: top, senior, middle and junior management, then the company's own order.
+  - One bar row per level (single hue, series 1, a 2px ink tick at 50% parity, 0-100%), labelled in the company's own words, which wrap rather than truncate. Order: top, senior, middle and junior management, then the company's own order.
   - Functions (STEM, sales, operations) are a second set behind a "Levels | Functions" segmented control when both exist.
   - The sub-line gives the row's scope when it is not all staff ("managers only"), and the frame's subtitle the source ("Annual report, page 137"). The table view lists women, men and share.
 - **India's BRSR sources without an XBRL file:** "FY26 BRSR, company website: PDF", "FY26 BRSR, in the annual report: PDF", "FY25 BRSR, filed with the exchange: PDF", or "FY26 BRSR (copy not linked)" when no public copy exists. Never an empty link.
@@ -311,11 +339,11 @@ Validated with the dataviz `validate_palette.js` using `--pairs all`, because co
 
 - **Lines:** 2px with round joins. Markers 7px with a 2px card ring, growing to 11px at the hovered year. Estimated points are hollow.
 - **Area wash:** single-series line charts get a vertical gradient under the line, series colour from 22% to 0%. Never on multi-series charts.
-- **Gridlines:** at most four intervals. The step is the one of 0.5, 0.25 or 0.2 that gives 2–4 intervals with the lowest top, so a 0–50% axis shows 0, 25% and 50% only. The zero line is `--line`, the rest `--mist`. Axis labels drop the decimal on whole percentages.
+- **Gridlines:** at most four intervals. The step is the one of 0.5, 0.25 or 0.2 that gives 2-4 intervals with the lowest top, so a 0-50% axis shows 0, 25% and 50% only. The zero line is `--line`, the rest `--mist`. Axis labels drop the decimal on whole percentages.
 - **Tooltip:** the year in bold, then one row per series: swatch, label, value, and the change from the previous reported point in good or bad text. It flips to the left of the crosshair past the chart's midpoint.
 - **Range-dot plot (countries and sectors):** one row per group with the median as a 14px `--s1` dot with a card ring, the middle half of companies as a 10px `--s1` band at 28% opacity, and a parity tick. The median value sits in a right-hand column. Groups with fewer than three companies are listed as "too few", not plotted. A key explains dot, band and tick.
 - **Sector grid (phones):** "Every sector in every market" becomes a compact table: shortened sector names, five market columns (IN, UK, AU, JP, EU) in whole percent, a dot for fewer than three companies, and the sorted market's header filled violet with its column tinted. Tapping a market header sorts by it.
-- **Parity map (scatter):** employment parity on x (0–100%, parity line at 50%) and wage parity on y (30–150%, parity line at 100%). The parity quadrant (top right) is tinted. Quadrant labels with counts sit in the corners with a card-coloured halo, drawn above the dots.
+- **Parity map (scatter):** employment parity on x (0-100%, parity line at 50%) and wage parity on y (30-150%, parity line at 100%). The parity quadrant (top right) is tinted. Quadrant labels with counts sit in the corners with a card-coloured halo, drawn above the dots.
   - **On phones:** the plot is roughly square, dots are 3px at 78% opacity so density shows, axis titles move to the top-left ("↑ Women's pay as a share of men's") and bottom-right ("Women's share of staff →"), and the quadrant counts leave the plot for a 2×2 key underneath, laid out like the quadrants, with the parity quadrant tinted.
   - One hue only: highlighted companies are `--s1` dots (4.5px radius, 1.5px card ring); everything else is `--dot-dim` context. Markets are compared by highlighting one at a time or by facets ("By market", a 2×2 grid with shared axes), never by four hues: the dataviz all-pairs check caps scatter at three colours.
   - Values outside the axis are pinned to the edge and drawn hollow, and the page says how many.
@@ -332,7 +360,7 @@ Validated with the dataviz `validate_palette.js` using `--pairs all`, because co
 - **Grid:** solid 1px `--mist`, never dashed.
 - **Parity reference:** the 50% line is a solid 1px `--muted` rule, labelled at its left end so it never collides with the series end labels on the right.
 - **Y axis:** shares run from 0 to 50% so distance to parity is visible. If any value exceeds 50%, the axis or bar scale extends to the next 10%, and the parity mark stays at 50%.
-- **Markets:** each market keeps its own metric label (India: share of total wages; UK: share of hourly pay, UK staff), but all are shares of pay on a 0–50% axis with parity at 50%. Pay ratios (parity 100%) appear only as supporting figures, never as a market's headline.
+- **Markets:** each market keeps its own metric label (India: share of total wages; UK: share of hourly pay, UK staff), but all are shares of pay on a 0-50% axis with parity at 50%. Pay ratios (parity 100%) appear only as supporting figures, never as a market's headline.
 - **Legends and labels:**
   - A legend names the series whenever there are two or more.
   - End labels show only the value, because naming the series twice squeezed the plot (PARITY-64, the owner's call; on a phone named end labels took a third of the width).
@@ -341,7 +369,8 @@ Validated with the dataviz `validate_palette.js` using `--pairs all`, because co
 - **Hover:** a crosshair and tooltip on lines. Every chart also has a table view with the same numbers.
 
 ## 7. Voice (house rules)
-- No em dashes. Use colons, commas and full stops. En dashes only for ranges.
+- No em dashes and no en dashes (the owner's rule CLAUD-22, 12 October 2026). Use colons, commas and full stops, and write a range with a hyphen: 26-36px, 0-50%. `python3 knowledge/contrast.py` fails on either character in this document and in the app's source.
+- British spelling: colour, behaviour, organise.
 - **Links in running text are underlined** (paragraphs, prose lists, meta lines and breadcrumbs), so they never rely on colour alone (WCAG 1.4.1). Standalone links (`.go`), tabs, navigation and table name links are not.
 - Bold leads a point. Numbers come with the finding attached.
 - State limitations once, in one line, where they matter. Show the unflattering rows: missing companies, estimated values, broken filings.

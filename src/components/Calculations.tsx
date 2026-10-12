@@ -156,7 +156,7 @@ export function Calculations({ c, pt }: { c: Company; pt?: Point }) {
                 <Eq label="Men's pay per head, relative" answer={false} lhs={<Frac top={pct(1 - y.w)} bottom={pct(1 - E)} />} steps={[r3((1 - y.w) / (1 - E))]} />
                 <Eq label="Wage parity" lhs="W" steps={[<Frac key="1" top={r3(y.w / E)} bottom={r3((1 - y.w) / (1 - E))} />, pct(Wd)]} />
                 {W == null
-                  ? <p className="small"><strong>Not comparable.</strong> {pct(Wd, 0)} is outside 30–130%: the wage total covers more staff than the permanent headcount{y.fAll != null ? ` (women are ${pct(y.fAll)} of all staff, ${pct(E)} of permanent)` : ''}. Left out of rankings and the parity map.</p>
+                  ? <p className="small"><strong>Not comparable.</strong> {pct(Wd, 0)} is outside 30-130%: the wage total covers more staff than the permanent headcount{y.fAll != null ? ` (women are ${pct(y.fAll)} of all staff, ${pct(E)} of permanent)` : ''}. Left out of rankings and the parity map.</p>
                   : <p className="small muted">Approximate: wages cover all employees, the staff share only permanent staff.</p>}</>
             ) : c.country === 'JP' ? (
               <p>Reported: women's average annual pay is <strong>{pct(W)}</strong> of men's, all workers.</p>
