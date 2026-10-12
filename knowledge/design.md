@@ -2,7 +2,7 @@
 type: design-system
 title: Nivel design system
 description: Visual and writing rules for Nivel (formerly Parity Tracker), derived from The Equal Lens brand package (minimal register) plus a validated chart palette.
-updated: 2026-10-07
+updated: 2026-10-12
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/bd128ee2-934e-4d5e-93c2-b0078d245c88
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/f3cd339a-5e02-4cdc-9542-b4072d9a274b
@@ -34,11 +34,12 @@ plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/7b06f399-403a-4106-8d7e-7bd9697da393
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/f47ab7b6-a46f-4d22-83d5-5131790b6a49
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/59edeb77-637d-4ab4-924e-43b8a22072b5
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/711021a8-d0d6-401b-85fc-b60c501dfad7
 ---
 
 # Nivel design system
 
-The brand reads "Nivel" in the header next to the Nivel mark, and "Nivel by The Equal Lens" in the install manifest. Brand files (the mark in colour, black and white, the app tiles, and the Lensy illustrations) are in `Nivel/` at the repo root; the app uses copies in `src/assets/nivel-mark.svg`, `public/favicon.svg`, `public/icons/` and `public/illustrations/`.
+The brand reads "Nivel" in the header next to the Nivel mark, and "Nivel by The Equal Lens" in the install manifest. The Lensy illustrations are in `Nivel/` at the repo root, and the app uses copies in `public/illustrations/`. The current mark's copies are `src/assets/nivel-mark.svg`, `public/favicon.svg` and `public/icons/` (see the logo note below). `Nivel/` also still holds the earlier two-figure mark (violet `#9F7DE0` and lime `#D1F246`: `Nivel.svg` and its white, black, white-ground and black-ground versions), which no screen, icon or manifest uses.
 
 **The logo (from 3 October 2026):** the source is The Equal Lens's `Solutions/Nivel - Logo.svg` (1254 by 1254, transparent; white- and black-ground versions beside it): an N of four nodes with a dashed teal parity line. Its dark outline (`#200E2B`) blends into dark grounds while the lilac, violet and teal fills stay legible, so one transparent file serves both themes. Every use is derived from it:
 - **Header and footer mark** (`src/assets/nivel-mark.svg`): the SVG cropped to the artwork with an 8-unit margin (viewBox `209 301 834 619`), 32px tall in the header (28px on phones) and 24px in the footer.
@@ -51,7 +52,7 @@ Source: The Equal Lens brand package (`equal-lens` skill, `references/brand.md` 
 ## 1. Register
 **Minimal register.** The data is the hero.
 - Warm paper background.
-- The Nivel mark in the header corner: two figures forming an N, violet `#9F7DE0` and lime `#D1F246`. The same colour mark works on light and dark.
+- The Nivel mark in the header corner: an N of four nodes with a dashed teal parity line (the logo note above). One transparent file serves light and dark.
 - Hairline rules.
 - Violet only in headings and the primary series.
 - Lensy appears only in empty and not-yet states, as the supplied illustrations, never as decoration. Baloo 2 is not loaded.
@@ -75,9 +76,9 @@ Source: The Equal Lens brand package (`equal-lens` skill, `references/brand.md` 
 | `--sun-deep` | `#8A5D00` | Estimated or flagged data labels (5.1 on tint) |
 | `--stage` | `#F4F0FA` | Tile behind empty-state illustrations. Dark: `#ECE6F5`, light on purpose, because the illustrations' black outlines vanish on dark |
 | `--bad-ink` | `#A9442F` | Text on `--bad-bg` (5.1:1). Dark: `#FF8A6E` |
+| `--dot-dim` | `#9286AE` at 28% | Context dots on the parity map. Dark: `#9B8FB4` at 22% |
 
 Every light text token passes WCAG AA (4.5:1) on card, paper and tint. The 2026-10 audit found the earlier `--muted` and `--soft` at 3.0 to 4.4 (PARITY-24); check any new text colour against all three surfaces before adding it.
-| `--dot-dim` | violet-grey at 28% | Context dots on the parity map (dark: 22%) |
 
 ### Dark theme (PARITY-10)
 **Switching:**
@@ -85,7 +86,7 @@ Every light text token passes WCAG AA (4.5:1) on card, paper and tint. The 2026-
 - The choice persists in `localStorage` (`pt-theme`).
 - A pre-paint script in `index.html` applies it before first render, so there's no flash.
 - `?theme=dark` or `?theme=light` in the URL forces a theme, for screenshots and shared links.
-- Dark mode uses the reversed (white) logo.
+- Dark mode uses the same transparent mark as light: its dark outline blends into the dark ground and the fills stay legible (the logo note above). The app uses no reversed or white logo.
 
 | Token | Dark value | WCAG on page (#16111E) |
 |---|---|---|
