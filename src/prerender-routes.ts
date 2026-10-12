@@ -1,5 +1,5 @@
 import { BASIS, marketName, pointOf } from './lib/compare'
-import { INDEX_ORDER, companies, indexMarket, indexes, loadAll, marketOf, simulations, type Core } from './lib/data'
+import { INDEX_ORDER, MARKET, companies, indexMarket, indexes, isGroup, loadAll, marketOf, simulations, type Core } from './lib/data'
 import type { Company } from './types'
 import { companyFile } from './feeds/data-api'
 import { pct } from './lib/format'
@@ -16,12 +16,13 @@ const COMPARE: Record<string, string> = {
 }
 
 const dated = (label: string) => (label === 'latest' ? '' : label)
+const count = (n: number) => n.toLocaleString('en-IN')
 
 /** Every page's title and description for a release, so a shared link previews with that page's own figures. Publish passes the release in. */
 export function pages(core: Core, all: Record<string, Company>): PageMeta[] {
   loadAll(core, all)
   const out: PageMeta[] = [
-    { path: href('companies'), title: 'Companies', description: `Women's share of pay at ${Object.keys(companies).length} companies across ${INDEX_ORDER.length} indexes, from their own filings.` },
+    { path: href('companies'), title: 'Companies', description: `Women's share of pay at ${count(Object.keys(companies).length)} companies in ${Object.keys(MARKET).length} markets, from their own filings.` },
     { path: href('method'), title: 'Method', description: "How Nivel measures women's share of the payroll you own, and its limits." },
     { path: href('play'), title: 'Play', description: "Guess three figures from companies' own gender pay filings, then play Spot the Stereotype's workplace set." },
     // Markets (PARITY-44). A market's id travels as ?id= on /market, since ids are not in the release's page list.
@@ -32,11 +33,16 @@ export function pages(core: Core, all: Record<string, Company>): PageMeta[] {
   for (const [id, label] of COMPARE_TABS) {
     out.push({ path: id === 'countries' ? href('compare') : href('compare', id), title: `Compare · ${label}`, description: COMPARE[id] })
   }
-  for (const id of INDEX_ORDER) {
+  // Shown indexes first, then every other index a company page links to (sector indexes, a group not yet shown).
+  for (const id of new Set([...INDEX_ORDER, ...Object.keys(indexes)])) {
     const ix = indexes[id]
     const m = indexMarket(ix)
+    const y = ix.years[m.latest]
+    if (!y) continue
     const when = dated(m.label(m.latest))
-    const description = `${m.headlineLabel} in the ${ix.name}${when ? `, ${when}` : ''}: ${pct(ix.years[m.latest].headline)}. Parity is ${pct(m.parity, 0)}. Every company's figures, from their own filings.`
+    const description = isGroup(ix)
+      ? `${ix.name}${when ? `, ${when}` : ''}: women get ₹${Math.round(y.headline * 100)} of every ₹100 these companies pay. Parity is ₹${Math.round(m.parity * 100)}. ${count(y.companiesCovered)} companies, from their own filings.`
+      : `${m.headlineLabel}, ${ix.name}${when ? `, ${when}` : ''}: ${pct(y.headline)}. Parity is ${pct(m.parity, 0)}. Every company's figures, from their own filings.`
     for (const [t, label] of INDEX_TABS) {
       out.push({ path: t === 'overview' ? href('index', id) : href('index', id, t), title: t === 'overview' ? ix.name : `${ix.name} · ${label}`, description })
     }

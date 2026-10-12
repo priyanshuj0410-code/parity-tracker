@@ -1,6 +1,6 @@
 import { use, useSyncExternalStore } from 'react'
 import { companyFile } from '../feeds/data-api'
-import type { Company, CompanyYear, IndexData, Simulation } from '../types'
+import type { Company, CompanyYear, IndexData, Simulation, Yoy } from '../types'
 
 /**
  * The app holds no data (decision 0014). It reads a release from `/data/r/{release}/...`, served from Firestore
@@ -282,6 +282,21 @@ export function dataLabel(y?: CompanyYear): { label: string; tone: Tone } {
 
 export function indexName(id: string): string {
   return indexes[id]?.name ?? id
+}
+
+/** A symbol as readers know it, without the market prefix the data adds (ASX-, TSE-, EU-, and NSE- or BSE- for India's filers). */
+export const ticker = (symbol: string): string => symbol.replace(/^(ASX|TSE|EU|NSE|BSE)-/, '')
+
+/** A company's ticker for lists: an Indian filer listed only on BSE reads "BSE: 500123". */
+export const listing = (c: Company): string => (c.symbol.startsWith('BSE-') ? `BSE: ${ticker(c.symbol)}` : ticker(c.symbol))
+
+/** A group, not an index: no fund holds it, and every company counts by its own payroll (India's All BRSR filers). */
+export const isGroup = (ix?: IndexData): boolean => ix?.kind === 'group'
+
+/** An index's change between two years ('2024-25>2025-26'), or undefined when it has none or the method holds it back. */
+export function publishedChange(ix: IndexData | undefined, key: string): Yoy | undefined {
+  const ch = ix?.yoy[key]
+  return ch && ch.shown !== false ? ch : undefined
 }
 
 /**

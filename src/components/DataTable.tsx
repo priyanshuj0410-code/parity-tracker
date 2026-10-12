@@ -147,7 +147,7 @@ export function DataTable<T>({ columns, rows, rowKey, initial, caption, rowHref,
                 )
               })}
             </ul>
-            {cut > 0 && <button type="button" className="mtable-more" onClick={showAll}>Show all {sorted.length}</button>}
+            {cut > 0 && <button type="button" className="mtable-more" onClick={showAll}>Show all {sorted.length.toLocaleString('en-IN')}</button>}
           </div>
         </div>
       )

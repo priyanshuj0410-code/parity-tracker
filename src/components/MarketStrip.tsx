@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef } from 'react'
-import { INDEX_ORDER, indexMarket, indexes, useStage } from '../lib/data'
+import { INDEX_ORDER, indexMarket, indexes, publishedChange, useStage } from '../lib/data'
 import { revealInRow } from '../lib/reveal'
 import { pct } from '../lib/format'
 import { href } from '../lib/router'
@@ -14,13 +14,16 @@ export function MarketStrip({ current }: { current?: string }) {
         {INDEX_ORDER.map((id) => {
           const ix = indexes[id]
           const m = indexMarket(ix)
-          const raw = m.prev ? ix.yoy[`${m.prev}>${m.latest}`]?.change : undefined
-          const ch = raw == null ? undefined : Math.abs(raw) < 0.0005 ? 0 : raw
-          const tone = ch == null || ch === 0 ? 'flat' : ch > 0 ? 'up' : 'down'
+          const key = `${m.prev}>${m.latest}`
+          const pub = m.prev ? publishedChange(ix, key) : undefined
+          const held = !!m.prev && ix.yoy[key]?.shown === false
+          const ch = pub == null ? undefined : Math.abs(pub.change) < 0.0005 ? 0 : pub.change
+          const tone = ch == null || ch === 0 || pub?.distinguishable === false ? 'flat' : ch > 0 ? 'up' : 'down'
           return (
             <a key={id} href={href('index', id)} className={`strip-item${current === id ? ' on' : ''}`}>
               <span className="strip-name">{ix.name}</span>
               <span className="strip-val">{pct(ix.years[m.latest].headline)}</span>
+              {held && <span className="strip-chg held">Level only</span>}
               {ch != null && <span className={`strip-chg ${tone}`}>{ch > 0 ? '+' : ch < 0 ? '−' : ''}{Math.abs(ch * 100).toFixed(1)}</span>}
             </a>
           )

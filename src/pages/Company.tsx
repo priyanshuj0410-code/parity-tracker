@@ -1,10 +1,11 @@
 import { Suspense, type ReactNode } from 'react'
 import { DataBadge } from '../components/Badge'
 import { Change } from '../components/Change'
-import { Calculations } from '../components/Calculations'
+import { Calculations, GroupWeight } from '../components/Calculations'
 import { ChartFrame } from '../components/ChartFrame'
 import { EuGlance, EuSources } from '../components/EuDetail'
 import { JapanGlance, JapanSources } from '../components/JapanDetail'
+import { LevelBars, LevelSources } from '../components/LevelBars'
 import { ReportRefs } from '../components/ReportSource'
 import { LineChart, type Series } from '../components/LineChart'
 import { Logo } from '../components/Logo'
@@ -14,19 +15,31 @@ import { DataTable, type Column } from '../components/DataTable'
 import { EmptyState } from '../components/EmptyState'
 import { Tabs } from '../components/Tabs'
 import { BASIS, E_PARITY, POINTS, W_PARITY, inMarket, marketName, offMapReason, pointFor, sectorOf, standing, type Point } from '../lib/compare'
-import { boardShare, sourceDate, euYear, indexName, loadCompany, useCompany, useLoaded, useStage, isExcluded, marketOf, payRatio, shareChange, workforce, yoyChange } from '../lib/data'
+import { INDEX_ORDER, boardShare, sourceDate, euYear, indexName, indexes, isGroup, loadCompany, ticker, useCompany, useLoaded, useStage, isExcluded, marketOf, payRatio, shareChange, workforce, yoyChange } from '../lib/data'
 import { crore, pct, pctTick } from '../lib/format'
 import { correctionHref } from '../lib/contact'
 import { href, usePageTitle } from '../lib/router'
 import { COMPANY_TABS } from '../lib/tabs'
-import type { Company as Co } from '../types'
+import type { Company as Co, Filing } from '../types'
 import { NotFound } from './NotFound'
 import { Skeleton, TableSkeleton } from '../components/Skeleton'
 
 const TABS = COMPANY_TABS
 type Tab = (typeof TABS)[number][0]
 
-const ticker = (c: Co) => c.symbol.replace(/^(ASX|TSE|EU)-/, '')
+/** India's BRSR copies without an XBRL file, by where the PDF sits. */
+const FILED: Record<NonNullable<Filing['kind']>, string> = { website: 'company website', annualReport: 'in the annual report', exchange: 'filed with the exchange' }
+const isUrl = (s: string) => /^https?:\/\//.test(s)
+
+/** The group the company belongs to, if any (India's All BRSR filers), and a note when it is outside the group's ₹ figure. */
+function groupOf(c: Co) {
+  const ix = c.indexes.map((id) => indexes[id]).find(isGroup)
+  const note = !ix ? '' : ix.left?.includes(c.symbol) ? 'left the group' : ix.missing.includes(c.symbol) ? 'no payroll figure' : ''
+  return { ix, note }
+}
+
+/** India: the newest year with the company's own levels or job functions, which may have no usable wage share. */
+const levelYearOf = (c: Co) => [...marketOf(c).years].reverse().find((k) => c.years[k]?.levels?.length || c.years[k]?.functions?.length)
 
 function ScaleCard({ label, value, parity, max, basis, rank, children, empty = 'n/a' }: {
   label: string; value: number | null | undefined; parity: number; max: number; basis: string; rank: ReactNode; children?: ReactNode; empty?: string
@@ -52,6 +65,8 @@ function Overview({ c, pt }: { c: Co; pt?: Point }) {
   const uk = c.country !== 'IN'
   const desc = [...m.years].reverse()
   const latest = desc.find((k) => c.years[k]?.w != null) ?? desc.find((k) => c.years[k])
+  const older = c.country === 'IN' && latest && !c.years[m.latest]
+  const levelYear = levelYearOf(c)
   const y = latest ? c.years[latest] : undefined
   const prevKey = latest ? m.years[m.years.indexOf(latest) - 1] : undefined
   const p = prevKey ? c.years[prevKey] : undefined
@@ -67,6 +82,7 @@ function Overview({ c, pt }: { c: Co; pt?: Point }) {
           <h2>On the shared scales</h2>
           {!offMap && <a className="go small" href={href('compare', 'map', c.symbol)}>Parity map</a>}
         </div>
+        {older && <p className="small"><strong>{c.latestNote ?? `No ${m.label(m.latest)} BRSR yet`}:</strong> showing {m.label(latest)}.</p>}
         <div className="grid g3">
           <ScaleCard label="Employment parity" value={pt?.e} parity={E_PARITY} max={1}
             basis={b.employment ? `Women's share of ${b.employment}. Parity is 50%.` : 'No workforce split yet.'} rank={rank('e')} />
@@ -128,6 +144,8 @@ function Overview({ c, pt }: { c: Co; pt?: Point }) {
           </div>
         )}
       </section>
+
+      {levelYear && <section><LevelBars y={c.years[levelYear]} yearLabel={m.label(levelYear)} /></section>}
     </>
   )
 }
@@ -226,6 +244,8 @@ function Trend({ c }: { c: Co }) {
 function Peers({ c }: { c: Co }) {
   useStage('companies')
   const sector = sectorOf(c)
+  const m = marketOf(c)
+  const older = (p: Point) => p.c.country === 'IN' && p.year !== m.latest
   let peers = POINTS.filter((p) => p.c.country === c.country && p.sector === sector)
   let scope = `${sector} companies ${inMarket(c.country)}`
   if (peers.length < 4) {
@@ -233,7 +253,7 @@ function Peers({ c }: { c: Co }) {
     scope = `all companies ${inMarket(c.country)}, because fewer than four ${sector.toLowerCase()} companies report`
   }
   const columns: Column<Point>[] = [
-    { key: 'name', label: 'Company', render: (p) => <span className="name-cell"><Logo symbol={p.c.symbol} name={p.c.name} /><a href={href('company', p.c.symbol)}>{p.c.name}<span className="sub">{ticker(p.c)} · {p.c.industry}</span></a></span>, sort: (p) => p.c.name, csv: (p) => p.c.name },
+    { key: 'name', label: 'Company', render: (p) => <span className="name-cell"><Logo symbol={p.c.symbol} name={p.c.name} /><a href={href('company', p.c.symbol)}>{p.c.name}<span className="sub">{ticker(p.c.symbol)} · {p.c.industry}{older(p) && ` · ${m.label(p.year)} figure`}</span></a></span>, sort: (p) => p.c.name, csv: (p) => p.c.name },
     { key: 'e', label: 'Employment parity', phone: (p) => pct(p.e), render: (p) => <Meter value={p.e} parity={E_PARITY} />, sort: (p) => p.e },
     { key: 'w', label: 'Wage parity', phone: (p) => p.w == null ? 'n/a' : `${p.c.country === 'IN' ? '≈' : ''}${pct(p.w)}`, render: (p) => <Meter value={p.w} parity={W_PARITY} max={1.4} approx={p.c.country === 'IN'} />, sort: (p) => p.w },
     { key: 's', label: 'Share of pay', mobile: 'value', phone: (p) => pct(p.s), render: (p) => <Meter value={p.s} parity={E_PARITY} />, sort: (p) => p.s },
@@ -243,7 +263,7 @@ function Peers({ c }: { c: Co }) {
     <section>
       <p className="small">Ranked against {scope}, with this company highlighted.</p>
       <DataTable caption={`Peers of ${c.name}`} columns={columns} rows={peers} rowKey={(p) => p.c.symbol} initial={{ key: 's', dir: -1 }}
-        rowHref={(p) => href('company', p.c.symbol)} urlState rank current={c.symbol} download={`peers-${ticker(c)}`} summary={`${peers.length} companies`} />
+        rowHref={(p) => href('company', p.c.symbol)} urlState rank current={c.symbol} download={`peers-${ticker(c.symbol)}`} summary={`${peers.length} companies`} />
     </section>
   )
 }
@@ -280,20 +300,29 @@ function Sources({ c }: { c: Co }) {
       </section>
     )
   }
-  const notes = m.years.filter((k) => c.years[k]?.note && c.years[k].note !== 'reported')
+  const note = (k: string) => (c.years[k]?.note === 'reported' ? '' : c.years[k]?.note)
+  const notes = m.years.filter((k) => note(k) || c.years[k]?.basisChange)
+  const freeFloat = c.indexes.some((id) => indexes[id] && !isGroup(indexes[id]))
+  const { ix: group } = groupOf(c)
+  const levelYear = levelYearOf(c)
   return (
     <section>
       <ul className="tight">
-        <li><strong>Index weight basis:</strong> payroll of {crore(c.payrollWeightCr)} ({c.payrollWeightBasis ?? 'not available'}).</li>
-        {notes.map((k) => <li key={k}><strong>{fy(k)}:</strong> {c.years[k].note}{c.years[k].basisChange ? '; basis changed, so not compared like for like' : ''}.</li>)}
+        {freeFloat && <li><strong>Index weight basis:</strong> payroll of {crore(c.payrollWeightCr)} ({c.payrollWeightBasis ?? 'not available'}).</li>}
+        {group && <li><strong>{group.name}:</strong> <GroupWeight c={c} ix={group} /></li>}
+        {notes.map((k) => <li key={k}><strong>{fy(k)}:</strong> {[note(k), c.years[k].basisChange && 'basis changed, so not compared like for like'].filter(Boolean).join('; ').replace(/^./, (ch) => ch.toUpperCase())}.</li>)}
+        {levelYear && <LevelSources y={c.years[levelYear]} yearLabel={fy(levelYear)} />}
       </ul>
       <h2 className="h-sub">Source filings</h2>
       <ul className="tight filings">
-        {Object.entries(c.filings).reverse().map(([k, f]) => (
-          <li key={k}>{f.xbrl
-            ? <>{fy(k)} BRSR, filed {f.submitted}: <a href={f.xbrl} target="_blank" rel="noreferrer">XBRL</a> · <a href={f.pdf} target="_blank" rel="noreferrer">PDF</a></>
-            : <>{fy(k)} BRSR, in the company's annual report: <a href={f.pdf} target="_blank" rel="noreferrer">PDF</a></>}</li>
-        ))}
+        {Object.entries(c.filings).reverse().map(([k, f]) => {
+          const pdf = isUrl(f.pdf) && <a href={f.pdf} target="_blank" rel="noreferrer">PDF</a>
+          return (
+            <li key={k}>{f.xbrl
+              ? <>{fy(k)} BRSR, filed {f.submitted}: <a href={f.xbrl} target="_blank" rel="noreferrer">XBRL</a>{pdf && <> · {pdf}</>}</>
+              : pdf ? <>{fy(k)} BRSR, {FILED[f.kind ?? 'annualReport']}: {pdf}</> : <>{fy(k)} BRSR (copy not linked)</>}</li>
+          )
+        })}
       </ul>
     </section>
   )
@@ -310,19 +339,23 @@ export function Company({ symbol, tab }: { symbol: string; tab?: string }) {
   const sector = sectorOf(c)
   const pt = pointFor(c)
   const hasData = m.years.some((k) => c.years[k])
+  const group = groupOf(c)
+  const listed = c.indexes.some((id) => INDEX_ORDER.includes(id))
   const current: Tab = TABS.some(([id]) => id === tab) ? (tab as Tab) : 'overview'
   return (
     <>
       <section className="page-head">
-        <div className="meta crumbs"><a href={href('companies')}>Companies</a> / {marketName(c.country)} / {sector}</div>
+        <div className="meta crumbs"><a href={href('companies') + (listed ? '' : '?index=all')}>Companies</a> / {marketName(c.country)} / {sector}</div>
         <div className="title-row">
           <Logo symbol={c.symbol} name={c.name} size={52} />
           <div>
             <h1>{c.name}</h1>
-            <p className="meta">{c.exchange}: {ticker(c)} · {c.industry}{c.marketCapCr != null && <> · market cap {crore(c.marketCapCr)}</>}</p>
+            <p className="meta">{c.exchange}: {ticker(c.symbol)} · {c.industry}{c.marketCapCr != null && <> · market cap {crore(c.marketCapCr)}</>}{c.formerly && <> · Formerly {c.formerly}</>}</p>
           </div>
         </div>
-        <p className="meta member-of">{c.indexes.map((id, i) => <span key={id}>{i > 0 && ' · '}<a className="go" href={href('index', id)}>{indexName(id)}</a></span>)}</p>
+        <p className="meta member-of">{c.indexes.map((id, i) => (
+          <span key={id}>{i > 0 && ' · '}<a className="go" href={href('index', id)}>{indexName(id)}</a>{id === group.ix?.id && group.note && <span className="muted"> ({group.note})</span>}</span>
+        ))}</p>
         {hasData && <Tabs label="Company sections" current={current} items={TABS.map(([id, label]) => ({ id, label, href: id === 'overview' ? href('company', c.symbol) : href('company', c.symbol, id) }))} />}
       </section>
       {!hasData ? (

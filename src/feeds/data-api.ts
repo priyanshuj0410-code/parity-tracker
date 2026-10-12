@@ -14,7 +14,7 @@ export const DATA_API_FILES = ['markets', 'indexes', 'companies', 'sectors', 'fu
 
 interface MarketRecord { code: string; name: string; status: string; latest?: string; prev?: string; yearStyle?: 'fy' | 'plain'; flagship?: string; indexes?: string[] }
 
-/** Each live market's shown indexes in their latest year: the small file most apps need. */
+/** Each live market's shown indexes in their latest year: the small file most apps need. A change the method holds back is null. */
 export function buildSummary(markets: Record<string, MarketRecord>, indexes: Record<string, IndexData>) {
   return Object.values(markets).filter((m) => m.status === 'live').map((m) => {
     const year = m.latest!
@@ -32,7 +32,11 @@ export function buildSummary(markets: Record<string, MarketRecord>, indexes: Rec
           headline: y.headline,
           companiesCovered: y.companiesCovered ?? null,
           constituents: ix.constituents.length,
-          sinceLastYear: ch ? { from: ch.from, to: ch.to, change: ch.change, companies: ch.companies } : null,
+          sinceLastYear: ch && ch.shown !== false ? {
+            from: ch.from, to: ch.to, change: ch.change, companies: ch.companies,
+            ...(ch.interval && { interval: ch.interval }),
+            ...(ch.distinguishable != null && { distinguishable: ch.distinguishable }),
+          } : null,
           url: `${SITE}/index/${id}`,
         }
       }),
