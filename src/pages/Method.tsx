@@ -171,6 +171,7 @@ export function Method() {
           <li><strong>Fixed weights:</strong> each company's index weight uses its median reported payroll across years, so one bad filing cannot swing an index.{group && ` ${group.name} uses each year's payroll.`}</li>
           <li><strong>Estimates:</strong> a missing wage total is estimated from median pay and headcount by gender. Where the share of pay is estimated too, it is badged and never joined to a reported trend.</li>
           <li><strong>Prior-year columns:</strong> a year not read from its own filing comes from the next filing's prior-year column, and its note says so.{group && ` ${group.name} measures each company's change within its ${fy(LATEST)} filing, against that column.`}</li>
+          <li><strong>Restatements:</strong> when a later filing restates a year, the restated figure stands, badged Restated with the figure first filed. Under 0.1 pp is rounding. A filing that calls the years not comparable, or a merger, keeps the filed figure and the change is not compared. A move of 5 points or more with no reason given is checked first.</li>
           <li><strong>Permanent staff:</strong> the workforce share uses permanent staff, as contract wages are not in the totals.</li>
           {levels > 0 && <li><strong>Levels and functions:</strong> {levels} companies report women by level (senior, middle, junior management) or job function (STEM, sales). Rows keep the company's own labels, matched to a standard level or function.</li>}
           {group && (
@@ -182,6 +183,24 @@ export function Method() {
           )}
           <li><strong>UK basis changes:</strong> if under 70% of a group's weighted UK employers carry over with the same size band, the pair is not compared like for like.</li>
         </ul>
+      </section>
+
+      <section id="insights">
+        <h2>What stands out</h2>
+        <p>Each company page shows up to three facts, picked by fixed rules from its own figures. No model writes them: the same figures always give the same sentences.</p>
+        <ul className="tight">
+          <li><strong>Women up the ladder:</strong> the most senior level a company reports (top management, key managers, the board) is 20 points or more below women's share of staff.</li>
+          <li><strong>Top pay quartile and managers:</strong> UK and Australia, women's share of the top pay quartile; Japan, of managers; 15 points or more below their share of staff.</li>
+          <li><strong>Workers and office:</strong> India, women's share of workers and of other employees are 40 points or more apart.</li>
+          <li><strong>Pay against staff:</strong> share of pay 10 points or more below share of staff; or at parity only because most staff are women, with wage parity under 70%.</li>
+          <li><strong>Wage parity:</strong> under 50%, level with men's, or above.</li>
+          <li><strong>Bonus gap:</strong> UK, a mean bonus gap of 40% or more.</li>
+          <li><strong>Board:</strong> no women; one woman on a board of 8 or more in India, the legal minimum; or 40% women or more.</li>
+          <li><strong>Change:</strong> a like-for-like change of 2 points or more among the market's largest tenth; or three or more years in a row in one direction.</li>
+          <li><strong>Standing:</strong> twice or under half the median share of pay of its industry in its market, or of its index.</li>
+          <li><strong>Restated:</strong> the year before restated by a point or more.</li>
+        </ul>
+        <p className="small muted">Rules read reported figures only, never an estimate or a figure under check, and need enough peers to compare against. At most one fact of each kind shows, the strongest first.</p>
       </section>
 
       <section id="compare">

@@ -15,7 +15,7 @@ import { DataTable, type Column } from '../components/DataTable'
 import { EmptyState } from '../components/EmptyState'
 import { Tabs } from '../components/Tabs'
 import { BASIS, E_PARITY, POINTS, W_PARITY, inMarket, marketName, offMapReason, pointFor, sectorOf, standing, type Point } from '../lib/compare'
-import { INDEX_ORDER, boardShare, sourceDate, euYear, indexName, indexes, isGroup, loadCompany, ticker, useCompany, useLoaded, useStage, isExcluded, marketOf, payRatio, shareChange, workforce, yoyChange } from '../lib/data'
+import { INDEX_ORDER, boardShare, companyInsights, sourceDate, euYear, indexName, indexes, isGroup, loadCompany, ticker, useCompany, useLoaded, useStage, isExcluded, marketOf, payRatio, shareChange, workforce, yoyChange } from '../lib/data'
 import { crore, pct, pctTick } from '../lib/format'
 import { correctionHref } from '../lib/contact'
 import { href, usePageTitle } from '../lib/router'
@@ -56,6 +56,28 @@ function ScaleCard({ label, value, parity, max, basis, rank, children, empty = '
   )
 }
 
+const TAB_NAME = { trend: 'Trend', peers: 'Peers', calculations: 'Calculations' } as const
+
+/** Up to three facts the rules pick (src/lib/insights.ts, PARITY-134); nothing when no rule fires. */
+function WhatStandsOut({ c }: { c: Co }) {
+  const found = companyInsights(c)
+  if (!found.length) return null
+  return (
+    <section>
+      <h2>What stands out</h2>
+      <ul className="card insights">
+        {found.map((i) => (
+          <li key={i.rule}>
+            <span>{i.text}</span>
+            {i.tab && <a className="go small" href={href('company', c.symbol, i.tab)}>{TAB_NAME[i.tab]}</a>}
+          </li>
+        ))}
+      </ul>
+      <p className="small muted"><a href={`${href('method')}#insights`}>How these are chosen</a></p>
+    </section>
+  )
+}
+
 function Overview({ c, pt }: { c: Co; pt?: Point }) {
   const m = marketOf(c)
   const b = BASIS[c.country]
@@ -77,6 +99,7 @@ function Overview({ c, pt }: { c: Co; pt?: Point }) {
   const rank = (measure: 'e' | 'w' | 's') => (ranked ? standing(pt, measure) : <Skeleton line label="Ranking against other companies" />)
   return (
     <>
+      {ranked && <WhatStandsOut c={c} />}
       <section>
         <div className="section-head">
           <h2>On the shared scales</h2>

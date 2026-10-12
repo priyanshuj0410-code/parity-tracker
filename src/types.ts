@@ -35,6 +35,16 @@ export interface CompanyYear {
   /** India: the company's own finer levels (senior, middle, junior management, grades) and job functions, by gender. */
   levels?: LevelRow[]
   functions?: LevelRow[]
+  /** India: permanent employees, permanent workers and key managerial personnel by gender (BRSR A-20 and the KMP row). */
+  staff?: Partial<Record<'employees' | 'workers' | 'kmp', { women: number; men: number }>>
+  /** Decision 0020: the figure as first filed, when a later filing restated it; `w` is the restated figure. */
+  wFiled?: number
+  /** The year whose filing restated this one. */
+  restatedIn?: string
+  /** The restating filing's own words. */
+  restatedNote?: string
+  /** A figure under an open data check: shown, but no insight is drawn from it until it is settled. */
+  held?: boolean
 }
 
 /** One level or job function as the company reports it: its own label, the standard it maps to, and women's share (0 to 1). */

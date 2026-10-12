@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "data": "node --env-file-if-exists=.env scripts/data/cli.mjs",
     "test:markets": "tsc -p tsconfig.markets-test.json && node --test .markets-test/api/_markets.test.js",
-    "test:data": "node --test api/_data.test.mjs scripts/data/countries.test.ts",
+    "test:data": "node --test api/_data.test.mjs scripts/data/countries.test.ts scripts/data/insights.test.ts",
     "markets": "node scripts/markets/cli.mjs"
   },
   "dependencies": {
