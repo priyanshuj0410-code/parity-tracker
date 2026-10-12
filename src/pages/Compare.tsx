@@ -22,7 +22,7 @@ const MEASURES: { id: Measure; label: string }[] = [{ id: 'w', label: 'Wage pari
 const MAP_MARKETS = COMPARE_MARKETS
 
 const med = (s: Summary | null) => (s && s.n >= 3 ? pct(s.median) : <span className="muted">n/a</span>)
-const iqr = (s: Summary) => `middle half ${Math.round(s.q1 * 100)}–${pct(s.q3, 0)}`
+const iqr = (s: Summary) => `middle half ${Math.round(s.q1 * 100)}-${pct(s.q3, 0)}`
 
 function SummaryCell({ s, measure, min = 3, n = false }: { s: Summary | null; measure: Measure; min?: number; n?: boolean }) {
   if (!s) return <span className="muted">not reported</span>
@@ -225,7 +225,7 @@ function MapTab({ focus }: { focus?: string }) {
       <ul className="tight small" style={{ marginTop: 14 }}>
         <li><strong>On the map:</strong> {plotted.length} companies with both measures.</li>
         <li><strong>Bases differ:</strong> {MAP_MARKETS.map((c) => `${marketName(c)}: women's share of ${BASIS[c].employment}, ${BASIS[c].wage}`).join('. ')}.</li>
-        {pinned > 0 && <li><strong>Off the chart:</strong> {pinned} with wage parity outside 30–150%, pinned to the edge and hollow.</li>}
+        {pinned > 0 && <li><strong>Off the chart:</strong> {pinned} with wage parity outside 30-150%, pinned to the edge and hollow.</li>}
       </ul>
     </>
   )

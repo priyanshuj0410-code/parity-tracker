@@ -109,7 +109,7 @@ Monogram tints in dark mode are `#16304A`/`#8CC8EE`, `#3A1C2C`/`#F29BC2` and `#1
 - **Nunito Sans** (400/600/700): body copy and table cells.
 - Hero numbers use Poppins 600 with proportional figures. Tables use tabular figures.
 - Headings are sentence case. Two-tone headlines use ink for the first half and `.accent` (violet) for the second.
-- Headings use Poppins 600, never 700, with −0.01em tracking: h1 26–36px, h2 20px. This matches the restrained weights of investing apps (audit 2026-10).
+- Headings use Poppins 600, never 700, with −0.01em tracking: h1 26-36px, h2 20px. This matches the restrained weights of investing apps (audit 2026-10).
 - **12px floor everywhere (PARITY-28):** no text is smaller than 12px on any screen. That covers chart axes and reference labels, badges, scale ticks, tooltips, the quadrant labels, formula labels and monogram letters. Phones had the floor first (PARITY-24); desktop followed.
 
 ### Type scale (reader app, PARITY-132)
@@ -163,7 +163,7 @@ The internal dashboard (section 8) has its own scale of six sizes.
 - **Card grids** use `auto-fill`, so a market with one index keeps a normal-width card.
 
 ## 5. Components
-- **Stat tile:** label (Poppins 500, 13px, `--soft`), value (Poppins 600, 32–44px, `--ink`), one line of context. Never a gauge or ring.
+- **Stat tile:** label (Poppins 500, 13px, `--soft`), value (Poppins 600, 32-44px, `--ink`), one line of context. Never a gauge or ring.
 - **Change label (PARITY-25):** a filled triangle plus signed percentage points (pp) in coloured text, 13px Poppins 600, with no fill, so it never looks tappable: `--good` for rises, `--bad` for falls. The triangle and sign mean it never relies on colour alone. Flat (|change| < 0.05 pp) shows "no change" in `--soft`; missing shows "n/a" in `--muted`.
 - **Data badge:** `Reported`, `Rescaled`, `Estimated` (sun-deep text on tint), `Company report` (sun-deep, like Estimated), `Basis changed`, `Missing`. Every number that is not cleanly reported carries one.
 - **Company-report figures (PARITY-92, [decision 0015](decisions/0015-coverage-accounted-for.md)):** where the statutory source has nothing, a figure can come from the company's own report. It always says so, in the same places a statutory figure names its source, with no new visual style:
@@ -196,7 +196,7 @@ The internal dashboard (section 8) has its own scale of six sizes.
   - **empty state:** a filtered list with no rows says what was searched, suggests a ticker or sector, and offers Clear search (and Search all indexes when one index is selected). Never "0 companies" over an empty card.
   - Home's pace of change is a small table (market, median change, companies compared, rose / fell, years to parity), shown as detail cards on phones.
   - a one-line key sits under long lists: "≈ means estimated or derived rather than reported. pp means percentage points.
-- **Meter (inline data bar):** the value, then a 52px by 6px `--line` track with a `--s1` fill and a 2px ink tick at parity. Employment parity and share of pay run 0–100% (tick at 50%); wage parity runs 0–140% (tick at 100%). Replaces bare percentages wherever a value has a parity point.
+- **Meter (inline data bar):** the value, then a 52px by 6px `--line` track with a `--s1` fill and a 2px ink tick at parity. Employment parity and share of pay run 0-100% (tick at 50%); wage parity runs 0-140% (tick at 100%). Replaces bare percentages wherever a value has a parity point.
 - **Tabs:** underline tabs for sections that have their own URL (company pages: Overview, Trend, Peers, Calculations, Sources; index pages: Overview, Companies, Sectors; Compare: Countries, Sectors, Parity map). The first tab is the page's base URL. 14px Poppins 500, `--soft`, active `--violet` with a 2px underline and `aria-current="page"`. They scroll sideways on phones, where each tab is 44px tall, and the row scrolls itself to keep the current tab in view. Switching tabs follows the section tab change rule in Layout.
 - **Feedback and motion (PARITY-82):**
   - **Hover only where a pointer can hover** (`@media (hover: hover)`), so a tap on a phone never leaves a control looking hovered.
@@ -314,11 +314,11 @@ Validated with the dataviz `validate_palette.js` using `--pairs all`, because co
 
 - **Lines:** 2px with round joins. Markers 7px with a 2px card ring, growing to 11px at the hovered year. Estimated points are hollow.
 - **Area wash:** single-series line charts get a vertical gradient under the line, series colour from 22% to 0%. Never on multi-series charts.
-- **Gridlines:** at most four intervals. The step is the one of 0.5, 0.25 or 0.2 that gives 2–4 intervals with the lowest top, so a 0–50% axis shows 0, 25% and 50% only. The zero line is `--line`, the rest `--mist`. Axis labels drop the decimal on whole percentages.
+- **Gridlines:** at most four intervals. The step is the one of 0.5, 0.25 or 0.2 that gives 2-4 intervals with the lowest top, so a 0-50% axis shows 0, 25% and 50% only. The zero line is `--line`, the rest `--mist`. Axis labels drop the decimal on whole percentages.
 - **Tooltip:** the year in bold, then one row per series: swatch, label, value, and the change from the previous reported point in good or bad text. It flips to the left of the crosshair past the chart's midpoint.
 - **Range-dot plot (countries and sectors):** one row per group with the median as a 14px `--s1` dot with a card ring, the middle half of companies as a 10px `--s1` band at 28% opacity, and a parity tick. The median value sits in a right-hand column. Groups with fewer than three companies are listed as "too few", not plotted. A key explains dot, band and tick.
 - **Sector grid (phones):** "Every sector in every market" becomes a compact table: shortened sector names, five market columns (IN, UK, AU, JP, EU) in whole percent, a dot for fewer than three companies, and the sorted market's header filled violet with its column tinted. Tapping a market header sorts by it.
-- **Parity map (scatter):** employment parity on x (0–100%, parity line at 50%) and wage parity on y (30–150%, parity line at 100%). The parity quadrant (top right) is tinted. Quadrant labels with counts sit in the corners with a card-coloured halo, drawn above the dots.
+- **Parity map (scatter):** employment parity on x (0-100%, parity line at 50%) and wage parity on y (30-150%, parity line at 100%). The parity quadrant (top right) is tinted. Quadrant labels with counts sit in the corners with a card-coloured halo, drawn above the dots.
   - **On phones:** the plot is roughly square, dots are 3px at 78% opacity so density shows, axis titles move to the top-left ("↑ Women's pay as a share of men's") and bottom-right ("Women's share of staff →"), and the quadrant counts leave the plot for a 2×2 key underneath, laid out like the quadrants, with the parity quadrant tinted.
   - One hue only: highlighted companies are `--s1` dots (4.5px radius, 1.5px card ring); everything else is `--dot-dim` context. Markets are compared by highlighting one at a time or by facets ("By market", a 2×2 grid with shared axes), never by four hues: the dataviz all-pairs check caps scatter at three colours.
   - Values outside the axis are pinned to the edge and drawn hollow, and the page says how many.
@@ -335,7 +335,7 @@ Validated with the dataviz `validate_palette.js` using `--pairs all`, because co
 - **Grid:** solid 1px `--mist`, never dashed.
 - **Parity reference:** the 50% line is a solid 1px `--muted` rule, labelled at its left end so it never collides with the series end labels on the right.
 - **Y axis:** shares run from 0 to 50% so distance to parity is visible. If any value exceeds 50%, the axis or bar scale extends to the next 10%, and the parity mark stays at 50%.
-- **Markets:** each market keeps its own metric label (India: share of total wages; UK: share of hourly pay, UK staff), but all are shares of pay on a 0–50% axis with parity at 50%. Pay ratios (parity 100%) appear only as supporting figures, never as a market's headline.
+- **Markets:** each market keeps its own metric label (India: share of total wages; UK: share of hourly pay, UK staff), but all are shares of pay on a 0-50% axis with parity at 50%. Pay ratios (parity 100%) appear only as supporting figures, never as a market's headline.
 - **Legends and labels:**
   - A legend names the series whenever there are two or more.
   - End labels show only the value, because naming the series twice squeezed the plot (PARITY-64, the owner's call; on a phone named end labels took a third of the width).
@@ -344,7 +344,8 @@ Validated with the dataviz `validate_palette.js` using `--pairs all`, because co
 - **Hover:** a crosshair and tooltip on lines. Every chart also has a table view with the same numbers.
 
 ## 7. Voice (house rules)
-- No em dashes. Use colons, commas and full stops. En dashes only for ranges.
+- No em dashes and no en dashes (the owner's rule CLAUD-22, 12 October 2026). Use colons, commas and full stops, and write a range with a hyphen: 26-36px, 0-50%. `python3 knowledge/contrast.py` fails on either character in this document and in the app's source.
+- British spelling: colour, behaviour, organise.
 - **Links in running text are underlined** (paragraphs, prose lists, meta lines and breadcrumbs), so they never rely on colour alone (WCAG 1.4.1). Standalone links (`.go`), tabs, navigation and table name links are not.
 - Bold leads a point. Numbers come with the finding attached.
 - State limitations once, in one line, where they matter. Show the unflattering rows: missing companies, estimated values, broken filings.

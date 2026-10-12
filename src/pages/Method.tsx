@@ -135,7 +135,7 @@ export function Method() {
         <p>Headlines from different markets aren't directly comparable, so every company is also put on two shared measures.</p>
         <ul className="tight">
           <li><strong>Employment parity (E):</strong> women's share of staff (parity 50%). India: permanent staff. UK, Australia: staff in that country. Japan: regular staff. EU: headcount (S1-6).</li>
-          <li><strong>Wage parity (W):</strong> women's average pay as a share of men's (parity 100%). UK: hourly. Australia: full-time equivalent. Japan: annual, all workers. EU: as each company defines it. India: derived from the wage and staff shares, so approximate. Outside 30–130% it is marked not comparable and left out of wage rankings and the map.</li>
+          <li><strong>Wage parity (W):</strong> women's average pay as a share of men's (parity 100%). UK: hourly. Australia: full-time equivalent. Japan: annual, all workers. EU: as each company defines it. India: derived from the wage and staff shares, so approximate. Outside 30-130% it is marked not comparable and left out of wage rankings and the map.</li>
           <li><strong>Women's share of pay:</strong> E×W ÷ (E×W + 1 − E). The headline for Japan and the EU. It matches India's reported share and the UK and Australian employer-level figures.</li>
           <li><strong>Market percentile:</strong> wage parity rank within the company's own market.</li>
           <li><strong>Sectors:</strong> exchange labels mapped to 11 shared sectors; mixed Nikkei groups are split company by company.</li>

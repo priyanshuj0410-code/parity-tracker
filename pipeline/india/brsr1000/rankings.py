@@ -208,7 +208,7 @@ for k, v in Q.items():
     for e in REL.of(k, EV):  # companies merged into it lend it their earlier ranks
         if g == 'leaves': break
         lent = [y for y in sorted(YEARS) if y < 2025 and not in_year(x, y) and in_year(x, y, preds(k))] if x and e['kind'] == 'merger' and e['side'] == 'to' else []
-        if lent: note += f" {lent[0]}{'–' + str(lent[-1]) if len(lent) > 1 else ''} ranks are {names(e['from'])}'s."
+        if lent: note += f" {lent[0]}{'-' + str(lent[-1]) if len(lent) > 1 else ''} ranks are {names(e['from'])}'s."
     if man.get('note') and not man.get('group'): note += ' ' + man['note']
     # near the cut-off on a list that decides its group: 2025 for all, and 2024 too where it is not inside on 2025
     r24 = min((ranks.get(2024) or {}).values(), default=None)

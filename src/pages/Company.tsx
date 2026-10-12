@@ -72,7 +72,7 @@ function Overview({ c, pt }: { c: Co; pt?: Point }) {
             basis={b.employment ? `Women's share of ${b.employment}. Parity is 50%.` : 'No workforce split yet.'} rank={rank('e')} />
           <ScaleCard label="Wage parity" value={pt?.w} parity={W_PARITY} max={1.4} empty={pt?.wRaw != null ? 'Not comparable' : 'n/a'}
             basis={pt?.wRaw != null
-              ? `Derived ${pct(pt.wRaw, 0)} is outside 30–130%, so it is not ranked: wages and headcount cover different staff.`
+              ? `Derived ${pct(pt.wRaw, 0)} is outside 30-130%, so it is not ranked: wages and headcount cover different staff.`
               : `Women's average pay as a share of men's${b.approx ? ', approximate' : ''}. Parity is 100%.`} rank={rank('w')} />
           <ScaleCard label="Women's share of pay" value={pt?.s} parity={E_PARITY} max={1}
             basis="Implied by the two measures. Parity is 50%." rank={rank('s')} />
