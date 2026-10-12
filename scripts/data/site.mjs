@@ -82,7 +82,9 @@ export function deploy(target = 'production') {
     execFileSync('vercel', ['deploy', '--prod', '--yes'], { cwd: SITE_DIR, stdio: ['ignore', 'ignore', 'inherit'] })
     return null
   }
-  const out = JSON.parse(execFileSync('vercel', ['deploy', '--yes'], { cwd: SITE_DIR, encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit'] }))
-  execFileSync('vercel', ['alias', 'set', out.deployment.url, STAGING_HOST], { cwd: SITE_DIR, stdio: ['ignore', 'ignore', 'inherit'] })
-  return out.deployment.url
+  // A person's terminal gets the deployment itself; an agent's gets it wrapped as { status, deployment, … }.
+  const out = JSON.parse(execFileSync('vercel', ['deploy', '--yes', '--format', 'json'], { cwd: SITE_DIR, encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit'] }))
+  const { url } = out.deployment ?? out
+  execFileSync('vercel', ['alias', 'set', url, STAGING_HOST], { cwd: SITE_DIR, stdio: ['ignore', 'ignore', 'inherit'] })
+  return url
 }
