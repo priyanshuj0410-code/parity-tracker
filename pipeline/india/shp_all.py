@@ -1,4 +1,4 @@
-import json,subprocess,time,urllib.parse,datetime,os
+import json,subprocess,time,urllib.parse,datetime
 UA="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
 out=json.load(open('shp.json'))
 for s in [l.strip() for l in open('syms_nse.txt') if l.strip()]:

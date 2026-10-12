@@ -1,4 +1,4 @@
-import json, re, subprocess, urllib.parse, time
+import json, re, subprocess, urllib.parse
 UA='ParityTracker/0.1 (https://parity-tracker-eight.vercel.app)'
 def get(u): return json.loads(subprocess.run(['curl','-s','-m','90','-A',UA,u],capture_output=True,text=True).stdout or '{}')
 def wt(page): return get('https://en.wikipedia.org/w/api.php?'+urllib.parse.urlencode({'action':'parse','page':page,'prop':'wikitext','format':'json'})).get('parse',{}).get('wikitext',{}).get('*','')
