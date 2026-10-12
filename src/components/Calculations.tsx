@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
 import { POINTS, inMarket, type Point } from '../lib/compare'
-import { indexName, indexes, marketOf, useStage, yoyChange } from '../lib/data'
+import { indexName, indexes, isGroup, marketOf, useStage, yoyChange } from '../lib/data'
 import { crore, ordinal, pct } from '../lib/format'
-import type { Company, CompanyYear } from '../types'
+import type { Company, CompanyYear, IndexData } from '../types'
 import { Eq, Frac, Step, Steps } from './Formula'
 import { ReportRefs, fromReport } from './ReportSource'
 
@@ -14,27 +14,64 @@ function Input({ label, value, note }: { label: string; value: ReactNode; note?:
 }
 
 const SOURCE: Record<string, string> = {
-  IN: 'BRSR filing (SEBI), via NSE',
+  IN: 'BRSR filing (SEBI)',
   GB: 'UK gender pay gap service, UK employers combined by size band',
   AU: 'Workplace Gender Equality Agency (WGEA)',
   JP: "Labour ministry's women's advancement database",
   EU: 'CSRD sustainability statement (ESRS S1-16 pay gap, S1-6 headcount)',
 }
 
-/** Where a year's figures come from when some are the company's own: the statutory source for the rest, then the company's documents. */
-function ReportedFrom({ c, y }: { c: Company; y: CompanyYear }) {
-  const all = ['gapMean', 'ratio'].some((f) => fromReport(y.reportSources, f))
-  return <>{all ? "The company's own " : `${SOURCE[c.country]}, and the company's `}<ReportRefs sources={y.reportSources ?? []} /> ({y.reportSources?.map((s) => s.scope).join('; ')})</>
+const FROM: Record<string, string> = { website: "from the company's website", exchange: 'from the exchange', annualReport: "in the company's annual report" }
+
+/** The year's source; for India, the BRSR copy it was read from (NSE's XBRL only when the year has one). */
+function sourceOf(c: Company, year: string): string {
+  const f = c.country === 'IN' ? c.filings[year] : undefined
+  const from = !f ? '' : f.xbrl ? 'via NSE' : FROM[f.kind ?? (f.pdf ? 'annualReport' : '')]
+  return from ? `${SOURCE.IN}, ${from}` : SOURCE[c.country]
 }
 
-function Reported({ c, y, year }: { c: Company; y: CompanyYear; year: string }) {
+/** Where a year's figures come from when some are the company's own: the statutory source for the rest, then the company's documents. */
+function ReportedFrom({ source, y }: { source: string; y: CompanyYear }) {
+  const all = ['gapMean', 'ratio'].some((f) => fromReport(y.reportSources, f))
+  return <>{all ? "The company's own " : `${source}, and the company's `}<ReportRefs sources={y.reportSources ?? []} /> ({y.reportSources?.map((s) => s.scope).join('; ')})</>
+}
+
+/** India: women's share as filed, but no wage total, so payroll is median pay times headcount (dq 3). */
+const payrollEstimated = (y?: CompanyYear) => y?.dq === 3 && y.wKind === 'reported' && y.payrollCr != null
+
+/** How a company counts in a group: by its own payroll that year, or why it is left out of the ₹ figure. */
+function groupWeight(c: Company, ix: IndexData): { result: string; text: string } {
+  if (ix.left?.includes(c.symbol)) return { result: 'Left', text: c.latestNote ? `Left the group. ${c.latestNote}.` : 'Left the group (merged, delisted or insolvent).' }
+  const w = ix.constituents.find((k) => k.symbol === c.symbol)?.weight
+  if (w == null) return { result: 'Left out', text: 'No payroll figure, so left out of the ₹ figure.' }
+  const m = marketOf(c)
+  const y = c.years[ix.weightsAsOf]
+  const owned = ix.years[ix.weightsAsOf]?.ownedPayroll
+  const cr = y?.payrollCr ?? (owned ? Math.round((w * owned) / 1e7) : null)
+  return {
+    result: w < 0.001 ? '<0.1%' : pct(w),
+    text: y?.payrollCr
+      ? `Weighted by its ${m.label(ix.weightsAsOf)} payroll, ${crore(cr)}${payrollEstimated(y) ? ', estimated from median pay and headcount' : ''}.`
+      : `Weighted by its last payroll figure, grown with the group's payroll${cr == null ? '' : `, ${crore(cr)}`}.`,
+  }
+}
+
+/** The group weighting line, for the Sources tab. */
+export function GroupWeight({ c, ix }: { c: Company; ix: IndexData }) {
+  return groupWeight(c, ix).text
+}
+
+function Reported({ c, y, year, group }: { c: Company; y: CompanyYear; year: string; group?: IndexData }) {
   const m = marketOf(c)
   const items: ReactNode[] = []
   if (c.country === 'IN') {
-    items.push(<Input key="w" label="Women's share of gross wages" value={pct(y.w)} note={y.wKind === 'estimated' ? 'Estimated from median pay: no wage total filed' : `${m.label(year)}, as filed`} />)
+    const next = m.years[m.years.indexOf(year) + 1]
+    items.push(<Input key="w" label="Women's share of gross wages" value={pct(y.w)} note={y.wKind === 'estimated' ? 'Estimated from median pay: no wage total filed'
+      : next && /prior-year column/i.test(y.note) ? `${m.label(year)}, from the ${m.label(next)} filing` : `${m.label(year)}, as filed`} />)
     if (y.permHeadcount && y.fPerm != null) items.push(<Input key="h" label="Permanent staff" value={n0(y.permHeadcount)} note={`about ${n0(y.permHeadcount * y.fPerm)} women`} />)
     else items.push(<Input key="f" label="Women in permanent staff" value={pct(y.fPerm)} />)
-    if (y.payrollCr) items.push(<Input key="p" label="Total wages" value={crore(y.payrollCr)} />)
+    if (y.payrollCr) items.push(<Input key="p" label="Total wages" value={crore(y.payrollCr)} note={payrollEstimated(y) ? 'Estimated from median pay and headcount' : undefined} />)
+    else if (group) items.push(<Input key="p" label="Total wages" value="Missing" note={group.constituents.some((k) => k.symbol === c.symbol) ? undefined : `Left out of the ${group.name} ₹ figure`} />)
     if (y.board) items.push(<Input key="b" label="Board" value={`${y.boardWomen} of ${y.board}`} note="women directors" />)
   } else if ((c.country === 'GB' || c.country === 'AU') && fromReport(y.reportSources, 'gapMean')) {
     // The company's own group-wide figures, where no local employer files with the regulator (decision 0015).
@@ -77,16 +114,22 @@ export function Calculations({ c, pt }: { c: Company; pt?: Point }) {
   const ties = pt ? peers.filter((p) => p.w === pt.w).length : 0
   const prev = m.years[m.years.indexOf(year) - 1]
   const change = prev ? yoyChange(c, year, prev) : null
-  const firstIndex = c.indexes.map((id) => indexes[id]).find(Boolean)
+  const memberOf = c.indexes.map((id) => indexes[id]).filter(Boolean)
+  const firstIndex = memberOf.find((ix) => !isGroup(ix))
+  const group = memberOf.find(isGroup)
   const weight = firstIndex?.constituents.find((k) => k.symbol === c.symbol)?.weight ?? null
+  const inGroup = group && groupWeight(c, group)
+  const source = sourceOf(c, year)
+  const payEst = payrollEstimated(y)
+  const note = y.note && y.note !== 'reported' && !(payEst && /^Women's share as reported; payroll estimated/.test(y.note)) ? y.note : ''
   let n = 0
 
   return (
     <>
       <section>
         <h2>What {c.name} reported</h2>
-        <p className="small muted">{y.reportSources?.length ? <ReportedFrom c={c} y={y} /> : SOURCE[c.country]}, {m.label(year) === 'latest' ? 'latest disclosure' : m.label(year)}. Every figure below comes from these.</p>
-        <Reported c={c} y={y} year={year} />
+        <p className="small muted">{y.reportSources?.length ? <ReportedFrom source={source} y={y} /> : source}, {m.label(year) === 'latest' ? 'latest disclosure' : m.label(year)}. Every figure below comes from these.</p>
+        <Reported c={c} y={y} year={year} group={group} />
       </section>
 
       <section>
@@ -157,17 +200,24 @@ export function Calculations({ c, pt }: { c: Company; pt?: Point }) {
                   : `Each company counts equally: these reports give no payroll totals to weight by.`}</p>
             </Step>
           )}
+
+          {group && inGroup && (
+            <Step n={++n} title={`How it counts in ${group.name}`} result={inGroup.result} resultLabel="Weight">
+              <p>{inGroup.text}</p>
+            </Step>
+          )}
         </Steps>
       </section>
 
-      {(y.note || y.basisChange || y.wKind === 'estimated' || y.dq === 2) && (
+      {(note || y.basisChange || y.wKind === 'estimated' || y.dq === 2 || payEst) && (
         <section>
           <h2>Checks on this filing</h2>
           <ul className="tight">
             {y.wKind === 'estimated' && <li><strong>Estimated:</strong> no wage total filed, so estimated from median pay and headcount by gender.</li>}
+            {payEst && <li><strong>Payroll estimated:</strong> no wage total filed, so payroll is median pay times headcount. Women's share is as filed.</li>}
             {y.dq === 2 && <li><strong>Rescaled:</strong> wages filed in the wrong unit.</li>}
             {y.basisChange && <li><strong>Basis changed:</strong> payroll, headcount or scope jumped, so not compared like for like.</li>}
-            {y.note && y.note !== 'reported' && <li><strong>Note:</strong> {y.note}.</li>}
+            {note && <li><strong>Note:</strong> {note}.</li>}
           </ul>
         </section>
       )}

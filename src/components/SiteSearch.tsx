@@ -1,21 +1,29 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { INDEX_ORDER, companies, indexes, load, marketOf, useLoaded } from '../lib/data'
+import { INDEX_ORDER, companies, indexes, isGroup, listing, load, marketOf, useLoaded } from '../lib/data'
 import { href, navigate } from '../lib/router'
 import { PHONE, useMedia } from '../lib/useMedia'
 import { EmptyState } from './EmptyState'
 import { Logo } from './Logo'
 import { Monogram } from './Monogram'
 
-interface Hit { key: string; title: string; sub: string; to: string; seed: string; index: boolean }
+/** `also`: other words that find it but are not shown (a former name, the ISIN). */
+interface Hit { key: string; title: string; sub: string; to: string; seed: string; index: boolean; also: string[] }
+
+/** A filer listed only on BSE reads by its BSE code ("BSE: 500123"). */
 
 /** Whatever has loaded so far: indexes first, then companies. */
 const everything = (withIndexes: boolean, withCompanies: boolean): Hit[] => [
-  ...(withIndexes ? INDEX_ORDER : []).map((id) => ({ key: 'i-' + id, title: indexes[id].name, sub: `Index · ${indexes[id].market}`, to: href('index', id), seed: id, index: true })),
+  ...(withIndexes ? INDEX_ORDER : []).map((id) => ({
+    key: 'i-' + id, title: indexes[id].name, sub: `${isGroup(indexes[id]) ? 'Group' : 'Index'} · ${indexes[id].market}`, to: href('index', id), seed: id, index: true, also: [],
+  })),
   ...(withCompanies ? Object.values(companies) : []).map((c) => ({
-    key: c.symbol, title: c.name, sub: `${c.symbol.replace(/^(ASX|TSE|EU)-/, '')} · ${marketOf(c).name}`, to: href('company', c.symbol), seed: c.symbol, index: false,
+    key: c.symbol, title: c.name, sub: `${listing(c)} · ${marketOf(c).name}`, to: href('company', c.symbol), seed: c.symbol, index: false,
+    also: [c.formerly, c.isin].filter((v): v is string => !!v),
   })),
 ]
+
+const has = (s: string, n: string) => s.toLowerCase().includes(n)
 
 const ICON = <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" strokeWidth="2" /><path d="m20 20-4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
 
@@ -34,9 +42,10 @@ export function SiteSearch() {
     const n = q.trim().toLowerCase()
     if (!n) return []
     const ALL = everything(core, ready)
-    const starts = ALL.filter((h) => h.title.toLowerCase().startsWith(n) || h.sub.toLowerCase().startsWith(n))
-    const rest = ALL.filter((h) => !starts.includes(h) && (h.title.toLowerCase().includes(n) || h.sub.toLowerCase().includes(n)))
-    return [...starts, ...rest].slice(0, phone ? 20 : 8)
+    const found = new Set(ALL.filter((h) => h.title.toLowerCase().startsWith(n) || h.sub.toLowerCase().startsWith(n)))
+    for (const h of ALL) if (has(h.title, n) || has(h.sub, n)) found.add(h)
+    for (const h of ALL) if (h.also.some((s) => has(s, n))) found.add(h)
+    return [...found].slice(0, phone ? 20 : 8)
   }, [q, phone, core, ready])
 
   useEffect(() => {

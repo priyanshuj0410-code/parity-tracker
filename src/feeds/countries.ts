@@ -4,7 +4,9 @@
  * and sector figures with no other change (PARITY-114).
  *
  * Weighting follows what each market's published records hold:
- * - India: each company's reported payroll for the year (BRSR wages), or its median payroll when that year has none.
+ * - A market with a group (India's All BRSR filers, `kind: 'group'`) takes the group's own figures: its headline,
+ *   coverage and sectors each year and only the changes it publishes, so the two never disagree (decision 10).
+ * - India without one: each company's reported payroll for the year (BRSR wages), or its median payroll when that year has none.
  * - Everywhere else: equal weight across companies, as the UK, Japanese and EU indexes do, because the published
  *   records hold no payroll totals. Australia's estimated wage bills stay inside its pipeline for now (PARITY-115).
  */
@@ -12,6 +14,16 @@
 interface CompanyYear { w?: number | null; wKind?: string; payrollCr?: number | null }
 interface CompanyRecord { country: string; industry?: string | null; payrollWeightCr?: number | null; years?: Record<string, CompanyYear> }
 interface MarketRecord { code: string; name: string; status: string; years?: string[] }
+interface IndexRecord {
+  id: string
+  name: string
+  country: string
+  kind?: string
+  weighting: string
+  left?: string[]
+  years: Record<string, { headline: number; companiesCovered: number; companiesReported: number; sectors: { industry: string; w: number; companies: number }[] }>
+  yoy: Record<string, { from: number; to: number; change: number; companies: number; shown?: boolean }>
+}
 
 export interface CountryYear {
   headline: number
@@ -49,10 +61,37 @@ function share(pairs: [number, number][]): number {
   return pairs.reduce((s, [w, f]) => s + w * f, 0) / total
 }
 
-export function buildCountries(markets: Record<string, MarketRecord>, companies: Record<string, CompanyRecord>): Record<string, CountryData> {
+/** The market's figure as its group publishes it: the group's years, and only the changes it shows. */
+function fromGroup(m: MarketRecord, g: IndexRecord, members: number): CountryData {
+  const years: Record<string, CountryYear> = {}
+  for (const y of m.years ?? []) {
+    const v = g.years[y]
+    if (!v) continue
+    years[y] = {
+      headline: v.headline,
+      companiesCovered: v.companiesCovered,
+      companiesReported: v.companiesReported,
+      companiesInMarket: members,
+      sectors: v.sectors.map(({ industry, w, companies }) => ({ industry, w, companies })).sort((a, b) => b.w - a.w),
+    }
+  }
+  const yoy: CountryData['yoy'] = {}
+  for (const [key, ch] of Object.entries(g.yoy)) {
+    if (ch.shown !== false) yoy[key] = { from: ch.from, to: ch.to, change: ch.change, companies: ch.companies }
+  }
+  return { market: m.code, name: m.name, weighting: `${g.name} (indexes/${g.id}), weighted by ${g.weighting}`, years, yoy }
+}
+
+export function buildCountries(markets: Record<string, MarketRecord>, companies: Record<string, CompanyRecord>, indexes: Record<string, IndexRecord> = {}): Record<string, CountryData> {
   const out: Record<string, CountryData> = {}
   for (const m of Object.values(markets)) {
     if (m.status !== 'live' || !m.years?.length) continue
+    const group = Object.values(indexes).find((ix) => ix.kind === 'group' && ix.country === m.code)
+    if (group) {
+      const left = new Set(group.left ?? [])
+      out[m.code] = fromGroup(m, group, Object.entries(companies).filter(([symbol, c]) => c.country === m.code && !left.has(symbol)).length)
+      continue
+    }
     const members = Object.values(companies).filter((c) => c.country === m.code)
     const counted = (y: string) =>
       members.flatMap((c) => {

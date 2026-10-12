@@ -31,16 +31,17 @@ def sector(industry):
     return next((name for name, pat in RULES if re.search(pat, s)), None)
 
 
-companies = json.load(open(sys.argv[1] + '/companies.json'))
-OVERRIDES = json.load(open(sys.argv[1] + '/sector_overrides.json'))
-out, unmatched = {}, []
-for sym, c in sorted(companies.items()):
-    out[sym] = OVERRIDES.get(sym) or sector(c['industry'])
-    if not out[sym]:
-        unmatched.append((sym, c['industry']))
-assert not unmatched, unmatched
-json.dump(out, open(sys.argv[1] + '/sectors.json', 'w'), indent=0, ensure_ascii=False)
-counts = {}
-for v in out.values():
-    counts[v] = counts.get(v, 0) + 1
-print(len(out), sorted(counts.items(), key=lambda kv: -kv[1]))
+if __name__ == '__main__':
+    companies = json.load(open(sys.argv[1] + '/companies.json'))
+    OVERRIDES = json.load(open(sys.argv[1] + '/sector_overrides.json'))
+    out, unmatched = {}, []
+    for sym, c in sorted(companies.items()):
+        out[sym] = OVERRIDES.get(sym) or sector(c['industry'])
+        if not out[sym]:
+            unmatched.append((sym, c['industry']))
+    assert not unmatched, unmatched
+    json.dump(out, open(sys.argv[1] + '/sectors.json', 'w'), indent=0, ensure_ascii=False)
+    counts = {}
+    for v in out.values():
+        counts[v] = counts.get(v, 0) + 1
+    print(len(out), sorted(counts.items(), key=lambda kv: -kv[1]))

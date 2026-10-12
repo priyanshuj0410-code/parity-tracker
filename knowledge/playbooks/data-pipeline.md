@@ -1,8 +1,8 @@
 ---
 type: runbook
 title: India data pipeline
-description: How the India dataset (BRSR filings for every Nifty 500 company, footprints for the Nifty and BSE indexes, and the index funds and ETFs that track them) is fetched, cleaned and turned into the app's JSON, and how to refresh it.
-updated: 2026-10-05
+description: How the India dataset (BRSR filings for every Nifty 500 company and every other BRSR filer, footprints for the Nifty and BSE indexes and the All BRSR filers group, and the index funds and ETFs that track them) is fetched, cleaned and turned into the app's JSON, and how to refresh it.
+updated: 2026-10-12
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/7424a532-a7b5-453f-8f99-52a34bf1bf39
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/04793a6e-433c-4a37-9cb0-b1494804cf0c
@@ -18,6 +18,7 @@ plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/9e814581-34cc-49dc-a1ea-75698f44c744
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/25f85b77-2bcc-40a5-9ef9-0ac94da273e0
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/c28ef6bf-a0a1-41de-8d63-8f91ab8ef68a
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/59edeb77-637d-4ab4-924e-43b8a22072b5
 ---
 
 # India data pipeline
@@ -81,6 +82,16 @@ Run these in a scratch folder with the scripts and inputs copied in.
 - **Fixed weights:** each company's index payroll weight is the median plausible reported payroll from FY2022-23 on.
 - **Headcount:** the workforce share uses permanent employees and workers only.
 - **Boards:** totals outside 6–20 are discarded as filing errors.
+
+## Every BRSR filer (BRSR-1000, PARITY-129)
+The steps above cover the Nifty 500 and the Sensex. Every other BRSR filer comes from a separate build: plan and decisions in [../plans/india-brsr-1000.md](../plans/india-brsr-1000.md), one scheduled batch in [brsr1000-batch.md](brsr1000-batch.md), late filers in [brsr-watch.md](brsr-watch.md). Code is in `pipeline/india/brsr1000/`.
+
+- **Scope:** about 690 filers outside the indexes, about 1,190 Indian companies in all.
+- **Sources:** FY26 BRSRs and annual reports from each company's own site. Earlier years come from those filings' prior-year columns, else the exchange-filed FY25 PDFs (the Kaggle collection). A filing with no XBRL has `kind` (`website`, `annualReport` or `exchange`) and links the public copy, never the Kaggle file.
+- **Records:** `python3 pipeline/india/brsr1000/to_records.py <data dir> <dump dir>` turns the checked readings and `pnpm data dump IN` into `out/companies.json` and `out/indexes.json` for `pnpm data load IN`. Its docstring holds the rules. New companies have no market cap or float, `indexes: ['brsrall']` and an industry from the NIC code. A symbol another market uses, or a BSE-only listing, is prefixed `NSE-` or `BSE-`.
+- **The group (`brsrall`, `kind: 'group'`):** weighted by each year's payroll, held by no fund. Stand-ins, weights, modelled shares and when the change is shown follow decision 10. Nivel's indexes are recomputed with `index_calc` in the same build.
+- **Market record:** `pipeline/india/brsr1000/market_IN.json` is the proposed `markets/IN`: `brsrall` appended to `indexes`, and the source, intro and Method lines for the wider coverage. It is git-ignored like every pipeline JSON. Store it in the same release as the records: `pnpm data put markets IN pipeline/india/brsr1000/market_IN.json`.
+- **Publish checks:** `pnpm data publish` stops on a level or function share outside 0 to 1, a market cap missing for a free-float index member, a non-boolean `shown`, a range out of order, a group whose weights do not sum to 1 (within 0.001), and a group's missing or left symbol with no record. Its report gives the group's carried-forward and estimated payroll shares, staff with known payroll, and whether the change is shown, with its range and basis changes.
 
 ## EU pipeline (Euro Stoxx 50): live
 Scripts are in `pipeline/eu/`; the verified values (`eu_values.json`) and headcounts (`eu_headcount.json`) are inputs. `eu_build.py` turns `eu_values.json` into `eu_companies.json` and `eu_indexes.json`; from the repo root, `pnpm data load EU <scratch>/eu_companies.json <scratch>/eu_indexes.json`.

@@ -2,7 +2,7 @@
 type: reference
 title: Nivel data API v1
 description: The contract for reading Nivel's published data from other apps (Spot the Stereotype, SwipeEd and anyone else). Static JSON at https://nivel-equal-lens.vercel.app/data/v1/, rebuilt with every promoted release, open to any origin.
-updated: 2026-10-03
+updated: 2026-10-12
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/39903f09-b70b-48dd-88c7-a10bce33c7c6
 ---
@@ -19,8 +19,8 @@ Base URL: `https://nivel-equal-lens.vercel.app/data/v1/`. Plain static JSON, `Ac
 | File | Size | Holds |
 |---|---|---|
 | `manifest.json` | 2 KB | `api`, `version` (1), `release`, `collected` (YYYY-MM-DD), `generatedAt`, `attribution`, `files` |
-| `summary.json` | 4 KB | Per live market: `market`, `name`, `year`, `yearLabel`, `flagship`, and its shown indexes with `headline`, `companiesCovered`, `constituents`, `sinceLastYear` and the Nivel `url` |
-| `countries.json` | about 50 KB | Per live market (`IN`, `GB`, `AU`, `JP`, `EU`): women's share of pay across every company Nivel covers there, by year (`headline`, `companiesCovered`, `companiesReported`, `companiesInMarket`, `sectors`), a like-for-like `yoy` change, and its `weighting`. India weights by each company's payroll for the year; the others weight companies equally. Recomputed on every publish, so it moves when a company is added (PARITY-114) |
+| `summary.json` | 4 KB | Per live market: `market`, `name`, `year`, `yearLabel`, `flagship`, and its shown indexes with `headline`, `companiesCovered`, `constituents`, `sinceLastYear` and the Nivel `url`. `sinceLastYear` is `{from, to, change, companies}`, plus `interval` and `distinguishable` for a group (below); it is `null` when there is no change or the method holds it back |
+| `countries.json` | about 50 KB | Per live market (`IN`, `GB`, `AU`, `JP`, `EU`): women's share of pay across every company Nivel covers there, by year (`headline`, `companiesCovered`, `companiesReported`, `companiesInMarket`, `sectors`), a like-for-like `yoy` change, and its `weighting`. India's figure is the All BRSR filers group's (`indexes/brsrall.json`), with only the changes it publishes; without the group, India weights by each company's payroll for the year. The others weight companies equally. Recomputed on every publish, so it moves when a company is added (PARITY-114) |
 | `markets.json` | 15 KB | Every market (live or not): labels, years, the indexes shown, reporting rules, sources |
 | `indexes/{id}.json` | 2 to 60 KB | One index: name, market, weighting, constituents and weights, figures per year (`headline`, coverage, sectors), like-for-like changes (`yoy`) |
 | `companies/{file}.json` | about 2.5 KB | One company: name, industry, exchange, indexes, figures per year, filings. `{file}` is the symbol with characters outside A–Z, a–z, 0–9, dot and hyphen replaced by `_` and their hex code (`M&M` is `M_26M`) |
@@ -36,6 +36,11 @@ Base URL: `https://nivel-equal-lens.vercel.app/data/v1/`. Plain static JSON, `Ac
 - `wKind`: `reported` or `estimated`. An estimate must carry a label wherever it is shown. `dq` grades the figure (1 reported, 2 rescaled, 3 estimated, 4 unusable); `note` says why in plain words.
 - Years are keyed by each market's own labels (`2025-26` in India, `2025` in the UK and EU, `latest` in Japan); `markets.json` lists them in order with `latest` and `prev`.
 - The full types are `Company`, `IndexData` and `Simulation` in `src/types.ts`.
+- **Groups** (`kind: "group"`: India's All BRSR filers, `brsrall`, PARITY-129): every BRSR filer, weighted by its own payroll and held by no fund.
+  - `ownedPayroll`, `womenWages` and `gap` are the whole group's rupees a year. For India's indexes they are rupees per ₹10 lakh invested, so never compare the two.
+  - A change has `interval` (a bootstrap range, `[low, high]`), `distinguishable` (false when the range crosses zero) and `shown`. When `shown` is false the method holds the change back: show the level only. `summary.json` and `countries.json` already leave it out.
+  - Each year adds coverage fields: `carriedPayrollShare`, `estimatedPayrollShare`, `staffWithPayrollShare`, `medianCompany` and others. `left` lists companies that left the group (merged, delisted or insolvent).
+- India's new filers have `marketCapCr` and `publicFloatPct` null, and may have `isin`, `cin`, `formerly` and `latestNote` (why the newest figure is FY2024-25).
 
 ## Rules for apps that use it
 - **Attribute and link.** Show "Nivel by The Equal Lens" and link the company or index page (`url` in the summary, or `https://nivel-equal-lens.vercel.app/company/{symbol}`).

@@ -605,17 +605,10 @@ def hierarchy():
                     sum(women is null or men is null) pct_only from functions group by standard order by companies desc"""),
                 reported=rows("""select count(distinct key) companies from ladder where standard not in ('board','kmp','staff','workers')"""))
 
-def fy_of(day):
-    """The April-March year a date falls in: '2025-26' for 1 October 2025."""
-    y, m = int(day[:4]), int(day[5:7])
-    return f'{y if m >= 4 else y - 1}-{str((y if m >= 4 else y - 1) + 1)[2:]}'
-
 def relations_view(key, q):
     """The company's mergers and demergers from its side (relations.py), with each other party linked when the build
-    holds it (a duplicate entry stands for the one it merged into), and where each breaks its Years table: the first
-    year that includes the change, the later of the year of the scheme's appointed date (its effective date when none
-    is given) and the year of the first report out after it took effect (reports come about five months after the
-    year ends); without an appointed date, that first report."""
+    holds it (a duplicate entry stands for the one it merged into), and where each breaks its Years table
+    (relations.break_fy)."""
     ev = REL.load(DATA, q, M.marks(DATA))
     def party(p):
         k = p.get('key')
@@ -628,10 +621,7 @@ def relations_view(key, q):
     for e in REL.of(key, ev):
         other = 'to' if e['side'] == 'from' else 'from'
         me = next(p for p in e[e['side']] if p.get('key') == key)
-        brk = None
-        if e.get('effective') and (e['kind'] == 'merger' and e['side'] == 'to' or e['kind'] != 'merger'):  # a company merged away has no years after
-            d = e['effective']; back = f"{int(d[:4]) - (1 if int(d[5:7]) <= 5 else 0)}-{(int(d[5:7]) - 6) % 12 + 1:02d}-01"  # five months earlier
-            brk = max(fy_of(e['appointed']), fy_of(back)) if e.get('appointed') else fy_of(back)
+        brk = REL.break_fy(e) if e['kind'] != 'merger' or e['side'] == 'to' else None  # a company merged away has no years after
         out.append(dict(kind=e['kind'], side=e['side'], effective=e.get('effective'), business=e.get('business'), source=e.get('source'), quote=e.get('quote'),
                         fromMark=bool(e.get('fromMark')), me=party(me), others=[party(p) for p in e[other]], peers=[party(p) for p in e[e['side']] if p.get('key') != key], breakFy=brk))
     return out

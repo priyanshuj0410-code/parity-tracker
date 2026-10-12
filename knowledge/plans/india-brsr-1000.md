@@ -2,7 +2,7 @@
 type: plan
 title: India, from the Nifty 500 to every BRSR filer
 description: Plan to add the roughly 690 BRSR filers outside the Nifty 500 to Nivel from the Kaggle FY2024-25 dataset, the decisions taken (years, universe, payroll-weighted group) and the steps to resume the build.
-updated: 2026-10-11
+updated: 2026-10-12
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/b0e815e8-8fd2-47b1-af1d-f81a2b7d6515
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/e91400bc-1cd0-4aba-bfa5-2a337c998ad4
@@ -161,5 +161,13 @@ Source check: [../research/brsr-dataset-2024-25-check.md](../research/brsr-datas
 4. Write records in `build_data.py`'s shape: market cap and float stay null, `indexes` holds the new group only, and filings point to the Kaggle file. Fix the four Nivel values in [PARITY-122](https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/1bc88d91-2bc2-4932-8faf-ddce27cc2503) in the same rebuild.
 5. Add the group's arithmetic (pooled payroll and headcount) beside `index_calc`, with the missing-report rules in decision 10. Then make the UI change: Home, Companies and Compare counts, the group page, and each company's ladder and functions (design.md first).
 6. Load and publish a staging release for review. Promote only on the owner's approval.
+
+**Steps 3 to 5, built 12 October 2026:** `pipeline/india/brsr1000/to_records.py <data dir> <dump dir>` turns the checked readings and `pnpm data dump IN` into `companies.json`, `indexes.json` and `report.json` for `pnpm data load IN`. Its docstring holds the rules. What it adds to the steps above:
+- **Units:** a wage total's unit is the filing's, else the one that puts it near 1.3 times the filing's own median pay × headcount. Median pay is scaled the same way (rupees, lakh, crore, million; often unstated). With no total, the payroll is median pay × headcount (`dq` 3, women's share still reported).
+- **Industry:** from the NIC 2008 code, else NIC 2004 (some filings give 34300), the activity's words, then the CIN's NIC 2004 digits. Every industry must map in `sectors.py`.
+- **Nivel's records:** PARITY-122's four values, Schaeffler's payroll (millions read as crore, ten times too large), the finer levels and functions, and FY2025-26 from the checked reading where the stored record had none (HEGAM, MCX, Schaeffler). Nivel's indexes are recomputed with `index_calc` and replaced only where a figure changed. The report lists every stored value the build's reading disagrees with, for the owner.
+- **The group (`brsrall`, `kind: 'group'`):** pooled payroll each year; a missing company stands in with last year's figure, weighted by its payroll scaled by the reporters' growth, and moved by the reporters' like-for-like change (plain carry-forward is the check); calibration from staff share outside the top 50; mergers and demergers in `relations.json` break a company's figures in their first year (`relations.break_fy`); moves of more than 15 points in a year stay out of the change and are listed; a bootstrap range, and `shown` by decision 10's rule.
+- **First run, on the partial queue (1,150 companies):** FY26 19.15% of pay across 1,008 companies with payroll, change +0.29 pp (range 0.16 to 0.43) over 841 companies like for like.
+- **Stored payroll units:** 62 of Nivel's stored company-years have an impossible payroll per head; a separate task audits them.
 
 The Kaggle text for all 1,051 readable PDFs and the first scan are in `pipeline/india/brsr1000/data/kaggle/`.
