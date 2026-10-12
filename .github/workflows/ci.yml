@@ -1,0 +1,51 @@
+# Checks every pull request and every push to main (PARITY-129).
+#   app:      the web app's own scripts: lint, type-check and build, and both test suites.
+#   pipeline: pyflakes on the production pipeline, and the Parity dashboard's scripts parse.
+# The research one-offs (pipeline/india/brsr1000/analysis, pipeline/equal50, pipeline/research) are not linted:
+# they are kept as run, for the record of how their results were made.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  app:
+    name: App (lint, build, tests)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.4.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm build
+      - run: pnpm test:markets
+      - run: pnpm test:data
+
+  pipeline:
+    name: Pipeline (Python, dashboard scripts)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: pip install pyflakes==3.4.0
+      - name: pyflakes
+        run: python -m pyflakes $(git ls-files 'pipeline/**/*.py' 'pipeline/*.py' | grep -v -e 'pipeline/india/brsr1000/analysis/' -e 'pipeline/equal50/' -e 'pipeline/research/')
+      - name: Dashboard scripts parse
+        run: for f in pipeline/india/brsr1000/dashboard/app.js pipeline/india/brsr1000/dashboard/ui.js pipeline/india/brsr1000/browse.mjs; do node --check "$f"; done

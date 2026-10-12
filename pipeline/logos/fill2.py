@@ -1,4 +1,4 @@
-import json, subprocess, hashlib, os, io, string
+import json, subprocess, hashlib, os, string
 from concurrent.futures import ThreadPoolExecutor
 from PIL import Image
 from html_icons import icons, UA

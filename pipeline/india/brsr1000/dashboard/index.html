@@ -1,0 +1,44 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Parity</title><link rel="icon" href="data:,">
+<script>try{const t=new URLSearchParams(location.search).get('theme')||localStorage.getItem('pt-theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..400,0..1,0&display=block" rel="stylesheet">
+<link href="/ui.css" rel="stylesheet">
+</head><body>
+<a class="skip" href="#col">Skip to content</a>
+<header class="bar" id="bar">
+ <h1 class="brand"><span class="brand__name">Nivel</span><span class="brand__sub">Parity</span></h1>
+ <a class="bar__cells" id="runBtn" href="#pane=run" data-nav='{"pane":"run"}' aria-label="Open run details">
+  <span class="bar__cell" id="cStatus"><span class="bar__v">Loading</span><span class="bar__s">&nbsp;</span></span>
+  <span class="bar__cell" id="cProg"></span><span class="bar__cell is-finish" id="cFinish"></span><span class="bar__cell is-usage" id="cUsage"></span>
+ </a>
+ <span class="bar__alert" id="barAlert"></span>
+ <span class="grow"></span>
+ <div class="search" id="search">
+  <div class="field-wrap"><span class="ico" aria-hidden="true">search</span><input class="field" id="q" type="search" placeholder="Search companies and runs" aria-label="Search companies, batches, runs and reasons" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="sr"><span class="kbd">⌘K</span><button class="search__cancel" type="button" data-act="searchClose">Cancel</button></div>
+  <div id="sr" class="search__results" role="listbox" hidden></div>
+ </div>
+ <button class="icon-btn search-btn" type="button" data-act="searchOpen" aria-label="Search"><span class="ico" aria-hidden="true">search</span></button>
+ <button class="icon-btn" id="theme" type="button" data-act="theme" aria-label="Theme"></button>
+</header>
+<div class="strip"><a class="strip__link" id="strip" href="#pane=run" data-nav='{"pane":"run"}' aria-label="Open run details"></a><span id="stripAlert"></span><button class="icon-btn" type="button" data-act="searchOpen" aria-label="Search"><span class="ico" aria-hidden="true">search</span></button></div>
+<div class="layout">
+ <main class="col" id="col" tabindex="-1">
+  <div id="today">
+   <section class="section" id="needs" tabindex="-1"><div id="needsHead"></div><div id="needsBody"><div class="card"><div class="skeleton" role="status" aria-label="Loading"><i></i><i></i><i></i></div></div></div></section>
+   <section class="section" id="files"><div id="filesHead"></div><div id="filesBody"></div></section>
+   <section class="section narrow" id="recent"><div id="recentHead"></div><div id="recentBody"></div></section>
+   <section class="section" id="cos"><div id="cosHead"></div><div id="cosBody"></div></section>
+   <section class="section" id="levels"><div id="levelsHead"></div><div id="levelsBody"></div></section>
+   <section class="section" id="query"></section>
+   <p class="foot" id="foot"></p>
+  </div>
+  <div id="view" hidden></div>
+ </main>
+ <aside class="pane" id="pane" aria-label="Details" aria-labelledby="paneTitle"><div class="pane__head" id="phead"></div><div class="pane__body" id="pbody"><div class="skeleton" role="status" aria-label="Loading"><i></i><i></i><i></i></div></div></aside>
+</div>
+<div class="scrim" id="scrim" hidden></div>
+<div id="live" class="sr-only" aria-live="polite"></div>
+<script src="/ui.js"></script><script src="/app.js"></script>
+</body></html>

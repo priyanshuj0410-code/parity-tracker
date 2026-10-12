@@ -21,6 +21,7 @@ The app was renamed from Parity Tracker to Nivel on 2 October 2026 ([decisions/0
 - [reference/data-api-v1.md](reference/data-api-v1.md): the public data API at /data/v1/ for Spot the Stereotype, SwipeEd and others
 - [reference/markets-api.md](reference/markets-api.md): the play-money markets backend (off by default): endpoints, settings, the adult record and the owner's setup
 - [playbooks/data-pipeline.md](playbooks/data-pipeline.md): how each market's dataset is built and refreshed, plus shared sectors and logos
+- [playbooks/brsr-watch.md](playbooks/brsr-watch.md): the daily watch for late BRSR filers, and the owner's "No BRSR filed" marks
 - [playbooks/deploy.md](playbooks/deploy.md): shipping to production from the CLI, and the free-plan upload limit
 - [decisions/0001-comparable-parity-measures.md](decisions/0001-comparable-parity-measures.md): the shared scales (employment parity, wage parity) that make every company and index comparable
 - [decisions/0002-app-name-shortlist.md](decisions/0002-app-name-shortlist.md): the N-name shortlist and the choice of Nivel
@@ -37,6 +38,7 @@ The app was renamed from Parity Tracker to Nivel on 2 October 2026 ([decisions/0
 - [decisions/0018-weekly-market-cycle.md](decisions/0018-weekly-market-cycle.md): accepted. Claude proposes markets each Saturday, the owner approves them, they open Sunday night and settle by the next Saturday; no free creation
 - [plans/coverage-99.md](plans/coverage-99.md): overnight plan and log for 99% coverage in every live market
 - [decisions/0010-fund-footprint-method.md](decisions/0010-fund-footprint-method.md): fund footprints: attribution by market cap, a 60% coverage floor, comparison only with each fund's Tier 1 benchmark, and no ranking
+- [plans/brsr-dashboard-flows.md](plans/brsr-dashboard-flows.md): the Parity dashboard (begun as the BRSR build dashboard) as one page, with the owner's eight jobs, click depth, interaction rules and run states
 - [plans/us-indexes.md](plans/us-indexes.md): adding the S&P 500 and Dow as a limited-data market, measured by women's share of board seats
 - [plans/fund-footprints.md](plans/fund-footprints.md): women's share of the payroll a mutual fund or personal portfolio owns
 - [plans/nivel-play-and-markets.md](plans/nivel-play-and-markets.md): Nivel's play side (Spot the Stereotype) and its prediction markets on a shared engine
@@ -63,6 +65,11 @@ The app was renamed from Parity Tracker to Nivel on 2 October 2026 ([decisions/0
 - [decisions/0008-parity-50-v2.md](decisions/0008-parity-50-v2.md): Parity 50 version 2, where every holding pays women at least the Nifty 50's own share
 - [decisions/0009-parity-50-backfill.md](decisions/0009-parity-50-backfill.md): the stand-in figures that extend the Parity 50 and Nifty 50 comparison back to September 2021
 - [research/parity-50-v2-results.md](research/parity-50-v2-results.md): version 2 results, what the bar keeps out, and the version shown on Nivel as a simulation
+- [plans/cross-market-dataset.md](plans/cross-market-dataset.md): extending the Parity dataset to every Nivel organisation in every market from official government filings, the owner's decisions, India's release first, and the crosswalk table's specification (PARITY-130)
+- [plans/india-brsr-1000.md](plans/india-brsr-1000.md): adding every BRSR filer to India from the Kaggle dataset, with a payroll-weighted group, the decisions and the steps to resume
+- [research/brsr-predictive-models.md](research/brsr-predictive-models.md): backtests of models for missing BRSR reports, next year, the group figure and field gaps; carrying forward wins, so the build uses rules
+- [research/brsr-requirements.md](research/brsr-requirements.md): who must file a BRSR and from when, the BRSR Core assurance glide path, the gender disclosures behind Nivel's figures, and the binding gender rules outside BRSR, checked against SEBI and MCA texts (12 October 2026)
+- [research/brsr-dataset-2024-25-check.md](research/brsr-dataset-2024-25-check.md): the shared third-party BRSR dataset checked: FY2024-25 filings from NSE's archive, overlap with Nivel, four Nivel values it shows to be wrong, and the open question on using it
 - [reviews/design-audit-2026-10.md](reviews/design-audit-2026-10.md): design audit against Kite, Coin and Groww, with before and after screenshots
 - [reviews/legal-review-2026-10.md](reviews/legal-review-2026-10.md): the SEBI, NSE, DPDP and FCRA rules Nivel touches, what changed, and twelve questions for counsel
 - [reviews/gaming-act-check-2026-10.md](reviews/gaming-act-check-2026-10.md): why Nivel's play-money markets are an online social game under the 2025 Act, the build rules that keep them one, and seven questions for counsel

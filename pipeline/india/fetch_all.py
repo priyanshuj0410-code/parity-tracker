@@ -1,4 +1,4 @@
-import csv, json, subprocess, time, datetime, os, sys, urllib.parse
+import json, subprocess, time, datetime, os, sys, urllib.parse
 UA="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
 def get(url, out=None):
     a=["curl","-s","-m","90","-A",UA]

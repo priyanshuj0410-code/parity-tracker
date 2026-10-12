@@ -1,4 +1,4 @@
-import json, os, re
+import json, os
 W=json.load(open('wgea.json')); auto=json.load(open('au_auto.json'))
 # ASX top 300: the ASX 200 plus the next 100 companies by market value in ASX's own directory (3 October 2026),
 # as S&P does not publish S&P/ASX 300 membership freely.
