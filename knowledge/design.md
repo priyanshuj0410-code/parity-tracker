@@ -31,6 +31,9 @@ plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/9c902b7a-2193-4304-a208-7fcd1fdf3a69
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/aaaea5eb-fbaf-45a6-908c-d4d5d62baa25
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/ce4141c0-7f43-42bf-9dd1-81fe9784d7e5
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/7b06f399-403a-4106-8d7e-7bd9697da393
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/f47ab7b6-a46f-4d22-83d5-5131790b6a49
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/59edeb77-637d-4ab4-924e-43b8a22072b5
 ---
 
 # Nivel design system
@@ -332,3 +335,97 @@ Validated with the dataviz `validate_palette.js` using `--pairs all`, because co
   - **Sources:** Material Design's writing guidelines, Nielsen Norman Group's research on how people scan, and the GOV.UK style guide.
 - This is not an ESG rating and not investment advice. Say so on the method page.
 - **One name per measure (PARITY-24):** "Women's share of pay" (short "Share of pay"), "Employment parity" and "Wage parity", from `MEASURE` in `src/lib/compare.ts`. Each market's basis goes in brackets or a subtitle ("Employment parity (permanent staff)"), never in a new name. Figures a company reports are labelled in the filing's own words ("Women in regular staff"), because they are inputs, not our measures.
+
+## 8. Internal tools: the Parity dashboard (PARITY-126)
+
+The local dashboard for Parity, Nivel's company dataset (`pipeline/india/brsr1000/dashboard/`), uses the tokens, type and voice above. It began as the BRSR filer build's and was renamed on 12 October 2026, when the dataset widened to every Nivel market (PARITY-130): the brand reads "Nivel" over "Parity", and the tab "Parity · <status>". BRSR stays wherever the copy means the filing itself. A few patterns are its own, because it is an operations page for one person, not a reader-facing one.
+
+**Component library (owner, 12 October 2026).** Every component is one function in `ui.js` with its style in `ui.css`. The app (`app.js`) builds every view from them and adds no styles of its own. The page's Components view (`#view=library`) shows each component in each state.
+
+- **Icons:** Material Symbols Rounded, from Google Fonts. They are 20px and outlined: 16px in tags and heads, 14px in badges and chips, and 40px light in empty states. An icon is decorative unless it carries the only label, in which case it gets `aria-label`. Icons stay hidden until their font has loaded, so a ligature name never shows. The Components page lists each icon's meaning.
+- **Tooltips carry meta text and descriptions:** section descriptions, footnotes, how a figure was worked out, full file names and URLs, full log lines and reasons.
+  - **The trigger:** an (i) button, or the element itself.
+  - **The tooltip:** one floating element, ink on card, 13px, at most 300px wide.
+  - **When it shows:** on hover on pointer devices, on keyboard focus, and on tap for (i) buttons on touch devices.
+  - **What stays visible:** the primary line, so nothing a decision needs is hover-only on a phone.
+- **Spacing scale:** 4, 8, 12, 16, 24, 32 and 40px (`--sp-1` to `--sp-7`). Card rows pad 12px by 16px, sections are 40px apart (32px on phones), and groups inside a section start 24px down.
+- **Type scale:** 12px (meta), 13px (secondary), 14px (body and rows), 16px (bar figures and pane titles), 20px (section heads), 24px (figures and the Components page title). The brand keeps section 4's 19px. The pane title is the pane's h2.
+- **Radii:** 12px for cards, 8px for tiles, fields and buttons, 6px for badges, and a full radius for tags and chips.
+- **One meaning per component:**
+  - a **badge** labels status or data quality and is never interactive;
+  - a **tag** is a filter that toggles, with a count;
+  - a **chip** opens an outside page;
+  - a **quiet button** is a secondary action.
+- **List item:** a lead icon, a title (Poppins 600, 14px, ink), a meta line (13px soft, parts joined by middots), then an optional body and foot. A row that opens something carries a trailing chevron. A row that holds its own links opens on a click of its background.
+- **Run row:** two lines (20px and 18px) in a 64px row, on the list-item grid: a 40px time column, the outcome icon in a 24px column aligned to line 1 with a 12px gap, the text, the duration, and a 20px chevron that ends at the padding edge. The chevron sits on line 1, with the duration.
+  - **Line 1:** the time, an icon that carries the outcome, the batch, a word for anything unusual (in the outcome's tone: Running green, Overran amber, Stopped red), and the duration. A row with a batch always starts with it ("b010 Finished"); only a skipped or empty slot starts with its word.
+  - **Line 2:** what happened, in one line with no full stop, cut with an ellipsis. Its tooltip holds the full text, the correction count and any "worked out from batch times" caveat.
+  - **Line 1 shares one baseline:** time, batch, word and duration. Times and durations are Nunito Sans 13px, whose digits are equal width (the Poppins subset has no tabular figures), so colons line up. Line 2 runs under the duration.
+  - **Icons:** `check_circle` opened, `progress_activity` running, `arrow_circle_right` finished an earlier batch, `timer` overran, `error` stopped, `block` skipped, `help` no batch, `account_circle` started by hand. All are full-circle glyphs, so none reads smaller in the column.
+- **Heads:** one h3 head for groups in a section and blocks in a pane, with an optional icon, count, (i) and actions.
+- **Also in the library:**
+  - the bar row (label, count, value, meter, optional second line) for the ladder;
+  - the gauge (usage against its gate);
+  - the flag panel (12 October 2026): the warn tone at panel size, with no badge inside, since the panel is the status. A `--warn-bg` fill and 8px radius, then the kind's icon in `--sun-deep` (person_search, calculate, straighten, compare_arrows, or flag), the finding in 14px ink, a 13px `--soft` meta line (the kind, left out when the finding already opens with it, then the batch or company link) and the owner's "Checked:" note in 13px `--body`. Every text on the fill passes AA in both themes (5.1:1 and up);
+  - the key-value line;
+  - the toast (one confirmation with Undo for 6 seconds, used when a mark is set);
+  - the disclosure (12 October 2026): a violet summary with a chevron. In a stack (a company's records), each row has a `--mist` rule above it and the last closes with one below. Right under a card (Files you sent's "Done"), it is bare: no rule of its own, 12px above, nothing below, so the section's 40px gap (32px on phones) runs to the next divider as everywhere else, and 8px before its rows when open. Sections are divided by one `--mist` rule with 40px either side;
+  - the form (PARITY-128): a 1px `--line` card with a 14px Poppins 600 title, labelled fields in a row that wraps (labels 13px Poppins 500 `--soft`, "optional" 12px `--muted`), then a primary submit and a quiet Cancel. Fields are 44px with 16px text on phones. Enter submits;
+  - the pane head (Back only for in-app history, title, previous and next, close).
+- **Company pane, PARITY-129 (12 October 2026):**
+  - **Assurer:** on the Values line ("reasonable assurance by …", or "not assured").
+  - **Years table:** one row per year, newest first: share of pay, women in staff, board, KMP. A year known only from the next year's report shows its wage share, marked "from the next year's report".
+  - **Targets block:** gender goals first. Each row gives the metric, its topic, the target and year, the current figure, the company's progress line, and its source in an (i).
+  - **Identifiers line (12 October 2026):** the pane's first line gives the CIN and ISIN in mono, then "NSE <symbol>" and "BSE <scrip code>" (the BSE scrip ID when the code is not known), each label in `--muted`; a nationalised bank or LIC shows a muted "No CIN" with the reason in its tooltip. The Companies search matches all four.
+  - **Status block:** the status badge and batch link, then a "why" line and a "next" line only when they add something the badge does not (FY2024-25 only, no usable report, waiting for you). A Nivel company says so beside its CIN; other companies carry no label.
+  - **Values line:** what the stats do not say: the boundary and the assurance, plus the year when it is not FY2025-26. Who checked the reading and the build time sit in the head's (i).
+  - **Years table:** a year known only from the next year's report shows its share of pay and nothing else, its label underlined with that source in a tooltip, never a column of n/a.
+  - **Related companies block (12 October 2026):** right after the status block, one row per merger or demerger the company took part in (from `data/relations.json` and the owner's Merged marks), newest first. Each row is a `.item--prose`: a muted `merge`, `call_split` or `swap_horiz` lead icon, one sentence in regular 14px Nunito Sans that wraps instead of truncating, from this company's side ("Merged into Gujarat Energy Limited.", "Gujarat State Petronet Limited and … merged into it.", "Demerged its commercial vehicles business into Tata Motors Ltd., listed 12 Nov 2025.", "Demerged from … as its … business, and listed on …"), and a meta line of the effective date and a Source tooltip ("Your mark" for a mark). Companies in the build are underlined links to their pane, by their short names; others carry a muted "· not in the build" or "· unlisted". New companies that share a listing date say "all listed …" once. A merged mark's Change and Undo move onto its row as icon buttons, and the separate mark badge and "Merged into …" line go, so the merger is said once. Settled checker flags leave the pane's top and sit under Records as a "Checks" disclosure; open ones keep the warn panel.
+  - **Years break row:** a `--muted-bg` row across the table, 12px `--muted-ink`, its icon inline: "Merger, 1 May 2026: years below are before it", "Demerger, 1 Oct 2025: years below include commercial vehicles". It sits below the first year that includes the change. Events on one date share one row ("Merger and demerger, …: years below are before them"). A company created by a demerger has none: its years begin there. Year labels never wrap.
+  - **References** ([Lazyweb search](https://www.lazyweb.com/agentic-search/9ad4ab4d-ba4b-4b35-b831-eef82606db52), 12 October 2026): Lazyweb has no data product showing these relations. The pattern follows Companies House's and PitchBook's "previous names" and "formerly known as", the "X is now Y" successor wording of Max and Freevee, Crunchbase's dated "Acquired by" card, and Baremetrics' events pinned to a series.
+  - **Names:** a former name in brackets leaves the title ("Gujarat Energy Limited (Erstwhile Gujarat Gas Limited)" becomes "Gujarat Energy Limited") and shows as the header's "Formerly …" line.
+  - **Casing (12 October 2026):** a name a filing or AMFI prints in capitals reads in title case wherever it shows ("PARADEEP PHOSPHATES LIMITED" becomes "Paradeep Phosphates Limited"). Acronyms stay in capitals (a short list, any word of three letters or fewer that is not a common word, and any word without a vowel: HDFC, JK, BCL, SKF India); "and", "of" and "the" go lower case after the first word. A name with any lower-case letter is the company's own and stands ("ICICI Bank Ltd."). `nice()` in dashboard.py; the stored names are unchanged.
+  - **FY2026-27 block (copy cut 12 October 2026, owner: "too much text"):** after the status block. A badge for the company's group, at most one sentence of fact the badge does not carry (the condition for dropping out, the year it files from, insolvency, an earlier name's ranks), then one soft line, "NSE rank 2025 1,719 2024 1,518 …", for the exchange that ranks it higher on the newest list. The one caveat (AMFI's figures; the exchange decides near the cut-off) is the head's (i). Groups and tones: Files for FY2026-27 and Joins for FY2026-27 are accent, May drop out after FY2026-27 is warn, Leaves, BRSR from FY2027-28 and Not ranked are muted. A muted Near the cut-off badge, with an (i), sits beside a company within 50 places of 1,000 on a list that decides its group.
+- **Companies view, FY2026-27 (12 October 2026):** a second filter row under the status tags, labelled FY2026-27 like the Why row, with one tag per group and its count (Files, Joins, May drop out, Leaves, Listed in 2026, Not ranked). Choosing a group swaps the Levels column for "Rank, Dec 2025" (the better exchange rank, the exchange in muted 12px, and a muted Near badge at the cut-off); on phones the rank goes in the row's meta. Under Files or Joins, a bare disclosure "Not in the build" lists the top-1,000 companies the build does not hold: an `add_business` lead icon in `--muted`, the name, symbol and ISIN in the meta, the rank in the trail, and muted May have left and Near the cut-off badges.
+- **Marks (PARITY-128):** a "Mark as" line of quiet buttons with icons (`unpublished` No BRSR filed, `merge` Merged, `gavel` Insolvent, `do_not_disturb_on` Delisted). A choice that needs details opens the form below the line. A set mark shows as a `--sun-deep` badge with Change and Undo mark beside it.
+- **Phones:** a row's action button moves under its content. Section actions keep their labels, and every tap target has a 44px hit area. Flows are in [plans/brsr-dashboard-flows.md](plans/brsr-dashboard-flows.md). The patterns were checked against [Lazyweb references](https://www.lazyweb.com/agentic-search/415b7e49-2f44-4e3a-a883-1acaf9c4cd72): Vercel deployments, n8n executions, Databricks job runs, the Front live dashboard, the Lemni inbox, the GitHub command palette and Attio tables.
+
+- **One page, no tabs.**
+  - **Width:** a 1392px container instead of 1120px.
+  - **Columns:** the Today column on the left, and a 480px docked pane on the right from 1200px up. The pane becomes a drawer from 720px and a full-screen sheet below that.
+  - **Wide views:** Companies, Results and SQL replace the Today column, not the pane.
+- **Sticky bar:** brand, then status cells split by hairlines (Status, Progress, Finish, Usage), then search and a theme button. There is no Nivel mark and no nav. Finish is the projected time over the pace an hour; Usage is "Week N% Session N%" over the gate state.
+- **Watch line:** under Why FY2024-25 only, one soft 13px link to the Run pane, with a radar icon: "17 watched daily for a FY2025-26 BRSR · next check tomorrow, 09:21" ("· N found" when the watch found any). The last check and the routine's detail live in the Run pane's Watch block.
+  - **Phone:** the cells become a two-line strip under a 56px header. The whole strip is one button that opens the run.
+  - **Status dot:** 8px, always beside its word: `--good` running or finished, `--sun-deep` overrunning or idle with a missed slot, `--bad` stopped, stuck or paused, `--muted` idle.
+- **Badges (12 October 2026):** each tone has its own fill, with text in the same hue, so status reads at a glance and no hue sits on violet:
+  - **good** `--good` on `--good-bg` (`#E5F3EE`, the teal monogram tint; dark `#4CC79A` on `#14312A`): FY2025-26;
+  - **warn** `--sun-deep` on `--warn-bg` (`#FBF1DB`; dark `#F2C05C` on `#3A2E12`): FY2024-25 only, No BRSR filed, `Flagged`, `Few`, `Overran`, the Check kinds, Wrong year and May drop out after FY2026-27;
+  - **bad** `--bad-ink` on `--bad-bg` (`#FBEAE6`; dark `#FF8A6E` on `#3D1F1A`): no usable report;
+  - **accent** `--violet` on `--tint`: Open, Files for FY2026-27 and Joins for FY2026-27;
+  - **muted** `--muted-ink` (`#6B6280`; dark `#ABA2BF`) on `--muted-bg` (`#F0EEF3`; dark `#2C2733`): Retrying, Missing, Near the cut-off, Leaves, BRSR from FY2027-28, Not ranked, and the closed marks Merged, Insolvent and Delisted, which are states rather than warnings.
+
+  Every pair passes AA, from 4.95:1 (muted, light) to 8.55:1. On a `--tint` panel a plain or violet badge sits on `--card`, so it does not vanish. Inferred run slots carry an (i) tooltip instead of a badge.
+- **Stepper (Files you sent):** five 10px dots joined by 2px rules (In inbox, Matched, Taken in, Read, Done). Done dots and rules are `--s1`. The current step has a tint ring, or a `--sun-deep` ring when the file has a problem. It carries `aria-current="step"`. A file of an older year whose company has not published the year asked for leaves the list: the company is on the watch, and its pane says so (12 October 2026).
+- **Stage rail:** eight segments in two rows of four, so every stage name shows, each with a 3px top rule and its label 6px below it. The rows are 12px apart and the columns 8px. Done stages are `--s1`, the current one is bold ink, and the rest are `--mist`.
+- **Slot ribbon:** 14 by 20px cells, one per scheduled run, 6px apart in a row and 8px between rows, so the latest run's ring (a 2px `--s1` outline 2px out) never touches its neighbours.
+  - **Filled `--s1`:** opened a batch.
+  - **Half-filled:** finished an earlier batch.
+  - **Dashed `--muted` outline:** lost (skipped, or no batch opened).
+  - **Ring:** the current run.
+
+  A legend names all three, so shape and words carry the meaning, never colour alone.
+- **Stat tiles (12 October 2026):** a label, one value and one short line ("Last 6 batches", "Tomorrow", "of 1,192"), so tiles in a row stay the same height; anything longer goes in the tooltip or the line under the row. The Run pane's row is Pace, Finish (the projected time, with the earliest possible finish in its tooltip) and Left; the line under it says how many runs opened a batch and "N lost", which highlights those runs in the list. There is no target, no "behind" line and no "needed" rate (owner, 12 October 2026): the bar's Finish cell gives the projected time and the pace.
+- **Meter with a gate tick:** the inline meter from section 5, 6px high, with the 2px ink tick at the usage gate (78% week, 75% five hours) instead of parity.
+- **Link chip:** 13px violet text, a 1px `--line` border, a full radius and an `open_in_new` icon. It opens in a new tab and is 36px tall on phones. PDF chips are named by year and file (`PDF FY2025-26 …mgrT.pdf`), so two never share a label.
+- **Tables:** sticky headers inside cards that clip without scrolling.
+  - **Dense:** the Companies table uses the dense variant, with 8px side padding, and drops columns rather than scroll: Status when a status filter is on, and Levels below 1360px while the pane is docked.
+  - **Phones:** table cells pad 8px by 6px.
+- **Fields:** a 1px `--soft` border (3:1 on card), `--muted` placeholder, 36px high (44px with 16px text in the phone search sheet).
+- **No native popovers (12 October 2026):** the OS select menu and date picker ignore the theme, so the dashboard uses its own.
+  - **Dropdown (`UI.dropdown`):** the app's Dropdown (PARITY-19): a 32px pill (36px on phones) with an optional `--soft` prefix ("Show", "Sort") and a chevron that turns when open. The menu is a card (12px radius, the toast's shadow) with 8px-radius options: `--tint` for the active one, violet with a check for the selected one, 44px tall on phones. Listbox semantics; arrows, Home, End, a letter, Enter, Escape and Tab.
+  - **Date field (`UI.dateField`):** a text field that takes a typed date, day first (3/6/2024, 2024-06-03, 3 Jun 2024, June 3, 2024), shows it as "3 Jun 2024", and flags a non-date with a `--bad` border and a toast on save. Its calendar button opens a 304px card: previous and next month, month and year dropdowns, a Monday-first grid of 36px round days (40px on phones) with today ringed in violet and the chosen day filled violet, then Today and Clear. Arrows move a day or a week, Home and End the week, Page Up and Down a month (with Shift a year), Escape closes.
+  - **Placement:** below the field, or above it when the window has no room, kept inside the window's width; a dropdown can open inside the calendar. A click outside, Escape or Tab out closes them, and a phone keyboard resizing the window does not.
+- **Scrim:** `--scrim` (light: violet ink at 32%; dark: black at 55%).
+- **Monospace** (`ui-monospace`, 12px) is used only for file names, CINs, SQL and raw records.
+- **Empty states are text on a card,** with no Lensy art: this is an internal tool, and no asset route serves the illustrations. Needs you and Files you sent have none: each section hides when nothing needs the owner or no sent file is still in progress (owner, 12 October 2026). It leaves the search menu's jump list too, the divider skips it, and the skip link goes to the content, not to Needs you.

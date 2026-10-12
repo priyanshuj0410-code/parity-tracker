@@ -60,6 +60,8 @@ pipeline/**/*.json
 pipeline/**/*.csv
 pipeline/**/*.txt
 !pipeline/equal50/**
+# the BRSR filer build's working data: report text, snippets, readings (PARITY-123)
+pipeline/india/brsr1000/data/
 
 # markets test build
 .markets-test/
