@@ -156,7 +156,7 @@ A history store, `D/history/<fy>/`, holds one earlier year, for the companies a 
 7. **Log it:** append one line to `D/logs/runs.md`: `- <date time> IST | <id> | FY<fy> history: done N, wrong year N, no data N | corrections N | usage week W%, session S%`. Write the same line as a Plane comment: on PARITY-129 for FY2024-25 (`python3 pipeline/india/brsr1000/plane_note.py 59edeb77-637d-4ab4-924e-43b8a22072b5 "<that line>"`), on PARITY-136 for the earlier years (`python3 pipeline/india/brsr1000/plane_note.py c0f8c42e-83da-4114-a50f-9feed4601efd "<that line>"`).
 8. **Release the lock:** run `B unlock D`, and stop.
 
-What the earlier years can give (knowledge/research/brsr-requirements.md): headcount, board, KMP and median pay by gender from FY2022-23 (FY2021-22 in the voluntary 2021 format), and the women's share of pay only from FY2023-24, whose reports also give FY2022-23's. `to_records.py` takes every store's readings: a year Nivel's stored record lacks is added, with the store's download as its filing.
+What the earlier years can give (knowledge/research/brsr-requirements.md): the 2021 format (FY2021-22, voluntary, and FY2022-23) has every gender table but three, which came with the July 2023 format from FY2023-24: the women's share of pay (FY2023-24 reports also give FY2022-23's), well-being spend, and POSH complaints as a share of women. `to_records.py` takes every store's readings: a year Nivel's stored record lacks is added, with the store's download as its filing.
 
 ## 9. Gap batches (missing mandatory fields of FY2025-26 readings)
 
