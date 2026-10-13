@@ -209,13 +209,39 @@ def nodata_reason(v): return v.get('noDataReason') or UNCHECKED
 def nodata_tag(reason):
     return next(((t, l) for t, l, rx in NODATA_TAGS if re.search(rx, reason or '', re.I)), ('nd-unchecked', 'Not checked yet') if reason == UNCHECKED else ('nd-other', 'Other'))
 
+NOT_DUE = ('nd-new-listing', 'nd-new-top', 'nd-2026')  # no BRSR was due for FY2025-26 (owner, 13 October 2026)
+def due_2526(k, v, F):
+    """Was it required to file a BRSR for FY2025-26: in either exchange's top 1,000 on a December list up to 2024, since
+    coverage did not lapse before the 2024 sunset rule (rankings.py), unless its own report says it files from later."""
+    if v.get('brsrBasis') == 'company' and (v.get('brsrFrom') or '') > '2025-26': return False
+    return any(r and min(r.values()) <= 1000 for y, r in ((F.get(k) or {}).get('ranks') or {}).items() if int(y) <= 2024)
+
+def nodata_why(k, v, F):
+    """(tag, label, sentence) for a company with no usable FY2025-26 report. One with no BRSR due yet is a new listing,
+    new to the top 1,000, or listed in 2026. One that was due gives the reason recorded, else what its files show."""
+    r, g = v.get('noDataReason'), F.get(k) or {}; ranks = g.get('ranks') or {}
+    if not due_2526(k, v, F):
+        if g.get('group') == 'later' or not ranks.get('2025'):
+            return 'nd-2026', 'Listed in 2026', r or 'Listed in 2026: its first BRSR is for FY2027-28 if it is in the top 1,000 on 31 December 2026'
+        if ranks.get('2024'): return 'nd-new-top', 'New to the top 1,000', r or 'Outside the top 1,000 until the December 2025 list, so its first BRSR is for FY2026-27'
+        return 'nd-new-listing', 'Listed since 2025', r or 'Listed after the December 2024 list, so its first BRSR is for FY2026-27'
+    t, l = nodata_tag(r) if r else (None, None)
+    if t in ('nd-employees', 'nd-not-out', 'nd-not-found', 'nd-blocked'): return t, l, r
+    ok = [x for x in v.get('fetches') or [] if x.get('status') == 'ok']
+    old = sorted({x['fy'].lstrip('~') for x in ok if x.get('hasBRSR') and (fy_start(x.get('fy')) or 9999) < 2025})
+    if any(x.get('hasBRSR') and x.get('fy') == 'unread' for x in ok): return 'nd-year', 'BRSR year not read', r or 'Its BRSR is on file but its year was not read'
+    if old: return 'nd-older', 'Only an older BRSR', r or f'Only its {yr_label(old[-1])} BRSR has been found'
+    if ok: return 'nd-no-brsr', 'No BRSR in its report', r or 'Its annual report has no BRSR in it: look for a separate BRSR filing'
+    return 'nd-not-found', 'No report found', r or 'No FY2025-26 report found'
+
 def nodata(q):
-    """The companies with no usable report (not those sent back to be read again), grouped by reason tag."""
-    groups = {}
+    """The companies with no usable report (not those sent back to be read again), grouped by reason tag, each group
+    marked due or not: whether a BRSR was required for FY2025-26."""
+    groups, F = {}, fy27().get('companies', {})
     for k, v in overlay(q).items():
         if v['status'] != 'no-data': continue
-        r = nodata_reason(v); groups.setdefault(nodata_tag(r), []).append(dict(key=k, name=display_name(v, k)[0], detail=r))
-    return sorted((dict(tag=t, label=l, n=len(n), names=sorted(n, key=lambda x: x['name'].lower())) for (t, l), n in groups.items()), key=lambda x: -x['n'])
+        t, l, r = nodata_why(k, v, F); groups.setdefault((t, l), []).append(dict(key=k, name=display_name(v, k)[0], detail=r))
+    return sorted((dict(tag=t, label=l, n=len(n), due=t not in NOT_DUE, names=sorted(n, key=lambda x: x['name'].lower())) for (t, l), n in groups.items()), key=lambda x: -x['n'])
 
 def reason_2425(k, v, waiting):
     """Why a company holds only FY2024-25 today, or None when it does not: the one sentence the breakdown, the table and the
@@ -248,10 +274,10 @@ def progress():
     batches = sorted((load(f) for f in glob.glob(P('batch', 'done', '*.json'))), key=lambda b: b['id'])
     cur = load(P('batch', 'current.json'))
     closed = [b for b in batches if b.get('closedAt') and b.get('openedAt')]
-    rate, eta = pace_of(closed, cur, len(q) - counts.get('merged', 0) - done)
+    rate, eta, n, basis = pace_of(closed, cur, len(q) - counts.get('merged', 0) - done)
     log = open(P('logs', 'runs.md')).read().splitlines()[-15:] if os.path.exists(P('logs', 'runs.md')) else []
     # A merged entry is a duplicate of another queue entry for the same company: it is not a company of its own.
-    return dict(total=len(q) - counts.get('merged', 0), done=done, counts=counts, ratePerHour=rate and round(rate, 1), paceBatches=min(PACE_BATCHES, len(closed)), eta=eta,
+    return dict(total=len(q) - counts.get('merged', 0), done=done, counts=counts, ratePerHour=rate and round(rate, 1), paceBatches=n, paceBasis=basis, eta=eta,
                 open=cur and cur.get('stage') != 'closed' and dict(id=cur['id'], stage=cur['stage'], companies=len(cur['keys']), openedAt=cur.get('openedAt'),
                                                                  stages=stages(q, cur)),
                 batches=[dict(id=b['id'], openedAt=b.get('openedAt'), closedAt=b.get('closedAt'), **(b.get('summary') or {}),
@@ -259,14 +285,22 @@ def progress():
                 lock=load(P('run.lock')), usage=usage(), log=log, db=os.path.exists(DB), fy2425=fy2425(q), nodata=nodata(q))
 
 def pace_of(closed, cur, left):
-    """Companies an hour over the last six closed batches, so an early stall stops dragging the estimate, and the finish
-    it gives. The window runs to the next batch's opening (the slot those six used up), or to the last close when none is open."""
-    if len(closed) < 2: return None, None
-    recent = closed[-PACE_BATCHES:]
-    t0 = datetime.fromisoformat(recent[0]['openedAt'])
-    t1 = datetime.fromisoformat(cur['openedAt'] if cur and cur.get('stage') != 'closed' and cur.get('openedAt') else recent[-1]['closedAt'])
-    rate = sum(len(b['keys']) for b in recent) / max((t1 - t0).total_seconds() / 3600, 0.01)
-    return rate, (datetime.now() + timedelta(hours=left / rate)).isoformat(timespec='minutes')
+    """Companies an hour, the finish it gives, how many batches it rests on, and whether it is measured or expected.
+    Measured over the last six closed batches that opened on the schedule in force, so an early stall or an older, slower
+    schedule stops dragging it; the window runs to the next batch's opening (the slot those six used up), or to the last
+    close when none is open. Until two batches have run on the current schedule, it is expected: each batch of the
+    recent size takes as many runs as recent batches lasted."""
+    if not closed: return None, None, 0, None
+    recent = [b for b in closed if dt(b['openedAt']) >= SCHEDULES[-1][0]][-PACE_BATCHES:]
+    if len(recent) >= 2:
+        t0 = datetime.fromisoformat(recent[0]['openedAt'])
+        t1 = datetime.fromisoformat(cur['openedAt'] if cur and cur.get('stage') != 'closed' and cur.get('openedAt') else recent[-1]['closedAt'])
+        rate, n, basis = sum(len(b['keys']) for b in recent) / max((t1 - t0).total_seconds() / 3600, 0.01), len(recent), 'measured'
+    else:
+        last, gap = closed[-PACE_BATCHES:], interval_at(datetime.now())
+        mins = sum((dt(b['closedAt']) - dt(b['openedAt'])).total_seconds() / 60 for b in last) / len(last)
+        rate, n, basis = sum(len(b['keys']) for b in last) / len(last) * 60 / (gap * max(1, -(-mins // gap))), len(last), 'expected'
+    return rate, (datetime.now() + timedelta(hours=left / rate)).isoformat(timespec='minutes'), n, basis
 
 GAP_STAGES = [('cut', 'Cut tables'), ('read', 'Read'), ('merge', 'Merge')]  # batch.py gaps-next cuts before it opens the batch
 def gap_stages(b):
@@ -285,8 +319,8 @@ def gap_progress():
     left = c.get('todo', 0) + c.get('in-batch', 0)
     cur = load(P('gaps', 'current.json')); cur = cur if cur and cur.get('stage') != 'closed' else None
     closed = [b for b in all_batches() if b['kind'] == 'gap' and b.get('closedAt') and b.get('openedAt')]
-    rate, eta = pace_of(closed, cur, left)
-    return dict(total=len(GQ), done=len(GQ) - left, left=left, counts=c, ratePerHour=rate and round(rate, 1), paceBatches=min(PACE_BATCHES, len(closed)), eta=eta,
+    rate, eta, n, basis = pace_of(closed, cur, left)
+    return dict(total=len(GQ), done=len(GQ) - left, left=left, counts=c, ratePerHour=rate and round(rate, 1), paceBatches=n, paceBasis=basis, eta=eta,
                 open=cur and dict(id=cur['id'], stage=cur['stage'], companies=len(cur['keys']), openedAt=cur.get('openedAt'), stages=gap_stages(cur)))
 
 # The routine's cron minutes from each date, and the delay before a slot's run starts: the app's own delay for that cron
@@ -545,7 +579,7 @@ def company_view(key):
     staff_w = sum(r.get(c) or 0 for c in ('perm_emp_women', 'perm_wkr_women')); staff_t = sum(r.get(c) or 0 for c in ('perm_emp_total', 'perm_wkr_total'))
     st = v['status']; retry = bool(v.get('retry') and st in ('todo', 'in-batch'))
     # one line on why, only where the status badge and batch link do not already say it
-    why = (why_2425(key, v) if st == 'done-kaggle' else (v.get('noDataReason') or 'No usable report was found') + '.' if st == 'no-data' else
+    why = (why_2425(key, v) if st == 'done-kaggle' else nodata_why(key, v, fy27().get('companies', {}))[2] + '.' if st == 'no-data' else
            'Duplicate of another entry.' if st == 'merged' else None)
     fetch_rows = inbox_view(load(P('queue.json'), {}))['fetch'] if st == 'done-kaggle' else []
     you = next((c for c in fetch_rows if c['key'] == key), None)
@@ -608,6 +642,35 @@ def fy27_rank(x):
     r = (x or {}).get('ranks', {}).get('2025') or {}
     return min(((n, e.upper()) for e, n in r.items()), key=lambda z: (z[0], z[1] != 'NSE'), default=(None, None))
 
+_years = (None, None)
+def years_of(q):
+    """The report years each company has data for, as the year each starts (FY2025-26 and calendar 2025 are 2025): its
+    years in the last records build (data/records_years.json, from to_records.py), plus what the checked readings give
+    since, their own year and their prior-year column. Kept until SQLite or the build file changes."""
+    global _years
+    stamp = tuple(os.path.getmtime(f) if os.path.exists(f) else 0 for f in (DB, P('records_years.json'), P('queue.json')))
+    if _years[0] == stamp: return _years[1]
+    built = (load(P('records_years.json')) or {}).get('companies', {})
+    live = {r['key']: r for r in rows('select key, fy, wage_share_current cur, wage_share_prior prior, perm_emp_total e, perm_wkr_total w from readings')}
+    out = {}
+    for k, v in q.items():
+        if v['status'] == 'merged': continue
+        ys, r = {fy_start(y) for y in built.get(k, [])}, live.get(k) or {}; y = fy_start(r.get('fy'))
+        if y and (r['cur'] is not None or r['e'] or r['w']): ys.add(y)
+        if y and r['prior'] is not None: ys.add(y - 1)
+        out[k] = sorted(ys - {None})
+    _years = (stamp, out); return out
+
+DUE_FY27 = ('files', 'atRisk', 'joins')  # rankings.py groups that file a BRSR for FY2026-27
+def year_rows(q):
+    """The Companies card: how many companies have data for each year from 2021 (the first BRSR year, FY2021-22) to 2025,
+    and the 2026 tracker, the FY2026-27 and calendar 2026 reports read so far against the companies due to file them."""
+    ys, R, mk = years_of(q), fy27() or {}, M.marks(DATA); F = R.get('companies', {})
+    count = {y: sum(y in v for v in ys.values()) for y in range(2021, 2027)}
+    due = sum(1 for k in ys if (fy27_of(k, F, mk) or {}).get('group') in DUE_FY27) + len(R.get('outside', []))  # outside: due, not in the queue yet
+    return dict(years={y: count[y] for y in range(2021, 2026)}, tracker=dict(year=2026, read=count[2026], due=due),
+                builtAt=(load(P('records_years.json')) or {}).get('builtAt'))
+
 def companies_all():
     """Every company (duplicates left out): status from the live queue, values from the last SQLite build."""
     q = overlay(load(P('queue.json'), {})); waiting = inbox_matches(q)
@@ -619,15 +682,15 @@ def companies_all():
              from companies c left join readings r on r.key = c.key""")}
     levels = {}
     for x in rows('select distinct key, standard from ladder where women is not null and men is not null'): levels.setdefault(x['key'], []).append(x['standard'])  # as ladder_by_standard counts
-    out, R, mk, I = [], fy27(), M.marks(DATA), ids(); F = R.get('companies', {})
+    out, R, mk, I, ys = [], fy27(), M.marks(DATA), ids(), years_of(q); F = R.get('companies', {})
     for k, v in q.items():
         if v['status'] == 'merged': continue
-        r = vals.get(k, {}); nd = v['status'] == 'no-data'; w = nodata_reason(v) if nd else reason_2425(k, v, waiting)
+        r = vals.get(k, {}); nd = v['status'] == 'no-data'; ndw = nodata_why(k, v, F) if nd else None; w = ndw[2] if nd else reason_2425(k, v, waiting)
         name, ok = display_name(v, k)
-        out.append(dict(key=k, name=name, nameOk=ok, levels=levels.get(k, []), cin=I.get(k, {}).get('cin') or v.get('cin'), isin=I.get(k, {}).get('isin'), nse=I.get(k, {}).get('nse'), bseCode=I.get(k, {}).get('bseCode'), website=v.get('website'), kind=v.get('kind'), status=v['status'],
+        out.append(dict(key=k, name=name, nameOk=ok, years=ys.get(k, []), levels=levels.get(k, []), cin=I.get(k, {}).get('cin') or v.get('cin'), isin=I.get(k, {}).get('isin'), nse=I.get(k, {}).get('nse'), bseCode=I.get(k, {}).get('bseCode'), website=v.get('website'), kind=v.get('kind'), status=v['status'],
                         retry=bool(v.get('retry') and v['status'] in ('todo', 'in-batch')), retriedFrom=v.get('retriedFrom'), batch=v.get('batch'), ownerFile=bool(v.get('manual')),
                         formerly=former_name(v), fy27=(fy27_of(k, F, mk) or {}).get('group'), fy27Edge=(fy27_of(k, F, mk) or {}).get('edge'), **dict(zip(('fy27Rank', 'fy27Ex'), fy27_rank(F.get(k)))),
-                        **{f: v.get(f) for f in ('listedOn', 'brsrFrom', 'brsrBasis', 'brsrNote')}, **dict(zip(('whyTag', 'whyLabel'), (nodata_tag(w) if nd else why_tag(w)) if w else (None, None))), why=w, **{c: r.get(c) for c in ('fy', 'checked_by', 'share', 'women_staff', 'board_women', 'board_total', 'kmp_women', 'kmp_total', 'finer_levels', 'functions')}))
+                        **{f: v.get(f) for f in ('listedOn', 'brsrFrom', 'brsrBasis', 'brsrNote')}, **dict(zip(('whyTag', 'whyLabel'), ndw[:2] if nd else why_tag(w) if w else (None, None))), why=w, **{c: r.get(c) for c in ('fy', 'checked_by', 'share', 'women_staff', 'board_women', 'board_total', 'kmp_women', 'kmp_total', 'finer_levels', 'functions')}))
     return dict(companies=out, builtAt=datetime.fromtimestamp(os.path.getmtime(DB)).isoformat(timespec='minutes') if os.path.exists(DB) else None,
                 fy27=dict(outside=[dict(x, name=nice(x['name'])) for x in R.get('outside', [])], source=R.get('source'), builtAt=R.get('builtAt')) if R else None)
 
@@ -645,11 +708,11 @@ def overview():
             ('stuck' if rs['minutes'] > 90 else 'overrunning' if rs['overrun'] else 'running') if rs['state'] == 'running' else
             'stopped' if stop else 'paused' if rs['gated'] or rs['guardTripped'] else 'idle')
     cap = 25 * 60 // rs['slotMin']; best = datetime.now() + timedelta(hours=left / cap)
-    pace = dict(phase='gaps' if ph is gp else 'read', rate=ph['ratePerHour'], batches=ph['paceBatches'], cap=cap, left=left, total=ph['total'], done=ph['done'], eta=ph['eta'],
+    pace = dict(phase='gaps' if ph is gp else 'read', rate=ph['ratePerHour'], batches=ph['paceBatches'], basis=ph['paceBasis'], cap=cap, left=left, total=ph['total'], done=ph['done'], eta=ph['eta'],
                 best=best.isoformat(timespec='minutes'))
     if ob and ob['kind'] == 'gap': st = gp['open']['stages']; names, ix = GAP_STAGES, 1 if st['read'] < st['companies'] else 2
     else: names, ix = STAGES, next((i for i, (s, _) in enumerate(STAGES) if p['open'] and s == p['open']['stage']), None)
-    return dict(progress=p, gaps=gp, run=dict(rs, word=word, stageIndex=ix, stageName=names[ix][1] if ix is not None else None), stages=[n for _, n in STAGES],
+    return dict(progress=p, gaps=gp, years=year_rows(q), run=dict(rs, word=word, stageIndex=ix, stageName=names[ix][1] if ix is not None else None), stages=[n for _, n in STAGES],
                 gapStages=[n for _, n in GAP_STAGES], pace=pace, inbox=inbox_view(q), watch=watch_view(load(P('queue.json'), {})),
                 ladder=rows('select * from ladder_by_standard'), finer=(rows("select count(distinct key) n from ladder where standard not in ('board','kmp','staff','workers')") or [{}])[0].get('n'),
                 builtAt=datetime.fromtimestamp(os.path.getmtime(DB)).isoformat(timespec='minutes') if os.path.exists(DB) else None, now=datetime.now().isoformat(timespec='seconds'))

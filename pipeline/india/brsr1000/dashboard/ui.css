@@ -255,9 +255,9 @@ textarea.field{height:auto;min-height:120px;width:100%;padding:var(--sp-3);font:
 .dot{width:8px;height:8px;border-radius:50%;background:var(--muted);flex:none}.dot.is-good{background:var(--good)}.dot.is-warn{background:var(--sun-deep)}.dot.is-bad{background:var(--bad)}
 .mini{display:block;width:96px;height:4px;border-radius:2px;background:var(--mist);overflow:hidden}.mini>i{display:block;height:100%;background:var(--s1)}
 .grow{flex:1}
-.strip{display:none;position:sticky;top:0;z-index:19;width:100%;align-items:center;gap:var(--sp-2);padding:var(--sp-2) var(--sp-2) var(--sp-2) var(--sp-4);background:var(--card);border-bottom:1px solid var(--mist)}
-.strip__link{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;color:inherit}
-.strip__a{display:flex;align-items:center;gap:var(--sp-2);font:600 var(--t-16) var(--display);color:var(--ink)}.strip__c{font-size:var(--t-13);color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.strip__b{display:flex;gap:var(--sp-2);font-size:var(--t-13);color:var(--soft)}.strip .end{margin-left:auto}
+.strip{display:none;position:sticky;top:0;z-index:19;width:100%;align-items:center;gap:var(--sp-2);padding:var(--sp-2) var(--sp-4);background:var(--card);border-bottom:1px solid var(--mist)}
+.strip__link{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;color:inherit;position:relative;padding-right:28px}
+.strip__a{display:flex;align-items:center;gap:var(--sp-2);font:600 var(--t-16) var(--display);color:var(--ink)}.strip__c,.strip__b{display:flex;flex-wrap:wrap;column-gap:.3em;font-size:var(--t-13);color:var(--soft)}.strip__c>span,.strip__b>span{white-space:nowrap}.strip__c>span:not(:last-child)::after,.strip__b>span:not(:last-child)::after{content:' ·'}.strip .end{position:absolute;right:0;top:50%;transform:translateY(-50%)}
 .layout{max-width:1392px;margin:0 auto;padding:var(--sp-5);display:grid;grid-template-columns:minmax(0,1fr) 480px;gap:var(--sp-5);align-items:start}
 .col{min-width:0}
 .pane{position:sticky;top:calc(var(--bar-h) + var(--sp-5));height:calc(100vh - var(--bar-h) - 2 * var(--sp-5));overflow:auto;overscroll-behavior:contain;background:var(--card);border:1px solid var(--line);border-radius:var(--r-12)}
@@ -266,7 +266,7 @@ textarea.field{height:auto;min-height:120px;width:100%;padding:var(--sp-3);font:
 .pane__body{padding:var(--sp-4)}
 .scrim{position:fixed;inset:0;z-index:29;background:var(--scrim)}
 .search{position:relative}.search .field{width:280px;height:38px}.search .kbd{position:absolute;right:10px;pointer-events:none}.search .field:not(:placeholder-shown)~.kbd{display:none}
-.field[type=search]::-webkit-search-cancel-button{display:none}.search__cancel,.search-btn{display:none}
+.field[type=search]::-webkit-search-cancel-button{display:none}.search__cancel{display:none}
 .search__results{position:absolute;right:0;top:46px;width:560px;max-width:calc(100vw - 32px);max-height:70vh;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:var(--r-12);box-shadow:0 12px 32px var(--shadow);padding:var(--sp-2) 0;z-index:40}
 .search__group{font:500 var(--t-12) var(--display);color:var(--muted);padding:var(--sp-2) var(--sp-4) var(--sp-1)}
 .search__opt{display:flex;align-items:center;gap:var(--sp-3);width:100%;padding:var(--sp-2) var(--sp-4);color:var(--body);min-height:40px}.search__opt[aria-selected="true"]{background:var(--tint)}
@@ -287,7 +287,7 @@ textarea.field{height:auto;min-height:120px;width:100%;padding:var(--sp-3);font:
 @media (max-width:899px){.above-900{display:none}.below-900{display:block}.dd.below-900{display:inline-flex}}
 @media (max-width:719px){
  :root{--bar-h:56px}html{scroll-padding-top:76px}
- .bar{position:static;padding:0 var(--sp-4)}.bar__cells,.search,.bar__alert{display:none}.bar .search-btn{display:inline-grid}.strip{display:flex}
+ .bar{position:static;padding:0 var(--sp-4)}.bar__cells,.search,.bar__alert{display:none}.strip{display:flex}
  .layout{padding:var(--sp-4)}.pane{width:100%;border:0}.table th{top:0}
  body.is-searching{overflow:hidden}body.is-searching .search{display:block;position:fixed;inset:0;z-index:50;background:var(--paper);padding:var(--sp-3)}
  body.is-searching .search .field-wrap{display:flex;gap:var(--sp-2)}body.is-searching .search .field{flex:1;width:auto;height:44px;font-size:16px}
