@@ -234,6 +234,15 @@ def nodata_why(k, v, F):
     if ok: return 'nd-no-brsr', 'No BRSR in its report', r or 'Its annual report has no BRSR in it: look for a separate BRSR filing'
     return 'nd-not-found', 'No report found', r or 'No FY2025-26 report found'
 
+def due_from(v, tag):
+    """When a company with no usable report owes its first BRSR, and why: 'due' when it was due for FY2025-26 already,
+    else its own report's year or SEBI's rule's."""
+    if tag not in NOT_DUE: return 'due', 'In the top 1,000 on a December list up to 2024, so its BRSR was due for FY2025-26.'
+    if v.get('brsrFrom'):
+        return v['brsrFrom'], v.get('brsrNote') or {'company': 'From its own report.', 'rule': "By SEBI's rule: the top 1,000 on 31 December."}.get(v.get('brsrBasis'), '')
+    if tag == 'nd-2026': return '2027-28', 'Listed in 2026: due for FY2027-28 if in the top 1,000 on 31 December 2026.'
+    return '2026-27', 'In the top 1,000 on the December 2025 list, so its first BRSR is for FY2026-27.'
+
 def nodata(q):
     """The companies with no usable report (not those sent back to be read again), grouped by reason tag, each group
     marked due or not: whether a BRSR was required for FY2025-26."""
@@ -637,9 +646,9 @@ def fy27_of(k, F, mk):
     elif x and m and m.get('kind') == 'insolvent' and 'insolvency' not in x.get('note', ''):  # still required: Regulation 34(2)(f) does not lapse in CIRP
         x = dict(x, note=x['note'] + ' It is in insolvency: Regulation 34(2)(f) still applies, but it is unlikely to file while in CIRP.')
     return x
-def fy27_rank(x):
-    """The better exchange rank on the 31 December 2025 list, and its exchange."""
-    r = (x or {}).get('ranks', {}).get('2025') or {}
+def fy27_rank(x, year='2025'):
+    """The better exchange rank on a 31 December list (2025 by default), and its exchange."""
+    r = (x or {}).get('ranks', {}).get(year) or {}
     return min(((n, e.upper()) for e, n in r.items()), key=lambda z: (z[0], z[1] != 'NSE'), default=(None, None))
 
 _years = (None, None)
@@ -689,7 +698,7 @@ def companies_all():
         name, ok = display_name(v, k)
         out.append(dict(key=k, name=name, nameOk=ok, years=ys.get(k, []), levels=levels.get(k, []), cin=I.get(k, {}).get('cin') or v.get('cin'), isin=I.get(k, {}).get('isin'), nse=I.get(k, {}).get('nse'), bseCode=I.get(k, {}).get('bseCode'), website=v.get('website'), kind=v.get('kind'), status=v['status'],
                         retry=bool(v.get('retry') and v['status'] in ('todo', 'in-batch')), retriedFrom=v.get('retriedFrom'), batch=v.get('batch'), ownerFile=bool(v.get('manual')),
-                        formerly=former_name(v), fy27=(fy27_of(k, F, mk) or {}).get('group'), fy27Edge=(fy27_of(k, F, mk) or {}).get('edge'), **dict(zip(('fy27Rank', 'fy27Ex'), fy27_rank(F.get(k)))),
+                        formerly=former_name(v), fy27=(fy27_of(k, F, mk) or {}).get('group'), fy27Edge=(fy27_of(k, F, mk) or {}).get('edge'), **dict(zip(('rank24', 'rank24Ex'), fy27_rank(F.get(k), '2024'))), **dict(zip(('dueFrom', 'dueNote'), due_from(v, ndw[0]) if nd else (None, None))), **dict(zip(('fy27Rank', 'fy27Ex'), fy27_rank(F.get(k)))),
                         **{f: v.get(f) for f in ('listedOn', 'brsrFrom', 'brsrBasis', 'brsrNote')}, **dict(zip(('whyTag', 'whyLabel'), ndw[:2] if nd else why_tag(w) if w else (None, None))), why=w, **{c: r.get(c) for c in ('fy', 'checked_by', 'share', 'women_staff', 'board_women', 'board_total', 'kmp_women', 'kmp_total', 'finer_levels', 'functions')}))
     return dict(companies=out, builtAt=datetime.fromtimestamp(os.path.getmtime(DB)).isoformat(timespec='minutes') if os.path.exists(DB) else None,
                 fy27=dict(outside=[dict(x, name=nice(x['name'])) for x in R.get('outside', [])], source=R.get('source'), builtAt=R.get('builtAt')) if R else None)
