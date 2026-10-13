@@ -58,7 +58,7 @@ Source check: [../research/brsr-dataset-2024-25-check.md](../research/brsr-datas
      - women's labour force participation in each company's registered state.
    - **Cost:** readings are now about 2.5 times larger, and Sonnet also checks every flow and target row, so the 24 hours are at risk. The deep pass on existing companies runs last and takes any slip.
 8. **Models (owner):** Haiku finds and reads reports; Sonnet settles disagreements and checks every finer level and function row, plus one agreed reading in ten.
-9. **Pacing (owner): done within 24 hours.** Start after the usage reset on 11 October at 14:30. Then run one batch of 25 companies every 30 minutes, as the scheduled task `nivel-brsr1000`: 48 runs.
+9. **Pacing (owner): done within 24 hours.** Start after the usage reset on 11 October at 14:30. Then run one batch of 25 companies every 30 minutes, as the scheduled task `nivel-brsr1000`: 48 runs. On 13 October 2026, with the gap fill under way, the owner moved the runs to every 10 minutes (PARITY-135).
    - **Speed:** downloads run six companies at a time.
    - **Order:** the queue runs the 689 new companies first, then the 22 Nivel gaps, then the 483-company deep pass. A shortfall lands on the deep pass.
    - **Gates:** a run is skipped when the week is at 78% or more, or the 5-hour window at 75% or more, just under the guard's 80%. Each skipped run costs 25 companies.

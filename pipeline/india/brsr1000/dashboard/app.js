@@ -43,10 +43,10 @@ function stateOf() {
   const o = S.o;
   if (S.fail) return { tone: 'warn', word: "Can't reach the dashboard", sub: o ? `Showing data from ${tm(o.now)}` : 'No data yet' };
   if (!o) return { tone: '', word: 'Loading', sub: '' };
-  const r = o.run, p = o.progress, stage = r.stageIndex != null ? o.stages[r.stageIndex] : null, nx = 'next run ' + tm(r.nextRun), rs = S.runs?.runs || [];
+  const r = o.run, p = o.progress, stage = r.stageName, nx = 'next run ' + tm(r.nextRun), rs = S.runs?.runs || [];
   const last = rs.find(x => x.batch && !x.open && x.closedAt);
   switch (r.word) {
-    case 'running': return r.batch ? { tone: 'good', word: `Running ${r.batch}`, sub: `${stage || p.open?.stage || 'Opening'} · started ${tm(r.since)} · ${nx}` }
+    case 'running': return r.batch ? { tone: 'good', word: `Running ${r.batch}`, sub: `${r.kind === 'gap' ? 'Gap fill at ' : ''}${stage || 'Opening'} · started ${tm(r.since)} · ${nx}` }
       : { tone: 'good', word: 'Starting a run', sub: `Checking usage and opening a batch · started ${tm(r.since)}` };
     case 'overrunning': return { tone: 'warn', word: `Overrunning ${r.batch || ''}`.trim(), sub: `${r.minutes} min. The ${tm(r.nextRun)} run stops while it holds the lock.` };
     case 'stuck': return { tone: 'bad', word: 'Stuck', sub: `Lock held ${r.minutes} min. The next run takes it over.` };
@@ -63,14 +63,15 @@ function renderBar() {
   UI.put($('#barAlert'), S.fail ? UI.quiet({ label: 'Try now', icon: 'refresh', act: 'retry' }) : '');
   ['#cProg', '#cFinish', '#cUsage'].forEach(s => $(s).hidden = !o);
   if (!o) return UI.put($('#strip'), `<span class="strip__a">${dot(st.tone)}${esc(st.word)}</span><span class="strip__c">${esc(st.sub)}</span>`);
-  const p = o.progress, r = o.run, pa = o.pace, pct = p.total ? Math.round(100 * p.done / p.total) : 0;
-  UI.put($('#cProg'), `<span class="bar__v">${N(p.done)} of ${N(p.total)}</span><span class="bar__s kv"><span class="mini"><i style="width:${pct}%"></i></span>${pct}%</span>`);
-  $('#runBtn').dataset.tip = p.eta ? `Pace ${pa.rate} an hour over the last ${pa.batches} batches. Runs stop at ${r.gates.week}% of the week or ${r.gates.session}% of the session.` : '';
-  UI.put($('#cFinish'), p.eta ? `<span class="bar__v">≈ ${esc(day(p.eta))}</span><span class="bar__s">${pa.rate} an hour</span>` : '<span class="bar__v tone-muted">Finish shows after two batches</span><span class="bar__s">&nbsp;</span>');
+  const r = o.run, pa = o.pace, gaps = pa.phase === 'gaps', pct = pa.total ? Math.round(100 * pa.done / pa.total) : 0;
+  UI.put($('#cProg'), `<span class="bar__v">${N(pa.done)} of ${N(pa.total)}</span><span class="bar__s kv"><span class="mini"><i style="width:${pct}%"></i></span>${pct}%${gaps ? ' · gap fill' : ''}</span>`);
+  $('#cProg').dataset.tip = gaps ? `All ${N(o.progress.total)} companies are read. Each run now reads again only the mandatory fields a checked reading lacks.` : '';
+  $('#runBtn').dataset.tip = pa.eta ? `Pace ${pa.rate} an hour over the last ${pa.batches} ${gaps ? 'gap ' : ''}batches. Runs stop at ${r.gates.week}% of the week or ${r.gates.session}% of the session.` : '';
+  UI.put($('#cFinish'), pa.eta ? `<span class="bar__v">≈ ${esc(day(pa.eta))}</span><span class="bar__s">${pa.rate} an hour</span>` : '<span class="bar__v tone-muted">Finish shows after two batches</span><span class="bar__s">&nbsp;</span>');
   const g = (v, gate) => `<span class="${v >= gate ? 'tone-bad' : v >= gate - 15 ? 'tone-warn' : ''}">${v ?? 'n/a'}%</span>`;
   $('#cUsage').classList.toggle('is-near', (r.week ?? 0) >= r.gates.week - 15 || (r.session ?? 0) >= r.gates.session - 15);
   UI.put($('#cUsage'), `<span class="bar__v"><span class="bar__l">Week</span> ${g(r.week, r.gates.week)} <span class="bar__l">Session</span> ${g(r.session, r.gates.session)}</span><span class="bar__s">${r.gated ? '<span class="tone-bad">Over a gate</span>' : 'Clear of the gates'}</span>`);
-  UI.put($('#strip'), `<span class="strip__a">${dot(st.tone)}${esc(st.word)}<span class="end">${ico('chevron_right', { tone: 'muted' })}</span></span><span class="strip__c">${esc(st.sub)}</span><span class="strip__b"><span>${N(p.done)} of ${N(p.total)} (${pct}%)${p.eta ? ' · ≈ ' + esc(day(p.eta)) : ''}</span></span>`);
+  UI.put($('#strip'), `<span class="strip__a">${dot(st.tone)}${esc(st.word)}<span class="end">${ico('chevron_right', { tone: 'muted' })}</span></span><span class="strip__c">${esc(st.sub)}</span><span class="strip__b"><span>${N(pa.done)} of ${N(pa.total)} (${pct}%)${gaps ? ' gap fill' : ''}${pa.eta ? ' · ≈ ' + esc(day(pa.eta)) : ''}</span></span>`);
   UI.put($('#stripAlert'), S.fail ? UI.quiet({ label: 'Try now', icon: 'refresh', act: 'retry' }) : '');
   const n = needCount(); document.title = (n ? `(${n}) ` : '') + 'Parity · ' + st.word + (S.fail ? ' · offline' : '');
   if (S.word && S.word !== st.word) $('#live').textContent = st.word; S.word = st.word }
@@ -131,18 +132,19 @@ function renderFiles(force) {
 function runRow(x) {
   const c = x.counts || {}, stage = x.stopped ? x.stopped.replace(/^at stage /, '') : null, sn = stage && (S.o?.stages || [])[['discover', 'refind', 'browse', 'fetch3', 'snippets', 'read', 'adjudicate', 'final'].indexOf(stage)] || stage;
   // The icon carries the outcome; line 2 says what happened in one line, with the caveat or correction count in its tooltip.
-  const counts = c.latest != null ? `${c.latest} FY2025-26 · ${c.kaggle} FY2024-25 only${c.noData ? ' · ' + c.noData + ' no usable report' : ''}${c.deep ? ' · ' + c.deep + ' deep' : ''}` : '';
+  const counts = c.filled != null ? `Gap fill: ${c.filled} filled${c.nil ? ' · ' + c.nil + ' nil' : ''}${c.wrongYear ? ' · ' + c.wrongYear + ' wrong year' : ''}${c.unread ? ' · ' + c.unread + ' unread' : ''}`
+    : c.latest != null ? `${c.latest} FY2025-26 · ${c.kaggle} FY2024-25 only${c.noData ? ' · ' + c.noData + ' no usable report' : ''}${c.deep ? ' · ' + c.deep + ' deep' : ''}` : '';
   const corr = x.corrections ? `${x.corrections.count} corrections across ${x.corrections.companies} companies.` : '';
   const inferred = 'Worked out from batch times: a run that stops at the usage gate or a held lock writes nothing.';
   const lost = x.outcome === 'skipped' || x.outcome === 'lost';
-  const k = x.outcome === 'running' ? ['progress_activity', 'good', 'Running', 'good', S.o?.stages[S.o.run.stageIndex] ? 'At ' + S.o.stages[S.o.run.stageIndex] : 'Opening']
+  const k = x.outcome === 'running' ? ['progress_activity', 'good', 'Running', 'good', (x.kind === 'gap' ? 'Gap fill ' : '') + (S.o?.run.stageName ? (x.kind === 'gap' ? 'at ' : 'At ') + S.o.run.stageName : 'opening')]
     : x.outcome === 'resumed' ? ['arrow_circle_right', 'accent', 'Finished', '', 'Left open by an earlier run']
     : lost ? [x.outcome === 'lost' ? 'help' : 'block', x.outcome === 'lost' ? 'warn' : 'muted', x.outcome === 'lost' ? 'No batch' : 'Skipped', '', x.note]
     : sn ? ['error', 'bad', `Stopped at ${sn}`, 'bad', counts]
     : x.overran ? ['timer', 'warn', 'Overran', 'warn', counts]
     : [x.outcome === 'attended' ? 'account_circle' : 'check_circle', 'accent', x.outcome === 'attended' ? 'Started by hand' : '', '', counts];
   return UI.run({ slot: x.slot || x.openedAt, time: x.slot ? tm(x.slot) : tm(x.openedAt), icon: k[0], tone: k[1], iconLabel: k[2] || x.outcome, id: x.batch, word: k[2], wordTone: k[3],
-    line: esc((k[4] || '').replace(/\.$/, '')), lineTip: [k[4], corr, x.basis === 'inferred' ? inferred : '', x.overran && !lost ? 'Ran past its 30-minute slot, so the next run found the lock held.' : ''].filter(Boolean).join(' '),
+    line: esc((k[4] || '').replace(/\.$/, '')), lineTip: [k[4], c.filled != null ? GAPTIP : '', corr, x.basis === 'inferred' ? inferred : '', x.overran && !lost ? `Ran past its ${x.slotMin}-minute slot, so the next run found the lock held.` : ''].filter(Boolean).join(' '),
     dur: x.outcome === 'resumed' || lost ? '' : dur(x.minutes), lost, nav: x.batch ? { pane: 'batch:' + x.batch } : null }) }
 function renderRecent(force) {
   const rs = S.runs?.runs || []; UI.put($('#recentHead'), UI.sectionHead({ title: 'Recent runs', actions: UI.quiet({ label: 'All runs', nav: { pane: 'run' } }) }), force);
@@ -186,13 +188,15 @@ function paneRun() {
   B.push({ k: 'lock', html: `<div class="block">${UI.kv([ico(r.state === 'running' ? 'lock' : 'lock_open', { size: 'sm', tone: 'soft' }), `<span class="t-13 tone-soft">${r.state === 'running' ? `Lock held since ${tm(r.since)}` : 'Lock free'}</span>`, UI.info('A lock held over 90 minutes is taken over by the next run.')])}</div>` });
   const openTable = (st) => `<div class="card">${UI.table({ cols: [{ label: '' }, { label: 'Found', cls: 'r', tip: 'FY2025-26 link found' }, { label: 'Fetched', cls: 'r', tip: 'FY2025-26 BRSR downloaded' }, { label: 'Read', cls: 'r' }, { label: 'Accepted', cls: 'r', tip: 'Reading accepted by the checker' }],
     rows: st.map(g => `<tr><td class="nw">${esc(g.group)} ${g.companies}</td><td class="r">${g.fy2526_link_found}</td><td class="r">${g.fy2526_downloaded}</td><td class="r">${g.read}</td><td class="r">${g.accepted}</td></tr>`) })}</div>`;
+  const G = o.gaps, gaps = pa.phase === 'gaps';
+  if (G?.open) B.push({ k: 'open', html: `<div class="block">${UI.blockHead({ title: 'Open gap batch ' + G.open.id, info: GAPINFO, actions: UI.quiet({ label: 'Details', nav: { pane: 'batch:' + G.open.id } }) })}${UI.rail(o.gapStages, r.stageIndex)}<div class="card">${gapTable(G.open.stages)}</div></div>` });
   if (p.open) B.push({ k: 'open', html: `<div class="block">${UI.blockHead({ title: 'Open batch ' + p.open.id, info: 'Statuses change when the batch closes. Retried companies keep their FY2024-25 data until a checked FY2025-26 reading replaces it.', actions: UI.quiet({ label: 'Details', nav: { pane: 'batch:' + p.open.id } }) })}${UI.rail(o.stages, r.stageIndex)}${openTable(p.open.stages)}</div>` });
   // Pace, the finish it gives, and what is left. Lost runs are one count; the list below shows them.
   const when = d => { const t = new Date(d), n = new Date(), dd = Math.round((new Date(t.toDateString()) - new Date(n.toDateString())) / 864e5); return dd === 0 ? 'Today' : dd === 1 ? 'Tomorrow' : t.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) };
   const lostTip = lost.length ? 'Lost runs: ' + [...lost].sort((a, b) => a.slot < b.slot ? 1 : -1).map(x => day(x.slot)).join(', ') + '. They are highlighted in the list below.' : '';
-  B.push({ k: 'pace', html: `<div class="block"><div class="stats">${UI.stat({ label: 'Pace', value: pa.rate ?? 'n/a', unit: '/ h', sub: `Last ${pa.batches} batches`, tip: `Companies an hour over the last ${pa.batches} batches.` })}`
-    + `${UI.stat({ label: 'Finish', value: p.eta ? esc(tm(p.eta)) : 'n/a', sub: p.eta ? when(p.eta) : 'After two batches', tip: `At this pace. The earliest it could be is ${day(pa.best)}: one batch of 25 every 30 minutes tops out at ${pa.cap} an hour.` })}`
-    + `${UI.stat({ label: 'Left', value: N(pa.left), sub: `of ${N(p.total)}` })}</div>`
+  B.push({ k: 'pace', html: `<div class="block">${gaps ? UI.blockHead({ title: 'Gap fill', info: GAPINFO }) : ''}<div class="stats">${UI.stat({ label: 'Pace', value: pa.rate ?? 'n/a', unit: '/ h', sub: `Last ${pa.batches} ${gaps ? 'gap ' : ''}batches`, tip: `Companies an hour over the last ${pa.batches} ${gaps ? 'gap ' : ''}batches.` })}`
+    + `${UI.stat({ label: 'Finish', value: pa.eta ? esc(tm(pa.eta)) : 'n/a', sub: pa.eta ? when(pa.eta) : 'After two batches', tip: `At this pace. The earliest it could be is ${day(pa.best)}: one batch of 25 every ${r.slotMin} minutes tops out at ${pa.cap} an hour.` })}`
+    + `${UI.stat({ label: 'Left', value: N(pa.left), sub: `of ${N(pa.total)}` })}</div>`
     + `<p class="mt-3 t-13 tone-soft">${slots.length - lost.length} of ${slots.length} runs opened a batch${lost.length ? ` · ${UI.quiet({ label: lost.length + ' lost', act: 'lostRuns', tip: lostTip })}` : ''}</p></div>` });
   B.push({ k: 'usage', html: `<div class="block">${UI.blockHead({ title: 'Usage', info: `Runs stop at ${r.gates.week}% of the week or ${r.gates.session}% of the session.` })}${UI.gauge({ label: 'Week', v: r.week, gate: r.gates.week, meta: `${r.week >= r.gates.week ? 'Over the gate' : 'Clear'} · resets ${esc(r24(r.weekResets))}` })}${UI.gauge({ label: 'Session', v: r.session, gate: r.gates.session, meta: `${r.session >= r.gates.session ? 'Over the gate' : 'Clear'} · resets ${esc(r24(r.sessionResets))}${r.readMinAgo > 10 ? ' · read ' + r.readMinAgo + ' min ago' : ''}` })}</div>` });
   const w = o.watch; if (w) B.push({ k: 'watch', html: `<div class="block">${UI.blockHead({ title: 'Watch', info: 'A daily routine (nivel-brsr-watch) that reads the site of every company with no FY2025-26 BRSR and picks one up when its report appears.' })}<div class="stats">${UI.stat({ label: 'Watching', value: w.watching })}${UI.stat({ label: 'Found', value: w.found.length, tip: w.found.map(x => x.name).join(', ') || 'None yet' })}${UI.stat({ label: 'Next check', value: tm(w.next) })}</div><p class="mt-2 t-13 tone-soft">${w.last ? 'Last check ' + esc(day(w.last)) + ': ' + w.checked + ' read' + (w.blocked ? ', ' + w.blocked + ' sites blocked' : '') : 'No check has run yet.'}</p></div>` });
@@ -206,9 +210,10 @@ function paneRun() {
 function paneBatch(id) {
   const b = S.pane.data; if (b?.error) return { title: id, body: `<div class="card">${UI.empty({ icon: 'error', title: 'No such batch.', text: esc(id) })}</div>` };
   if (!b || b.id !== id) return { title: 'Batch ' + id, body: UI.skeleton() };
+  if (b.kind === 'gap') return paneGap(b, id);
   const s = b.summary || {}, f = R().bf || 'all';
   const runOf = (S.runs?.runs || []).find(x => x.batch === id && x.basis === 'inferred');
-  let h = `<div class="block">${UI.kv([b.open ? UI.badge('Open', { tone: 'accent' }) : '', `<span class="t-13 tone-soft">Opened ${esc(day(b.openedAt))}${b.closedAt ? ' · closed ' + tm(b.closedAt) : ''} · ${dur(b.minutes)}</span>`, b.minutes > 30 ? UI.badge('Overran', { tone: 'warn', tip: 'Ran past its 30-minute slot, so the next run found the lock held.' }) : ''])}
+  let h = `<div class="block">${UI.kv([b.open ? UI.badge('Open', { tone: 'accent' }) : '', `<span class="t-13 tone-soft">Opened ${esc(day(b.openedAt))}${b.closedAt ? ' · closed ' + tm(b.closedAt) : ''} · ${dur(b.minutes)}</span>`, b.minutes > b.slotMin ? UI.badge('Overran', { tone: 'warn', tip: `Ran past its ${b.slotMin}-minute slot, so the next run found the lock held.` }) : ''])}
     ${runOf ? `<p class="t-13 tone-soft mt-2">${ico('info', { size: 'sm' })} Its run slot is worked out from batch times: a run that stops at the usage gate or a held lock writes nothing.</p>` : ''}</div>`;
   if (b.open && b.stages) h += `<div class="block">${UI.rail(S.o.stages, b.stageIndex)}<div class="card">${UI.table({ cols: [{ label: '' }, { label: 'Found', cls: 'r', tip: 'FY2025-26 link found' }, { label: 'Fetched', cls: 'r', tip: 'FY2025-26 BRSR downloaded' }, { label: 'Read', cls: 'r' }, { label: 'Accepted', cls: 'r' }],
     rows: b.stages.map(g => `<tr><td class="nw">${esc(g.group)} ${g.companies}</td><td class="r">${g.fy2526_link_found}</td><td class="r">${g.fy2526_downloaded}</td><td class="r">${g.read}</td><td class="r">${g.accepted}</td></tr>`) })}</div></div>`;
@@ -224,6 +229,28 @@ function paneBatch(id) {
       meta: [c.closedAs && c.closedAs !== c.status ? `<span class="tone-warn">Closed ${esc(ST[c.closedAs] || c.closedAs)}, now ${esc(ST[c.status] || c.status)}</span>` : esc('Closed ' + (ST[c.status] || c.status || '')), c.later ? 'Retried in ' + esc(c.later) : '', c.retry ? 'A retry' : ''],
       trail: c.flagged ? UI.badge('Flagged', { tone: 'warn' }) : '' })).join('') || `<div>${UI.empty({ icon: 'filter_list_off', title: 'None.' })}</div>`}</div></div>`;
   return { title: 'Batch ' + id, body: h, prev: b.prev && { pane: 'batch:' + b.prev }, next: b.next && { pane: 'batch:' + b.next } } }
+
+/* ---------- gap batches (batch.py gaps-*, runbook step 9) ---------- */
+const GAPINFO = 'All companies are read. Each run now reads again only the mandatory fields a checked reading lacks, 25 companies at a time. A gap value fills an empty field and never overwrites a checked one.';
+const GAPTIP = 'Filled: companies that gained a field. Nil: the report gives a whole table as nil or not applicable. Wrong year: read as another year, so nothing was taken.';
+const FIELD = { headcount: 'Headcount', disabledHeadcount: 'Disabled staff', board: 'Board', kmp: 'KMP', turnover: 'Turnover', wellbeing: 'Benefits', wellbeingSpend: 'Well-being spend',
+  parental: 'Parental leave', unions: 'Unions', training: 'Training', reviews: 'Reviews', minWage: 'Minimum wage', medianPay: 'Median pay', wageShare: 'Wage share', complaints: 'Complaints' };
+const GST = { done: 'Merged', 'wrong-year': 'Wrong year', unread: 'Unread', 'in-batch': 'Being read', todo: 'To do' };
+const gapTable = st => UI.table({ cols: [{ label: '' }, { label: 'Fields', cls: 'r', tip: 'Missing fields asked for' }, { label: 'Read', cls: 'r', tip: 'Companies whose missing fields are read' }],
+  rows: [`<tr><td class="nw">Companies ${st.companies}</td><td class="r">${st.fields}</td><td class="r">${st.read}</td></tr>`] });
+function paneGap(b, id) {
+  const s = b.summary || {}, fl = xs => esc(xs.map(f => FIELD[f] || f).join(', '));
+  let h = `<div class="block">${UI.kv([b.open ? UI.badge('Open', { tone: 'accent' }) : '', `<span class="t-13 tone-soft">Gap fill · opened ${esc(day(b.openedAt))}${b.closedAt ? ' · closed ' + tm(b.closedAt) : ''} · ${dur(b.minutes)}</span>`, b.minutes > b.slotMin ? UI.badge('Overran', { tone: 'warn', tip: `Ran past its ${b.slotMin}-minute slot, so the next run found the lock held.` }) : ''])}</div>`;
+  if (b.open && b.stages) h += `<div class="block">${UI.rail(S.o.gapStages, b.stageIndex)}<div class="card">${gapTable(b.stages)}</div></div>`;
+  else h += `<div class="block stats cols-2">${UI.stat({ label: 'Filled', value: s.filled ?? 'n/a', tip: 'Companies that gained at least one field' })}${UI.stat({ label: 'Nil table', value: s.nil ?? 0, tip: 'Companies whose report gives a whole table as nil or not applicable' })}${UI.stat({ label: 'Wrong year', value: s.wrongYear ?? 0, tip: 'Read as another year, so nothing was taken' })}${UI.stat({ label: 'Unread', value: s.unread ?? 0 })}</div>`;
+  if (b.log.length) h += `<div class="block">${UI.blockHead({ title: 'What happened' })}${UI.timeline(b.log.map(e => ({ title: { closed: 'Closed', stopped: 'Stopped' }[e.kind] || 'Note', time: (e.when || '').slice(11), text: esc(e.summary), tip: e.detail })))}</div>`;
+  h += `<div class="block">${UI.blockHead({ title: 'Companies', count: b.companies.length, info: 'The fields each company was read again for, and what the reading gave.' })}<div class="card list">${b.companies.map(c => {
+    const miss = c.asked.filter(f => !c.filled.includes(f) && !c.nil.includes(f));
+    return UI.item({ nav: { pane: 'company:' + c.key }, title: esc(c.name),
+      meta: b.open ? ['Asked for ' + fl(c.asked), c.read ? 'Read' : ''] : c.status !== 'done' ? ['Asked for ' + fl(c.asked)]
+        : [c.filled.length ? 'Filled ' + fl(c.filled) : 'Nothing filled', c.nil.length ? 'Nil ' + fl(c.nil) : '', miss.length ? 'Not found ' + fl(miss) : '', c.notes ? `<span data-tip="${esc(c.notes)}">Note</span>` : ''],
+      trail: c.status === 'wrong-year' || c.status === 'unread' ? UI.badge(GST[c.status], { tone: 'warn' }) : '' }) }).join('')}</div></div>`;
+  return { title: 'Gap batch ' + id, body: h, prev: b.prev && { pane: 'batch:' + b.prev }, next: b.next && { pane: 'batch:' + b.next } } }
 
 /* ---------- pane: company ---------- */
 // The BRSR's own assurance line (Section A Q14 and Q15): who assured or assessed it, and how.
@@ -504,7 +531,7 @@ function searchItems(q) {
   const shown = jump.filter(([l]) => !(l === 'Needs you' && $('#needs').hidden) && !(l === 'Files you sent' && $('#files').hidden));  // no jump to a hidden section
   if (!q) { shown.forEach(([l, i, a]) => add('Jump to', i, l, '', a)); return out }
   shown.filter(([l]) => l.toLowerCase().split(/\W+/).some(w => w.startsWith(q)) || (q === 'sql' && l === 'Query the data')).forEach(([l, i, a]) => add('Jump to', i, l, '', a));
-  const m = q.match(/^(?:b|batch\s*)0*(\d{1,3})$/) || q.match(/^0*(\d{1,3})$/); if (m) { const id = 'b' + m[1].padStart(3, '0'); if ((S.runs?.runs || []).some(x => x.batch === id)) add('Batches', 'inventory_2', id, 'batch', () => nav({ pane: 'batch:' + id })) }
+  const m = q.match(/^(b|g|batch\s*|gap\s*)0*(\d{1,3})$/) || q.match(/^()0*(\d{1,3})$/); if (m) { const id = (m[1][0] === 'g' ? 'g' : 'b') + m[2].padStart(3, '0'); if ((S.runs?.runs || []).some(x => x.batch === id)) add('Batches', 'inventory_2', id, 'batch', () => nav({ pane: 'batch:' + id })) }
   const t = q.match(/^(\d{1,2})[:.](\d{2})$/);
   if (t) { const cands = [+t[1] % 24, (+t[1] + 12) % 24].map(h => h * 60 + +t[2]), mins = s => s ? +s.slice(11, 13) * 60 + +s.slice(14, 16) : null;
     const hits = (S.runs?.runs || []).map(x => { const a = mins(x.openedAt || x.slot), z = x.closedAt ? mins(x.closedAt) : a + 30, s = mins(x.slot);

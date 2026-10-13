@@ -2,12 +2,13 @@
 type: design
 title: Parity dashboard (begun as the BRSR build dashboard), user and interaction flows
 description: The one-page layout of the local BRSR build dashboard. It covers the owner's eight jobs, where each piece of information lives, how many clicks it takes, and the interaction rules that keep the page steady through its 30-second refresh.
-updated: 2026-10-12
+updated: 2026-10-13
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/7b06f399-403a-4106-8d7e-7bd9697da393
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/1753fc3a-e52f-4411-934e-f04f1e3d6c2f
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/b0e815e8-8fd2-47b1-af1d-f81a2b7d6515
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/f47ab7b6-a46f-4d22-83d5-5131790b6a49
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/531a80bc-bb43-47ac-a2df-79e769084cf0
 ---
 
 # Parity dashboard: user and interaction flows
@@ -89,6 +90,10 @@ Typing in the search box is free; selecting a result is a click. Nothing that th
      - flags, and reports not found the first time;
      - every company, with where it stands now.
      - Previous and next arrows step through batches.
+   - **Gap batch** (g001 on, PARITY-135):
+     - times and duration;
+     - Filled, Nil table, Wrong year and Unread tiles, or, while open, a three-stage rail (Cut tables, Read, Merge) with fields asked and companies read;
+     - every company, with the fields asked for, filled, given as nil and not found, and the reader's note in a tooltip.
    - **Company:** read from top to bottom, it answers in this order:
      - status;
      - why;
@@ -99,8 +104,9 @@ Typing in the search box is free; selecting a result is a click. Nothing that th
      - a trail of searches, downloads, reads and checks;
      - links;
      - raw records in disclosures, plus Open in SQL.
-4. **Wide views:** Companies (status and reason tags, a sortable table, and a two-line list below 900px), Results and SQL replace the Today column. "Today" goes back, and the pane stays beside them.
-5. **Marks and the watch (PARITY-127, PARITY-128):**
+4. **Gap fill:** once the FY2025-26 queue is through, the runs fill gaps ([runbook step 9](../playbooks/brsr1000-batch.md)). Batches of both kinds share one list, one slot ribbon and one prev/next order, by when they opened. The bar's progress, finish and the Run pane's Pace, Finish and Left then follow the gap queue (`data/gaps/queue.json`), marked "gap fill". Finished means both queues are through.
+5. **Wide views:** Companies (status and reason tags, a sortable table, and a two-line list below 900px), Results and SQL replace the Today column. "Today" goes back, and the pane stays beside them.
+6. **Marks and the watch (PARITY-127, PARITY-128):**
    - **Mark:** the pane of a company still on FY2024-25 has a "Mark as" row: No BRSR filed, Merged, Insolvent, Delisted.
      - **No BRSR filed** saves on one click. It is for when the owner has checked the filings and there is none.
      - **Merged, Insolvent and Delisted** open a small form with optional details: the company it merged into and the date, or the date it entered insolvency or was delisted.
@@ -108,7 +114,7 @@ Typing in the search box is free; selecting a result is a click. Nothing that th
    - **After marking:** the company leaves Needs you and joins its reason tag (No FY2025-26 BRSR, Merged, Insolvent or Delisted). A No BRSR filed company shows "Watched daily"; the others leave the watch. A toast offers Undo, which puts back the previous mark, and the pane offers Change and "Undo mark".
    - **The only write:** the mark is the dashboard's only write, to `data/owner_marks.json` (`POST /api/mark`).
    - **Watch status:** the Companies card shows how many companies are watched, the last check and the next. The Run pane has a Watch block. The routine is in [../playbooks/brsr-watch.md](../playbooks/brsr-watch.md).
-6. **Meta text lives in tooltips:** an (i) button beside a heading, or the element itself. On a phone a tap opens it. What a decision needs stays visible.
+7. **Meta text lives in tooltips:** an (i) button beside a heading, or the element itself. On a phone a tap opens it. What a decision needs stays visible.
 
 ## Interaction rules
 
@@ -136,7 +142,7 @@ Typing in the search box is free; selecting a result is a click. Nothing that th
 
 The bar's word comes from the lock, the open batch, the run log and usage:
 - **Running.**
-- **Overrunning:** the lock has been held more than 30 minutes.
+- **Overrunning:** the lock has been held longer than the run interval: 10 minutes from 13 October 2026, 30 before. Slots follow the schedule in force at each time (`SCHEDULES` in `dashboard.py`).
 - **Stuck:** more than 90 minutes, when the next run takes over.
 - **Stopped:** the log says STOPPED and the lock is free.
 - **Paused by usage:** at a gate.
@@ -149,9 +155,9 @@ The bar's word comes from the lock, the open batch, the run log and usage:
 
 | Endpoint | What it returns |
 |---|---|
-| `/api/overview` | progress, run state, pace, Needs you (fetch rows, files, decisions), the ladder |
+| `/api/overview` | progress, gap-fill progress (`gaps`), run state (with the open batch's `kind` and `stageName`), pace for the current phase, Needs you (fetch rows, files, decisions), the ladder |
 | `/api/runs` | one row per slot and per attended batch, and the parsed run log |
-| `/api/batch?id=` | one batch: times, outcomes, corrections, log, flags, first-search misses, companies |
+| `/api/batch?id=` | one batch: times, outcomes, corrections, log, flags, first-search misses, companies; for a gap batch (`kind: gap`), the fields each company was asked for, filled and given as nil |
 | `/api/company-view?key=` | one company: status, why, next step, values, levels, functions, trail, links, raw records |
 | `/api/companies-all` | every company, with status from the live queue and values from the last SQLite build |
 | `/api/hierarchy` | the pooled ladder and job functions |

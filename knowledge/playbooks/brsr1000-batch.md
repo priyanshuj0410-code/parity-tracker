@@ -1,10 +1,11 @@
 ---
 type: runbook
 title: BRSR filer build, one batch
-description: What each scheduled run of the BRSR filer build does, every 30 minutes over 24 hours. It takes 25 companies through finding their latest reports, downloading them, cutting the tables, reading them (Haiku) and settling disagreements (Sonnet), then stops.
-updated: 2026-10-11
+description: What each scheduled run of the BRSR filer build does, every 10 minutes (every 30 until 13 October 2026). It takes 25 companies through finding their latest reports, downloading them, cutting the tables, reading them (Haiku) and settling disagreements (Sonnet), then stops.
+updated: 2026-10-13
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/b0e815e8-8fd2-47b1-af1d-f81a2b7d6515
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/531a80bc-bb43-47ac-a2df-79e769084cf0
 ---
 
 # BRSR filer build, one batch
@@ -15,7 +16,7 @@ In the commands below, `D` is the absolute data path, `/Users/priyanshu/parity-t
 
 ## 0. Gate (pacing)
 
-1. **Usage:** run `B gate D`. If it exits 3, **stop**: the guard is tripped, the week is at 78% or more, or the 5-hour window is at 75% or more. The run does no work and writes nothing; the next run, 30 minutes later, tries again.
+1. **Usage:** run `B gate D`. If it exits 3, **stop**: the guard is tripped, the week is at 78% or more, or the 5-hour window is at 75% or more. The run does no work and writes nothing; the next run, 10 minutes later, tries again.
 2. **Lock:** run `B lock D`. If it exits 3, another run took the lock under 90 minutes ago: **stop**. Exit 0 means this run now holds it. If it says `stale`, a run died mid-batch: resume its batch.
    - The lock also points the repo's Plane marker (`.plane_current_issue`) at PARITY-123, freshly. The global Plane guard hook only allows file writes against an open issue named less than 4 hours ago, and every batch is PARITY-123 work.
    - `B unlock D` gives the marker back if another chat had it on a different issue within the last 4 hours, so that chat's work is not credited to PARITY-123.
@@ -127,7 +128,7 @@ If `D/batch/current.json` lists disputes or unread keys:
    - the usage reading from step 0.
 3. **Plane:** run `python3 pipeline/india/brsr1000/plane_note.py b0e815e8-8fd2-47b1-af1d-f81a2b7d6515 "<that line>"`.
 4. **Release the lock:** run `B unlock D`.
-5. **Stop.** One batch per run is the pacing: 25 companies every 30 minutes covers the queue in about 24 hours.
+5. **Stop.** One batch per run is the pacing. Runs start every 10 minutes (owner, 13 October 2026; every 30 before). A batch that takes longer holds the lock, so the runs in its slots stop at step 2 and the next free slot takes the next batch.
 
 ## 7. When the queue is finished
 
