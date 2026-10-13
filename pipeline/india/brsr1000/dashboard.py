@@ -248,10 +248,10 @@ def progress():
     batches = sorted((load(f) for f in glob.glob(P('batch', 'done', '*.json'))), key=lambda b: b['id'])
     cur = load(P('batch', 'current.json'))
     closed = [b for b in batches if b.get('closedAt') and b.get('openedAt')]
-    rate, eta = pace_of(closed, cur, len(q) - counts.get('merged', 0) - done)
+    rate, eta, n, basis = pace_of(closed, cur, len(q) - counts.get('merged', 0) - done)
     log = open(P('logs', 'runs.md')).read().splitlines()[-15:] if os.path.exists(P('logs', 'runs.md')) else []
     # A merged entry is a duplicate of another queue entry for the same company: it is not a company of its own.
-    return dict(total=len(q) - counts.get('merged', 0), done=done, counts=counts, ratePerHour=rate and round(rate, 1), paceBatches=min(PACE_BATCHES, len(closed)), eta=eta,
+    return dict(total=len(q) - counts.get('merged', 0), done=done, counts=counts, ratePerHour=rate and round(rate, 1), paceBatches=n, paceBasis=basis, eta=eta,
                 open=cur and cur.get('stage') != 'closed' and dict(id=cur['id'], stage=cur['stage'], companies=len(cur['keys']), openedAt=cur.get('openedAt'),
                                                                  stages=stages(q, cur)),
                 batches=[dict(id=b['id'], openedAt=b.get('openedAt'), closedAt=b.get('closedAt'), **(b.get('summary') or {}),
@@ -259,14 +259,22 @@ def progress():
                 lock=load(P('run.lock')), usage=usage(), log=log, db=os.path.exists(DB), fy2425=fy2425(q), nodata=nodata(q))
 
 def pace_of(closed, cur, left):
-    """Companies an hour over the last six closed batches, so an early stall stops dragging the estimate, and the finish
-    it gives. The window runs to the next batch's opening (the slot those six used up), or to the last close when none is open."""
-    if len(closed) < 2: return None, None
-    recent = closed[-PACE_BATCHES:]
-    t0 = datetime.fromisoformat(recent[0]['openedAt'])
-    t1 = datetime.fromisoformat(cur['openedAt'] if cur and cur.get('stage') != 'closed' and cur.get('openedAt') else recent[-1]['closedAt'])
-    rate = sum(len(b['keys']) for b in recent) / max((t1 - t0).total_seconds() / 3600, 0.01)
-    return rate, (datetime.now() + timedelta(hours=left / rate)).isoformat(timespec='minutes')
+    """Companies an hour, the finish it gives, how many batches it rests on, and whether it is measured or expected.
+    Measured over the last six closed batches that opened on the schedule in force, so an early stall or an older, slower
+    schedule stops dragging it; the window runs to the next batch's opening (the slot those six used up), or to the last
+    close when none is open. Until two batches have run on the current schedule, it is expected: each batch of the
+    recent size takes as many runs as recent batches lasted."""
+    if not closed: return None, None, 0, None
+    recent = [b for b in closed if dt(b['openedAt']) >= SCHEDULES[-1][0]][-PACE_BATCHES:]
+    if len(recent) >= 2:
+        t0 = datetime.fromisoformat(recent[0]['openedAt'])
+        t1 = datetime.fromisoformat(cur['openedAt'] if cur and cur.get('stage') != 'closed' and cur.get('openedAt') else recent[-1]['closedAt'])
+        rate, n, basis = sum(len(b['keys']) for b in recent) / max((t1 - t0).total_seconds() / 3600, 0.01), len(recent), 'measured'
+    else:
+        last, gap = closed[-PACE_BATCHES:], interval_at(datetime.now())
+        mins = sum((dt(b['closedAt']) - dt(b['openedAt'])).total_seconds() / 60 for b in last) / len(last)
+        rate, n, basis = sum(len(b['keys']) for b in last) / len(last) * 60 / (gap * max(1, -(-mins // gap))), len(last), 'expected'
+    return rate, (datetime.now() + timedelta(hours=left / rate)).isoformat(timespec='minutes'), n, basis
 
 GAP_STAGES = [('cut', 'Cut tables'), ('read', 'Read'), ('merge', 'Merge')]  # batch.py gaps-next cuts before it opens the batch
 def gap_stages(b):
@@ -285,8 +293,8 @@ def gap_progress():
     left = c.get('todo', 0) + c.get('in-batch', 0)
     cur = load(P('gaps', 'current.json')); cur = cur if cur and cur.get('stage') != 'closed' else None
     closed = [b for b in all_batches() if b['kind'] == 'gap' and b.get('closedAt') and b.get('openedAt')]
-    rate, eta = pace_of(closed, cur, left)
-    return dict(total=len(GQ), done=len(GQ) - left, left=left, counts=c, ratePerHour=rate and round(rate, 1), paceBatches=min(PACE_BATCHES, len(closed)), eta=eta,
+    rate, eta, n, basis = pace_of(closed, cur, left)
+    return dict(total=len(GQ), done=len(GQ) - left, left=left, counts=c, ratePerHour=rate and round(rate, 1), paceBatches=n, paceBasis=basis, eta=eta,
                 open=cur and dict(id=cur['id'], stage=cur['stage'], companies=len(cur['keys']), openedAt=cur.get('openedAt'), stages=gap_stages(cur)))
 
 # The routine's cron minutes from each date, and the delay before a slot's run starts: the app's own delay for that cron
@@ -645,7 +653,7 @@ def overview():
             ('stuck' if rs['minutes'] > 90 else 'overrunning' if rs['overrun'] else 'running') if rs['state'] == 'running' else
             'stopped' if stop else 'paused' if rs['gated'] or rs['guardTripped'] else 'idle')
     cap = 25 * 60 // rs['slotMin']; best = datetime.now() + timedelta(hours=left / cap)
-    pace = dict(phase='gaps' if ph is gp else 'read', rate=ph['ratePerHour'], batches=ph['paceBatches'], cap=cap, left=left, total=ph['total'], done=ph['done'], eta=ph['eta'],
+    pace = dict(phase='gaps' if ph is gp else 'read', rate=ph['ratePerHour'], batches=ph['paceBatches'], basis=ph['paceBasis'], cap=cap, left=left, total=ph['total'], done=ph['done'], eta=ph['eta'],
                 best=best.isoformat(timespec='minutes'))
     if ob and ob['kind'] == 'gap': st = gp['open']['stages']; names, ix = GAP_STAGES, 1 if st['read'] < st['companies'] else 2
     else: names, ix = STAGES, next((i for i, (s, _) in enumerate(STAGES) if p['open'] and s == p['open']['stage']), None)

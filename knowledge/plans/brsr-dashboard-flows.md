@@ -54,7 +54,7 @@ Typing in the search box is free; selecting a result is a click. Nothing that th
    - **Finish:** the estimate against the target, and how far behind.
    - **Usage:** against the 78% and 75% gates. It is shown from 1360px, or whenever usage is within 15 points of a gate.
    - **Search and theme:** at the right.
-   - On a phone the cells become a two-line strip under the header. The bar opens the Run pane.
+   - On a phone the cells become a strip under the header: the state, its detail and the progress with the finish. Each part ("next run 11:24", "≈ 14:03") wraps whole rather than being cut. The strip stays on screen and holds the search button; the header keeps only the theme. The bar opens the Run pane.
 2. **Today column, top to bottom:**
    - **Needs you:**
      - **Fetch by hand:** each row carries its links.
@@ -79,7 +79,7 @@ Typing in the search box is free; selecting a result is a click. Nothing that th
    - **Run (the root):**
      - the state sentence and the lock;
      - the open batch's stage rail and its table;
-     - Pace, Needed and Left;
+     - Pace, Finish and Left. Pace is measured over the last six batches that ran on the schedule in force; until two have, it is Expected, from how many runs recent batches took;
      - usage meters with gate ticks;
      - a ribbon of every scheduled slot, then one row per run, saying why a slot was lost;
      - the full run log.

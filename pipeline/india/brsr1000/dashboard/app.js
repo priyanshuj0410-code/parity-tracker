@@ -47,7 +47,7 @@ function stateOf() {
   const last = rs.find(x => x.batch && !x.open && x.closedAt);
   switch (r.word) {
     case 'running': return r.batch ? { tone: 'good', word: `Running ${r.batch}`, sub: `${r.kind === 'gap' ? 'Gap fill at ' : ''}${stage || 'Opening'} · started ${tm(r.since)} · ${nx}` }
-      : { tone: 'good', word: 'Starting a run', sub: `Checking usage and opening a batch · started ${tm(r.since)}` };
+      : { tone: 'good', word: 'Starting a run', sub: `Opening a batch · started ${tm(r.since)}` };
     case 'overrunning': return { tone: 'warn', word: `Overrunning ${r.batch || ''}`.trim(), sub: `${r.minutes} min. The ${tm(r.nextRun)} run stops while it holds the lock.` };
     case 'stuck': return { tone: 'bad', word: 'Stuck', sub: `Lock held ${r.minutes} min. The next run takes it over.` };
     case 'stopped': return { tone: 'bad', word: `Stopped ${r.batch || ''}`.trim(), sub: `The next run resumes it · ${nx}` };
@@ -58,6 +58,11 @@ function stateOf() {
 const dot = t => `<span class="dot${t ? ' is-' + t : ''}"></span>`;
 
 /* ---------- bar and strip ---------- */
+// A strip line as units that wrap whole ("next run 11:24", "≈ 14:03"), so a narrow phone moves a unit down instead of cutting it.
+const units = (cls, xs) => `<span class="${cls}">${xs.filter(Boolean).map(x => `<span>${esc(x)}</span>`).join('')}</span>`;
+// Measured over recent batches on the current schedule, or, until two have run on it, expected from how long batches take.
+const paceWhy = (pa, r) => pa.basis === 'expected' ? `Expected ${pa.rate} an hour: fewer than two batches have run every ${r.slotMin} minutes, so it assumes each takes as many runs as the last ${pa.batches} lasted.`
+  : `${pa.rate} companies an hour over the last ${pa.batches} ${pa.phase === 'gaps' ? 'gap ' : ''}batches.`;
 function renderBar() {
   const o = S.o, st = stateOf(); UI.put($('#cStatus'), `<span class="bar__v">${dot(st.tone)}${esc(st.word)}</span><span class="bar__s">${esc(st.sub)}</span>`);
   UI.put($('#barAlert'), S.fail ? UI.quiet({ label: 'Try now', icon: 'refresh', act: 'retry' }) : '');
@@ -66,12 +71,13 @@ function renderBar() {
   const r = o.run, pa = o.pace, gaps = pa.phase === 'gaps', pct = pa.total ? Math.round(100 * pa.done / pa.total) : 0;
   UI.put($('#cProg'), `<span class="bar__v">${N(pa.done)} of ${N(pa.total)}</span><span class="bar__s kv"><span class="mini"><i style="width:${pct}%"></i></span>${pct}%${gaps ? ' · gap fill' : ''}</span>`);
   $('#cProg').dataset.tip = gaps ? `All ${N(o.progress.total)} companies are read. Each run now reads again only the mandatory fields a checked reading lacks.` : '';
-  $('#runBtn').dataset.tip = pa.eta ? `Pace ${pa.rate} an hour over the last ${pa.batches} ${gaps ? 'gap ' : ''}batches. Runs stop at ${r.gates.week}% of the week or ${r.gates.session}% of the session.` : '';
+  $('#runBtn').dataset.tip = pa.eta ? `${paceWhy(pa, r)} Runs stop at ${r.gates.week}% of the week or ${r.gates.session}% of the session.` : '';
   UI.put($('#cFinish'), pa.eta ? `<span class="bar__v">≈ ${esc(day(pa.eta))}</span><span class="bar__s">${pa.rate} an hour</span>` : '<span class="bar__v tone-muted">Finish shows after two batches</span><span class="bar__s">&nbsp;</span>');
   const g = (v, gate) => `<span class="${v >= gate ? 'tone-bad' : v >= gate - 15 ? 'tone-warn' : ''}">${v ?? 'n/a'}%</span>`;
   $('#cUsage').classList.toggle('is-near', (r.week ?? 0) >= r.gates.week - 15 || (r.session ?? 0) >= r.gates.session - 15);
   UI.put($('#cUsage'), `<span class="bar__v"><span class="bar__l">Week</span> ${g(r.week, r.gates.week)} <span class="bar__l">Session</span> ${g(r.session, r.gates.session)}</span><span class="bar__s">${r.gated ? '<span class="tone-bad">Over a gate</span>' : 'Clear of the gates'}</span>`);
-  UI.put($('#strip'), `<span class="strip__a">${dot(st.tone)}${esc(st.word)}<span class="end">${ico('chevron_right', { tone: 'muted' })}</span></span><span class="strip__c">${esc(st.sub)}</span><span class="strip__b"><span>${N(pa.done)} of ${N(pa.total)} (${pct}%)${gaps ? ' gap fill' : ''}${pa.eta ? ' · ≈ ' + esc(day(pa.eta)) : ''}</span></span>`);
+  const soon = s => new Date(s).toDateString() === new Date().toDateString() ? tm(s) : day(s);
+  UI.put($('#strip'), `<span class="strip__a">${dot(st.tone)}${esc(st.word)}<span class="end">${ico('chevron_right', { tone: 'muted' })}</span></span>${units('strip__c', st.sub.split(' · '))}${units('strip__b', [(gaps && !st.sub.includes('Gap fill') ? 'Gap fill: ' : '') + `${N(pa.done)} of ${N(pa.total)} (${pct}%)`, pa.eta && '≈ ' + soon(pa.eta)])}`);
   UI.put($('#stripAlert'), S.fail ? UI.quiet({ label: 'Try now', icon: 'refresh', act: 'retry' }) : '');
   const n = needCount(); document.title = (n ? `(${n}) ` : '') + 'Parity · ' + st.word + (S.fail ? ' · offline' : '');
   if (S.word && S.word !== st.word) $('#live').textContent = st.word; S.word = st.word }
@@ -194,7 +200,7 @@ function paneRun() {
   // Pace, the finish it gives, and what is left. Lost runs are one count; the list below shows them.
   const when = d => { const t = new Date(d), n = new Date(), dd = Math.round((new Date(t.toDateString()) - new Date(n.toDateString())) / 864e5); return dd === 0 ? 'Today' : dd === 1 ? 'Tomorrow' : t.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) };
   const lostTip = lost.length ? 'Lost runs: ' + [...lost].sort((a, b) => a.slot < b.slot ? 1 : -1).map(x => day(x.slot)).join(', ') + '. They are highlighted in the list below.' : '';
-  B.push({ k: 'pace', html: `<div class="block">${gaps ? UI.blockHead({ title: 'Gap fill', info: GAPINFO }) : ''}<div class="stats">${UI.stat({ label: 'Pace', value: pa.rate ?? 'n/a', unit: '/ h', sub: `Last ${pa.batches} ${gaps ? 'gap ' : ''}batches`, tip: `Companies an hour over the last ${pa.batches} ${gaps ? 'gap ' : ''}batches.` })}`
+  B.push({ k: 'pace', html: `<div class="block">${gaps ? UI.blockHead({ title: 'Gap fill', info: GAPINFO }) : ''}<div class="stats">${UI.stat({ label: 'Pace', value: pa.rate ?? 'n/a', unit: '/ h', sub: pa.basis === 'expected' ? 'Expected' : `Last ${pa.batches} ${gaps ? 'gap ' : ''}batches`, tip: paceWhy(pa, r) })}`
     + `${UI.stat({ label: 'Finish', value: pa.eta ? esc(tm(pa.eta)) : 'n/a', sub: pa.eta ? when(pa.eta) : 'After two batches', tip: `At this pace. The earliest it could be is ${day(pa.best)}: one batch of 25 every ${r.slotMin} minutes tops out at ${pa.cap} an hour.` })}`
     + `${UI.stat({ label: 'Left', value: N(pa.left), sub: `of ${N(pa.total)}` })}</div>`
     + `<p class="mt-3 t-13 tone-soft">${slots.length - lost.length} of ${slots.length} runs opened a batch${lost.length ? ` · ${UI.quiet({ label: lost.length + ' lost', act: 'lostRuns', tip: lostTip })}` : ''}</p></div>` });
