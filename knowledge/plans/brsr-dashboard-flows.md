@@ -108,6 +108,7 @@ Typing in the search box is free; selecting a result is a click. Nothing that th
      - links;
      - raw records in disclosures, plus Open in SQL.
 4. **Gap fill:** once the FY2025-26 queue is through, the runs fill gaps ([runbook step 9](../playbooks/brsr1000-batch.md)). Batches of both kinds share one list, one slot ribbon and one prev/next order, by when they opened. The bar's progress, finish and the Run pane's Pace, Finish and Left then follow the gap queue (`data/gaps/queue.json`), marked "gap fill". Finished means both queues are through.
+   - **History (PARITY-136):** after the gap fill, the runs read the history stores newest year first. History batches (`h2425-b001` on) join the same list, ribbon and run log, each with its own pane (the year read, another year's report, none usable, and the stage rail while open). The bar's progress and finish then follow the store the runs are on, marked "2024 history", and the Run pane names the years left. The year rows count each store's readings as they close.
 5. **Wide views:** Companies (status and reason tags, a sortable table, and a two-line list below 900px), Results and SQL replace the Today column. "Today" goes back, and the pane stays beside them.
 6. **Marks and the watch (PARITY-127, PARITY-128):**
    - **Mark:** the pane of a company still on FY2024-25 has a "Mark as" row: No BRSR filed, Merged, Insolvent, Delisted.

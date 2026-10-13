@@ -2,13 +2,14 @@
 type: plan
 title: India, from the Nifty 500 to every BRSR filer
 description: Plan to add the roughly 690 BRSR filers outside the Nifty 500 to Nivel from the Kaggle FY2024-25 dataset, the decisions taken (years, universe, payroll-weighted group) and the steps to resume the build.
-updated: 2026-10-12
+updated: 2026-10-13
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/b0e815e8-8fd2-47b1-af1d-f81a2b7d6515
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/e91400bc-1cd0-4aba-bfa5-2a337c998ad4
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/4b57376e-d876-4409-87dd-5a0c2faa228e
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/f47ab7b6-a46f-4d22-83d5-5131790b6a49
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/59edeb77-637d-4ab4-924e-43b8a22072b5
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/c0f8c42e-83da-4114-a50f-9feed4601efd
 ---
 
 # India, from the Nifty 500 to every BRSR filer
@@ -117,6 +118,13 @@ Source check: [../research/brsr-dataset-2024-25-check.md](../research/brsr-datas
     - **Mergers and demergers (owner, 12 October: "show merged and demerged entities in relation with each other"):** one store, `data/relations.json`, of 81 events since 1 April 2022 between the build's companies and other listed or newly listed ones: 51 from a candidate list and 30 a sweep of the reports found, each researched from the companies' filings and checked by a skeptic. `relations.py` reads it with the owner's Merged marks. The company pane shows each event from that company's side and breaks its Years table where the change starts; `rankings.py` takes a merged company's ranks only for years the survivor was not listed itself (Piramal Enterprises for Piramal Finance), and counts a company merged away before FY2026-27 ends as leaving.
     - **Top-1,000 companies added (owner, 12 October):** 150 companies in the 31 December 2025 top 1,000 were missing from the build because the Kaggle filings lacked them. They joined the queue as `TOP-<symbol>` entries; the 61 new to the top 1,000 carry "BRSR from FY2026-27" by SEBI's rule. Tata Motors Passenger Vehicles, wrongly merged into the commercial-vehicle entry, was restored.
     - **Order of runs, on the same schedule:** the FY2025-26 queue, then gap batches, then FY2024-25 history batches. Each run does one batch and stops at the usage gate.
+
+13. **Backfill to 2021 (owner, 13 October 2026).** [PARITY-136](https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/c0f8c42e-83da-4114-a50f-9feed4601efd). Runbook step 8.
+    - **What is missing:** company-years a BRSR was due for (in either exchange's top 1,000 on a December list by then) that the records lack: 2023 614, 2022 567, 2021 875 (FY2021-22 was voluntary, so many filed no BRSR), 2024 56.
+    - **What the reports can give:** headcount, board, KMP and median pay by gender from FY2022-23 (the 2021 format for FY2021-22); the women's share of pay only from FY2023-24, whose reports also give FY2022-23's. So pay share reaches 2022 and 2021 has no pay share.
+    - **How:** one history store per year (`data/history/<fy>/`, source `web`), searched for and downloaded from company sites like the build, read and settled the same way. The runs take the stores newest year first, after the FY2024-25 store. FY2021-22 skips the Sonnet second search (`onePass`).
+    - **Pace and usage:** about 2,000 reports, roughly a quarter to two fifths of a week's usage. The runs stop at 78% of the week, so most of it runs after the reset on 18 October 2026 at 14:30 (owner's choice: build now, run in queue).
+    - **Into the records:** `to_records.py` reads every store. A year a Nivel company's stored record lacks is now added (before, only FY2025-26 was), with that store's download as its filing; new companies already took every year.
 
 ## Why payroll
 

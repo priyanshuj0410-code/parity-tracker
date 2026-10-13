@@ -94,15 +94,26 @@ def apply_found(Q, data):
 
 NOT_OUT = re.compile(r'not (out|published) yet|year ends in', re.I)  # the dashboard's "Report not out yet" tag
 
+def due_2526(k, v, F):
+    """Was it required to file a BRSR for FY2025-26: in either exchange's top 1,000 on a December list up to 2024, since
+    coverage did not lapse before the 2024 sunset rule (rankings.py), unless its own report says it files from later.
+    F: rankings.py's companies (data/rankings/fy2026-27.json)."""
+    if v.get('brsrBasis') == 'company' and (v.get('brsrFrom') or '') > '2025-26': return False
+    return any(r and min(r.values()) <= 1000 for y, r in ((F.get(k) or {}).get('ranks') or {}).items() if int(y) <= 2024)
+
 def watch_list(Q, data):
     """Companies the watch looks at: no FY2025-26 BRSR yet, because the owner marked it, the site has not published it,
-    or the annual report came without one; and those with no usable report because theirs is not out yet. Merged, insolvent and delisted companies are left out, by the owner's mark
+    or the annual report came without one; those with no usable report because theirs is not out yet; and those a BRSR
+    was due from with no usable report and no reason recorded (Kennametal India and SpiceJet, whose FY2025-26 BRSR is
+    not out; PARITY-136). Merged, insolvent and delisted companies are left out, by the owner's mark
     (read here at once, before the next batch carries it into the queue) or by the pipeline's reason."""
     mk, out = marks(data), []
+    F = (load(P(data, 'rankings', 'fy2026-27.json'), {}) or {}).get('companies', {})
     Q = {k: dict(v) for k, v in Q.items()}; apply_marks(Q, data)  # the queue as the marks leave it, undos included
     for k, v in Q.items():
         kind = mk.get(k, {}).get('kind')
-        if v['status'] == 'no-data' and kind not in GONE_KINDS and NOT_OUT.search(v.get('noDataReason') or ''): out.append(k); continue
+        if v['status'] == 'no-data' and kind not in GONE_KINDS and (NOT_OUT.search(v.get('noDataReason') or '') or (not v.get('noDataReason') and due_2526(k, v, F))):
+            out.append(k); continue
         if v['status'] != 'done-kaggle' or kind in GONE_KINDS or (not kind and GONE.search(v.get('staleReason') or '')): continue
         f = load(P(data, 'found', k + '.json'), {})
         ar_only = any(x.get('status') == 'ok' and not x.get('hasBRSR') for x in v.get('fetches') or [])

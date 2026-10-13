@@ -10,6 +10,10 @@ import { join } from 'node:path'
 
 const [data, ...keys] = process.argv.slice(2)
 const Q = JSON.parse(readFileSync(join(data, 'queue.json'), 'utf8'))
+// The year sought: FY2025-26, or a history store's (data/history/<fy>/history.json, PARITY-136).
+const FY = (() => { try { return JSON.parse(readFileSync(join(data, 'history.json'), 'utf8')).fy } catch { return '2025-26' } })()
+const Y = +FY.slice(0, 4), YY = String((Y + 1) % 100).padStart(2, '0')
+const WANT = new RegExp(`${Y}\\s*[-–/]?\\s*(20)?${YY}(?!\\d)|fy ?${YY}(?!\\d)` + (FY === '2025-26' ? '|2026' : ''))
 mkdirSync(join(data, 'browse'), { recursive: true })
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 const port = 9700 + Math.floor(Math.random() * 200)
@@ -46,8 +50,8 @@ const PATHS = ['', '/investors', '/investor-relations', '/investor', '/annual-re
 const CHALLENGE = /access denied|just a moment|attention required|request unsuccessful|are you a robot|captcha|forbidden/i
 const score = (h, t) => {
   const s = `${h} ${t}`.toLowerCase()
-  return (/2025-?26|fy ?26|2026/.test(s) ? 4 : 0) + (/brsr|business.?responsibility/.test(s) ? 3 : 0) +
-         (/annual.?report|integrated/.test(s) ? 2 : 0) - (/2024-?25|2023|2022|notice|policy|results|outcome/.test(s) ? 2 : 0)
+  return (WANT.test(s) ? 4 : 0) + (/brsr|business.?responsibility/.test(s) ? 3 : 0) +
+         (/annual.?report|integrated/.test(s) ? 2 : 0) - (/notice|policy|results|outcome/.test(s) || (!WANT.test(s) && /20[12]\d/.test(s)) ? 2 : 0)
 }
 
 async function visit(url) {

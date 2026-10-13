@@ -12,7 +12,7 @@ Refuses NSE and BSE addresses (PARITY-66). Appends the record to <data>/fetch/<k
 """
 import hashlib, json, os, re, subprocess, sys, urllib.parse
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from brsr_fields import CIN, reporting_year, is_brsr, is_latest
+from brsr_fields import CIN, reporting_year, is_brsr, is_target, label_says, target_of
 from ocr import ocr_pdf
 
 data, key, url = sys.argv[1:4]
@@ -76,12 +76,14 @@ else:
         has = is_brsr(t)
         # A BRSR (alone or inside an annual report) is <key>.txt. Anything else is an annual report kept for the deep
         # reading as <key>.ar.txt. Either way a new text replaces an old one only if it ranks higher: a BRSR first, then
-        # one for FY2025-26 or later, then more text. So a retried scan never overwrites a better copy.
+        # one for the year sought (FY2025-26 or later; a history store's own year), then more text. So a retried scan never
+        # overwrites a better copy.
         if has: dest = os.path.join(data, 'latest', 'txt', key + '.txt')
         else: dest = os.path.join(data, 'latest', 'txt', key + '.ar.txt'); rec['role'] = 'ar'
         old = open(dest, errors='ignore').read() if os.path.exists(dest) else ''
         fy = reporting_year(t)
-        rank = lambda x, y: (is_brsr(x), is_latest(y) or (not y or y.startswith('~')) and bool(label and re.search(r'2025-?26|FY26|2026', label)), len(x.split()))
+        T = target_of(data)
+        rank = lambda x, y: (is_brsr(x), is_target(y, T) or (not y or y.startswith('~')) and label_says(label, T), len(x.split()))
         if old and rank(old, reporting_year(old)) >= rank(t, fy): rec['kept'] = 'existing text, which ranks as high or higher'
         elif len(t.split()) > 300: os.replace(work, dest)
         rec.update(status='ok' if len(t.split()) > 300 else 'no-text', bytes=len(raw), sha256=hashlib.sha256(raw).hexdigest(),
