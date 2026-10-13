@@ -144,6 +144,9 @@ function renderFiles(force) {
   UI.put($('#filesDone'), done.length ? UI.disclosure('filesDone', `Done <span class="muted">${done.length}</span>`, `<div class="card list">${done.map(row).join('')}</div>`, S.open.has('filesDone'), { bare: true }) : '', force) }
 
 /* ---------- run rows (shared by Recent runs and the Run pane) ---------- */
+// A row's own stage name: each open batch says where it is, not the run's (several stores can hold open batches).
+const ROWSTAGE = ['discover', 'refind', 'browse', 'fetch3', 'snippets', 'read', 'adjudicate', 'final'];
+const rowStage = x => x.kind === 'gap' ? (x.stage === 'read' ? (S.o?.run.batch === x.batch ? S.o.run.stageName : 'Read') : null) : (S.o?.stages || [])[ROWSTAGE.indexOf(x.stage)] || null;
 function runRow(x) {
   const c = x.counts || {}, stage = x.stopped ? x.stopped.replace(/^at stage /, '') : null, sn = stage && (S.o?.stages || [])[['discover', 'refind', 'browse', 'fetch3', 'snippets', 'read', 'adjudicate', 'final'].indexOf(stage)] || stage;
   // The icon carries the outcome; line 2 says what happened in one line, with the caveat or correction count in its tooltip.
@@ -153,7 +156,7 @@ function runRow(x) {
   const corr = x.corrections ? `${x.corrections.count} corrections across ${x.corrections.companies} companies.` : '';
   const inferred = 'Worked out from batch times: a run that stops at the usage gate or a held lock writes nothing.';
   const lost = x.outcome === 'skipped' || x.outcome === 'lost';
-  const k = x.outcome === 'running' ? ['progress_activity', 'good', 'Running', 'good', (x.kind === 'gap' ? 'Gap fill ' : x.kind === 'history' ? `${String(x.fy).slice(0, 4)} history ` : '') + (S.o?.run.stageName ? (x.kind === 'gap' || x.kind === 'history' ? 'at ' : 'At ') + S.o.run.stageName : 'opening')]
+  const k = x.outcome === 'running' ? ['progress_activity', 'good', 'Running', 'good', (x.kind === 'gap' ? 'Gap fill ' : x.kind === 'history' ? `${String(x.fy).slice(0, 4)} history ` : '') + (rowStage(x) ? (x.kind === 'gap' || x.kind === 'history' ? 'at ' : 'At ') + rowStage(x) : 'opening')]
     : x.outcome === 'resumed' ? ['arrow_circle_right', 'accent', 'Finished', '', 'Left open by an earlier run']
     : lost ? [x.outcome === 'lost' ? 'help' : 'block', x.outcome === 'lost' ? 'warn' : 'muted', x.outcome === 'lost' ? 'No batch' : 'Skipped', '', x.note]
     : sn ? ['error', 'bad', `Stopped at ${sn}`, 'bad', counts]

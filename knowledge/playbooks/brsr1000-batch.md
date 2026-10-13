@@ -135,8 +135,8 @@ If `D/batch/current.json` lists disputes or unread keys:
 
 1. **Summary (once):** if `D/logs/runs.md` has no line saying the FY2025-26 queue finished, run `B status D` and write the summary as a Plane comment on PARITY-123: counts by status, and how many companies reported finer levels or functions. Then append that line to the log.
 2. **Gaps first:** the owner asked on 12 October 2026 for every mandatory measure (PARITY-129). If `D/gaps/queue.json` does not exist, run `python3 pipeline/india/brsr1000/audit.py D` and then `B gaps-init D`. Then go to step 9. Keep the lock you hold on `D`.
-3. **History next:** when step 9 reports `"open": null`, take the history stores newest year first: `D/history/2024-25`, `2023-24`, `2022-23`, `2021-22` (those that exist). For each in turn run `B next H 25` with `H` = that store, and go to step 8 with the first one that opens or resumes a batch.
-4. **All done:** only when step 9 and every history store report `"open": null`:
+3. **History next:** when step 9 reports `"open": null`, run `B history-next D 25`. It takes the history stores newest year first (`D/history/2024-25`, `2023-24`, `2022-23`, `2021-22`), resumes the open batch or opens one in the first store with companies left, and touches no other store. It prints `store` (that is `H`), `fy` and the batch's `open` id, `stage` and `keys`. Go to step 8 with that `H`. Never run `B next` on a history store yourself: on 13 October 2026 a run did that for every store and opened a batch in each, which `history-next` then gave back.
+4. **All done:** only when step 9 and `B history-next D` both report `"open": null`:
    - **Turn off the schedule:** use `mcp__scheduled-tasks__update_scheduled_task` to disable the task `nivel-brsr1000`.
    - **Release the lock:** run `B unlock D`.
    - **Hand back:** the build itself (records, the payroll-weighted group, the UI and a staging release) waits for an attended session with the owner.
@@ -147,7 +147,7 @@ A history store, `D/history/<fy>/`, holds one earlier year, for the companies a 
 - **kaggle** (FY2024-25): the reports are on disk (the Kaggle dataset), so a batch starts at stage snippets.
 - **web** (FY2023-24, FY2022-23, FY2021-22, made on 13 October 2026): each company's report for that year is searched for and downloaded from its own site, like the build's, so a batch starts at stage discover. A store with `"onePass": true` (FY2021-22, a voluntary year) skips the second search.
 
-1. **Open:** run `B next H 25`. If it reports `"open": null`, this store is finished: go back to step 7.3. Otherwise note the id (`h2324-b…` for FY2023-24) and resume at its stage, in the order of the table in step 1.
+1. **Open:** `B history-next D 25` (step 7.3) opened or resumed the batch. Note the id (`h2324-b…` for FY2023-24) and resume at its stage, in the order of the table in step 1. A `B next H` run by hand on a store that is not the newest with companies left reports `"waitingFor"` and opens nothing.
 2. **Find and download (web stores only, stages discover to fetch3):** step 2 with `H` in place of `D`, and `"fy": "<the store's year>"` added to the discover workflow's `args`, in both modes. `B fetch H` names the stage that follows: refind, browse or snippets. A company with no BRSR of that year is closed as no-data; it may have filed the older Business Responsibility Report instead.
 3. **Cut tables:** run `B snippets H`.
 4. **Read:** run the Workflow tool with `scriptPath` `pipeline/india/brsr1000/read.workflow.js` and `args` `{"data": H, "spec": "<absolute path to pipeline/india/brsr1000/READING.md>", "keys": [the read keys]}`. Then run `B merge H`.
@@ -156,7 +156,7 @@ A history store, `D/history/<fy>/`, holds one earlier year, for the companies a 
 7. **Log it:** append one line to `D/logs/runs.md`: `- <date time> IST | <id> | FY<fy> history: done N, wrong year N, no data N | corrections N | usage week W%, session S%`. Write the same line as a Plane comment: on PARITY-129 for FY2024-25 (`python3 pipeline/india/brsr1000/plane_note.py 59edeb77-637d-4ab4-924e-43b8a22072b5 "<that line>"`), on PARITY-136 for the earlier years (`python3 pipeline/india/brsr1000/plane_note.py c0f8c42e-83da-4114-a50f-9feed4601efd "<that line>"`).
 8. **Release the lock:** run `B unlock D`, and stop.
 
-What the earlier years can give (knowledge/research/brsr-requirements.md): headcount, board, KMP and median pay by gender from FY2022-23 (FY2021-22 in the voluntary 2021 format), and the women's share of pay only from FY2023-24, whose reports also give FY2022-23's. `to_records.py` takes every store's readings: a year Nivel's stored record lacks is added, with the store's download as its filing.
+What the earlier years can give (knowledge/research/brsr-requirements.md): the 2021 format (FY2021-22, voluntary, and FY2022-23) has every gender table but three, which came with the July 2023 format from FY2023-24: the women's share of pay (FY2023-24 reports also give FY2022-23's), well-being spend, and POSH complaints as a share of women. `to_records.py` takes every store's readings: a year Nivel's stored record lacks is added, with the store's download as its filing.
 
 ## 9. Gap batches (missing mandatory fields of FY2025-26 readings)
 
