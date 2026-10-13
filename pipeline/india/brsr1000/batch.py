@@ -78,6 +78,42 @@ def take_inbox():
     json.dump(left, open(P('inbox_unmatched.json'), 'w'))
     return took
 
+def ocr_blank(k):
+    """Read by OCR the pages of a company's text that came out blank (image-drawn tables), and splice them in, for the
+    second gap pass (PARITY-137). The PDF is the one the text came from: the owner's saved copy, the Kaggle file, or the
+    company site's, downloaded again to a scratch path that is emptied afterwards. NSE and BSE are never used. The text
+    before is kept as <name>.pre-ocr.txt. Returns how many pages were read, or why none were."""
+    sys.path.insert(0, HERE); from ocr import ocr_pages
+    txt = P('latest', 'txt', k + '.txt'); pdf = None; kf = Q.get(k, {}).get('kaggleFile')
+    if os.path.exists(txt):
+        x = next((x for x in reversed(Q[k].get('fetches') or []) if x.get('status') == 'ok' and x.get('role', 'brsr') == 'brsr' and not x.get('kept')), {})
+        u = x.get('url') or ''
+        if u.startswith('file://'): pdf = urllib.parse.unquote(u[7:])
+        elif u.startswith('http') and not re.search(r'nseindia\.com|bseindia\.com', u, re.I):
+            pdf = P('tmp', k + '.ocr.pdf')
+            r = subprocess.run(['curl', '-s', '-L', '-m', '600', '--max-filesize', '400000000', '-A', 'Mozilla/5.0', '-o', pdf, '-w', '%{http_code}', u], capture_output=True, text=True)
+            if r.stdout.strip() != '200': return f'download returned {r.stdout.strip()}'
+    elif kf:
+        txt, pdf = P('kaggle', 'txt', kf[:-4] + '.txt'), os.path.join(os.path.expanduser('~/brsr reports 2025-26/files'), kf)
+    if not pdf or not os.path.exists(pdf) or not os.path.exists(txt): return 'no PDF for the text'
+    try:
+        t = open(txt, errors='ignore').read(); end = '\f' if t.endswith('\f') else ''  # pdftotext ends each page with a form feed
+        pages = (t[:-1] if end else t).split('\f')
+        blank = [i for i, pg in enumerate(pages) if len(pg.split()) < 25]
+        got = ocr_pages(pdf, [i + 1 for i in blank], len(pages))
+        if got is None: return 'page count differs from the text'
+        for i in blank:
+            if len((got.get(i + 1) or '').split()) >= 25: pages[i] = got[i + 1]
+        n = sum(1 for i in blank if len((got.get(i + 1) or '').split()) >= 25)
+        if n:
+            if not os.path.exists(txt[:-4] + '.pre-ocr.txt'): shutil.copy(txt, txt[:-4] + '.pre-ocr.txt')
+            save_text = '\f'.join(pages) + end
+            with open(txt + '.part', 'w') as f: f.write(save_text)
+            os.replace(txt + '.part', txt)
+        return n
+    finally:
+        if pdf == P('tmp', k + '.ocr.pdf') and os.path.exists(pdf): os.remove(pdf)
+
 def later(kv):
     """Queue order: companies sent back for another read, and those with a file the owner saved to the inbox, go first."""
     return not (kv[1]['status'] == 'todo' and (kv[1].get('retry') or kv[1].get('manual')))
@@ -518,7 +554,19 @@ elif cmd in ('gaps-init', 'gaps-next', 'gaps-merge'):
     FIELD = dict(headcount='headcount', disabled='disabledHeadcount', board='board', kmp='kmp', turnover='turnover',
                  benefits='wellbeing', wellbeingSpend='wellbeingSpend', parental='parental', unions='unions', training='training',
                  reviews='reviews', minWage='minWage', medianPay='medianPay', wageShare='wageShare', complaints='complaints')
-    if cmd == 'gaps-init':
+    if cmd == 'gaps-init' and '--pass2' in sys.argv:
+        # A second, careful pass (PARITY-137): every field a reading still lacks although its table, or its words, are in
+        # the text, read by Sonnet; and, for a text with blank pages, every missing field, after OCR of those pages.
+        A = load(P('audit.json')) or sys.exit('run audit.py first'); n = 0
+        for k, r in A['rows'].items():
+            if GQ.get(k, {}).get('second'): continue
+            ocr = bool(r.get('imagePages'))
+            fs = sorted({FIELD[m] for m, st in r['measures'].items() if st in ('missed', 'inFullText') or (ocr and st == 'notInText')})
+            if not fs: continue
+            old = GQ.get(k, {})
+            GQ[k] = dict(fields=fs, status='todo', second=True, ocr=ocr, first=dict(status=old.get('status'), batch=old.get('batch')) if old else None); n += 1
+        save_json(G, GQ); print(json.dumps(dict(queued=n, ocr=sum(1 for g in GQ.values() if g.get('second') and g.get('ocr')), todo=sum(1 for g in GQ.values() if g['status'] == 'todo'))))
+    elif cmd == 'gaps-init':
         A = load(P('audit.json')) or sys.exit('run audit.py first')
         os.makedirs(P('gaps'), exist_ok=True); n = 0
         for k, r in A['rows'].items():
@@ -537,12 +585,17 @@ elif cmd in ('gaps-init', 'gaps-next', 'gaps-merge'):
         n = int(sys.argv[3]) if len(sys.argv) > 3 else 25
         keys = [k for k, g in GQ.items() if g['status'] == 'todo' and Q.get(k, {}).get('status') in ('done-latest', 'done-kaggle', 'done')][:n]
         if not keys: print(json.dumps(dict(open=None, remaining=0))); sys.exit()
+        two = bool(GQ[keys[0]].get('second'))
+        keys = [k for k in keys if bool(GQ[k].get('second')) == two]  # a batch is all first pass or all second
+        ocred = {k: ocr_blank(k) for k in keys if GQ[k].get('ocr')}  # blank pages read by OCR before the cut
         r = subprocess.run([sys.executable, os.path.join(HERE, 'snippets.py'), data] + keys, capture_output=True, text=True)  # cut again, with today's headings
         if r.returncode: sys.exit(r.stderr[-500:])
         gid = f"g{len(glob.glob(P('gaps', 'g*.json'))) + 1:03d}"
-        GB = dict(id=gid, stage='read', keys=keys, items=[dict(key=k, fields=GQ[k]['fields']) for k in keys], openedAt=datetime.now().isoformat(timespec='seconds'))
+        GB = dict(id=gid, stage='read', keys=keys, items=[dict(key=k, fields=GQ[k]['fields'], **(dict(second=True) if two else {})) for k in keys],
+                  openedAt=datetime.now().isoformat(timespec='seconds'), **(dict(second=True, ocr=ocred) if two else {}))
         for k in keys: GQ[k].update(status='in-batch', batch=gid)
-        save_json(G, GQ); save_json(P('gaps', 'current.json'), GB); print(json.dumps(dict(open=gid, keys=keys, items=GB['items'])))
+        save_json(G, GQ); save_json(P('gaps', 'current.json'), GB)
+        print(json.dumps(dict(open=gid, keys=keys, items=GB['items'], model='sonnet' if two else 'haiku', **(dict(ocr=ocred) if two else {}))))
     else:
         if not GB or GB.get('stage') == 'closed': sys.exit('no open gap batch')
         def fill(old, new):  # new into old, only where old has no value
@@ -565,7 +618,7 @@ elif cmd in ('gaps-init', 'gaps-next', 'gaps-merge'):
             took = [f for f in GQ[k]['fields'] if f in g and g[f] is not None]
             for f in took: v[f] = fill(v.get(f), g[f])
             nil = [f for f in g.get('nil') or [] if f in GQ[k]['fields']]
-            v['gapFill'] = dict(at=datetime.now().isoformat(timespec='minutes'), batch=GB['id'], fields=took, nil=nil, notes=g.get('notes'))
+            v['gapFill2' if GB.get('second') else 'gapFill'] = dict(at=datetime.now().isoformat(timespec='minutes'), batch=GB['id'], fields=took, nil=nil, notes=g.get('notes'))
             save_json(vp, v); GQ[k]['status'] = 'done'; out['filled'] += bool(took); out['nil'] += bool(nil)
         GB.update(stage='closed', closedAt=datetime.now().isoformat(timespec='seconds'), summary=out)
         save_json(P('gaps', GB['id'] + '.json'), GB); save_json(P('gaps', 'current.json'), GB); save_json(G, GQ)

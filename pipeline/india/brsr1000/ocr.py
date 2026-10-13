@@ -31,5 +31,21 @@ def ocr_pdf(pdf, out, workers=4):
     os.replace(out + '.part', out)
     return len(text.split())
 
+def ocr_pages(pdf, wanted, expect=None, workers=4):
+    """{page number: text} for the pages asked for, or None when the PDF's page count differs from `expect` (the text
+    the pages would be spliced into came from another file)."""
+    n = pages(pdf)
+    if not n or (expect and n != expect): return None
+    tmp = tempfile.mkdtemp(prefix='ocr-'); out = {}
+    try:
+        def one(p):
+            base = os.path.join(tmp, f'p{p}')
+            subprocess.run(['/opt/homebrew/bin/pdftoppm', '-r', '200', '-png', '-f', str(p), '-l', str(p), '-singlefile', pdf, base], capture_output=True)
+            return p, subprocess.run([TESS, base + '.png', '-', '--psm', '6', '-c', 'preserve_interword_spaces=1'], capture_output=True, text=True).stdout if os.path.exists(base + '.png') else ''
+        with ThreadPoolExecutor(workers) as ex: out = dict(ex.map(one, [p for p in wanted if 1 <= p <= n][:MAX_PAGES]))
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+    return out
+
 if __name__ == '__main__':
     print(ocr_pdf(sys.argv[1], sys.argv[2]), 'words')
