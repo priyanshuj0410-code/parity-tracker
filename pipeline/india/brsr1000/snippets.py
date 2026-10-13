@@ -1,5 +1,6 @@
 """Cut each company's BRSR down to the tables a checker reads, and write the parser's candidates beside them (PARITY-123).
-Uses the latest downloaded report when it is newer than the Kaggle FY2024-25 file, else the Kaggle file.
+Uses the downloaded report when it is for the year the data dir collects (FY2025-26, or a history store's year), else the
+Kaggle file.
 
     python3 snippets.py <data dir> <queue key> [<queue key> ...]
 
@@ -7,9 +8,10 @@ Writes <data>/snippets/<key>.txt (headed sections, whitespace squeezed) and <dat
 """
 import json, os, re, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from brsr_fields import candidates, is_latest
+from brsr_fields import candidates, is_target, label_says, target_of
 
 data = sys.argv[1]
+TARGET = target_of(data)  # FY2025-26, or a history store's year
 q = json.load(open(os.path.join(data, 'queue.json')))
 SECTIONS = [
     ('Section A: identity and year', r'Corporate\s+Identity\s+Number|Name\s+of\s+the\s+(Listed\s+)?Entity', 2, 30),
@@ -34,7 +36,7 @@ SECTIONS = [
 def source(e):
     def dated(f):
         fy = f.get('fy') or ''
-        return is_latest(fy) or ((not fy or fy.startswith('~')) and bool(re.search(r'2025-?26|FY ?26|2026', f.get('labelFy') or '')))
+        return is_target(fy, TARGET) or ((not fy or fy.startswith('~')) and label_says(f.get('labelFy'), TARGET))
     ok = [f for f in e.get('fetches', []) if f.get('status') == 'ok' and f.get('hasBRSR') and dated(f)]
     if ok and os.path.exists(os.path.join(data, 'latest', 'txt', e['key'] + '.txt')):
         return os.path.join(data, 'latest', 'txt', e['key'] + '.txt'), ok[-1]['fy'], 'company site', ok[-1]['url']

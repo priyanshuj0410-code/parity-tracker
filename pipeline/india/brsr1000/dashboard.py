@@ -36,24 +36,25 @@ def now_of(q, keys):
         c[s] = c.get(s, 0) + 1
     return ', '.join(f'{n} {s}' for s, n in sorted(c.items(), key=lambda x: -x[1]))
 
-def stages(q, b):
-    """How far each company in the open batch has got: a FY2025-26 link found, the BRSR downloaded, read, accepted."""
-    opened = b.get('openedAt') or ''
+def stages(q, b, base=None, target='2025-26'):
+    """How far each company in the open batch has got: a link for the year sought found, the BRSR downloaded, read,
+    accepted. base and target: a history store's folder and year (PARITY-136); the build's by default."""
+    opened = b.get('openedAt') or ''; Pb = lambda *a: os.path.join(base or DATA, *a)
     def newer(p): return os.path.exists(p) and datetime.fromtimestamp(os.path.getmtime(p)).isoformat() >= opened
     def link(k):
-        f = load(P('found', k + '.json'), {})
-        return f.get('status') == 'found' and any(re.search(r'2025-?26|2026', c.get('fy') or '') for c in f.get('candidates', []))
+        f = load(Pb('found', k + '.json'), {})
+        return f.get('status') == 'found' and any(label_says(c.get('fy'), target) for c in f.get('candidates', []))
     def got(k):
-        rs = [json.loads(l) for l in open(P('fetch', k + '.jsonl'))] if os.path.exists(P('fetch', k + '.jsonl')) else []
-        return any(x.get('status') == 'ok' and x.get('hasBRSR') and is_latest(x.get('fy')) for x in rs)
+        rs = [json.loads(l) for l in open(Pb('fetch', k + '.jsonl'))] if os.path.exists(Pb('fetch', k + '.jsonl')) else []
+        return any(x.get('status') == 'ok' and x.get('hasBRSR') and is_target(x.get('fy'), target) for x in rs)
     rows = []
     for group, ks in (('Retried', [k for k in b['keys'] if q.get(k, {}).get('retry')]), ('New', [k for k in b['keys'] if not q.get(k, {}).get('retry')])):
         if ks: rows.append(dict(group=group, companies=len(ks), fy2526_link_found=sum(map(link, ks)), fy2526_downloaded=sum(map(got, ks)),
-                                read=sum(1 for k in ks if newer(P('read', k + '.haiku.json'))), accepted=sum(1 for k in ks if newer(P('verified', k + '.json')))))
+                                read=sum(1 for k in ks if newer(Pb('read', k + '.haiku.json'))), accepted=sum(1 for k in ks if newer(Pb('verified', k + '.json')))))
     return rows
 
 sys.path.insert(0, HERE)
-from brsr_fields import is_brsr, reporting_year, is_latest, fy_start, entity
+from brsr_fields import is_brsr, reporting_year, is_latest, fy_start, entity, is_target, label_says
 from inbox import matcher
 import marks as M, relations as REL
 from names import nice, FORMER
@@ -210,11 +211,7 @@ def nodata_tag(reason):
     return next(((t, l) for t, l, rx in NODATA_TAGS if re.search(rx, reason or '', re.I)), ('nd-unchecked', 'Not checked yet') if reason == UNCHECKED else ('nd-other', 'Other'))
 
 NOT_DUE = ('nd-new-listing', 'nd-new-top', 'nd-2026')  # no BRSR was due for FY2025-26 (owner, 13 October 2026)
-def due_2526(k, v, F):
-    """Was it required to file a BRSR for FY2025-26: in either exchange's top 1,000 on a December list up to 2024, since
-    coverage did not lapse before the 2024 sunset rule (rankings.py), unless its own report says it files from later."""
-    if v.get('brsrBasis') == 'company' and (v.get('brsrFrom') or '') > '2025-26': return False
-    return any(r and min(r.values()) <= 1000 for y, r in ((F.get(k) or {}).get('ranks') or {}).items() if int(y) <= 2024)
+due_2526 = M.due_2526  # was a BRSR due for FY2025-26 (marks.py, which the watch shares)
 
 def nodata_why(k, v, F):
     """(tag, label, sentence) for a company with no usable FY2025-26 report. One with no BRSR due yet is a new listing,
@@ -364,7 +361,7 @@ def run_state(cur, lock, closed):
     resets = lambda label: (m.group(1) if (m := re.search(label + r'[^\n]*?resets ([^(\n]+?)\s*(\(|$)', u, re.M)) else None)
     return dict(state='running' if busy else 'idle', since=since and since.isoformat(timespec='minutes'), minutes=mins,
                 overrun=bool(busy and mins is not None and mins > slot_min), slotMin=slot_min, nextRun=nxt.isoformat(timespec='minutes'),
-                batch=cur and cur.get('stage') != 'closed' and cur.get('id'), kind=cur and cur.get('stage') != 'closed' and cur.get('kind'), lastClosed=closed[-1]['closedAt'] if closed else None,
+                batch=cur and cur.get('stage') != 'closed' and cur.get('id'), kind=cur and cur.get('stage') != 'closed' and cur.get('kind'), fy=cur and cur.get('stage') != 'closed' and cur.get('fy'), lastClosed=closed[-1]['closedAt'] if closed else None,
                 week=week, session=session, gates=GATES, weekResets=resets('Current week'), sessionResets=resets('Current session'), readMinAgo=int(ago.group(1)) if ago else None,
                 gated=bool((week or 0) >= GATES['week'] or (session or 0) >= GATES['session']), guardTripped='tripped' in u.lower())
 
@@ -374,7 +371,7 @@ def log_entries(q):
     out = []
     for line in (open(P('logs', 'runs.md')).read().splitlines() if os.path.exists(P('logs', 'runs.md')) else []):
         if not line.startswith('- '): continue
-        b = re.search(r'\b([bg]\d{3})\b', line); when = re.match(r'- (\d{4}-\d\d-\d\d \d\d:\d\d)', line)
+        b = re.search(r'\b(h\d{4}-b\d{3}|[bg]\d{3})\b', line); when = re.match(r'- (\d{4}-\d\d-\d\d \d\d:\d\d)', line)
         m = re.search(r'flags: (.*?)(?: \| usage|$)', line)
         flags = []
         for f in (m.group(1).split('; ') if m else []):
@@ -392,12 +389,17 @@ def calm(s):
     return re.sub(r'\b([A-Z]{5,}(?: [A-Z]{2,})*)\b', lambda m: m.group(1).capitalize() if not re.search(r'\d', m.group(1)) and m.group(1) not in ('PARITY', 'SEBI') else m.group(1), s)
 def log_summary(text):
     """One plain sentence for a run-log line (kind closed, stopped or note); the full line stays as the detail."""
-    body = re.sub(r'^\S+ \S+( \+0530| IST)? \|? ?', '', text); body = re.sub(r'^[bg]\d{3}\s*(\(\w+\))?:?\s*\|?\s*', '', body)
+    body = re.sub(r'^\S+ \S+( \+0530| IST)? \|? ?', '', text); body = re.sub(r'^(?:h\d{4}-b\d{3}|[bg]\d{3})\s*(\(\w+\))?:?\s*\|?\s*', '', body)
     if body.startswith('watch |'):
         return dict(kind='watch', summary=cap(body.split('|', 1)[1].strip().replace('companies with no FY2025-26 BRSR', 'companies')) + '.', detail=body)
     if 'STOPPED' in body or 'FAILED' in body:
         st = re.search(r'(?:STOPPED|FAILED) at stage (\w+)', body)
         return dict(kind='stopped', summary=f"{'Failed' if 'FAILED' in body else 'Stopped'}" + (f' at {STAGE_NAME.get(st.group(1), st.group(1))}.' if st else '.'), detail=body)
+    m = re.search(r'(FY\d{4}-\d\d) history: done (\d+), wrong year (\d+), no data (\d+)', body)
+    if m:
+        y, dn, w, nd = m.groups()
+        parts = [f'{dn} read'] + [x for x, v in ((f'{w} another year', w), (f'{nd} no usable report', nd)) if v != '0']
+        return dict(kind='closed', summary=f"{y} history closed: {', '.join(parts)}.", detail=body)
     m = re.search(r'gap fill: filled (\d+), nil (\d+), wrong year (\d+), unread (\d+)', body)
     if m:
         f, n, w, u = m.groups()
@@ -447,8 +449,27 @@ def gap_detail(bid, q):
                 companies=cos, log=es, flags=[], refind=[], corrections=None,
                 prev=ids[i - 1] if i else None, next=ids[i + 1] if i is not None and i + 1 < len(ids) else None)
 
+def history_detail(bid, q):
+    """A history batch's pane (PARITY-136): times, its year's outcome counts, the stage rail while open, the log, and each
+    company with how it closed (that year read, another year's report, or none usable)."""
+    m = re.match(r'h(\d\d)(\d\d)-b\d{3}$', bid); fy = f'20{m.group(1)}-{m.group(2)}'; d = P('history', fy)
+    HQ, cur = load(os.path.join(d, 'queue.json'), {}) or {}, load(os.path.join(d, 'batch', 'current.json'), {}) or {}
+    b = load(os.path.join(d, 'batch', 'done', bid + '.json')) or (cur if cur.get('id') == bid else None)
+    if not b: return dict(error='No such batch')
+    ids = [x['id'] for x in all_batches()]; i = ids.index(bid) if bid in ids else None
+    es = [e for e in log_entries(q) if e['batch'] == bid]; o, c = dt(b.get('openedAt')), dt(b.get('closedAt'))
+    return dict(id=bid, kind='history', fy=fy, slotMin=interval_at(o or datetime.now()), stage=b.get('stage'), open=not c, openedAt=b.get('openedAt'),
+                closedAt=b.get('closedAt'), summary=b.get('summary'), minutes=int(((c or datetime.now()) - o).total_seconds() // 60) if o else None,
+                corrections=corrections(es), stages=stages(HQ, b, d, fy) if not c else None,
+                stageIndex=next((j for j, (s, _) in enumerate(STAGES) if s == b.get('stage')), None) if not c else None,
+                companies=[dict(key=k, name=display_name(q.get(k) or HQ.get(k, {}), k)[0], status=HQ.get(k, {}).get('status'),
+                                closedAs=(b.get('closedAs') or {}).get(k) or HQ.get(k, {}).get('status')) for k in b.get('keys', [])],
+                log=es, flags=[], refind=[dict(key=k, name=display_name(q.get(k) or HQ.get(k, {}), k)[0], reason=refind_reason(r), detail=r) for k, r in (b.get('refind') or {}).items()],
+                prev=ids[i - 1] if i else None, next=ids[i + 1] if i is not None and i + 1 < len(ids) else None)
+
 def batch_detail(bid):
     if re.match(r'g\d{3}$', bid): return gap_detail(bid, load(P('queue.json'), {}))
+    if re.match(r'h\d{4}-b\d{3}$', bid): return history_detail(bid, load(P('queue.json'), {}))
     q = load(P('queue.json'), {}); cur = load(P('batch', 'current.json'), {})
     b = cur if cur.get('id') == bid and cur.get('stage') != 'closed' else load(P('batch', 'done', bid + '.json'), {}) or (cur if cur.get('id') == bid else {})
     if not b: return dict(error='No such batch')
@@ -472,16 +493,40 @@ def batch_detail(bid):
 STAGES = [('discover', 'Find'), ('refind', 'Search again'), ('browse', 'Browser'), ('fetch3', 'Download'), ('snippets', 'Cut tables'),
           ('read', 'Read'), ('adjudicate', 'Settle'), ('final', 'Close')]
 dt = lambda s: datetime.fromisoformat(s).replace(tzinfo=None) if s else None
+def stores():
+    """The history stores (data/history/<fy>/, PARITY-136), newest year first, the order the runs take them: each one's
+    year, folder, source ('kaggle' texts on disk, or 'web') and queue counts."""
+    out = []
+    for h in sorted(glob.glob(P('history', '*', 'history.json')), reverse=True):
+        d, meta = os.path.dirname(h), load(h) or {}; c = {}
+        for v in (load(os.path.join(d, 'queue.json'), {}) or {}).values(): c[v['status']] = c.get(v['status'], 0) + 1
+        out.append(dict(fy=meta.get('fy'), dir=d, source=meta.get('source'), total=sum(c.values()), counts=c, left=c.get('todo', 0) + c.get('in-batch', 0)))
+    return out
+
 def all_batches():
-    """Every batch in the order it opened, the open one last: FY2025-26 batches (b001 on, data/batch/) with kind 'read'
-    and gap-fill batches (g001 on, data/gaps/) with kind 'gap'."""
+    """Every batch in the order it opened, the open one last: FY2025-26 batches (b001 on, data/batch/) with kind 'read',
+    gap-fill batches (g001 on, data/gaps/) with kind 'gap', and history batches (h2425-b001 on, data/history/<fy>/batch/)
+    with kind 'history' and their year."""
     bs = []
-    for d, kind in ((P('batch'), 'read'), (P('gaps'), 'gap')):
-        done = [dict(load(f), kind=kind) for f in glob.glob(os.path.join(d, 'done' if kind == 'read' else '', '[bg][0-9][0-9][0-9].json'))]
+    for d, kind, pat, fy in [(P('batch'), 'read', 'done/[b][0-9][0-9][0-9].json', None), (P('gaps'), 'gap', 'g[0-9][0-9][0-9].json', None)] + \
+            [(os.path.join(s['dir'], 'batch'), 'history', 'done/h*-b[0-9][0-9][0-9].json', s['fy']) for s in stores()]:
+        done = [dict(load(f), kind=kind, fy=fy) for f in glob.glob(os.path.join(d, pat))]
         cur = load(os.path.join(d, 'current.json'))
-        if cur and cur.get('stage') != 'closed' and cur['id'] not in {b['id'] for b in done}: done.append(dict(cur, kind=kind))
+        if cur and cur.get('stage') != 'closed' and cur['id'] not in {b['id'] for b in done}: done.append(dict(cur, kind=kind, fy=fy))
         bs += done
     return sorted(bs, key=lambda b: (b.get('openedAt') or '9', b['id']))
+
+def history_progress():
+    """The history store the runs are on, the newest year with companies left (PARITY-136): its counts, pace and finish."""
+    s = next((x for x in stores() if x['left']), None)
+    if not s: return None
+    cur = load(os.path.join(s['dir'], 'batch', 'current.json')); cur = cur if cur and cur.get('stage') != 'closed' else None
+    closed = [b for b in all_batches() if b['kind'] == 'history' and b['fy'] == s['fy'] and b.get('closedAt') and b.get('openedAt')]
+    rate, eta, n, basis = pace_of(closed, cur, s['left'])
+    return dict(fy=s['fy'], source=s['source'], total=s['total'], done=s['total'] - s['left'], left=s['left'], counts=s['counts'],
+                ratePerHour=rate and round(rate, 1), paceBatches=n, paceBasis=basis, eta=eta,
+                open=cur and dict(id=cur['id'], stage=cur['stage'], companies=len(cur['keys']), openedAt=cur.get('openedAt'),
+                                  stages=stages(load(os.path.join(s['dir'], 'queue.json'), {}), cur, s['dir'], s['fy'])))
 
 def corrections(entries):
     for e in entries:
@@ -501,7 +546,7 @@ def runs_view(q):
         stop = next((re.split(r'[:|]', e['text'].split('STOPPED', 1)[1])[0].strip() for e in es if 'STOPPED' in e['text']), None)
         mins = int(((c or now) - o).total_seconds() // 60) if o else None
         gap = interval_at(o) if o else interval_at(now)
-        return dict(batch=b['id'], kind=b['kind'], openedAt=b.get('openedAt'), closedAt=b.get('closedAt'), minutes=mins, overran=bool(mins and mins > gap), slotMin=gap,
+        return dict(batch=b['id'], kind=b['kind'], fy=b.get('fy'), openedAt=b.get('openedAt'), closedAt=b.get('closedAt'), minutes=mins, overran=bool(mins and mins > gap), slotMin=gap,
                     counts=b.get('summary'), corrections=corrections(es), flags=sum(len(e['flags']) for e in es), stopped=stop, open=not c, **kw)
     out, used = [], set()
     for s, gap in slots:
@@ -537,7 +582,7 @@ ASK = dict(identity='Is this the right company?', value='Is this figure right?',
 
 def inbox_view(q):
     """Everything the owner does by hand: fetch rows with links, files sent and where each is, unmatched files, decisions."""
-    n = needs(q); q2 = overlay(q); waiting = inbox_matches(q2); log = log_entries(q2); nxt = run_state(None, None, [])['nextRun']
+    n = needs(q); q2 = overlay(q); waiting = inbox_matches(q2); log = log_entries(q2); nxt = run_state(None, None, [])['nextRun']; watched = set(M.watch_list(q, DATA))
     fetch = [c for c in n['companies'] if not c['received'] or c.get('again')]
     listed = {c['key'] for c in fetch}
     for e in log:
@@ -567,6 +612,8 @@ def inbox_view(q):
                             # no usable report: an older year is asked for again; a file with no BRSR in it is not "read"
                             # its year read again by the parser: the next batch sends it back to be read (batch.recheck_closed)
                             (3, None, 'Taken in. Read when the next batch opens.') if st == 'no-data' and not v.get('noDataReason') and not any(x.get('status') == 'ok' and is_latest(x.get('fy')) for x in v.get('fetches') or []) and has_latest_text(k) else
+                            # an older year's file for a company the watch now looks at daily (Kennametal, SpiceJet): nothing to do until it is out
+                            (5, None, f'The file is the {yr_label(old[-1])} BRSR. The FY2025-26 one is not out yet: the daily watch checks for it.') if st == 'no-data' and old and k in watched else
                             (3, 'older-year', f'The file is the {yr_label(old[-1])} BRSR. Save the FY2025-26 one.') if st == 'no-data' and old else
                             (5, 'no-brsr', 'The file holds no BRSR.' + (' ' + v['noDataReason'] + '.' if v.get('noDataReason') else '')) if st == 'no-data' and mine and not any(x.get('hasBRSR') for x in mine) else
                             (5, 'no-figure', 'Read. ' + (v.get('noDataReason') or 'It gives no payroll figure') + '.') if st == 'no-data' else
@@ -657,16 +704,22 @@ def years_of(q):
     years in the last records build (data/records_years.json, from to_records.py), plus what the checked readings give
     since, their own year and their prior-year column. Kept until SQLite or the build file changes."""
     global _years
-    stamp = tuple(os.path.getmtime(f) if os.path.exists(f) else 0 for f in (DB, P('records_years.json'), P('queue.json')))
+    dbs = [DB] + sorted(glob.glob(P('history', '*', 'brsr1000.sqlite')))  # each history store's readings count too (PARITY-136)
+    stamp = tuple(os.path.getmtime(f) if os.path.exists(f) else 0 for f in dbs + [P('records_years.json'), P('queue.json')])
     if _years[0] == stamp: return _years[1]
     built = (load(P('records_years.json')) or {}).get('companies', {})
-    live = {r['key']: r for r in rows('select key, fy, wage_share_current cur, wage_share_prior prior, perm_emp_total e, perm_wkr_total w from readings')}
+    sql = 'select key, fy, wage_share_current cur, wage_share_prior prior, perm_emp_total e, perm_wkr_total w from readings'
+    live = {}
+    for db in dbs:
+        for r in rows(sql, db=db): live.setdefault(r['key'], []).append(r)
     out = {}
     for k, v in q.items():
         if v['status'] == 'merged': continue
-        ys, r = {fy_start(y) for y in built.get(k, [])}, live.get(k) or {}; y = fy_start(r.get('fy'))
-        if y and (r['cur'] is not None or r['e'] or r['w']): ys.add(y)
-        if y and r['prior'] is not None: ys.add(y - 1)
+        ys = {fy_start(y) for y in built.get(k, [])}
+        for r in live.get(k, []):
+            y = fy_start(r.get('fy'))
+            if y and (r['cur'] is not None or r['e'] or r['w']): ys.add(y)
+            if y and r['prior'] is not None: ys.add(y - 1)
         out[k] = sorted(ys - {None})
     _years = (stamp, out); return out
 
@@ -705,30 +758,33 @@ def companies_all():
 
 def overview():
     """Everything the landing view needs in one call: the run, progress, pace, the owner's work, breakdowns and the ladder."""
-    p, gp = progress(), gap_progress(); q = load(P('queue.json'), {}); bs = all_batches(); closed = [b for b in bs if b.get('closedAt')]
+    p, gp, hp = progress(), gap_progress(), history_progress(); q = load(P('queue.json'), {}); bs = all_batches(); closed = [b for b in bs if b.get('closedAt')]
     ob = next((b for b in reversed(bs) if b.get('stage') != 'closed'), None); rs = run_state(ob, p['lock'], closed); c = p['counts']
     log = log_entries(q); open_id = rs['batch']
     stop = open_id and rs['state'] == 'idle' and any('STOPPED' in e['text'] for e in log if e['batch'] == open_id) and not any(
         'closed' in e['text'] for e in log if e['batch'] == open_id and 'STOPPED' not in e['text'])
-    # Once the FY2025-26 queue is through, the runs fill gaps (runbook step 9): pace, finish and what is left follow them.
-    read_left, gap_left = c.get('todo') or c.get('in-batch'), gp and gp['left']
-    ph = gp if gap_left and not read_left else p; left = ph['total'] - ph['done']
-    word = ('finished' if not read_left and not gap_left else
+    # Once the FY2025-26 queue is through, the runs fill gaps (runbook step 9), then read the history stores, newest year
+    # first (step 8, PARITY-136): pace, finish and what is left follow whichever the runs are on.
+    read_left, gap_left, hist_left = c.get('todo') or c.get('in-batch'), gp and gp['left'], hp and hp['left']
+    ph = p if read_left else gp if gap_left else hp if hist_left else p; left = ph['total'] - ph['done']
+    phase = 'read' if ph is p else 'gaps' if ph is gp else 'history'
+    word = ('finished' if not read_left and not gap_left and not hist_left else
             ('stuck' if rs['minutes'] > 90 else 'overrunning' if rs['overrun'] else 'running') if rs['state'] == 'running' else
             'stopped' if stop else 'paused' if rs['gated'] or rs['guardTripped'] else 'idle')
     cap = 25 * 60 // rs['slotMin']; best = datetime.now() + timedelta(hours=left / cap)
-    pace = dict(phase='gaps' if ph is gp else 'read', rate=ph['ratePerHour'], batches=ph['paceBatches'], basis=ph['paceBasis'], cap=cap, left=left, total=ph['total'], done=ph['done'], eta=ph['eta'],
+    pace = dict(phase=phase, label={'gaps': 'gap fill', 'history': f"{hp['fy'][:4]} history" if hp else ''}.get(phase, ''), rate=ph['ratePerHour'], batches=ph['paceBatches'], basis=ph['paceBasis'], cap=cap, left=left, total=ph['total'], done=ph['done'], eta=ph['eta'],
                 best=best.isoformat(timespec='minutes'))
     if ob and ob['kind'] == 'gap': st = gp['open']['stages']; names, ix = GAP_STAGES, 1 if st['read'] < st['companies'] else 2
-    else: names, ix = STAGES, next((i for i, (s, _) in enumerate(STAGES) if p['open'] and s == p['open']['stage']), None)
-    return dict(progress=p, gaps=gp, years=year_rows(q), run=dict(rs, word=word, stageIndex=ix, stageName=names[ix][1] if ix is not None else None), stages=[n for _, n in STAGES],
+    else: names, ix = STAGES, next((i for i, (s, _) in enumerate(STAGES) if ob and s == ob['stage']), None)
+    return dict(progress=p, gaps=gp, history=hp, stores=[{f: s[f] for f in ('fy', 'source', 'total', 'left')} for s in stores()], years=year_rows(q), run=dict(rs, word=word, stageIndex=ix, stageName=names[ix][1] if ix is not None else None), stages=[n for _, n in STAGES],
                 gapStages=[n for _, n in GAP_STAGES], pace=pace, inbox=inbox_view(q), watch=watch_view(load(P('queue.json'), {})),
                 ladder=rows('select * from ladder_by_standard'), finer=(rows("select count(distinct key) n from ladder where standard not in ('board','kmp','staff','workers')") or [{}])[0].get('n'),
                 builtAt=datetime.fromtimestamp(os.path.getmtime(DB)).isoformat(timespec='minutes') if os.path.exists(DB) else None, now=datetime.now().isoformat(timespec='seconds'))
 
-def rows(sql, args=()):
-    if not os.path.exists(DB): return []
-    con = sqlite3.connect(f'file:{DB}?mode=ro', uri=True); con.row_factory = sqlite3.Row
+def rows(sql, args=(), db=None):
+    db = db or DB
+    if not os.path.exists(db): return []
+    con = sqlite3.connect(f'file:{db}?mode=ro', uri=True); con.row_factory = sqlite3.Row
     try: return [dict(r) for r in con.execute(sql, args).fetchall()]
     finally: con.close()
 

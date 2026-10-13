@@ -2,7 +2,7 @@
 the batch file records its stage, so a run cut short picks up where it stopped.
 
     python3 batch.py next     <data> [n]   open the next batch of n companies (default 25), or show the open one
-    python3 batch.py fetch    <data>       download each company's found reports, in order, until a FY2025-26 BRSR lands
+    python3 batch.py fetch    <data>       download each company's found reports, in order, until a BRSR of the year sought lands
     python3 batch.py browse   <data>       headless-browser visit for companies still missing after the second search
     python3 batch.py snippets <data>       cut the tables for checking (latest report, else the Kaggle FY2024-25 file)
     python3 batch.py merge    <data>       compare the first reading with the parser; agreed readings are final
@@ -12,10 +12,11 @@ the batch file records its stage, so a run cut short picks up where it stopped.
     python3 batch.py gate     <data>       exit 3 (stop) if the usage guard is tripped, the week is at 78%+ or the 5-hour window at 75%+
     python3 batch.py lock     <data>       take the run lock; exit 3 if another run took it under 90 minutes ago
     python3 batch.py unlock   <data>       release the run lock
+    python3 batch.py history-init <data> <fy>   make data/history/<fy>/: 2024-25 from the Kaggle texts; earlier years search and download
 """
 import glob, hashlib, json, os, re, subprocess, sys, urllib.parse, shutil
 from datetime import datetime
-from brsr_fields import CIN, is_latest, fy_start
+from brsr_fields import CIN, is_latest, fy_start, is_target, label_says, LATEST
 
 cmd, data = sys.argv[1], sys.argv[2]
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -28,9 +29,11 @@ def save_json(p, obj):  # atomic, so the dashboard never reads half a file
 def save_q(): save_json(P('queue.json'), Q)
 def load(p, default=None): return json.load(open(p)) if os.path.exists(p) else default
 B = load(P('batch', 'current.json'))
-# A history store (data/history/<fy>/, made by `history-init`) holds one earlier year: it reads local texts, so its batches
-# start at snippets, and it never takes the owner's inbox, pending changes, marks or the watch's finds.
+# A history store (data/history/<fy>/, made by `history-init`) holds one earlier year, and never takes the owner's inbox,
+# pending changes, marks or the watch's finds. A 'kaggle' store reads local texts, so its batches start at snippets; a 'web'
+# store (PARITY-136) searches each company's site for that year's report first, like the build itself.
 HISTORY = load(P('history.json'))
+TARGET = HISTORY['fy'] if HISTORY else LATEST  # the year a BRSR must be for
 def save_b(): save_json(P('batch', 'current.json'), B)
 
 INBOX = os.path.expanduser('~/brsr reports 2025-26/inbox')
@@ -183,7 +186,7 @@ if cmd == 'next':
     if HISTORY:
         keys = [k for k, v in Q.items() if v['status'] == 'todo'][:n]
         if not keys: print(json.dumps(dict(open=None, remaining=0))); sys.exit()
-        open_batch(keys, 'snippets'); sys.exit()
+        open_batch(keys, 'discover' if HISTORY.get('source') == 'web' else 'snippets'); sys.exit()
     # Changes queued by an attended session while a batch was running: {"set": {key: {field: value}}, "requeue": [keys]}.
     # First, so the inbox below matches files on what they set (a CIN added to a Nivel company, say).
     pend = load(P('pending.json'), {})
@@ -252,10 +255,11 @@ elif cmd == 'fetch':
             if ar: run(ar, '--as', 'ar')
         return log
     def latest(x):
-        """A usable FY2025-26 BRSR. Where the text names no year (a scan, an odd layout), the year on the company's own
-        page for the file counts; the reader still records the year from the report itself."""
+        """A usable BRSR of the year sought (FY2025-26, or a history store's year). Where the text names no year (a scan, an
+        odd layout), the year on the company's own page for the file counts; the reader still records the year from the
+        report itself."""
         fy = x.get('fy') or ''
-        dated = is_latest(fy) or ((not fy or fy.startswith('~')) and bool(re.search(r'2025-?26|FY ?26|2026', x.get('labelFy') or '')))
+        dated = is_target(fy, TARGET) or ((not fy or fy.startswith('~')) and label_says(x.get('labelFy'), TARGET))
         return x.get('status') == 'ok' and x.get('hasBRSR') and dated
     def why(k):
         """What went wrong, for the second search: the found file's status and each download's outcome."""
@@ -264,7 +268,7 @@ elif cmd == 'fetch':
         for x in rs:
             if x.get('status') == 'not-pdf': out.append(f"{x['url']} returned {x.get('http')}")
             elif x.get('status') == 'ok' and not x.get('hasBRSR'): out.append(f"{x['url']} is a report with no BRSR in it")
-            elif x.get('status') == 'ok': out.append(f"{x['url']} is for {x.get('fy')}, not 2025-26")
+            elif x.get('status') == 'ok': out.append(f"{x['url']} is for {x.get('fy')}, not {TARGET}")
             else: out.append(f"{x['url']}: {x.get('status')}")
         return '; '.join(out)
     with ThreadPoolExecutor(6) as ex:
@@ -274,7 +278,8 @@ elif cmd == 'fetch':
     # after that search's downloads, the batch moves on and those companies keep their Kaggle FY2024-25 report.
     # Then, once more for those still missing, a headless-browser visit (stage browse) and a last download (stage fetch3).
     missing = {k: why(k) for k in B['keys'] if not any(latest(x) for x in records(k))}
-    if missing and 'refind' not in B: B['refind'] = missing; B['stage'] = 'refind'
+    # A store marked onePass (FY2021-22, a voluntary year most companies filed no BRSR for) skips the Sonnet search.
+    if missing and 'refind' not in B and not (HISTORY or {}).get('onePass'): B['refind'] = missing; B['stage'] = 'refind'
     elif missing and 'browsed' not in B: B['stillMissing'] = list(missing); B['stage'] = 'browse'
     else: B['stage'] = 'snippets'; B['stillMissing'] = list(missing)
     save_q(); save_b(); print(json.dumps(dict(stage=B['stage'], missing=len(missing))))
@@ -297,7 +302,7 @@ elif cmd == 'browse':
         for k in miss:
             b = load(P('browse', k + '.json'), {}); f = load(P('found', k + '.json'), {'key': k, 'candidates': []})
             have = {c.get('url') for c in f.get('candidates', [])}
-            add = [dict(url=p['href'], fy='2025-26', kind='brsr' if re.search(r'brsr|responsib', p['href'] + p['text'], re.I) else 'annual-report',
+            add = [dict(url=p['href'], fy=TARGET, kind='brsr' if re.search(r'brsr|responsib', p['href'] + p['text'], re.I) else 'annual-report',
                         foundOn='headless browser: ' + b.get('site', '')) for p in b.get('pdfs', []) if p['score'] >= 5 and p['href'] not in have
                    and not re.search(r'intimation', p['href'] + p['text'], re.I)][:3]
             if add: f['candidates'] = add + f.get('candidates', []); f['status'] = 'found'; json.dump(f, open(P('found', k + '.json'), 'w'), indent=1)
@@ -472,9 +477,23 @@ elif cmd == 'history-init':
     # Make data/history/<fy>/ for an earlier year, from the FY2024-25 Kaggle texts already on disk (no downloads). A company
     # whose checked reading is already that year is copied in as done; one whose Kaggle text is another year stays out.
     fy = sys.argv[3]
-    if fy != '2024-25': sys.exit('only 2024-25 has local texts (the Kaggle dataset); other years need downloads')
     H = P('history', fy)
     if os.path.exists(os.path.join(H, 'queue.json')): sys.exit(f'{H} exists')
+    if fy != '2024-25':
+        # No local texts (PARITY-136): a 'web' store whose batches search each company's site for that year's report, like
+        # the build. It holds the companies a BRSR was due from that year, in either exchange's top 1,000 on a December list
+        # up to then (the 2022 list stands in for FY2021-22, the voluntary first year), that the records and readings lack.
+        y = int(fy[:4]); R = (load(P('rankings', 'fy2026-27.json')) or {}).get('companies', {})
+        built = (load(P('records_years.json')) or {}).get('companies', {})
+        due = lambda k: any(r and min(r.values()) <= 1000 for yy, r in ((R.get(k) or {}).get('ranks') or {}).items() if int(yy) <= max(y, 2022))
+        HQ = {}
+        for k, v in Q.items():
+            if v['status'] == 'merged' or not due(k) or fy in built.get(k, []) or fy_start((load(P('verified', k + '.json')) or {}).get('fy')) == y: continue
+            HQ[k] = dict({f: v[f] for f in ('key', 'name', 'cin', 'website', 'symbol') if v.get(f) is not None}, key=k, kind='new', status='todo')
+        for d in ('batch/done', 'found', 'fetch', 'browse', 'snippets', 'cand', 'read', 'verified', 'latest/txt', 'tmp'): os.makedirs(os.path.join(H, d), exist_ok=True)
+        save_json(os.path.join(H, 'queue.json'), HQ)
+        save_json(os.path.join(H, 'history.json'), dict(fy=fy, source='web', onePass=y <= 2021, created=datetime.now().isoformat(timespec='seconds')))
+        print(json.dumps(dict(store=H, companies=len(HQ), source='web'))); sys.exit()
     for d in ('batch/done', 'snippets', 'cand', 'read', 'verified', 'latest/txt', 'fetch', 'tmp'): os.makedirs(os.path.join(H, d), exist_ok=True)
     os.symlink(os.path.relpath(P('kaggle'), H), os.path.join(H, 'kaggle'))
     HQ, copied = {}, 0

@@ -41,6 +41,22 @@ def fy_start(fy):
 def is_latest(fy):  # FY2025-26 or later (a calendar 2025 report counts: it is the year that ends inside FY2025-26)
     return (fy_start(fy) or 0) >= 2025
 
+# A history store (data/history/<fy>/, PARITY-136) collects one earlier year; the build itself collects the latest.
+LATEST = '2025-26'
+def target_of(data):
+    """The year a data dir collects: a history store's (its history.json), else the latest, FY2025-26."""
+    import json, os
+    h = os.path.join(data, 'history.json')
+    return json.load(open(h))['fy'] if os.path.exists(h) else LATEST
+def is_target(fy, target=LATEST):
+    """A year read from a report is the one sought: FY2025-26 or later for the build, that year (or the calendar year it
+    starts in) for a history store. An unread year never is."""
+    return is_latest(fy) if target == LATEST else fy_start(fy) == int(target[:4])
+def label_says(label, target=LATEST):
+    """The page's own label for a file names the year sought: "2023-24", "2023-2024", "FY24"; for the latest, also "2026"."""
+    y = int(target[:4]); yy = f'{(y + 1) % 100:02d}'
+    return bool(re.search(rf'{y}\s*[-–/]?\s*(?:20)?{yy}(?!\d)|FY\s?{yy}(?!\d)' + ('|2026' if target == LATEST else ''), label or '', re.I))
+
 def reporting_year(t):
     """'2025-26', 'CY2025', '~2025-26' when only inferred from FY mentions, 'unread', or None."""
     t = t.replace('‐', '-').replace('‑', '-')  # Unicode and non-breaking hyphens (Mastek prints "2025‑26")

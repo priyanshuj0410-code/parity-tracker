@@ -234,6 +234,14 @@ others = load(os.path.join(dump, 'symbols.json'), [])  # every other market's sy
 taken = set(others) | set(stored)
 left = {k for k, v in Q.items() if REL.merged_away(k, EV) or MK.get(k, {}).get('kind') in M.GONE_KINDS or M.GONE.search(str(v.get('staleReason') or ''))}
 
+# Each history store's queue (data/history/<fy>/queue.json), by year: where a store downloaded its year's report (PARITY-136).
+HQS = {load(h)['fy']: load(os.path.join(os.path.dirname(h), 'queue.json'), {}) for h in glob.glob(P('history', '*', 'history.json'))}
+def filing_for(k, y, v):
+    """The year's filing: the build's own download for the build's reading, else the history store's that read that year."""
+    if y == label((load(P('verified', k + '.json')) or {}).get('fy')): return filing(v)
+    h = HQS.get(y, {}).get(k)
+    return filing(h) if h and h.get('fetches') else dict(xbrl='', pdf='', submitted='')
+
 def readings(k):
     """{year: reading}: the build's checked reading, then each history store's."""
     out = {}
@@ -349,8 +357,9 @@ for k, v in sorted(Q.items()):
             have = c['years'].get(y)
             if have and have.get('w') is not None and rec['w'] is not None and rec['wKind'] == 'reported' and abs(have['w'] - rec['w']) > 0.005:
                 report['crossCheck'].append([nm, y, have['w'], rec['w']])
-            if y == LATEST and not have and rec['w'] is not None:
-                c['years'][y] = {f: x for f, x in rec.items() if not f.startswith('_')}; c['filings'][y] = filing(v)
+            # The latest year, or an earlier one a history store read (PARITY-136), where the stored record has none.
+            if not have and rec['w'] is not None:
+                c['years'][y] = {f: x for f, x in rec.items() if not f.startswith('_')}; c['filings'][y] = filing_for(k, y, v)
                 report['nivelYearAdded'].append(nm)
                 if rec['_payEst']: added_est.add((nm, y))
                 copy = json.loads(json.dumps({nm: c})); set_basis_and_weights(copy)  # its basis flag only; the stored weight stands
@@ -396,7 +405,8 @@ for k, v in sorted(Q.items()):
         if sp: years[y]['staff'] = sp
     rec = dict(symbol=sym, name=name, industry=ind, isin=i.get('isin'), cin=i.get('cin') or v.get('cin'), country='IN', exchange='NSE' if i.get('nse') else 'BSE',
                indexes=[], marketCapCr=None, publicFloatPct=None, years={y: years[y] for y in sorted(years)},
-               filings={max(rs): filing(v)}, payrollWeightCr=None, payrollWeightBasis=None)
+               filings={y: f for y in sorted(rs) for f in [filing_for(k, y, v) if y != max(rs) else filing(v)] if y == max(rs) or f.get('pdf')},
+               payrollWeightCr=None, payrollWeightBasis=None)
     if former: rec['formerly'] = former
     if max(rs) != LATEST: rec['latestNote'] = latest_note(k, v)
     if v['status'] == 'no-data' and v.get('noDataReason'): rec['noDataReason'] = v['noDataReason']
