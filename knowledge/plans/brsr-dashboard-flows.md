@@ -142,7 +142,7 @@ Typing in the search box is free; selecting a result is a click. Nothing that th
 
 The bar's word comes from the lock, the open batch, the run log and usage:
 - **Running.**
-- **Overrunning:** the lock has been held more than 30 minutes.
+- **Overrunning:** the lock has been held longer than the run interval: 10 minutes from 13 October 2026, 30 before. Slots follow the schedule in force at each time (`SCHEDULES` in `dashboard.py`).
 - **Stuck:** more than 90 minutes, when the next run takes over.
 - **Stopped:** the log says STOPPED and the lock is free.
 - **Paused by usage:** at a gate.

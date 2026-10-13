@@ -289,13 +289,29 @@ def gap_progress():
     return dict(total=len(GQ), done=len(GQ) - left, left=left, counts=c, ratePerHour=rate and round(rate, 1), paceBatches=min(PACE_BATCHES, len(closed)), eta=eta,
                 open=cur and dict(id=cur['id'], stage=cur['stage'], companies=len(cur['keys']), openedAt=cur.get('openedAt'), stages=gap_stages(cur)))
 
-SLOTS, JITTER, SLOT_MIN = (7, 37), timedelta(seconds=353), 30  # the routine's cron minutes; the app's 296 s delay plus its once-a-minute check; its interval
+# The routine's cron minutes from each date: every 30 minutes (owner, 11 October 2026), every 10 (owner, 13 October 2026).
+# JITTER is the app's 296 s delay plus its once-a-minute check.
+SCHEDULES = [(datetime(2026, 10, 11, 14, 30), (7, 37)), (datetime(2026, 10, 13, 11, 0), (7, 17, 27, 37, 47, 57))]
+JITTER = timedelta(seconds=353)
+def interval_at(t):
+    """Minutes between scheduled runs at time t."""
+    return 60 // len(next((m for since, m in reversed(SCHEDULES) if since <= t), SCHEDULES[0][1]))
+def slots_between(t0, t1):
+    """Each scheduled run's start from t0 to t1, with the interval it ran on."""
+    out = []
+    for i, (since, mins) in enumerate(SCHEDULES):
+        until = SCHEDULES[i + 1][0] if i + 1 < len(SCHEDULES) else None
+        hour = max(since, t0).replace(minute=0, second=0, microsecond=0)
+        while hour <= t1 and (until is None or hour < until):
+            out += [(s, 60 // len(mins)) for m in mins for s in [hour + timedelta(minutes=m) + JITTER] if max(since, t0) <= s <= t1 and (until is None or s < until)]
+            hour += timedelta(hours=1)
+    return out
 GATES = dict(week=78, session=75)  # batch.py gate: a run stops at or above these
 
 def run_state(cur, lock, closed):
     """Is a run working, idle or overrunning; when the next one starts; how close usage is to the gates."""
     now = datetime.now(); hour = now.replace(minute=0, second=0, microsecond=0)
-    nxt = min(t for h in (0, 1) for m in SLOTS for t in [hour + timedelta(hours=h, minutes=m) + JITTER] if t > now)
+    nxt = min(s for s, _ in slots_between(now, hour + timedelta(hours=2)) if s > now); slot_min = interval_at(now)
     busy = (lock or {}).get('state') == 'busy'
     since = datetime.fromisoformat(lock['since']).replace(tzinfo=None) if lock and lock.get('since') else None
     mins = int((now - since).total_seconds() // 60) if since else None
@@ -304,7 +320,7 @@ def run_state(cur, lock, closed):
     ago = re.search(r'read (\d+) min ago', u)
     resets = lambda label: (m.group(1) if (m := re.search(label + r'[^\n]*?resets ([^(\n]+?)\s*(\(|$)', u, re.M)) else None)
     return dict(state='running' if busy else 'idle', since=since and since.isoformat(timespec='minutes'), minutes=mins,
-                overrun=bool(busy and mins is not None and mins > SLOT_MIN), nextRun=nxt.isoformat(timespec='minutes'),
+                overrun=bool(busy and mins is not None and mins > slot_min), slotMin=slot_min, nextRun=nxt.isoformat(timespec='minutes'),
                 batch=cur and cur.get('stage') != 'closed' and cur.get('id'), kind=cur and cur.get('stage') != 'closed' and cur.get('kind'), lastClosed=closed[-1]['closedAt'] if closed else None,
                 week=week, session=session, gates=GATES, weekResets=resets('Current week'), sessionResets=resets('Current session'), readMinAgo=int(ago.group(1)) if ago else None,
                 gated=bool((week or 0) >= GATES['week'] or (session or 0) >= GATES['session']), guardTripped='tripped' in u.lower())
@@ -383,7 +399,7 @@ def gap_detail(bid, q):
         k = it['key']; g = (load(P('verified', k + '.json')) or {}).get('gapFill') or {}; g = g if g.get('batch') == bid else {}
         cos.append(dict(key=k, name=display_name(q.get(k, {}), k)[0], status=GQ.get(k, {}).get('status'), asked=it['fields'], filled=g.get('fields') or [],
                         nil=g.get('nil') or [], notes=g.get('notes'), read=bool(st) and os.path.exists(P('read', k + '.gap.json'))))
-    return dict(id=bid, kind='gap', stage=b.get('stage'), open=not c, openedAt=b.get('openedAt'), closedAt=b.get('closedAt'), summary=b.get('summary'),
+    return dict(id=bid, kind='gap', slotMin=interval_at(o or datetime.now()), stage=b.get('stage'), open=not c, openedAt=b.get('openedAt'), closedAt=b.get('closedAt'), summary=b.get('summary'),
                 minutes=int(((c or datetime.now()) - o).total_seconds() // 60) if o else None, stages=st, stageIndex=st and (1 if st['read'] < st['companies'] else 2),
                 companies=cos, log=es, flags=[], refind=[], corrections=None,
                 prev=ids[i - 1] if i else None, next=ids[i + 1] if i is not None and i + 1 < len(ids) else None)
@@ -396,7 +412,7 @@ def batch_detail(bid):
     ids = [x['id'] for x in all_batches()]; i = ids.index(bid) if bid in ids else None
     es = [e for e in log_entries(q) if e['batch'] == bid]; o, c = dt(b.get('openedAt')), dt(b.get('closedAt'))
     flagged = {f['key'] for e in es for f in e['flags'] if f['key']}
-    return dict(id=bid, stage=b.get('stage'), open=not c, openedAt=b.get('openedAt'), closedAt=b.get('closedAt'), summary=b.get('summary'),
+    return dict(id=bid, slotMin=interval_at(o or datetime.now()), stage=b.get('stage'), open=not c, openedAt=b.get('openedAt'), closedAt=b.get('closedAt'), summary=b.get('summary'),
                 minutes=int(((c or datetime.now()) - o).total_seconds() // 60) if o else None, corrections=corrections(es),
                 disputes=len(b.get('disputes') or {}), stages=stages(q, b) if not c else None,
                 stageIndex=next((j for j, (s, _) in enumerate(STAGES) if s == b.get('stage')), None) if not c else None,
@@ -410,7 +426,6 @@ def batch_detail(bid):
                             checked=(load(P('check_resolved.json'), {}).get(f"{f['key']}:{hashlib.sha1(f['text'].encode()).hexdigest()[:8]}") or {}).get('note')) for e in es for f in e['flags']], log=es,
                 prev=ids[i - 1] if i else None, next=ids[i + 1] if i is not None and i + 1 < len(ids) else None)
 
-SCHEDULE_FROM = datetime(2026, 10, 11, 14, 30)  # the routine's first slot window opened here
 STAGES = [('discover', 'Find'), ('refind', 'Search again'), ('browse', 'Browser'), ('fetch3', 'Download'), ('snippets', 'Cut tables'),
           ('read', 'Read'), ('adjudicate', 'Settle'), ('final', 'Close')]
 dt = lambda s: datetime.fromisoformat(s).replace(tzinfo=None) if s else None
@@ -434,23 +449,21 @@ def corrections(entries):
     return None
 
 def runs_view(q):
-    """One row per scheduled half-hour slot (did it open a batch, finish one, or find the lock held) plus attended batches.
+    """One row per scheduled slot (did it open a batch, finish one, or find the lock held) plus attended batches.
     Slots are inferred: a run that stops at the gate or the lock writes nothing, so those rows say so."""
     bs, log, now = all_batches(), log_entries(q), datetime.now()
-    hour = SCHEDULE_FROM.replace(minute=0, second=0); slots = []
-    while hour <= now:
-        slots += [s for m in SLOTS for s in [hour + timedelta(minutes=m) + JITTER] if SCHEDULE_FROM <= s <= now]
-        hour += timedelta(hours=1)
+    slots = slots_between(SCHEDULES[0][0], now)
     def row(b, **kw):
         es = [e for e in log if e['batch'] == b['id']]; o, c = dt(b.get('openedAt')), dt(b.get('closedAt'))
         stop = next((re.split(r'[:|]', e['text'].split('STOPPED', 1)[1])[0].strip() for e in es if 'STOPPED' in e['text']), None)
         mins = int(((c or now) - o).total_seconds() // 60) if o else None
-        return dict(batch=b['id'], kind=b['kind'], openedAt=b.get('openedAt'), closedAt=b.get('closedAt'), minutes=mins, overran=bool(mins and mins > SLOT_MIN),
+        gap = interval_at(o) if o else interval_at(now)
+        return dict(batch=b['id'], kind=b['kind'], openedAt=b.get('openedAt'), closedAt=b.get('closedAt'), minutes=mins, overran=bool(mins and mins > gap), slotMin=gap,
                     counts=b.get('summary'), corrections=corrections(es), flags=sum(len(e['flags']) for e in es), stopped=stop, open=not c, **kw)
     out, used = [], set()
-    for s in slots:
-        w0, w1 = s - timedelta(minutes=3), s + timedelta(minutes=27)
-        opened = [b for b in bs if b['id'] not in used and b.get('openedAt') and w0 <= dt(b['openedAt']) < s + timedelta(minutes=15)]
+    for s, gap in slots:
+        w0, w1 = s - timedelta(minutes=3), s + timedelta(minutes=gap - 3)
+        opened = [b for b in bs if b['id'] not in used and b.get('openedAt') and w0 <= dt(b['openedAt']) < s + timedelta(minutes=gap / 2)]
         finished = [b for b in bs if b.get('closedAt') and dt(b['openedAt']) < w0 and w0 <= dt(b['closedAt']) < w1]
         held = [b for b in bs if dt(b['openedAt']) < s and (not b.get('closedAt') or dt(b['closedAt']) > s)]
         if opened: used.add(opened[0]['id']); out.append(row(opened[0], slot=s.isoformat(timespec='minutes'), outcome='running' if not opened[0].get('closedAt') else 'opened', basis='logged'))
@@ -459,7 +472,7 @@ def runs_view(q):
         elif s < now - timedelta(minutes=3): out.append(dict(slot=s.isoformat(timespec='minutes'), outcome='lost', batch=None, basis='inferred', note='No batch opened: the usage gate, a held lock or a paused schedule.'))
     out += [row(b, slot=None, outcome='attended', basis='logged') for b in bs if b['id'] not in used and b['id'] not in {r.get('batch') for r in out}]
     out.sort(key=lambda r: r.get('slot') or r.get('openedAt') or '', reverse=True)
-    return dict(runs=out, log=list(reversed(log)), slotsFrom=SCHEDULE_FROM.isoformat(timespec='minutes'))
+    return dict(runs=out, log=list(reversed(log)), slotsFrom=SCHEDULES[0][0].isoformat(timespec='minutes'))
 
 FLAGKIND = [('identity', r'IDENTITY|\bCIN\b|mapping|unidentifiable|\bperson\b'), ('value', r'looks? (high|low|misprint)|misprint|implausible|kept null|\bnull\b'),
             ('unit', r'\bunits?\b|lakh|rupees|crore'), ('basis', r'like-for-like|post-merger|renamed|demerg|boundary')]
@@ -631,8 +644,8 @@ def overview():
     word = ('finished' if not read_left and not gap_left else
             ('stuck' if rs['minutes'] > 90 else 'overrunning' if rs['overrun'] else 'running') if rs['state'] == 'running' else
             'stopped' if stop else 'paused' if rs['gated'] or rs['guardTripped'] else 'idle')
-    best = datetime.now() + timedelta(hours=left / 50)
-    pace = dict(phase='gaps' if ph is gp else 'read', rate=ph['ratePerHour'], batches=ph['paceBatches'], cap=50, left=left, total=ph['total'], done=ph['done'], eta=ph['eta'],
+    cap = 25 * 60 // rs['slotMin']; best = datetime.now() + timedelta(hours=left / cap)
+    pace = dict(phase='gaps' if ph is gp else 'read', rate=ph['ratePerHour'], batches=ph['paceBatches'], cap=cap, left=left, total=ph['total'], done=ph['done'], eta=ph['eta'],
                 best=best.isoformat(timespec='minutes'))
     if ob and ob['kind'] == 'gap': st = gp['open']['stages']; names, ix = GAP_STAGES, 1 if st['read'] < st['companies'] else 2
     else: names, ix = STAGES, next((i for i, (s, _) in enumerate(STAGES) if p['open'] and s == p['open']['stage']), None)
