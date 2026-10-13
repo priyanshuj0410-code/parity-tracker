@@ -1,5 +1,5 @@
 """How a company name reads (PARITY-129). A filing or AMFI that prints a name in capitals gets title case, with its
-acronyms kept; a name with any lower-case letter is the company's own and stands. Used by the dashboard and by
+acronyms kept; a name with any lower-case letter is the company's own and stands. Every name ends in "Ltd.". Used by the dashboard and by
 to_sqlite.py, so the database and the page show the same names."""
 import re
 
@@ -9,8 +9,13 @@ ACRONYMS = set('ABB ACC BEL BEML BHEL BSE CAMS CESC CDSL DCB DCM DCW DLF EIH EPC
                'PPAP SIS SJVN SKF SML SRF STL TCI TCS TTK TV TVS UCO UPL UTI VIP VRL VST WPIL ZF'.split())
 SMALL = {'AND', 'OF', 'THE', 'FOR', 'IN', 'ON', 'AT', 'BY', 'TO'}
 COMMON = {'CO', 'OIL', 'GAS', 'TEA', 'AIR', 'NEW', 'ONE', 'SUN', 'SKY', 'ART', 'BIO', 'CAR', 'DEE', 'AGE', 'ACE', 'RAM', 'SRI', 'DR', 'MAX', 'PAN', 'TEX', 'ZEE', 'JAY', 'OM', 'LTD', 'PVT', 'HI', 'RAJ', 'SAI', 'MAN', 'BOX', 'TEK', 'OAK', 'ALL'}
+SUFFIX = re.compile(r'\s+(?:Limited|Limtied|Limted|Ltd)\.?$', re.I)  # "Limited", "LIMITED", "Ltd" and filings' typos
 def nice(name):
-    if not name or re.search(r'[a-z]', name): return name  # the company's own mixed case stands
+    """A name as Nivel shows it: title case for one printed in capitals, and every company's ending as "Ltd.", NSE's form
+    and the one Nivel's records already use (owner, 13 October 2026)."""
+    if not name: return name
+    return SUFFIX.sub(' Ltd.', (name if re.search(r'[a-z]', name) else title(name)).strip())  # the company's own mixed case stands
+def title(name):
     def word(m):
         w, start = m.group(0), m.start() == 0
         if w in COMMON: return w[0] + w[1:].lower()
