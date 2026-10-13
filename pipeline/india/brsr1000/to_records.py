@@ -35,7 +35,7 @@ market, and <dump dir>/out/report.json.
   - Merged, delisted and insolvent companies leave the group: they are never stood in for.
   - The change uses each filing's own prior-year column as its base, with a bootstrap interval. It is shown only when
     no more than 30% of payroll is carried and no top-10 payer and no whole industry is carried."""
-import glob, json, os, random, re, statistics, sys
+import glob, json, os, random, re, statistics, sys, time
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path[:0] = [HERE, os.path.join(HERE, '..'), os.path.join(HERE, '..', '..')]
 from brsr_fields import fy_start
@@ -633,6 +633,9 @@ json.dump({**indexes, 'brsrall': group_ix}, open(os.path.join(dump, 'out', 'inde
 report.update(companies=len(companies), groupMembers=len(group), left=sorted(gone), growth={y: rd(v) for y, v in GROW.items()},
               group={y: {f: v.get(f) for f in v if f != 'sectors'} for y, v in years.items()}, yoy=yoy)
 json.dump(report, open(os.path.join(dump, 'out', 'report.json'), 'w'), indent=1)
+# The years each queue company has in these records, for the dashboard's Companies card (PARITY-135).
+json.dump(dict(builtAt=time.strftime('%Y-%m-%dT%H:%M'), companies={k: sorted(companies[s]['years']) for k, s in sym_of.items() if s in companies}),
+          open(P('records_years.json'), 'w'), separators=(',', ':'))
 print(json.dumps({k: (len(v) if isinstance(v, (list, dict)) else v) for k, v in report.items() if k not in ('group', 'yoy', 'growth')}))
 for y, v in report['group'].items():
     print(y, {f: v[f] for f in ('headline', 'carryForwardHeadline', 'companiesCovered', 'companiesReported', 'companiesCarried', 'carriedPayrollShare', 'estimatedPayrollShare', 'workforce', 'boards')})
