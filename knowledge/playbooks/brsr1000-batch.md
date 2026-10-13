@@ -162,8 +162,10 @@ What the earlier years can give (knowledge/research/brsr-requirements.md): the 2
 
 `audit.py` lists, for each checked reading, the mandatory measures it lacks although the report's table was there, and the measures added on 12 October 2026 (well-being spend, accident insurance, wage complaints). `B gaps-init D` queues them. A gap batch reads only those fields for 25 companies and fills empty values; it never overwrites a checked value.
 
-1. **Open:** run `B gaps-next D 25`. If it reports `"open": null`, go back to step 7.3. It cuts the companies' snippets again and prints `items`, each a key and its fields.
-2. **Read:** run the Workflow tool with `scriptPath` `pipeline/india/brsr1000/gapfill.workflow.js` and `args` `{"data": D, "spec": "<absolute path to pipeline/india/brsr1000/READING.md>", "items": [the items]}`. Haiku agents write `D/read/<key>.gap.json`.
+**Second pass (PARITY-137, owner, 13 October 2026):** `B gaps-init D --pass2`, after `audit.py`, queues every field a reading still lacks although its table or its words are in the text, and, for the 24 texts with blank pages (image-drawn tables), every missing field. Its batches are all second-pass: `gaps-next` first reads the blank pages by OCR (downloading the company's PDF again where it is not on disk; never NSE or BSE), and the reader is Sonnet. A field still missing after it was left out by the company; `audit.py` shows those as not in text.
+
+1. **Open:** run `B gaps-next D 25`. If it reports `"open": null`, go back to step 7.3. It cuts the companies' snippets again and prints `items`, each a key and its fields, and `model`. A second-pass batch can take several minutes to open while OCR runs.
+2. **Read:** run the Workflow tool with `scriptPath` `pipeline/india/brsr1000/gapfill.workflow.js` and `args` `{"data": D, "spec": "<absolute path to pipeline/india/brsr1000/READING.md>", "items": [the items], "model": "<the model gaps-next printed>"}`. The agents write `D/read/<key>.gap.json`.
 3. **Merge:** run `B gaps-merge D`. It fills the readings, records `gapFill` in each, and rebuilds `D/brsr1000.sqlite`.
 4. **Log it:** append one line to `D/logs/runs.md`: `- <date time> IST | <id> | gap fill: filled N, nil N, wrong year N, unread N | usage week W%, session S%`, and the same line as a Plane comment on PARITY-129 (`python3 pipeline/india/brsr1000/plane_note.py 59edeb77-637d-4ab4-924e-43b8a22072b5 "<that line>"`).
 5. **Release the lock:** run `B unlock D`, and stop.

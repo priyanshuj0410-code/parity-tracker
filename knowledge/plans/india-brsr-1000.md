@@ -10,6 +10,7 @@ plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/f47ab7b6-a46f-4d22-83d5-5131790b6a49
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/59edeb77-637d-4ab4-924e-43b8a22072b5
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/c0f8c42e-83da-4114-a50f-9feed4601efd
+  - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/0778fe23-1326-4442-828f-a9ae413fad19
 ---
 
 # India, from the Nifty 500 to every BRSR filer
@@ -125,6 +126,11 @@ Source check: [../research/brsr-dataset-2024-25-check.md](../research/brsr-datas
     - **How:** one history store per year (`data/history/<fy>/`, source `web`), searched for and downloaded from company sites like the build, read and settled the same way. The runs take the stores newest year first, after the FY2024-25 store. FY2021-22 skips the Sonnet second search (`onePass`).
     - **Pace and usage:** about 2,000 reports, roughly a quarter to two fifths of a week's usage. The runs stop at 78% of the week, so most of it runs after the reset on 18 October 2026 at 14:30 (owner's choice: build now, run in queue).
     - **Into the records:** `to_records.py` reads every store. A year a Nivel company's stored record lacks is now added (before, only FY2025-26 was), with that store's download as its filing; new companies already took every year.
+
+14. **Gap pass 2 (owner, 13 October 2026).** [PARITY-137](https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/0778fe23-1326-4442-828f-a9ae413fad19). After the first gap fill, 488 company-fields of the 15 mandatory gender measures were still missing across 820 readings. Every one is an Essential Indicator, so mandatory for the top 1,000; BRSR Core only decides which must also be assured.
+    - **Re-read (Sonnet):** 252 whose table was in the snippet, and the fields whose words are in the full text: 208 companies in all, including 10 of the 45 missing wage shares.
+    - **OCR:** 24 texts have blank pages (image-drawn tables); those pages are read before the re-read.
+    - **Left out by the company:** most of the rest. 27 of the 35 wage shares still missing sit in BRSRs whose Principle 5 and median pay are in the text, with no wage-share line: the template from before July 2023.
 
 ## Why payroll
 
