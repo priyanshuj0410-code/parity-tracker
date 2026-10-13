@@ -248,16 +248,7 @@ def progress():
     batches = sorted((load(f) for f in glob.glob(P('batch', 'done', '*.json'))), key=lambda b: b['id'])
     cur = load(P('batch', 'current.json'))
     closed = [b for b in batches if b.get('closedAt') and b.get('openedAt')]
-    rate = eta = None
-    if len(closed) >= 2:
-        # Pace over the last six batches, so an early stall stops dragging the estimate. The window runs to the next
-        # batch's opening (the slot those six used up), or to the last close when none is open.
-        recent = closed[-PACE_BATCHES:]
-        t0 = datetime.fromisoformat(recent[0]['openedAt'])
-        t1 = datetime.fromisoformat(cur['openedAt'] if cur and cur.get('stage') != 'closed' and cur.get('openedAt') else recent[-1]['closedAt'])
-        hrs = max((t1 - t0).total_seconds() / 3600, 0.01); rate = sum(len(b['keys']) for b in recent) / hrs
-        left = len(q) - counts.get('merged', 0) - done
-        eta = (datetime.now() + timedelta(hours=left / rate)).isoformat(timespec='minutes') if rate else None
+    rate, eta = pace_of(closed, cur, len(q) - counts.get('merged', 0) - done)
     log = open(P('logs', 'runs.md')).read().splitlines()[-15:] if os.path.exists(P('logs', 'runs.md')) else []
     # A merged entry is a duplicate of another queue entry for the same company: it is not a company of its own.
     return dict(total=len(q) - counts.get('merged', 0), done=done, counts=counts, ratePerHour=rate and round(rate, 1), paceBatches=min(PACE_BATCHES, len(closed)), eta=eta,
@@ -266,6 +257,37 @@ def progress():
                 batches=[dict(id=b['id'], openedAt=b.get('openedAt'), closedAt=b.get('closedAt'), **(b.get('summary') or {}),
                               now=now_of(q, b['keys'])) for b in batches[-12:]],
                 lock=load(P('run.lock')), usage=usage(), log=log, db=os.path.exists(DB), fy2425=fy2425(q), nodata=nodata(q))
+
+def pace_of(closed, cur, left):
+    """Companies an hour over the last six closed batches, so an early stall stops dragging the estimate, and the finish
+    it gives. The window runs to the next batch's opening (the slot those six used up), or to the last close when none is open."""
+    if len(closed) < 2: return None, None
+    recent = closed[-PACE_BATCHES:]
+    t0 = datetime.fromisoformat(recent[0]['openedAt'])
+    t1 = datetime.fromisoformat(cur['openedAt'] if cur and cur.get('stage') != 'closed' and cur.get('openedAt') else recent[-1]['closedAt'])
+    rate = sum(len(b['keys']) for b in recent) / max((t1 - t0).total_seconds() / 3600, 0.01)
+    return rate, (datetime.now() + timedelta(hours=left / rate)).isoformat(timespec='minutes')
+
+GAP_STAGES = [('cut', 'Cut tables'), ('read', 'Read'), ('merge', 'Merge')]  # batch.py gaps-next cuts before it opens the batch
+def gap_stages(b):
+    """How far an open gap batch has got: the companies whose missing fields have been read (read/<key>.gap.json)."""
+    opened = b.get('openedAt') or ''
+    def newer(p): return os.path.exists(p) and datetime.fromtimestamp(os.path.getmtime(p)).isoformat() >= opened
+    return dict(companies=len(b['keys']), fields=sum(len(x['fields']) for x in b.get('items') or []), read=sum(1 for k in b['keys'] if newer(P('read', k + '.gap.json'))))
+
+def gap_progress():
+    """The gap fill (batch.py gaps-*, runbook step 9): checked readings that lack mandatory fields, read again for those
+    fields only. Done, wrong year and unread all close a company; to do and in a batch are what is left."""
+    GQ = load(P('gaps', 'queue.json'))
+    if not GQ: return None
+    c = {}
+    for g in GQ.values(): c[g['status']] = c.get(g['status'], 0) + 1
+    left = c.get('todo', 0) + c.get('in-batch', 0)
+    cur = load(P('gaps', 'current.json')); cur = cur if cur and cur.get('stage') != 'closed' else None
+    closed = [b for b in all_batches() if b['kind'] == 'gap' and b.get('closedAt') and b.get('openedAt')]
+    rate, eta = pace_of(closed, cur, left)
+    return dict(total=len(GQ), done=len(GQ) - left, left=left, counts=c, ratePerHour=rate and round(rate, 1), paceBatches=min(PACE_BATCHES, len(closed)), eta=eta,
+                open=cur and dict(id=cur['id'], stage=cur['stage'], companies=len(cur['keys']), openedAt=cur.get('openedAt'), stages=gap_stages(cur)))
 
 SLOTS, JITTER, SLOT_MIN = (7, 37), timedelta(seconds=353), 30  # the routine's cron minutes; the app's 296 s delay plus its once-a-minute check; its interval
 GATES = dict(week=78, session=75)  # batch.py gate: a run stops at or above these
@@ -283,7 +305,7 @@ def run_state(cur, lock, closed):
     resets = lambda label: (m.group(1) if (m := re.search(label + r'[^\n]*?resets ([^(\n]+?)\s*(\(|$)', u, re.M)) else None)
     return dict(state='running' if busy else 'idle', since=since and since.isoformat(timespec='minutes'), minutes=mins,
                 overrun=bool(busy and mins is not None and mins > SLOT_MIN), nextRun=nxt.isoformat(timespec='minutes'),
-                batch=cur and cur.get('stage') != 'closed' and cur.get('id'), lastClosed=closed[-1]['closedAt'] if closed else None,
+                batch=cur and cur.get('stage') != 'closed' and cur.get('id'), kind=cur and cur.get('stage') != 'closed' and cur.get('kind'), lastClosed=closed[-1]['closedAt'] if closed else None,
                 week=week, session=session, gates=GATES, weekResets=resets('Current week'), sessionResets=resets('Current session'), readMinAgo=int(ago.group(1)) if ago else None,
                 gated=bool((week or 0) >= GATES['week'] or (session or 0) >= GATES['session']), guardTripped='tripped' in u.lower())
 
@@ -293,7 +315,7 @@ def log_entries(q):
     out = []
     for line in (open(P('logs', 'runs.md')).read().splitlines() if os.path.exists(P('logs', 'runs.md')) else []):
         if not line.startswith('- '): continue
-        b = re.search(r'\b(b\d{3})\b', line); when = re.match(r'- (\d{4}-\d\d-\d\d \d\d:\d\d)', line)
+        b = re.search(r'\b([bg]\d{3})\b', line); when = re.match(r'- (\d{4}-\d\d-\d\d \d\d:\d\d)', line)
         m = re.search(r'flags: (.*?)(?: \| usage|$)', line)
         flags = []
         for f in (m.group(1).split('; ') if m else []):
@@ -311,12 +333,17 @@ def calm(s):
     return re.sub(r'\b([A-Z]{5,}(?: [A-Z]{2,})*)\b', lambda m: m.group(1).capitalize() if not re.search(r'\d', m.group(1)) and m.group(1) not in ('PARITY', 'SEBI') else m.group(1), s)
 def log_summary(text):
     """One plain sentence for a run-log line (kind closed, stopped or note); the full line stays as the detail."""
-    body = re.sub(r'^\S+ \S+( \+0530| IST)? \|? ?', '', text); body = re.sub(r'^b\d{3}\s*(\(\w+\))?:?\s*\|?\s*', '', body)
+    body = re.sub(r'^\S+ \S+( \+0530| IST)? \|? ?', '', text); body = re.sub(r'^[bg]\d{3}\s*(\(\w+\))?:?\s*\|?\s*', '', body)
     if body.startswith('watch |'):
         return dict(kind='watch', summary=cap(body.split('|', 1)[1].strip().replace('companies with no FY2025-26 BRSR', 'companies')) + '.', detail=body)
     if 'STOPPED' in body or 'FAILED' in body:
         st = re.search(r'(?:STOPPED|FAILED) at stage (\w+)', body)
         return dict(kind='stopped', summary=f"{'Failed' if 'FAILED' in body else 'Stopped'}" + (f' at {STAGE_NAME.get(st.group(1), st.group(1))}.' if st else '.'), detail=body)
+    m = re.search(r'gap fill: filled (\d+), nil (\d+), wrong year (\d+), unread (\d+)', body)
+    if m:
+        f, n, w, u = m.groups()
+        parts = [f'{f} filled'] + [x for x, v in ((f'{n} with a nil table', n), (f'{w} wrong year', w), (f'{u} unread', u)) if v != '0']
+        return dict(kind='closed', summary=f"Gap fill closed: {', '.join(parts)}.", detail=body)
     m = re.search(r'latest (\d+), Kaggle-only (\d+)(?:, deep (\d+))?, no[- ]data (\d+)', body, re.I) or re.search(r'(\d+) latest FY2025-26, (\d+) Kaggle FY2024-25(?:, (\d+) deep)?, (\d+) no data', body)
     if m:
         c = corrections([dict(text=body)])
@@ -343,7 +370,26 @@ def former_name(v):
     m = FORMER.search(v.get('name') or '')
     return nice(v.get('formerly') or (m and m.group(1).strip()))
 
+def gap_detail(bid, q):
+    """A gap batch's pane: the fields each company was read again for, which it filled, which its report gives as nil,
+    and the reader's notes. A company read as another year takes nothing."""
+    GQ, cur = load(P('gaps', 'queue.json'), {}), load(P('gaps', 'current.json'), {})
+    b = load(P('gaps', bid + '.json')) or (cur if cur.get('id') == bid else None)
+    if not b: return dict(error='No such batch')
+    ids = [x['id'] for x in all_batches()]; i = ids.index(bid) if bid in ids else None
+    es = [e for e in log_entries(q) if e['batch'] == bid]; o, c = dt(b.get('openedAt')), dt(b.get('closedAt'))
+    st = gap_stages(b) if not c else None; cos = []
+    for it in b.get('items') or []:
+        k = it['key']; g = (load(P('verified', k + '.json')) or {}).get('gapFill') or {}; g = g if g.get('batch') == bid else {}
+        cos.append(dict(key=k, name=display_name(q.get(k, {}), k)[0], status=GQ.get(k, {}).get('status'), asked=it['fields'], filled=g.get('fields') or [],
+                        nil=g.get('nil') or [], notes=g.get('notes'), read=bool(st) and os.path.exists(P('read', k + '.gap.json'))))
+    return dict(id=bid, kind='gap', stage=b.get('stage'), open=not c, openedAt=b.get('openedAt'), closedAt=b.get('closedAt'), summary=b.get('summary'),
+                minutes=int(((c or datetime.now()) - o).total_seconds() // 60) if o else None, stages=st, stageIndex=st and (1 if st['read'] < st['companies'] else 2),
+                companies=cos, log=es, flags=[], refind=[], corrections=None,
+                prev=ids[i - 1] if i else None, next=ids[i + 1] if i is not None and i + 1 < len(ids) else None)
+
 def batch_detail(bid):
+    if re.match(r'g\d{3}$', bid): return gap_detail(bid, load(P('queue.json'), {}))
     q = load(P('queue.json'), {}); cur = load(P('batch', 'current.json'), {})
     b = cur if cur.get('id') == bid and cur.get('stage') != 'closed' else load(P('batch', 'done', bid + '.json'), {}) or (cur if cur.get('id') == bid else {})
     if not b: return dict(error='No such batch')
@@ -369,10 +415,15 @@ STAGES = [('discover', 'Find'), ('refind', 'Search again'), ('browse', 'Browser'
           ('read', 'Read'), ('adjudicate', 'Settle'), ('final', 'Close')]
 dt = lambda s: datetime.fromisoformat(s).replace(tzinfo=None) if s else None
 def all_batches():
-    bs = sorted((load(f) for f in glob.glob(P('batch', 'done', '*.json'))), key=lambda b: b['id'])
-    cur = load(P('batch', 'current.json'))
-    if cur and cur.get('stage') != 'closed' and cur['id'] not in {b['id'] for b in bs}: bs.append(cur)
-    return bs
+    """Every batch in the order it opened, the open one last: FY2025-26 batches (b001 on, data/batch/) with kind 'read'
+    and gap-fill batches (g001 on, data/gaps/) with kind 'gap'."""
+    bs = []
+    for d, kind in ((P('batch'), 'read'), (P('gaps'), 'gap')):
+        done = [dict(load(f), kind=kind) for f in glob.glob(os.path.join(d, 'done' if kind == 'read' else '', '[bg][0-9][0-9][0-9].json'))]
+        cur = load(os.path.join(d, 'current.json'))
+        if cur and cur.get('stage') != 'closed' and cur['id'] not in {b['id'] for b in done}: done.append(dict(cur, kind=kind))
+        bs += done
+    return sorted(bs, key=lambda b: (b.get('openedAt') or '9', b['id']))
 
 def corrections(entries):
     for e in entries:
@@ -394,7 +445,7 @@ def runs_view(q):
         es = [e for e in log if e['batch'] == b['id']]; o, c = dt(b.get('openedAt')), dt(b.get('closedAt'))
         stop = next((re.split(r'[:|]', e['text'].split('STOPPED', 1)[1])[0].strip() for e in es if 'STOPPED' in e['text']), None)
         mins = int(((c or now) - o).total_seconds() // 60) if o else None
-        return dict(batch=b['id'], openedAt=b.get('openedAt'), closedAt=b.get('closedAt'), minutes=mins, overran=bool(mins and mins > SLOT_MIN),
+        return dict(batch=b['id'], kind=b['kind'], openedAt=b.get('openedAt'), closedAt=b.get('closedAt'), minutes=mins, overran=bool(mins and mins > SLOT_MIN),
                     counts=b.get('summary'), corrections=corrections(es), flags=sum(len(e['flags']) for e in es), stopped=stop, open=not c, **kw)
     out, used = [], set()
     for s in slots:
@@ -569,20 +620,24 @@ def companies_all():
 
 def overview():
     """Everything the landing view needs in one call: the run, progress, pace, the owner's work, breakdowns and the ladder."""
-    p = progress(); q = load(P('queue.json'), {}); bs = all_batches(); closed = [b for b in bs if b.get('closedAt')]
-    cur = load(P('batch', 'current.json')); rs = run_state(cur, p['lock'], closed); c = p['counts']
+    p, gp = progress(), gap_progress(); q = load(P('queue.json'), {}); bs = all_batches(); closed = [b for b in bs if b.get('closedAt')]
+    ob = next((b for b in reversed(bs) if b.get('stage') != 'closed'), None); rs = run_state(ob, p['lock'], closed); c = p['counts']
     log = log_entries(q); open_id = rs['batch']
     stop = open_id and rs['state'] == 'idle' and any('STOPPED' in e['text'] for e in log if e['batch'] == open_id) and not any(
         'closed' in e['text'] for e in log if e['batch'] == open_id and 'STOPPED' not in e['text'])
-    left = p['total'] - p['done']
-    word = ('finished' if not c.get('todo') and not c.get('in-batch') else
+    # Once the FY2025-26 queue is through, the runs fill gaps (runbook step 9): pace, finish and what is left follow them.
+    read_left, gap_left = c.get('todo') or c.get('in-batch'), gp and gp['left']
+    ph = gp if gap_left and not read_left else p; left = ph['total'] - ph['done']
+    word = ('finished' if not read_left and not gap_left else
             ('stuck' if rs['minutes'] > 90 else 'overrunning' if rs['overrun'] else 'running') if rs['state'] == 'running' else
             'stopped' if stop else 'paused' if rs['gated'] or rs['guardTripped'] else 'idle')
     best = datetime.now() + timedelta(hours=left / 50)
-    pace = dict(rate=p['ratePerHour'], batches=p['paceBatches'], cap=50, left=left,
+    pace = dict(phase='gaps' if ph is gp else 'read', rate=ph['ratePerHour'], batches=ph['paceBatches'], cap=50, left=left, total=ph['total'], done=ph['done'], eta=ph['eta'],
                 best=best.isoformat(timespec='minutes'))
-    ix = next((i for i, (s, _) in enumerate(STAGES) if p['open'] and s == p['open']['stage']), None)
-    return dict(progress=p, run=dict(rs, word=word, stageIndex=ix), stages=[n for _, n in STAGES], pace=pace, inbox=inbox_view(q), watch=watch_view(load(P('queue.json'), {})),
+    if ob and ob['kind'] == 'gap': st = gp['open']['stages']; names, ix = GAP_STAGES, 1 if st['read'] < st['companies'] else 2
+    else: names, ix = STAGES, next((i for i, (s, _) in enumerate(STAGES) if p['open'] and s == p['open']['stage']), None)
+    return dict(progress=p, gaps=gp, run=dict(rs, word=word, stageIndex=ix, stageName=names[ix][1] if ix is not None else None), stages=[n for _, n in STAGES],
+                gapStages=[n for _, n in GAP_STAGES], pace=pace, inbox=inbox_view(q), watch=watch_view(load(P('queue.json'), {})),
                 ladder=rows('select * from ladder_by_standard'), finer=(rows("select count(distinct key) n from ladder where standard not in ('board','kmp','staff','workers')") or [{}])[0].get('n'),
                 builtAt=datetime.fromtimestamp(os.path.getmtime(DB)).isoformat(timespec='minutes') if os.path.exists(DB) else None, now=datetime.now().isoformat(timespec='seconds'))
 
