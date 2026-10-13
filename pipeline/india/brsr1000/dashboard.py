@@ -209,13 +209,39 @@ def nodata_reason(v): return v.get('noDataReason') or UNCHECKED
 def nodata_tag(reason):
     return next(((t, l) for t, l, rx in NODATA_TAGS if re.search(rx, reason or '', re.I)), ('nd-unchecked', 'Not checked yet') if reason == UNCHECKED else ('nd-other', 'Other'))
 
+NOT_DUE = ('nd-new-listing', 'nd-new-top', 'nd-2026')  # no BRSR was due for FY2025-26 (owner, 13 October 2026)
+def due_2526(k, v, F):
+    """Was it required to file a BRSR for FY2025-26: in either exchange's top 1,000 on a December list up to 2024, since
+    coverage did not lapse before the 2024 sunset rule (rankings.py), unless its own report says it files from later."""
+    if v.get('brsrBasis') == 'company' and (v.get('brsrFrom') or '') > '2025-26': return False
+    return any(r and min(r.values()) <= 1000 for y, r in ((F.get(k) or {}).get('ranks') or {}).items() if int(y) <= 2024)
+
+def nodata_why(k, v, F):
+    """(tag, label, sentence) for a company with no usable FY2025-26 report. One with no BRSR due yet is a new listing,
+    new to the top 1,000, or listed in 2026. One that was due gives the reason recorded, else what its files show."""
+    r, g = v.get('noDataReason'), F.get(k) or {}; ranks = g.get('ranks') or {}
+    if not due_2526(k, v, F):
+        if g.get('group') == 'later' or not ranks.get('2025'):
+            return 'nd-2026', 'Listed in 2026', r or 'Listed in 2026: its first BRSR is for FY2027-28 if it is in the top 1,000 on 31 December 2026'
+        if ranks.get('2024'): return 'nd-new-top', 'New to the top 1,000', r or 'Outside the top 1,000 until the December 2025 list, so its first BRSR is for FY2026-27'
+        return 'nd-new-listing', 'Listed since 2025', r or 'Listed after the December 2024 list, so its first BRSR is for FY2026-27'
+    t, l = nodata_tag(r) if r else (None, None)
+    if t in ('nd-employees', 'nd-not-out', 'nd-not-found', 'nd-blocked'): return t, l, r
+    ok = [x for x in v.get('fetches') or [] if x.get('status') == 'ok']
+    old = sorted({x['fy'].lstrip('~') for x in ok if x.get('hasBRSR') and (fy_start(x.get('fy')) or 9999) < 2025})
+    if any(x.get('hasBRSR') and x.get('fy') == 'unread' for x in ok): return 'nd-year', 'BRSR year not read', r or 'Its BRSR is on file but its year was not read'
+    if old: return 'nd-older', 'Only an older BRSR', r or f'Only its {yr_label(old[-1])} BRSR has been found'
+    if ok: return 'nd-no-brsr', 'No BRSR in its report', r or 'Its annual report has no BRSR in it: look for a separate BRSR filing'
+    return 'nd-not-found', 'No report found', r or 'No FY2025-26 report found'
+
 def nodata(q):
-    """The companies with no usable report (not those sent back to be read again), grouped by reason tag."""
-    groups = {}
+    """The companies with no usable report (not those sent back to be read again), grouped by reason tag, each group
+    marked due or not: whether a BRSR was required for FY2025-26."""
+    groups, F = {}, fy27().get('companies', {})
     for k, v in overlay(q).items():
         if v['status'] != 'no-data': continue
-        r = nodata_reason(v); groups.setdefault(nodata_tag(r), []).append(dict(key=k, name=display_name(v, k)[0], detail=r))
-    return sorted((dict(tag=t, label=l, n=len(n), names=sorted(n, key=lambda x: x['name'].lower())) for (t, l), n in groups.items()), key=lambda x: -x['n'])
+        t, l, r = nodata_why(k, v, F); groups.setdefault((t, l), []).append(dict(key=k, name=display_name(v, k)[0], detail=r))
+    return sorted((dict(tag=t, label=l, n=len(n), due=t not in NOT_DUE, names=sorted(n, key=lambda x: x['name'].lower())) for (t, l), n in groups.items()), key=lambda x: -x['n'])
 
 def reason_2425(k, v, waiting):
     """Why a company holds only FY2024-25 today, or None when it does not: the one sentence the breakdown, the table and the
@@ -553,7 +579,7 @@ def company_view(key):
     staff_w = sum(r.get(c) or 0 for c in ('perm_emp_women', 'perm_wkr_women')); staff_t = sum(r.get(c) or 0 for c in ('perm_emp_total', 'perm_wkr_total'))
     st = v['status']; retry = bool(v.get('retry') and st in ('todo', 'in-batch'))
     # one line on why, only where the status badge and batch link do not already say it
-    why = (why_2425(key, v) if st == 'done-kaggle' else (v.get('noDataReason') or 'No usable report was found') + '.' if st == 'no-data' else
+    why = (why_2425(key, v) if st == 'done-kaggle' else nodata_why(key, v, fy27().get('companies', {}))[2] + '.' if st == 'no-data' else
            'Duplicate of another entry.' if st == 'merged' else None)
     fetch_rows = inbox_view(load(P('queue.json'), {}))['fetch'] if st == 'done-kaggle' else []
     you = next((c for c in fetch_rows if c['key'] == key), None)
@@ -659,12 +685,12 @@ def companies_all():
     out, R, mk, I, ys = [], fy27(), M.marks(DATA), ids(), years_of(q); F = R.get('companies', {})
     for k, v in q.items():
         if v['status'] == 'merged': continue
-        r = vals.get(k, {}); nd = v['status'] == 'no-data'; w = nodata_reason(v) if nd else reason_2425(k, v, waiting)
+        r = vals.get(k, {}); nd = v['status'] == 'no-data'; ndw = nodata_why(k, v, F) if nd else None; w = ndw[2] if nd else reason_2425(k, v, waiting)
         name, ok = display_name(v, k)
         out.append(dict(key=k, name=name, nameOk=ok, years=ys.get(k, []), levels=levels.get(k, []), cin=I.get(k, {}).get('cin') or v.get('cin'), isin=I.get(k, {}).get('isin'), nse=I.get(k, {}).get('nse'), bseCode=I.get(k, {}).get('bseCode'), website=v.get('website'), kind=v.get('kind'), status=v['status'],
                         retry=bool(v.get('retry') and v['status'] in ('todo', 'in-batch')), retriedFrom=v.get('retriedFrom'), batch=v.get('batch'), ownerFile=bool(v.get('manual')),
                         formerly=former_name(v), fy27=(fy27_of(k, F, mk) or {}).get('group'), fy27Edge=(fy27_of(k, F, mk) or {}).get('edge'), **dict(zip(('fy27Rank', 'fy27Ex'), fy27_rank(F.get(k)))),
-                        **{f: v.get(f) for f in ('listedOn', 'brsrFrom', 'brsrBasis', 'brsrNote')}, **dict(zip(('whyTag', 'whyLabel'), (nodata_tag(w) if nd else why_tag(w)) if w else (None, None))), why=w, **{c: r.get(c) for c in ('fy', 'checked_by', 'share', 'women_staff', 'board_women', 'board_total', 'kmp_women', 'kmp_total', 'finer_levels', 'functions')}))
+                        **{f: v.get(f) for f in ('listedOn', 'brsrFrom', 'brsrBasis', 'brsrNote')}, **dict(zip(('whyTag', 'whyLabel'), ndw[:2] if nd else why_tag(w) if w else (None, None))), why=w, **{c: r.get(c) for c in ('fy', 'checked_by', 'share', 'women_staff', 'board_women', 'board_total', 'kmp_women', 'kmp_total', 'finer_levels', 'functions')}))
     return dict(companies=out, builtAt=datetime.fromtimestamp(os.path.getmtime(DB)).isoformat(timespec='minutes') if os.path.exists(DB) else None,
                 fy27=dict(outside=[dict(x, name=nice(x['name'])) for x in R.get('outside', [])], source=R.get('source'), builtAt=R.get('builtAt')) if R else None)
 
