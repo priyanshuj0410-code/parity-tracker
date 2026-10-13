@@ -71,8 +71,11 @@ def reporting_year(t):
     y = [int(a) for a in re.findall(r'(?<!\d)(20[12]\d)(?!\d)', w) if 2020 <= int(a) <= 2027]
     s = re.search(r'(?<!\d)(20[12]\d)\s*[-–/]\s*(?:20)?(\d\d)(?!\d)', w)
     if s and int(s.group(2)) == (int(s.group(1)) + 1) % 100: return f'{s.group(1)}-{s.group(2)}'
-    # Numeric dates: Elantas Beck's "01.01.2025 - 31.12.2025" has no month names for the Jan/Dec check below.
-    d = re.search(r'(?<!\d)0?1([./-])(0?[14])\1(20[12]\d)\s*(?:to|-|–)\s*(3[01])([./-])(\d\d)\5(20[12]\d)(?!\d)', w, re.I)
+    # Numeric dates: Elantas Beck's "01.01.2025 - 31.12.2025" has no month names for the Jan/Dec check below. A table of
+    # start and end dates gives them in columns ("Current Financial Year   01-04-2025   31-03-2026", Arvind SmartSpaces),
+    # its row sometimes past the label's window (Midwest).
+    dates = r'(?<!\d)0?1([./-])(0?[14])\1(20[12]\d)(?:\s*(?:to|-|–)\s*|\s+)(3[01])([./-])(\d\d)\5(20[12]\d)(?!\d)'
+    d = re.search(dates, w, re.I) or re.search(r'Current\s+Financial\s+Year\s+' + dates, t[m.start(1):m.start(1) + 900], re.I)
     if d:
         m1, y1, d2, m2, y2 = int(d.group(2)), int(d.group(3)), int(d.group(4)), int(d.group(6)), int(d.group(7))
         if (m1, d2, m2) == (1, 31, 12) and y2 == y1: return f'CY{y1}'
