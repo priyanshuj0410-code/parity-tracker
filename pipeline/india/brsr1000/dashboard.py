@@ -289,21 +289,21 @@ def gap_progress():
     return dict(total=len(GQ), done=len(GQ) - left, left=left, counts=c, ratePerHour=rate and round(rate, 1), paceBatches=min(PACE_BATCHES, len(closed)), eta=eta,
                 open=cur and dict(id=cur['id'], stage=cur['stage'], companies=len(cur['keys']), openedAt=cur.get('openedAt'), stages=gap_stages(cur)))
 
-# The routine's cron minutes from each date: every 30 minutes (owner, 11 October 2026), every 10 (owner, 13 October 2026).
-# JITTER is the app's 296 s delay plus its once-a-minute check.
-SCHEDULES = [(datetime(2026, 10, 11, 14, 30), (7, 37)), (datetime(2026, 10, 13, 11, 0), (7, 17, 27, 37, 47, 57))]
-JITTER = timedelta(seconds=353)
+# The routine's cron minutes from each date, and the delay before a slot's run starts: the app's own delay for that cron
+# (jitterSeconds) plus its once-a-minute check. Every 30 minutes (owner, 11 October 2026), every 10 (owner, 13 October 2026).
+SCHEDULES = [(datetime(2026, 10, 11, 14, 30), (7, 37), timedelta(seconds=296 + 57)),
+             (datetime(2026, 10, 13, 11, 0), (7, 17, 27, 37, 47, 57), timedelta(seconds=416 + 57))]
 def interval_at(t):
     """Minutes between scheduled runs at time t."""
-    return 60 // len(next((m for since, m in reversed(SCHEDULES) if since <= t), SCHEDULES[0][1]))
+    return 60 // len(next((m for since, m, _ in reversed(SCHEDULES) if since <= t), SCHEDULES[0][1]))
 def slots_between(t0, t1):
     """Each scheduled run's start from t0 to t1, with the interval it ran on."""
     out = []
-    for i, (since, mins) in enumerate(SCHEDULES):
+    for i, (since, mins, jitter) in enumerate(SCHEDULES):
         until = SCHEDULES[i + 1][0] if i + 1 < len(SCHEDULES) else None
         hour = max(since, t0).replace(minute=0, second=0, microsecond=0)
         while hour <= t1 and (until is None or hour < until):
-            out += [(s, 60 // len(mins)) for m in mins for s in [hour + timedelta(minutes=m) + JITTER] if max(since, t0) <= s <= t1 and (until is None or s < until)]
+            out += [(s, 60 // len(mins)) for m in mins for s in [hour + timedelta(minutes=m) + jitter] if max(since, t0) <= s <= t1 and (until is None or s < until)]
             hour += timedelta(hours=1)
     return out
 GATES = dict(week=78, session=75)  # batch.py gate: a run stops at or above these
