@@ -13,6 +13,7 @@ the batch file records its stage, so a run cut short picks up where it stopped.
     python3 batch.py lock     <data>       take the run lock; exit 3 if another run took it under 90 minutes ago
     python3 batch.py unlock   <data>       release the run lock
     python3 batch.py history-init <data> <fy>   make data/history/<fy>/: 2024-25 from the Kaggle texts; earlier years search and download
+    python3 batch.py history-next <data> [n]    open or resume a batch in the newest-year history store with companies left, only there
 """
 import glob, hashlib, json, os, re, subprocess, sys, urllib.parse, shutil
 from datetime import datetime
@@ -215,10 +216,25 @@ def open_batch(keys, stage):
     for k in keys: Q[k]['status'] = 'in-batch'; Q[k]['batch'] = bid
     save_q(); save_b(); print(json.dumps(dict(open=bid, stage=stage, keys=keys)))
 
+def stores_of(main):
+    """The history stores under the build's data dir, newest year first: the order the runs take them (PARITY-136)."""
+    return sorted((os.path.dirname(h) for h in glob.glob(os.path.join(main, 'history', '*', 'history.json'))), reverse=True)
+
+def has_work(h):
+    """(an open batch, companies left) for a history store."""
+    b = load(os.path.join(h, 'batch', 'current.json')); q = load(os.path.join(h, 'queue.json'), {}) or {}
+    return bool(b and b.get('stage') != 'closed'), sum(v['status'] in ('todo', 'in-batch') for v in q.values())
+
 if cmd == 'next':
     n = int(sys.argv[3]) if len(sys.argv) > 3 else 25
     if B and B['stage'] != 'closed':
         print(json.dumps(dict(open=B['id'], stage=B['stage'], keys=B['keys']))); sys.exit()
+    if HISTORY:
+        # Stores run one at a time, newest year first: a store waits while a newer one still has companies left
+        # (13 October 2026, when a run opened a batch in every store at once).
+        newer = next((h for h in stores_of(os.path.dirname(os.path.dirname(os.path.abspath(data))))
+                      if os.path.basename(h) > HISTORY['fy'] and any(has_work(h))), None)
+        if newer: print(json.dumps(dict(open=None, waitingFor=os.path.basename(newer), remaining=sum(v['status'] == 'todo' for v in Q.values())))); sys.exit()
     if HISTORY:
         keys = [k for k, v in Q.items() if v['status'] == 'todo'][:n]
         if not keys: print(json.dumps(dict(open=None, remaining=0))); sys.exit()
@@ -546,6 +562,25 @@ elif cmd == 'history-init':
     save_json(os.path.join(H, 'queue.json'), HQ)
     save_json(os.path.join(H, 'history.json'), dict(fy=fy, source='kaggle', created=datetime.now().isoformat(timespec='seconds')))
     print(json.dumps(dict(store=H, companies=len(HQ), copied=copied, toRead=len(HQ) - copied)))
+
+elif cmd == 'history-next':
+    # The one way into the history stores (runbook step 7.3): the newest year with companies left gets its open batch
+    # resumed, or a new one opened, and no other store is touched. A batch another store opened early and never worked
+    # (still at discover, nothing found) gives its companies back, so the stores never hold idle batches.
+    n = sys.argv[3] if len(sys.argv) > 3 else '25'
+    hs = stores_of(data); pick = next((h for h in hs if any(has_work(h))), None)
+    for h in hs:
+        b = load(os.path.join(h, 'batch', 'current.json'))
+        if h == pick or not b or b.get('stage') != 'discover' or any(os.path.exists(os.path.join(h, 'found', k + '.json')) for k in b['keys']): continue
+        hq = load(os.path.join(h, 'queue.json'), {})
+        for k in b['keys']:
+            if hq.get(k, {}).get('status') == 'in-batch': hq[k]['status'] = 'todo'; hq[k].pop('batch', None)
+        save_json(os.path.join(h, 'queue.json'), hq); os.remove(os.path.join(h, 'batch', 'current.json'))
+        print(json.dumps(dict(unopened=b['id'], store=h, companies=len(b['keys']))))
+    if not pick: print(json.dumps(dict(open=None, remaining=0))); sys.exit()
+    r = subprocess.run([sys.executable, os.path.abspath(__file__), 'next', pick, n], capture_output=True, text=True)
+    out = json.loads(r.stdout.strip().splitlines()[-1]) if r.returncode == 0 and r.stdout.strip() else dict(error=r.stderr.strip()[-300:])
+    print(json.dumps(dict(out, store=pick, fy=os.path.basename(pick))))
 
 elif cmd in ('gaps-init', 'gaps-next', 'gaps-merge'):
     # Gap-fill (PARITY-129): read again only the mandatory fields a checked reading lacks, from audit.py's audit.json. A gap

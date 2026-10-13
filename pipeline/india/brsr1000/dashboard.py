@@ -546,7 +546,7 @@ def runs_view(q):
         stop = next((re.split(r'[:|]', e['text'].split('STOPPED', 1)[1])[0].strip() for e in es if 'STOPPED' in e['text']), None)
         mins = int(((c or now) - o).total_seconds() // 60) if o else None
         gap = interval_at(o) if o else interval_at(now)
-        return dict(batch=b['id'], kind=b['kind'], fy=b.get('fy'), openedAt=b.get('openedAt'), closedAt=b.get('closedAt'), minutes=mins, overran=bool(mins and mins > gap), slotMin=gap,
+        return dict(batch=b['id'], kind=b['kind'], fy=b.get('fy'), stage=b.get('stage'), openedAt=b.get('openedAt'), closedAt=b.get('closedAt'), minutes=mins, overran=bool(mins and mins > gap), slotMin=gap,
                     counts=b.get('summary'), corrections=corrections(es), flags=sum(len(e['flags']) for e in es), stopped=stop, open=not c, **kw)
     out, used = [], set()
     for s, gap in slots:
