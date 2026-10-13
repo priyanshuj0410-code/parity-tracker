@@ -3,7 +3,7 @@ type: plan
 title: Cross-market dataset (every Nivel organisation, all markets)
 description: The owner's decisions of 12 October 2026 for extending the Parity dataset beyond India's BRSR build to every Nivel market, the order of work (India's release first), what each market has today, and the specification of the measures crosswalk table.
 status: planning
-updated: 2026-10-12
+updated: 2026-10-13
 plane_issues:
   - https://app.plane.so/claude-pri/projects/00987666-dbc9-4caa-8c8d-004db87e6c11/issues/6b636025-64a4-4008-9b22-9c035eb10d14
 ---
@@ -37,6 +37,12 @@ The Parity dataset began as India's BRSR filer build ([india-brsr-1000.md](india
 
    It starts from Nivel's own measures and widens to the least common multiple of every regime: [../research/gender-disclosure-crosswalk.md](../research/gender-disclosure-crosswalk.md), built 12 October 2026 with 324 data points and 33 measures; 125 more items found in the classification wait for the next pass.
 7. **Later, not now:** use that table to ask organisations to share the data points as their own systems report them. The data points therefore get stable ids and definitions, so a company can be asked for exactly them.
+
+8. **Which markets next: those adopting the ISSB standards (owner, 13 October 2026).** Brazil, Sri Lanka and similar markets join Nivel's six, because they report against the same global baseline ([../research/issb-gender-baseline.md](../research/issb-gender-baseline.md)).
+   - **The catch:** IFRS S1 and S2 carry no gender metric, so each market still needs its own public gender source for S, E and W, as each of the six has (BRSR, the UK pay gap regulations, WGEA, the Japanese ordinance, ESRS S1).
+   - **So each candidate is researched the crosswalk's way:** its ISSB status (adopted, phase-in, scope), then its public gender instruments, classified against the 324 data points. A market joins the build when it has a public source for at least one of S, E and W.
+   - **Candidates to research first** (from memory, not yet checked): Brazil (CVM Resolution 193; the 2023 Equal Pay Law's twice-yearly pay transparency reports; the CVM reference form's workforce by gender and level), Sri Lanka (SLFRS S1 and S2), Hong Kong (HKEX ESG code: workforce and turnover by gender), Singapore and Malaysia (exchange core metrics on gender diversity), Chile (CMF NCG 461: pay gap by job category), Canada (CBCA diversity disclosure), Mexico, Turkey, Nigeria, Pakistan, Kenya and South Africa.
+   - **When:** after the weekly usage reset (18 October 2026, 14:30); week usage was 78% on 13 October.
 
 ## Order of work
 
