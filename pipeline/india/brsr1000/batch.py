@@ -83,13 +83,17 @@ def recheck_closed():
     """A company closed on FY2024-25 whose downloaded FY2025-26 text does hold a BRSR (missed by the stricter test used
     before 11 October 16:55) goes back to the head of the queue to be read from it. So does one closed with no usable
     report whose text was taken in as of an unread year that the parser now reads as FY2025-26 (the far-window rule of
-    12 October). Runs as each batch opens."""
+    12 October). Runs as each batch opens. A deep pass read from FY2024-25 text goes back the same way when
+    its FY2025-26 text's year is now read (dates in table columns, 13 October)."""
     global Q
     sys.path.insert(0, HERE); from brsr_fields import is_brsr, reporting_year
     back = []
     for k, v in Q.items():
         if v['status'] == 'no-data':
-            if v.get('noDataReason') or any(x.get('status') == 'ok' and is_latest(x.get('fy')) for x in v.get('fetches') or []): continue
+            # skipped once a FY2025-26 BRSR was read; an annual report of that year with no BRSR in it does not count (Arvind SmartSpaces)
+            if v.get('noDataReason') or any(x.get('status') == 'ok' and x.get('hasBRSR') and is_latest(x.get('fy')) for x in v.get('fetches') or []): continue
+        elif v['status'] == 'done-deep':  # deep-read from FY2024-25 text while its FY2025-26 BRSR's year went unread (Delhivery)
+            if is_latest((load(P('verified', k + '.json')) or {}).get('fy')): continue
         elif v['status'] != 'done-kaggle': continue
         for name in (k + '.txt', k + '.ar.txt'):
             p = P('latest', 'txt', name)

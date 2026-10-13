@@ -12,6 +12,8 @@ for value, want in [
     ('January 1, 2025 to December 31, 2025', 'CY2025'),
     ('April 1, 2025 to March 31, 2026', '2025-26'),
     ('2025-26', '2025-26'),
+    ('Start date   End date\n  Current Financial Year   01-04-2025   31-03-2026\n  Previous Financial Year   01-04-2024   31-03-2025', '2025-26'),  # Arvind SmartSpaces
+    ('Start date   End date\n' + ' ' * 260 + 'B  What is the contribution of exports  20.86%\n  Current Financial Year   01-04-2025   31-03-2026', '2025-26'),  # Midwest
 ]:
     got = reporting_year(L + value + '\n')
     assert got == want, (value, got, want)
